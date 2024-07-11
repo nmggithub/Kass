@@ -26,14 +26,16 @@ let moduleTargets = modules.map {
     Target.target(
         name: $0.name,
         dependencies: $0.dependencies.map { Target.Dependency.target(name: $0) },
-        path: "Sources/\($0.name)",
-        swiftSettings: [
-            .unsafeFlags([
-                "-emit-symbol-graph",
-                "-emit-symbol-graph-dir",
-                ".build/symbol-graphs/\($0.name)",
-            ])
-        ]
+        path: "Sources/\($0.name)"
+            // These are required for documentation generation, but SwiftPM will not allow
+            // other user to depend on us, so they are commented out.
+            // swiftSettings: [
+            //     .unsafeFlags([
+            //         "-emit-symbol-graph",
+            //         "-emit-symbol-graph-dir",
+            //         ".build/symbol-graphs/\($0.name)",
+            //     ])
+            // ]
     )
 }
 
