@@ -1,6 +1,5 @@
 version: 1
 builder:
-  configs:
-    - documentation_targets: [MachMsg, Linking, CCompat]
-      platform: macos
-      custom_documentation_parameters: [Documentation.docc]
+    configs:
+        - documentation_targets: [MachMsg, Linking, CCompat]
+          platform: macos
