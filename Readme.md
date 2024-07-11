@@ -1,4 +1,6 @@
 # Kass
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnmggithub%2FKass%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/nmggithub/Kass)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnmggithub%2FKass%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/nmggithub/Kass)
 
 Kass is a collection of modules for reverse-engineering and security research on macOS, written in Swift.
 
