@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <!--
+        Display the documentation as a module, rather than a framework.
+        https://forums.swift.org/t/improve-presentation-of-non-framework-documentation-sr-15434/53388
+    -->
+    <dict>
+        <key>CDDefaultModuleKind</key>
+        <string>Module</string>
+    </dict>
+</plist>

@@ -43,4 +43,5 @@ swift package \
     --target $root_target \
     --additional-symbol-graph-dir ./.build/symbol-graphs/ \
     --diagnostic-level hint \
-    --verbose
+    --verbose \
+    Documentation.docc
