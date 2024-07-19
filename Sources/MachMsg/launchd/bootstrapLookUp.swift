@@ -1,5 +1,5 @@
 import CCompat
-import Darwin
+@preconcurrency import Darwin
 import Foundation
 import Linking
 import System
