@@ -208,9 +208,6 @@ open class MachMessage<Payload> {
             }
 
         }
-        guard from.messageSize <= self.messageSize else {
-            throw CopyError.cannotCopyInMessageOfLargerSize
-        }
         self.startPointer.copyMemory(from: from.startPointer, byteCount: Int(self.bufferSize))
     }
     /// Copy the contents of the given message into this message (only allows message of same type).
