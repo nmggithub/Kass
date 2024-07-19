@@ -219,6 +219,25 @@ open class MachMessage<Payload> {
         self.startPointer.copyMemory(from: from.startPointer, byteCount: Int(self.bufferSize))
     }
 
+    /// Cleans up the message buffer by zeroing out any extra data after the trailer.
+    /// - Remark:
+    ///     The Mach message system reuses the same buffer for sent messages and received messages. If you send a message of
+    ///     a certain size, and then receive a message of a smaller size, the extra data from the sent message will still be
+    ///     in the buffer. This method will zero out any data after the trailer, which should effectively zero out any extra
+    ///     data left over from the sent message. This method is called automatically after a message is received, but it is
+    ///     exposed here in case you need to manually clean up the buffer. Note that it really only makes sense to call this
+    ///     method on received messages, as sent messages should not have any extra data in the buffer.
+    public func cleanUpLeftoverData() {
+        // get the pointer to the end of the buffer
+        let endPointer = self.startPointer.advanced(by: Int(self.bufferSize))
+        // get the actual size of the trailer (the type uses is `mach_msg_max_trailer_t`, but the actual size may be smaller)
+        let trailerSize = self.trailer.msgh_trailer_size
+        let extraDataPointer = UnsafeMutableRawPointer(self.trailerPointer)
+            .advanced(by: Int(trailerSize))  // point to the first byte after the trailer
+        let extraDataSize = endPointer - extraDataPointer  // the amount of extra data to zero out after the trailer
+        extraDataPointer.initializeMemory(as: UInt8.self, repeating: 0, count: extraDataSize)  // zero out the data after the trailer
+    }
+
     /// Attach the system voucher to the message (calls `voucher_mach_msg_set`).
     public func attatchVoucher() {
         voucher_mach_msg_set(self.header.pointer)

@@ -91,5 +91,6 @@ open class MachConnection {
             as: UInt8.self, repeating: 0, count: Int(transient.bufferSize - receiveMax)
         )
         try! receiveMessage.copyIn(from: transient)  // we can force-try here because we know it will succeed
+        receiveMessage.cleanUpLeftoverData()  // clean up any leftover data from the sent message (as the buffer is reused)
     }
 }
