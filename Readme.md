@@ -6,15 +6,14 @@ Kass is a collection of modules for reverse-engineering and security research on
 
 ## Modules
 
-### [`CCompat`](https://nmggithub.github.io/Kass/documentation/ccompat/)
-
+### [`CCompat`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/ccompat/)
 This is simply a helper module to allow for option sets where each option can be represented by a C Macro. The built-in [`OptionSet`](https://developer.apple.com/documentation/swift/optionset) type was not chosen due to it not using `enum`'s. This may change in future versions.
 
-### [`Linking`](https://nmggithub.github.io/Kass/documentation/linking/)
+### [`Linking`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/linking/)
 
 This module provides a simple API to access symbols that uses the `dlopen`/`dlsym` functions internally.
 
-### [`MachMsg`](https://nmggithub.github.io/Kass/documentation/machmsg/)
+### [`MachMsg`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machmsg/)
 
 This is the most complicated module, by far. It provides an API for interacting with, sending, and receiving Mach messages. It also provides an API for interacting with MIG servers. Currently, MIG messages must be hand-built. This may change in future versions.
 

@@ -27,21 +27,6 @@ let moduleTargets = modules.map {
         name: $0.name,
         dependencies: $0.dependencies.map { Target.Dependency.target(name: $0) },
         path: "Sources/\($0.name)"
-            // swiftSettings: [
-            //     .unsafeFlags(
-            //         [
-            //             "-emit-symbol-graph",
-            //             "-emit-symbol-graph-dir",
-            //             ".build/symbol-graphs/\($0.name)",
-            //         ],
-            //         // Only use the unsafe flags in the debug configuration (local builds). SwiftPM won't
-            //         // let others use this package as a dependency if it has unsafe flags for the release
-            //         // configuration. We still need these flags in local builds, though, as they are used
-            //         // to generate the symbol graphs used in a workaround for multi-target documentation.
-            //         // See `.build-docs.sh` for more information. Actually, this doesn't work :(
-            //         .when(configuration: .debug)
-            //     )
-            // ]
     )
 }
 
