@@ -3,7 +3,7 @@ import Darwin
 import Foundation
 
 /// A descriptor type.
-public enum DescriptorType: mach_msg_descriptor_type_t, NameableByCMacro {
+public enum DescriptorType: mach_msg_descriptor_type_t, NameableByCMacro, Sendable {
     case port = 0
     case ool = 1
     case oolPorts = 2
