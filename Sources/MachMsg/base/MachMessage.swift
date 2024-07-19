@@ -191,10 +191,23 @@ open class MachMessage<Payload> {
 
     /// Copy the contents of the given message into this message (allows message of any arbitrary type).
     /// - Parameter from: the message to copy from
-    /// - Remark: If the `from` message has a size larger than this message, an error will be thrown.
+    /// - Remark: If the `from` message contains data outside the bounds of what this message can hold, an error will be thrown.
     public func copyIn<FromPayload>(
         from: MachMessage<FromPayload>
     ) throws {
+        if from.bufferSize > self.bufferSize {
+            let extraDataPointer = from.startPointer.advanced(by: Int(self.bufferSize))
+            let extraDataSize = from.bufferSize - self.bufferSize
+            let extraData = UnsafeMutableBufferPointer(
+                start: extraDataPointer.bindMemory(to: UInt8.self, capacity: Int(extraDataSize)),
+                count: Int(extraDataSize)
+            )
+            // check if there is any actual data outside the bounds of what this message can hold
+            guard extraData.allSatisfy({ $0 == 0 }) else {
+                throw CopyError.cannotCopyInMessageOfLargerSize
+            }
+
+        }
         guard from.messageSize <= self.messageSize else {
             throw CopyError.cannotCopyInMessageOfLargerSize
         }
