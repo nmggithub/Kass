@@ -10,12 +10,12 @@ private let bootstrap_look_up:
         _ sp: UnsafeMutablePointer<mach_port_t>
     )
         -> kern_return_t =
-        libSystem
+        libSystem()
         .get(symbol: "bootstrap_look_up")!
         .cast()
 
 private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafePointer<CChar>? =
-    libSystem.get(symbol: "bootstrap_strerror")!
+    libSystem().get(symbol: "bootstrap_strerror")!
     .cast()
 
 /// Look up a service in launchd
