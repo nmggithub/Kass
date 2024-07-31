@@ -50,14 +50,34 @@ public class Library: Handle {
     }
     /// Get a symbol handle from the library at a specific address.
     /// - Parameters:
-    ///   - address: The address of the symbol.
-    ///   - name: The name of the symbol.
+    ///   - symbol: The name of the symbol.
+    ///   - atExpectedAddress: The address of the symbol.
+    ///   - otherSymbol: The name of another symbol in the library to use as a reference. This symbol should be exported by the library.
+    ///   - expectedOtherSymbolAddress: The exepected address of the other symbol.
     /// - Returns: The symbol handle, or `nil` if the symbol could not be found.
-    public func get(symbolAtAddress address: vm_address_t, name: String = "unnamed") -> Symbol? {
-        let offset = address - 0x1_0000_0000  // 0x100000000 is the base address of the _mh_execute_header
-        guard let handle = dlsym(self.rawHandle, "_mh_execute_header") else { return nil }
-        return Symbol(
-            name: name, rawHandle: handle + Int(offset))
+    /// - Remark:
+    ///     Both `atExpectedAddress` and `expectedOtherSymbolAddress` should be the addresses of the symbols in memory, gathered
+    ///     from other analysis tools. In some cases, the actual addresses in memory may be offset by some unknown amount. Thus,
+    ///     this function will find use the other symbol to calculate the offset and find the symbol's actual address in memory.
+    public func get(
+        symbol: String, atExpectedAddress expectedAddress: vm_address_t, otherSymbol: String,
+        expectedOtherSymbolAddress: vm_address_t
+    ) -> Symbol? {
+        guard
+            let actualOtherSymbolAddress = dlsym(self.rawHandle, otherSymbol),
+            let expectedOtherSymbolPointer = UnsafeRawPointer(
+                bitPattern: expectedOtherSymbolAddress
+            )
+        else { return nil }
+        // the addresses may be offset by some amount, so we need to calculate the offset
+        // TODO: determine if there is a way to calculate the offset without using the other symbol
+        let imageOffset = expectedOtherSymbolPointer.distance(to: actualOtherSymbolAddress)
+        guard
+            let expectedPointer = UnsafeMutableRawPointer(
+                bitPattern: expectedAddress.advanced(by: imageOffset)
+            )
+        else { return nil }
+        return Symbol(name: symbol, rawHandle: expectedPointer)
     }
     /// Get an Objective-C class from the library.
     /// - Parameter className: The name of the class.
