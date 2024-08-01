@@ -21,15 +21,16 @@ public enum DescriptorType: mach_msg_descriptor_type_t, NameableByCMacro, Sendab
 }
 
 /// A Mach message descriptor.
-public protocol MachMessageDescriptor {
-    associatedtype RawDescriptorType
+public protocol MachMessageDescriptor: RawRepresentable {
+    /// The raw descriptor type.
+    typealias RawDescriptorType = RawValue
     /// The raw descriptor.
-    var rawDescriptor: RawDescriptorType { get }
+    var rawValue: RawDescriptorType { get }
     /// The type of the descriptor.
     static var type: DescriptorType { get }
     /// Initialize a new descriptor.
-    /// - Parameter rawDescriptor: The raw descriptor.
-    init(rawDescriptor: RawDescriptorType)
+    /// - Parameter rawValue: The raw descriptor.
+    init(rawValue: RawDescriptorType)
 }
 
 // Stored values for Mach message descriptors (stored values cannot be defined in protocols, so we use an extension)
@@ -46,22 +47,22 @@ extension MachMessageDescriptor {
 
 /// A port descriptor.
 public struct PortDescriptor: MachMessageDescriptor {
-    public let rawDescriptor: mach_msg_port_descriptor_t
+    public let rawValue: mach_msg_port_descriptor_t
     public static let type: DescriptorType = .port
-    public init(rawDescriptor: mach_msg_port_descriptor_t) {
-        self.rawDescriptor = rawDescriptor
+    public init(rawValue: mach_msg_port_descriptor_t) {
+        self.rawValue = rawValue
     }
     /// The port.
     public var port: MachPort {
         .init(
-            port: self.rawDescriptor.name,
-            disposition: .init(rawValue: self.rawDescriptor.disposition)!
+            port: self.rawValue.name,
+            disposition: .init(rawValue: self.rawValue.disposition)!
         )
     }
     /// Initialize a new port descriptor.
     /// - Parameter port: The port.
     public init(port: MachPort) {
-        self.rawDescriptor = mach_msg_port_descriptor_t(
+        self.rawValue = mach_msg_port_descriptor_t(
             name: port.port,
             pad1: 0,
             pad2: 0,
@@ -92,14 +93,14 @@ public enum CopyOption: mach_msg_copy_options_t, NameableByCMacro {
 
 /// An out-of-line data descriptor.
 public struct OOLDescriptor: MachMessageDescriptor {
-    public let rawDescriptor: mach_msg_ool_descriptor_t
+    public let rawValue: mach_msg_ool_descriptor_t
     public static let type: DescriptorType = .ool
-    public init(rawDescriptor: mach_msg_ool_descriptor_t) {
-        self.rawDescriptor = rawDescriptor
+    public init(rawValue: mach_msg_ool_descriptor_t) {
+        self.rawValue = rawValue
     }
     /// The data.
     public var data: Data {
-        Data(bytes: self.rawDescriptor.address, count: Int(self.rawDescriptor.size))
+        Data(bytes: self.rawValue.address, count: Int(self.rawValue.size))
     }
     /// Initialize a new out-of-line data descriptor.
     /// - Parameters:
@@ -134,7 +135,7 @@ public struct OOLDescriptor: MachMessageDescriptor {
         // volatile descriptors don't appear to be treated any differently by the kernel, but keeping this here for completeness
         isVolatile: Bool = false
     ) {
-        self.rawDescriptor = mach_msg_ool_descriptor_t(
+        self.rawValue = mach_msg_ool_descriptor_t(
             address: address,
             deallocate: deallocate ? 1 : 0,
             copy: copyMethod.rawValue,
@@ -147,10 +148,10 @@ public struct OOLDescriptor: MachMessageDescriptor {
 
 /// An out-of-line ports descriptor.
 public struct OOLPortsDescriptor: MachMessageDescriptor {
-    public let rawDescriptor: mach_msg_ool_ports_descriptor_t
+    public let rawValue: mach_msg_ool_ports_descriptor_t
     public static let type: DescriptorType = .oolPorts
-    public init(rawDescriptor: mach_msg_ool_ports_descriptor_t) {
-        self.rawDescriptor = rawDescriptor
+    public init(rawValue: mach_msg_ool_ports_descriptor_t) {
+        self.rawValue = rawValue
     }
     /// Initialize a new out-of-line ports descriptor.
     /// - Parameters:
@@ -166,7 +167,7 @@ public struct OOLPortsDescriptor: MachMessageDescriptor {
     ) {
         let portsPointer = UnsafeMutablePointer<mach_port_t>.allocate(capacity: ports.count)
         portsPointer.initialize(from: ports.map(\.port), count: ports.count)
-        self.rawDescriptor = mach_msg_ool_ports_descriptor_t(
+        self.rawValue = mach_msg_ool_ports_descriptor_t(
             address: portsPointer,
             deallocate: deallocate ? 1 : 0,
             copy: copyMethod.rawValue,
@@ -197,10 +198,10 @@ public typealias GuardFlags = COptionMacroSet<GuardFlag>
 
 /// A guarded port descriptor.
 public struct GuardedPortDescriptor: MachMessageDescriptor {
-    public let rawDescriptor: mach_msg_guarded_port_descriptor_t
+    public let rawValue: mach_msg_guarded_port_descriptor_t
     public static let type: DescriptorType = .guardedPort
-    public init(rawDescriptor: mach_msg_guarded_port_descriptor_t) {
-        self.rawDescriptor = rawDescriptor
+    public init(rawValue: mach_msg_guarded_port_descriptor_t) {
+        self.rawValue = rawValue
     }
     /// Initialize a new guarded port descriptor.
     /// - Parameters:
@@ -208,7 +209,7 @@ public struct GuardedPortDescriptor: MachMessageDescriptor {
     ///   - guardValue: The guard value.
     ///   - flags: The guard flags.
     public init(port: MachPort, guardValue: UInt, flags: GuardFlags = []) {
-        self.rawDescriptor = mach_msg_guarded_port_descriptor_t(
+        self.rawValue = mach_msg_guarded_port_descriptor_t(
             context: guardValue,  // this seems to use the context field for the guard value (will probably fail if there is already context data)
             flags: flags.rawValue,
             disposition: port.disposition.rawValue,
@@ -241,7 +242,7 @@ public class MachMessageDescriptors {
     ) -> some MachMessageDescriptor {
         let rawDescriptor = pointer.bindMemory(to: type.RawDescriptorType.self, capacity: 1)
             .pointee
-        return type.init(rawDescriptor: rawDescriptor)
+        return type.init(rawValue: rawDescriptor)
     }
 
     /// Serialize a descriptor to a pointer.
@@ -251,7 +252,7 @@ public class MachMessageDescriptors {
     private func serializeDescriptor(
         descriptor: some MachMessageDescriptor, pointer: UnsafeMutableRawPointer
     ) {
-        pointer.storeBytes(of: descriptor.rawDescriptor, as: type(of: descriptor.rawDescriptor))
+        pointer.storeBytes(of: descriptor.rawValue, as: type(of: descriptor.rawValue))
     }
 
     /// The descriptors at the pointer.
