@@ -159,6 +159,7 @@ open class MachMessage<Payload> {
         self.trailerPointer = self.startPointer.advanced(by: distanceToTrailer).bindMemory(
             to: mach_msg_max_trailer_t.self, capacity: 1
         )
+        self.isComplex = hasDescriptors
     }
 
     /// Error that can occur when copying a message.

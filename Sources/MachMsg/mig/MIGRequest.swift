@@ -43,6 +43,5 @@ public class MIGRequest<Payload>: MachMessage<Payload> {
         self.payload = payload
         if hasDescriptors { self.descriptors!.list = descriptors! }
         self.migReplyPort = mig_get_reply_port()
-        self.isComplex = hasDescriptors
     }
 }
