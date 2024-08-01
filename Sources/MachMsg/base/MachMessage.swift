@@ -1,4 +1,5 @@
 import Darwin
+import Foundation
 
 /// A Mach message.
 open class MachMessage<Payload> {
@@ -168,6 +169,14 @@ open class MachMessage<Payload> {
         case payloadTooLarge
     }
 
+    /// Set the payload of the message to the given data value.
+    /// - Parameter data: The data to set the payload to.
+    /// - Throws: `CopyError.payloadTooLarge` if the data is too large to fit in the message.
+    /// - Remark: This method is meant for variable-length payloads, which are not supported if the message has a typed payload with a non-zero size.
+    public func setPayloadData(_ data: Data) throws {
+        try self.setPayloadBytes((data as NSData).bytes, count: data.count)
+    }
+
     /// Set the payload of the message to the given value.
     /// - Parameters:
     ///   - bytes: The bytes to set the payload to.
@@ -179,6 +188,14 @@ open class MachMessage<Payload> {
             bufferSize - mach_msg_size_t(MemoryLayout<mach_msg_header_t>.stride)
         guard count <= maxPayloadSize else { throw CopyError.payloadTooLarge }
         UnsafeMutableRawPointer(self.payloadPointer!).copyMemory(from: bytes, byteCount: count)
+    }
+
+    /// Get the payload of the message as data.
+    /// - Returns: The payload as data, or `nil` if the payload is typed.
+    /// - Remark: This method is meant for variable-length payloads, which are not supported if the message has a typed payload with a non-zero size.
+    public func getPayloadData() -> Data? {
+        guard MemoryLayout<Payload>.size == 0 else { return nil }
+        return Data(bytes: self.payloadPointer!, count: self.payloadSize)
     }
 
     /// Get the payload of the message as a buffer of bytes.
