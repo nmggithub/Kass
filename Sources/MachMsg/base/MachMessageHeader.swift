@@ -8,7 +8,15 @@ private let MACH_MSGH_BITS_PORTS_MASK = mach_msg_type_name_t(
 public class MachMessageHeader {
 
     /// A struct representing the configuration bits for the message.
-    public struct Bits {
+    public struct Bits: RawRepresentable {
+        public typealias RawValue = mach_msg_bits_t
+
+        public init?(rawValue: RawValue) {
+            self.init(withBits: rawValue)
+        }
+
+        public var rawValue: RawValue
+
         private var _remote: mach_msg_type_name_t
         private var _local: mach_msg_type_name_t
         private var _voucher: mach_msg_type_name_t
@@ -66,11 +74,7 @@ public class MachMessageHeader {
             self._local = local & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK >> 8)
             self._voucher = voucher & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK >> 16)
             self._other = other & mach_msg_type_name_t(~MACH_MSGH_BITS_PORTS_MASK)
-        }
-        /// Build the configuration bits.
-        /// - Returns: The configuration bits.
-        func build() -> mach_msg_bits_t {
-            return self.remote | self.local << 8 | self.voucher << 16 | self.other
+            self.rawValue = _remote | _local << 8 | _voucher << 16 | _other
         }
     }
 
@@ -92,7 +96,7 @@ public class MachMessageHeader {
     /// The configuration bits for the message.
     public var bits: Bits {
         get { Bits(withBits: self.pointer.pointee.msgh_bits) }
-        set { self.pointer.pointee.msgh_bits = newValue.build() }
+        set { self.pointer.pointee.msgh_bits = newValue.rawValue }
     }
 
     /// The size of the received message data in bytes. It is 0 for sent messages.
