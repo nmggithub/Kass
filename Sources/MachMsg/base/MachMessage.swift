@@ -112,7 +112,6 @@ open class MachMessage<Payload> {
     /// - Parameters:
     ///   - payloadType: The type of the payload for the message.
     ///   - payloadSize: The size of the payload in bytes. Untyped payloads only (ignored if `payloadType` is specified).
-    ///   - trailerType: The type of the trailer for the message.
     ///   - descriptorTypes: The types of the descriptors for the message.
     public init(
         descriptorTypes: [any MachMessageDescriptor.Type]? = nil,
