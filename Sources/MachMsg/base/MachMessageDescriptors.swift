@@ -99,8 +99,9 @@ public struct OOLDescriptor: MachMessageDescriptor {
         self.rawValue = rawValue
     }
     /// The data.
-    public var data: Data {
-        Data(bytes: self.rawValue.address, count: Int(self.rawValue.size))
+    public var data: Data? {
+        guard self.rawValue.address != nil else { return nil }
+        return Data(bytes: self.rawValue.address, count: Int(self.rawValue.size))
     }
     /// Initialize a new out-of-line data descriptor.
     /// - Parameters:
