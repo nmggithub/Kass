@@ -15,7 +15,10 @@ public class MachMessageHeader {
             self.init(withBits: rawValue)
         }
 
-        public var rawValue: RawValue
+        public var rawValue: RawValue {
+            get { self._remote | self._local << 8 | self._voucher << 16 | self._other }
+            set { self = .init(withBits: newValue) }
+        }
 
         private var _remote: mach_msg_type_name_t
         private var _local: mach_msg_type_name_t
@@ -74,7 +77,6 @@ public class MachMessageHeader {
             self._local = local & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK >> 8)
             self._voucher = voucher & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK >> 16)
             self._other = other & mach_msg_type_name_t(~MACH_MSGH_BITS_PORTS_MASK)
-            self.rawValue = _remote | _local << 8 | _voucher << 16 | _other
         }
     }
 
