@@ -30,18 +30,19 @@ public class MIGRequest<Payload>: MachMessage<Payload> {
     ///   - payloadSize: The size of the payload for the MIG request (ignored if `payloadType is specified`).
     /// - Important: If you will be using an untyped payload, you must specify the size of the payload in bytes in lieu of a payload type.
     public init(
-        descriptors: [any MachMessageDescriptor] = [],
+        descriptors: [any MachMessageDescriptor]? = nil,
         payload: Payload? = nil,
         payloadSize: Int? = nil
     ) {
+        let hasDescriptors = descriptors != nil
         super.init(
-            descriptorTypes: descriptors.map { type(of: $0) },
+            descriptorTypes: hasDescriptors ? descriptors!.map { type(of: $0) } : nil,
             payloadType: payload != nil ? Payload.self : Never.self as! Payload.Type,
             payloadSize: payloadSize
         )
         self.payload = payload
-        if descriptors.count > 0 { self.descriptors!.list = descriptors }
+        if hasDescriptors { self.descriptors!.list = descriptors! }
         self.migReplyPort = mig_get_reply_port()
-        self.isComplex = descriptors.count > 0
+        self.isComplex = hasDescriptors
     }
 }

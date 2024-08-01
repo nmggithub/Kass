@@ -10,7 +10,7 @@ open class MIGReply<Payload>: MachMessage<Payload> {
     /// - Important: If you will be using an untyped payload, you must specify the size of the payload in bytes in lieu of a payload type.
     /// - Important: The size of the payload must be at least the size of a `MIGErrorReply.Payload`.
     public override init(
-        descriptorTypes: [any MachMessageDescriptor.Type] = [],
+        descriptorTypes: [any MachMessageDescriptor.Type]? = nil,
         payloadType: Payload.Type = Never.self,
         payloadSize: Int? = nil
     ) {

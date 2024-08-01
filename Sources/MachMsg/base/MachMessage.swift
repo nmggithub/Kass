@@ -100,7 +100,7 @@ open class MachMessage<Payload> {
             ? bufferSize - mach_msg_size_t(MemoryLayout<mach_msg_header_t>.size)
             : 0
         self.init(
-            descriptorTypes: [],
+            descriptorTypes: nil,
             payloadType: Never.self as! Payload.Type,
             payloadSize: Int(payloadSize)
         )
@@ -115,17 +115,17 @@ open class MachMessage<Payload> {
     ///   - trailerType: The type of the trailer for the message.
     ///   - descriptorTypes: The types of the descriptors for the message.
     public init(
-        descriptorTypes: [any MachMessageDescriptor.Type] = [],
+        descriptorTypes: [any MachMessageDescriptor.Type]? = nil,
         payloadType: Payload.Type = Never.self,
         payloadSize: Int? = nil
     ) {
         let alignment = MemoryLayout<mach_msg_header_t>.alignment  // TODO: check if this is the correct alignment
-        let hasDescriptors = descriptorTypes.count > 0
+        let hasDescriptors = descriptorTypes != nil
 
         var _bufferSize = MemoryLayout<mach_msg_header_t>.size
         if hasDescriptors {
             _bufferSize += MemoryLayout<mach_msg_body_t>.size
-            let descriptorSize = descriptorTypes.reduce(0) { $0 + $1.size }
+            let descriptorSize = descriptorTypes!.reduce(0) { $0 + $1.size }
             _bufferSize += descriptorSize
         }
         // the payload could be typed (via `Payload`), or untyped (via `payloadSize`), so get the appropriate size
@@ -149,7 +149,7 @@ open class MachMessage<Payload> {
             ? MachMessageDescriptors(
                 bodyPointer: UnsafeMutableRawPointer(headerPointer + 1).bindMemory(
                     to: mach_msg_body_t.self, capacity: 1),
-                types: descriptorTypes)
+                types: descriptorTypes!)
             : nil
         self.payloadPointer =
             self.payloadSize > 0

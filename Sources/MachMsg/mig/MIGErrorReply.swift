@@ -16,7 +16,7 @@ public class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
     /// Create a new MIG error message.
     public required init() {
         super.init(
-            descriptorTypes: [],
+            descriptorTypes: nil,
             payloadType: Payload.self
         )
     }
