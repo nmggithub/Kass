@@ -143,6 +143,14 @@ public class Framework: Library {
     /// - Returns: The path to the framework.
     private static func frameworkPath(for name: String, isPrivate: Bool) -> String {
         let path = isPrivate ? privateFrameworksPath : publicFrameworksPath
+        return frameworkPath(for: name, inPath: path)
+    }
+    /// Get the path to a framework.
+    /// - Parameters:
+    ///   - name: The name of the framework.
+    ///   - inPath: The directory containing the framework.
+    /// - Returns: The path to the framework.
+    private static func frameworkPath(for name: String, inPath path: URL) -> String {
         return path.appending(component: "\(name).framework/\(name)").path
     }
     /// Create a new framework handle.
@@ -153,6 +161,14 @@ public class Framework: Library {
     public init?(_ name: String, isPrivate: Bool = false) {
         super.init(withPath: Self.frameworkPath(for: name, isPrivate: isPrivate))
     }
+    /// Create a new framework handle.
+    /// - Parameters:
+    ///   - name: The name of the framework.
+    ///   - inPath: The directory containing the framework.
+    /// - Remark: Returns `nil` if the framework could not be loaded.
+    public init?(_ name: String, inPath path: URL) {
+        super.init(withPath: Self.frameworkPath(for: name, inPath: path))
+    }
     /// Get a framework handle from a path (used internally for getting sub-frameworks).
     /// - Parameter path: The path to the framework.
     private override init?(withPath path: String) {
@@ -162,10 +178,9 @@ public class Framework: Library {
     /// - Parameter subFramework: The name of the sub-framework.
     /// - Returns: A handle to the sub-framework, or `nil` if the sub-framework could not be found.
     public func get(subFramework: String) -> Framework? {
+        let subFrameworksPath = self.pathURL.deletingLastPathComponent()
         return Framework(
-            withPath: self.pathURL.deletingLastPathComponent().appending(
-                components: "Frameworks", "\(subFramework).framework/\(subFramework)"
-            )
-            .path)
+            withPath: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
+        )
     }
 }
