@@ -44,7 +44,7 @@ public class Library: Handle {
     /// Link the library.
     /// - Remark:
     ///     This is technically a no-op, as the library is linked when the class is initialized. This function is provided
-    ///     as a Void-returning "escape hatch" for users who do not with to use the return value of the initializer.
+    ///     as a Void-returning "escape hatch" for users who do not wish to use the return value of the initializer.
     public func link() {}
     /// Get a symbol handle from the library.
     /// - Parameter symbol: The name of the symbol.
