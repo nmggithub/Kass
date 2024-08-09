@@ -89,7 +89,7 @@ open class MIGConnection: ServiceConnection {
         request.id = routineId
         request.migRemotePort = self.connectionPort
 
-        try self.sendAndReceive(
+        try Self.sendAndReceive(
             request,
             receiveMessage: reply,
             options: machMsgOptions
