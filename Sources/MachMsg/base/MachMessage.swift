@@ -93,7 +93,7 @@ open class MachMessage<Payload> {
     /// Create a new MachMessage with the given buffer size.
     /// - Parameter bufferSize: The size of the buffer in bytes.
     /// - Important: This must be used with a `Never`'ed constructor (e.g. `MachMessage<Never>(bufferSize: ...)`).
-    convenience init(bufferSize: mach_msg_size_t = 0) {
+    public convenience init(bufferSize: mach_msg_size_t = 0) {
         // guard the subtraction from underflowing and causing a crash
         let payloadSize =
             bufferSize >= mach_msg_size_t(MemoryLayout<mach_msg_header_t>.size)
@@ -162,7 +162,7 @@ open class MachMessage<Payload> {
     }
 
     /// Error that can occur when copying a message.
-    enum CopyError: Swift.Error {
+    public enum CopyError: Swift.Error {
         /// The message to copy in is larger than the message to be copied into.
         case cannotCopyInMessageOfLargerSize
         // The payload is too large to fit in the message.
