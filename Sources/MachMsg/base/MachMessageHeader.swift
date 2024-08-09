@@ -11,10 +11,13 @@ public class MachMessageHeader {
     public struct Bits: RawRepresentable {
         public typealias RawValue = mach_msg_bits_t
 
+        /// Initialize a new configuration bits struct.
+        /// - Parameter rawValue: The bits to initialize with.
         public init?(rawValue: RawValue) {
             self.init(bits: rawValue)
         }
 
+        /// The raw value of the configuration bits.
         public var rawValue: RawValue {
             get { self._remote | self._local << 8 | self._voucher << 16 | self._other }
             set { self = .init(bits: newValue) }
@@ -24,6 +27,7 @@ public class MachMessageHeader {
         private var _local: mach_msg_type_name_t
         private var _voucher: mach_msg_type_name_t
         private var _other: mach_msg_type_name_t
+
         /// The remote port disposition.
         var remote: mach_msg_type_name_t {
             get { self._remote & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK) }
@@ -49,6 +53,7 @@ public class MachMessageHeader {
             get { self._other & mach_msg_type_name_t(~MACH_MSGH_BITS_PORTS_MASK) }
             set { self._other = newValue & mach_msg_type_name_t(~MACH_MSGH_BITS_PORTS_MASK) }
         }
+
         /// Initialize a new configuration bits struct.
         init() {
             self.init(remote: 0, local: 0, voucher: 0, other: 0)
