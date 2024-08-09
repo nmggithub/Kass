@@ -46,7 +46,7 @@ open class MIGConnection: ServiceConnection {
     /// - Parameters:
     ///   - reply: The potential reply to check.
     ///   - routineId: The routine ID that was called.
-    private func checkReply<ReplyPayload>(
+    private static func checkReply<ReplyPayload>(
         _ reply: MIGReply<ReplyPayload>, routineId: mach_msg_id_t, expectedComplexity: Bool
     ) throws {
         // sanity checks (use locally defined error codes)
@@ -96,7 +96,7 @@ open class MIGConnection: ServiceConnection {
         )
 
         // we don't know if the reply is what we expect, so we need to check it
-        try self.checkReply(
+        try Self.checkReply(
             reply, routineId: routineId,
             // while descriptors and the complexity bit can be set independently, we expect them to be set together
             expectedComplexity: reply.descriptors != nil

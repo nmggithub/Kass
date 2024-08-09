@@ -237,7 +237,7 @@ public class MachMessageDescriptors {
     ///   - type: The type of the descriptor to deserialize.
     ///   - pointer: The pointer to the descriptor.
     /// - Returns: The deserialized descriptor.
-    private func deserializeDescriptor(
+    private static func deserializeDescriptor(
         type: (some MachMessageDescriptor).Type,
         pointer: UnsafeMutableRawPointer
     ) -> some MachMessageDescriptor {
@@ -250,7 +250,7 @@ public class MachMessageDescriptors {
     /// - Parameters:
     ///   - descriptor: The descriptor to serialize.
     ///   - pointer: The pointer to serialize the descriptor to.
-    private func serializeDescriptor(
+    private static func serializeDescriptor(
         descriptor: some MachMessageDescriptor, pointer: UnsafeMutableRawPointer
     ) {
         pointer.storeBytes(of: descriptor.rawValue, as: type(of: descriptor.rawValue))
@@ -263,7 +263,7 @@ public class MachMessageDescriptors {
             var mutablePointer = UnsafeMutableRawPointer(mutating: self.pointer)
             var descriptors: [any MachMessageDescriptor] = []
             for type in self.types {
-                let descriptor = deserializeDescriptor(type: type, pointer: mutablePointer)
+                let descriptor = Self.deserializeDescriptor(type: type, pointer: mutablePointer)
                 descriptors.append(descriptor)
                 mutablePointer += type.size
             }
@@ -272,7 +272,7 @@ public class MachMessageDescriptors {
         set {
             var mutablePointer = UnsafeMutableRawPointer(mutating: self.pointer)
             for descriptor in newValue {
-                self.serializeDescriptor(descriptor: descriptor, pointer: mutablePointer)
+                Self.serializeDescriptor(descriptor: descriptor, pointer: mutablePointer)
                 mutablePointer += descriptor.size
             }
             self.bodyPointer.pointee.msgh_descriptor_count = mach_msg_size_t(newValue.count)
