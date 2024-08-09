@@ -11,16 +11,10 @@ public class MachMessageHeader {
     public struct Bits: RawRepresentable {
         public typealias RawValue = mach_msg_bits_t
 
-        /// Initialize a new configuration bits struct.
-        /// - Parameter rawValue: The bits to initialize with.
-        public init?(rawValue: RawValue) {
-            self.init(bits: rawValue)
-        }
-
         /// The raw value of the configuration bits.
         public var rawValue: RawValue {
             get { self._remote | self._local << 8 | self._voucher << 16 | self._other }
-            set { self = .init(bits: newValue) }
+            set { self = .init(rawValue: newValue) }
         }
 
         private var _remote: mach_msg_type_name_t
@@ -29,19 +23,19 @@ public class MachMessageHeader {
         private var _other: mach_msg_type_name_t
 
         /// The remote port disposition.
-        var remote: mach_msg_type_name_t {
+        public var remote: mach_msg_type_name_t {
             get { self._remote & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK) }
             set { self._remote = newValue & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK) }
         }
         /// The local port disposition.
-        var local: mach_msg_type_name_t {
+        public var local: mach_msg_type_name_t {
             get { self._local & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK >> 8) }
             set {
                 self._local = newValue & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK >> 8)
             }
         }
         /// The voucher disposition.
-        var voucher: mach_msg_type_name_t {
+        public var voucher: mach_msg_type_name_t {
             get { self._voucher & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK >> 16) }
             set {
                 self._voucher =
@@ -49,18 +43,18 @@ public class MachMessageHeader {
             }
         }
         /// The other flags.
-        var other: mach_msg_type_name_t {
+        public var other: mach_msg_type_name_t {
             get { self._other & mach_msg_type_name_t(~MACH_MSGH_BITS_PORTS_MASK) }
             set { self._other = newValue & mach_msg_type_name_t(~MACH_MSGH_BITS_PORTS_MASK) }
         }
 
         /// Initialize a new configuration bits struct.
-        init() {
+        public init() {
             self.init(remote: 0, local: 0, voucher: 0, other: 0)
         }
         /// Initialize a new configuration bits struct.
         /// - Parameter bits: The bits to initialize with.
-        init(bits: mach_msg_bits_t) {
+        public init(rawValue bits: mach_msg_bits_t) {
             self.init(
                 remote: bits & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK),
                 local: (bits & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK)) >> 8,
@@ -74,7 +68,7 @@ public class MachMessageHeader {
         ///   - local: The local port disposition.
         ///   - voucher: The voucher disposition.
         ///   - other: The other flags.
-        init(
+        public init(
             remote: mach_msg_type_name_t, local: mach_msg_type_name_t,
             voucher: mach_msg_type_name_t, other: mach_msg_type_name_t
         ) {
@@ -102,7 +96,7 @@ public class MachMessageHeader {
 
     /// The configuration bits for the message.
     public var bits: Bits {
-        get { Bits(bits: self.pointer.pointee.msgh_bits) }
+        get { Bits(rawValue: self.pointer.pointee.msgh_bits) }
         set { self.pointer.pointee.msgh_bits = newValue.rawValue }
     }
 
