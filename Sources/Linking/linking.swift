@@ -32,7 +32,7 @@ public class Library: Handle {
     /// Create a new library handle.
     /// - Parameter path: The path to the library.
     /// - Remark: Returns `nil` if the library could not be loaded.
-    public init?(withPath path: String) {
+    public init?(path: String) {
         guard
             let pathURL = URL(string: path),
             let handle = dlopen(pathURL.path, RTLD_LAZY)
@@ -159,7 +159,7 @@ public class Framework: Library {
     ///   - isPrivate: Whether the framework is private.
     /// - Remark: Returns `nil` if the framework could not be loaded.
     public init?(_ name: String, isPrivate: Bool = false) {
-        super.init(withPath: Self.frameworkPath(for: name, isPrivate: isPrivate))
+        super.init(path: Self.frameworkPath(for: name, isPrivate: isPrivate))
     }
     /// Create a new framework handle.
     /// - Parameters:
@@ -167,12 +167,12 @@ public class Framework: Library {
     ///   - inPath: The directory containing the framework.
     /// - Remark: Returns `nil` if the framework could not be loaded.
     public init?(_ name: String, inPath path: URL) {
-        super.init(withPath: Self.frameworkPath(for: name, inPath: path))
+        super.init(path: Self.frameworkPath(for: name, inPath: path))
     }
     /// Get a framework handle from a path (used internally for getting sub-frameworks).
     /// - Parameter path: The path to the framework.
-    private override init?(withPath path: String) {
-        super.init(withPath: path)
+    private override init?(path: String) {
+        super.init(path: path)
     }
     /// Get a sub-framework handle from the framework.
     /// - Parameter subFramework: The name of the sub-framework.
@@ -180,7 +180,7 @@ public class Framework: Library {
     public func get(subFramework: String) -> Framework? {
         let subFrameworksPath = self.pathURL.deletingLastPathComponent()
         return Framework(
-            withPath: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
+            path: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
         )
     }
 }

@@ -7,7 +7,7 @@ open class MachConnection: MachMessaging {
 
     /// Create a new connection to a Mach port.
     /// - Parameter port: The connection port to use.
-    public init(withPort port: mach_port_t) {
+    public init(port: mach_port_t) {
         self.connectionPort = port
     }
 }

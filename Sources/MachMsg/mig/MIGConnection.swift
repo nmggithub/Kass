@@ -28,7 +28,7 @@ open class MIGConnection: ServiceConnection {
         serviceName: String, baseRoutineId: mach_msg_id_t
     ) throws {
         self.baseRoutineId = baseRoutineId
-        try super.init(withServiceName: serviceName)
+        try super.init(serviceName: serviceName)
     }
 
     /// Create a new MIG connection with a given port and base routine ID.
@@ -36,10 +36,10 @@ open class MIGConnection: ServiceConnection {
     ///   - port: The port to connect to.
     ///   - baseRoutineId: The base routine ID for the MIG server.
     public init(
-        withPort port: mach_port_t, baseRoutineId: mach_msg_id_t
+        port: mach_port_t, baseRoutineId: mach_msg_id_t
     ) {
         self.baseRoutineId = baseRoutineId
-        super.init(withPort: port)
+        super.init(port: port)
     }
 
     /// Perform sanity checks on a MIG reply.

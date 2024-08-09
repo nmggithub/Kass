@@ -12,12 +12,12 @@ public class MachMessageHeader {
         public typealias RawValue = mach_msg_bits_t
 
         public init?(rawValue: RawValue) {
-            self.init(withBits: rawValue)
+            self.init(bits: rawValue)
         }
 
         public var rawValue: RawValue {
             get { self._remote | self._local << 8 | self._voucher << 16 | self._other }
-            set { self = .init(withBits: newValue) }
+            set { self = .init(bits: newValue) }
         }
 
         private var _remote: mach_msg_type_name_t
@@ -55,7 +55,7 @@ public class MachMessageHeader {
         }
         /// Initialize a new configuration bits struct.
         /// - Parameter bits: The bits to initialize with.
-        init(withBits bits: mach_msg_bits_t) {
+        init(bits: mach_msg_bits_t) {
             self.init(
                 remote: bits & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK),
                 local: (bits & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK)) >> 8,
@@ -97,7 +97,7 @@ public class MachMessageHeader {
 
     /// The configuration bits for the message.
     public var bits: Bits {
-        get { Bits(withBits: self.pointer.pointee.msgh_bits) }
+        get { Bits(bits: self.pointer.pointee.msgh_bits) }
         set { self.pointer.pointee.msgh_bits = newValue.rawValue }
     }
 
