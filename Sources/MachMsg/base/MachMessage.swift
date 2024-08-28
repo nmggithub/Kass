@@ -106,7 +106,7 @@ open class MachMessage<Payload> {
     /// Get the payload data as a `Data` object.
     /// - Throws: A `PayloadDataError` if the payload is typed, or if there is no payload to get.
     /// - Returns: The payload data as a `Data` object.
-    func getPayloadData() throws -> Data {
+    public func getPayloadData() throws -> Data {
         guard Payload.self == Never.self else { throw PayloadDataError.payloadIsTyped }
         // These are both testing essentially the same thing (`payloadPointer` should not be
         // nil if the `payloadSize` is above zero), but it's still good to check.
@@ -120,7 +120,7 @@ open class MachMessage<Payload> {
     /// Set the payload data from a `Data` object.
     /// - Parameter payloadData: The payload data to set.
     /// - Throws: A `PayloadDataError` if the payload is typed, if there is no payload to set, or if the payload is too large.
-    func setPayloadData(_ payloadData: Data) throws {
+    public func setPayloadData(_ payloadData: Data) throws {
         guard Payload.self == Never.self else { throw PayloadDataError.payloadIsTyped }
         // These are both testing essentially the same thing (`payloadPointer` should not be
         // nil if the `payloadSize` is above zero), but it's still good to check.
