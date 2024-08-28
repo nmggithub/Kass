@@ -13,7 +13,7 @@ public class MachVoucher: RawRepresentable {
     /// Create a new Mach voucher with the given recipes.
     /// - Parameter recipes: The recipes to create the voucher with.
     /// - Throws: An error if the voucher could not be created.
-    init(recipes: [Recipe]) throws {
+    public init(recipes: [Recipe]) throws {
         let totalSize = recipes.reduce(0, { $0 + $1.size })
         let rawArray: mach_voucher_attr_raw_recipe_array_t = UnsafeMutablePointer<UInt8>.allocate(
             capacity: totalSize
