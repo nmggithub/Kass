@@ -10,9 +10,9 @@ open class MachMessage<Payload> {
     /// The descriptors for this message, if they exist.
     public let descriptors: MachMessageDescriptors?
     /// The size of the payload in bytes.
-    private let payloadSize: Int
+    public let payloadSize: Int
     /// The size of the message buffer in bytes.
-    internal let bufferSize: mach_msg_size_t  // internal so that we can access it in the MachConnection class
+    public let bufferSize: mach_msg_size_t
     /// The size of the message data in bytes.
     /// - Remark:
     ///     This specifically excludes the trailer, but also excludes any alignment padding
@@ -27,7 +27,7 @@ open class MachMessage<Payload> {
         )
     }
     /// The pointer to the payload of the message, if it exists.
-    private let payloadPointer: UnsafeMutablePointer<Payload>?
+    internal let payloadPointer: UnsafeMutablePointer<Payload>?
     /// The pointer to the trailer of the message
     private let trailerPointer: UnsafeMutablePointer<mach_msg_max_trailer_t>
 
@@ -83,27 +83,12 @@ open class MachMessage<Payload> {
     }
 
     /// The trailer for the message.
-    /// - Remark: It appears that Mach may have used to allow more variety in the trailer, but now it's
-    /// basically guaranteed to be `mach_msg_max_trailer_t` (although some fields may be unused).
+    /// - Remark:
+    ///     It appears that Mach may have used to allow more variety in the trailer, but now it's basically
+    ///     guaranteed to be `mach_msg_max_trailer_t` (although some fields may be unused).
     public var trailer: mach_msg_max_trailer_t {
         get { self.trailerPointer.pointee }
         set { self.trailerPointer.pointee = newValue }
-    }
-
-    /// Create a new MachMessage with the given buffer size.
-    /// - Parameter bufferSize: The size of the buffer in bytes.
-    /// - Important: This must be used with a `Never`'ed constructor (e.g. `MachMessage<Never>(bufferSize: ...)`).
-    public convenience init(bufferSize: mach_msg_size_t = 0) {
-        // guard the subtraction from underflowing and causing a crash
-        let payloadSize =
-            bufferSize >= mach_msg_size_t(MemoryLayout<mach_msg_header_t>.size)
-            ? bufferSize - mach_msg_size_t(MemoryLayout<mach_msg_header_t>.size)
-            : 0
-        self.init(
-            descriptorTypes: nil,
-            payloadType: Never.self as! Payload.Type,
-            payloadSize: Int(payloadSize)
-        )
     }
 
     /// Create a new MachMessage with the given descriptor, payload, and trailer types. If you will
@@ -121,6 +106,8 @@ open class MachMessage<Payload> {
         let alignment = MemoryLayout<mach_msg_header_t>.alignment  // TODO: check if this is the correct alignment
         let hasDescriptors = descriptorTypes != nil
 
+        // calculate the size of the buffer
+
         var _bufferSize = MemoryLayout<mach_msg_header_t>.size
         if hasDescriptors {
             _bufferSize += MemoryLayout<mach_msg_body_t>.size
@@ -133,14 +120,17 @@ open class MachMessage<Payload> {
             ? MemoryLayout<Payload>.size
             : payloadSize ?? 0
         let distanceToPayload = _bufferSize
-        _bufferSize += (self.payloadSize + alignment - 1) & ~(alignment - 1)  // align the payload
-        let distanceToTrailer = _bufferSize
+        _bufferSize += (self.payloadSize + alignment - 1) & ~(alignment - 1)  // add alignment bytes
+        let distanceToTrailer = _bufferSize  // the trailer comes next, after the payload and alignment bytes
         _bufferSize += MemoryLayout<mach_msg_max_trailer_t>.size
         self.bufferSize = mach_msg_size_t(_bufferSize)
 
         self.startPointer = UnsafeMutableRawPointer.allocate(
             byteCount: Int(self.bufferSize), alignment: alignment
         )
+
+        // set the pointers
+
         let headerPointer = self.startPointer.bindMemory(to: mach_msg_header_t.self, capacity: 1)
         self.header = MachMessageHeader(pointer: headerPointer)
         self.descriptors =
@@ -165,45 +155,6 @@ open class MachMessage<Payload> {
     public enum CopyError: Swift.Error {
         /// The message to copy in is larger than the message to be copied into.
         case cannotCopyInMessageOfLargerSize
-        // The payload is too large to fit in the message.
-        case payloadTooLarge
-    }
-
-    /// Set the payload of the message to the given data value.
-    /// - Parameter data: The data to set the payload to.
-    /// - Throws: `CopyError.payloadTooLarge` if the data is too large to fit in the message.
-    /// - Remark: This method is meant for variable-length payloads, which are not supported if the message has a typed payload with a non-zero size.
-    public func setPayloadData(_ data: Data) throws {
-        try self.setPayloadBytes((data as NSData).bytes, count: data.count)
-    }
-
-    /// Set the payload of the message to the given value.
-    /// - Parameters:
-    ///   - bytes: The bytes to set the payload to.
-    ///   - count: The number of bytes in the payload.
-    /// - Remark: This method is meant for variable-length payloads, which are not supported if the message has a typed payload with a non-zero size.
-    public func setPayloadBytes(_ bytes: UnsafeRawPointer, count: Int) throws {
-        guard MemoryLayout<Payload>.size == 0 else { return }
-        let maxPayloadSize =
-            bufferSize - mach_msg_size_t(MemoryLayout<mach_msg_header_t>.stride)
-        guard count <= maxPayloadSize else { throw CopyError.payloadTooLarge }
-        UnsafeMutableRawPointer(self.payloadPointer!).copyMemory(from: bytes, byteCount: count)
-    }
-
-    /// Get the payload of the message as data.
-    /// - Returns: The payload as data, or `nil` if the payload is typed.
-    /// - Remark: This method is meant for variable-length payloads, which are not supported if the message has a typed payload with a non-zero size.
-    public func getPayloadData() -> Data? {
-        guard MemoryLayout<Payload>.size == 0 else { return nil }
-        return Data(bytes: self.payloadPointer!, count: self.payloadSize)
-    }
-
-    /// Get the payload of the message as a buffer of bytes.
-    /// - Returns: The payload as a buffer of bytes, or `nil` if the payload is typed.
-    /// - Remark: This method is meant for variable-length payloads, which are not supported if the message has a typed payload with a non-zero size.
-    public func getPayloadBytes() -> UnsafeRawBufferPointer? {
-        guard MemoryLayout<Payload>.size == 0 else { return nil }
-        return UnsafeRawBufferPointer(start: self.payloadPointer!, count: self.payloadSize)
     }
 
     /// Copy the contents of the given message into this message (allows message of any arbitrary type).
