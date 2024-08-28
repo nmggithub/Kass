@@ -94,42 +94,50 @@ open class MachMessage<Payload> {
         }
     }
 
-    /// A `Data` representation of the payload, if it exists.
-    /// - Important:
-    ///     Getting or setting this property will have no effect if the payload is typed. Additionally, setting this
-    ///     property will have no effect if the new value is `nil`, or if it is larger than the `payloadSize`.
-    public var payloadData: Data? {
-        get {
-            guard Payload.self == Never.self else { return nil }
-            // These are both testing essentially the same thing (`payloadPointer` should
-            // only be nil if the `payloadSize` is zero), but it's good to have the safe.
-            guard
-                self.payloadPointer != nil,
-                self.payloadSize > 0
-            else { return nil }
-            return Data(bytes: self.payloadPointer!, count: self.payloadSize)
-        }
-        set {
-            guard Payload.self == Never.self else { return }
-            // These are both testing essentially the same thing (`payloadPointer` should
-            // only be nil if the `payloadSize` is zero), but it's good to have the safe.
-            guard
-                self.payloadPointer != nil,
-                self.payloadSize > 0
-            else { return }
-            guard let newData = newValue else { return }  // no-op if the data is nil
-            guard newData.count <= self.payloadSize else { return }  // no-op if the data is too large
-            let rawPayloadPointer = UnsafeMutableRawPointer(self.payloadPointer!)
-            // zero out the payload (in case the new data is smaller than the old data)
-            rawPayloadPointer.initializeMemory(
-                as: UInt8.self, repeating: 0, count: self.payloadSize
-            )
-            // copy the new data into the payload
-            rawPayloadPointer.copyMemory(
-                from: (newData as NSData).bytes, byteCount: Int(payloadSize)
-            )
+    public enum PayloadDataError: Swift.Error {
+        /// The message is configured to have a typed payload. Use the `payload` property instead.
+        case payloadIsTyped
+        /// The message is not configured to have a payload.
+        case noPayloadToSet
+        /// The passed-in payload data is too large to fit in the message.
+        case payloadTooLarge
+    }
 
-        }
+    /// Get the payload data as a `Data` object.
+    /// - Throws: A `PayloadDataError` if the payload is typed, or if there is no payload to get.
+    /// - Returns: The payload data as a `Data` object.
+    func getPayloadData() throws -> Data {
+        guard Payload.self == Never.self else { throw PayloadDataError.payloadIsTyped }
+        // These are both testing essentially the same thing (`payloadPointer` should not be
+        // nil if the `payloadSize` is above zero), but it's still good to check.
+        guard
+            self.payloadPointer != nil,
+            self.payloadSize > 0
+        else { throw PayloadDataError.noPayloadToSet }
+        return Data(bytes: self.payloadPointer!, count: self.payloadSize)
+    }
+
+    /// Set the payload data from a `Data` object.
+    /// - Parameter payloadData: The payload data to set.
+    /// - Throws: A `PayloadDataError` if the payload is typed, if there is no payload to set, or if the payload is too large.
+    func setPayloadData(_ payloadData: Data) throws {
+        guard Payload.self == Never.self else { throw PayloadDataError.payloadIsTyped }
+        // These are both testing essentially the same thing (`payloadPointer` should not be
+        // nil if the `payloadSize` is above zero), but it's still good to check.
+        guard
+            self.payloadPointer != nil,
+            self.payloadSize > 0
+        else { throw PayloadDataError.noPayloadToSet }
+        guard payloadData.count <= self.payloadSize else { throw PayloadDataError.payloadTooLarge }
+        let rawPayloadPointer = UnsafeMutableRawPointer(self.payloadPointer!)
+        // zero out the payload (in case the new data is smaller than the old data)
+        rawPayloadPointer.initializeMemory(
+            as: UInt8.self, repeating: 0, count: self.payloadSize
+        )
+        // copy the new data into the payload
+        rawPayloadPointer.copyMemory(
+            from: (payloadData as NSData).bytes, byteCount: Int(payloadSize)
+        )
     }
 
     /// The trailer for the message.
