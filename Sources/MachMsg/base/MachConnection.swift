@@ -1,7 +1,7 @@
 import Darwin
 
 /// A connection to a Mach port.
-open class MachConnection: MachMessaging {
+open class MachConnection {
     /// The connection port for the service.
     public let connectionPort: mach_port_t
 
