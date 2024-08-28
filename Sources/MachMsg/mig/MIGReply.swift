@@ -22,20 +22,3 @@ open class MIGReply<Payload>: MachMessage<Payload> {
     }
 
 }
-
-/// A Mach Interface Generator (MIG) reply message with an untyped payload.
-public class UntypedMIGReply: MIGReply<Never> {
-    /// Create a new untyped MIG reply with the given payload size.
-    /// - Parameters:
-    ///   - payloadSize: The size of the payload in bytes.
-    ///   - descriptorTypes: The types of the descriptors for the MIG reply, if any.
-    public init(
-        payloadSize: mach_msg_size_t = 0,
-        descriptorTypes: [any MachMessageDescriptor.Type]? = nil
-    ) {
-        super.init(
-            descriptorTypes: descriptorTypes,
-            payloadSize: Int(payloadSize)
-        )
-    }
-}

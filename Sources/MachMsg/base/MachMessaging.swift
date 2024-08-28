@@ -71,9 +71,8 @@ public class MachMessaging {
         let receiveMax: mach_msg_size_t = receiveMessage.bufferSize  // does include the trailer
 
         // premake a transient message buffer, so that we are not mutating the original buffer
-        let transient = UntypedMachMessage(
-            payloadSize: max(receiveMax, sendSize)
-                - mach_msg_size_t(MemoryLayout<mach_msg_header_t>.size)
+        let transient = MachMessage<Never>(
+            payloadSize: Int(max(receiveMax, sendSize)) - MemoryLayout<mach_msg_header_t>.size
         )
         try transient.copyIn(from: sendMessage)
         let ret = mach_msg(

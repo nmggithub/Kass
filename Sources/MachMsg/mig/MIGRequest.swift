@@ -45,20 +45,3 @@ open class MIGRequest<Payload>: MachMessage<Payload> {
         self.migReplyPort = mig_get_reply_port()
     }
 }
-
-/// A Mach Interface Generator (MIG) request message with an untyped payload.
-open class UntypedMIGRequest: MIGRequest<Never> {
-    /// Create a new untyped MIG request with the given payload size.
-    /// - Parameters:
-    ///   - payloadSize: The size of the payload in bytes.
-    ///   - descriptors: The types descriptors of the MIG request, if any.
-    public init(
-        payloadSize: mach_msg_size_t = 0,
-        descriptors: [any MachMessageDescriptor]? = nil
-    ) {
-        super.init(
-            descriptors: descriptors,
-            payloadSize: Int(payloadSize)
-        )
-    }
-}
