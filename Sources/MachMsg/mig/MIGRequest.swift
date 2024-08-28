@@ -1,7 +1,7 @@
 import Darwin
 
 /// A Mach Interface Generator (MIG) request message.
-public class MIGRequest<Payload>: MachMessage<Payload> {
+open class MIGRequest<Payload>: MachMessage<Payload> {
     /// The remote port to send the MIG request to.
     public var migRemotePort: mach_port_t {
         get { self.header.remotePort.port }
@@ -47,7 +47,7 @@ public class MIGRequest<Payload>: MachMessage<Payload> {
 }
 
 /// A Mach Interface Generator (MIG) request message with an untyped payload.
-public class UntypedMIGRequest: MIGRequest<Never> {
+open class UntypedMIGRequest: MIGRequest<Never> {
     /// Create a new untyped MIG request with the given payload size.
     /// - Parameters:
     ///   - payloadSize: The size of the payload in bytes.

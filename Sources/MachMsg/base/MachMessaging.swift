@@ -3,7 +3,7 @@ import Darwin
 import Foundation
 
 /// A helper class for sending and receiving messages.
-open class MachMessaging {
+public class MachMessaging {
     /// Create an error from a return code.
     /// - Parameter ret: The return code.
     /// - Returns: An error representing the return code.
