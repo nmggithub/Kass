@@ -60,6 +60,18 @@ open class MachMessage<Payload> {
         set { self.header.voucherPort = newValue }
     }
 
+    public var voucher: MachVoucher? {
+        get { MachVoucher(rawValue: self.voucherPort.port) }
+        set {
+            self.voucherPort =
+                newValue != nil
+                // The kernel only accepts the voucher port if the disposition is `copySend` or `moveSend`. We
+                // will use `copySend` here, as it is what the built-in `voucher_mach_msg_set` function uses.
+                ? MachPort(port: newValue!.rawValue, disposition: .copySend)
+                : MachPort()
+        }
+    }
+
     /// Whether the message is complex (based on the header).
     public var isComplex: Bool {
         get { self.header.bits.other & MACH_MSGH_BITS_COMPLEX != 0 }
