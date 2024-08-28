@@ -10,6 +10,11 @@ public enum MachVoucherAttrRecipeCommand: mach_voucher_attr_recipe_command_t, CO
     case autoRedeem = 4
     case sendPreprocess = 5
 
+    case redeem = 10
+
+    case importanceSelf = 200
+    case userDataStore = 211
+
     case atmNull = 501
     case atmCreate = 502
     case atmRegister = 503
