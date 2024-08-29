@@ -118,4 +118,7 @@ public class MachVoucher: RawRepresentable {
         return recipes
     }
 
+    deinit {
+        mach_voucher_deallocate(self.rawValue)
+    }
 }
