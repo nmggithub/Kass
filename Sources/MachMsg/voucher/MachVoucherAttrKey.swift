@@ -2,7 +2,7 @@ import CCompat
 import Darwin
 
 /// A Mach voucher attribute key.
-public enum MachVoucherAttrRecipeKey: mach_voucher_attr_key_t, COptionMacroEnum {
+public enum MachVoucherAttrKey: mach_voucher_attr_key_t, COptionMacroEnum {
     case all = 0xFFFF_FFFF
     case none = 0
     case atm = 1

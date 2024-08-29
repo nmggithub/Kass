@@ -2,8 +2,12 @@ import Foundation
 
 /// A Mach voucher.
 public class MachVoucher: RawRepresentable {
+    /// A Mach voucher command.
+    public typealias Command = MachVoucherAttrCommand
     /// A Mach voucher recipe.
     public typealias Recipe = MachVoucherAttrRecipe
+    /// A Mach voucher key.
+    public typealias Key = MachVoucherAttrKey
     /// The raw voucher.
     public let rawValue: ipc_voucher_t
     public required init(rawValue: mach_voucher_t) {
@@ -50,7 +54,7 @@ public class MachVoucher: RawRepresentable {
     ///   - outContent: The output content.
     /// - Throws: An error if the command could not be invoked.
     public func command(
-        key: Recipe.Key, command: Recipe.Command, inContent: Data,
+        key: Key, command: any Command, inContent: Data,
         outContent: inout Data
     ) throws {
         let outContentPointer = mach_voucher_attr_content_t.allocate(capacity: 1)
@@ -75,7 +79,7 @@ public class MachVoucher: RawRepresentable {
     /// - Parameter key: The key to use.
     /// - Throws: An error if the recipe could not be retrieved.
     /// - Returns: The recipe.
-    public func recipe(forKey key: Recipe.Key) throws -> Recipe {
+    public func recipe(forKey key: Key) throws -> Recipe {
         // The kernel return an error if the size is too small or too large, so we use the maximum size. I'm not sure
         // why the kernel checks the size against a macro called MAX_RAW_RECIPE_ARRAY_SIZE when we're only extracting
         // a single recipe, but I have to work with it. Interestingly, the kernel doesn't check against this macro in

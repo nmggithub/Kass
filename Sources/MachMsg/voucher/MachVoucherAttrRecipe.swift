@@ -4,8 +4,6 @@ import Foundation
 public class MachVoucherAttrRecipe: RawRepresentable {
     /// A Mach voucher attribute recipe command.
     public typealias Command = MachVoucherAttrRecipeCommand
-    /// A Mach voucher attribute recipe key.
-    public typealias Key = MachVoucherAttrRecipeKey
     /// The raw recipe pointer.
     public let rawValue: mach_voucher_attr_raw_recipe_t
     /// The typed recipe pointer.
@@ -29,8 +27,8 @@ public class MachVoucherAttrRecipe: RawRepresentable {
         self.rawValue = pointer
     }
     /// The key of the recipe.
-    public var key: Key? {
-        Key(rawValue: self.typedValue.pointee.key)
+    public var key: MachVoucher.Key? {
+        MachVoucher.Key(rawValue: self.typedValue.pointee.key)
     }
     /// The command of the recipe.
     public var command: Command? {
@@ -58,7 +56,7 @@ public class MachVoucherAttrRecipe: RawRepresentable {
     ///   - command: The command of the recipe.
     ///   - content: The content of the recipe.
     public init(
-        key: Key, command: Command,
+        key: MachVoucher.Key, command: Command,
         previous: MachVoucher? = nil,
         content: Data? = nil
     ) {
