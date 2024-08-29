@@ -16,7 +16,14 @@ public class MachVoucherAttrRecipe: RawRepresentable {
     }
     /// Create a new recipe with the given raw value.
     public required init(rawValue: mach_voucher_attr_raw_recipe_t) {
-        self.rawValue = rawValue
+        let contentSize = rawValue.withMemoryRebound(
+            to: mach_voucher_attr_recipe_data_t.self, capacity: 1, { $0.pointee.content_size }
+        )
+        let totalSize = MemoryLayout<mach_voucher_attr_recipe_data_t>.size + Int(contentSize)
+        // Create a new pointer to store the raw value. We do this because the passed-in pointer
+        // might be deallocated beyond our control. We need to manage the memory ourselves.
+        let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: totalSize)
+        self.rawValue = pointer
     }
     /// The key of the recipe.
     public var key: Key? {
