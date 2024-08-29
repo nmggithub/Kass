@@ -4,7 +4,7 @@ import Darwin
 /// A Mach port with an associated disposition.
 public class MachMessagePort: MachPort {
     /// The disposition of a Mach port.
-    public enum Disposition: mach_msg_type_name_t, NameableByCMacro {
+    public enum Disposition: mach_msg_type_name_t, CBinIntMacroEnum {
         case unknown = 0xFFFF_FFFF
         case none = 0  // MACH_MSG_TYPE_PORT_NONE
         case moveReceive = 16  // MACH_MSG_TYPE_MOVE_RECEIVE
