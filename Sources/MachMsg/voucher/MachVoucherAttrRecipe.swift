@@ -23,6 +23,9 @@ public class MachVoucherAttrRecipe: RawRepresentable {
         // Create a new pointer to store the raw value. We do this because the passed-in pointer
         // might be deallocated beyond our control. We need to manage the memory ourselves.
         let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: totalSize)
+        UnsafeMutableRawPointer(pointer).copyMemory(
+            from: rawValue, byteCount: totalSize
+        )
         self.rawValue = pointer
     }
     /// The key of the recipe.
