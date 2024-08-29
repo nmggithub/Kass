@@ -20,8 +20,8 @@ public enum MachVoucherAttrRecipeCommand: mach_voucher_attr_recipe_command_t, CO
     case atmRegister = 503
 
     case bankNull = 601
-    case bankCreate = 602
-    case bankModifyPersona = 603
+    case bankCreate = 610
+    case bankModifyPersona = 611
 
     case pthpriorityNull = 701
     case pthpriorityCreate = 702
