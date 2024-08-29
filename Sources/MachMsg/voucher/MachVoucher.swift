@@ -90,7 +90,9 @@ public class MachVoucher: RawRepresentable {
 
     /// A list of recipes in the voucher.
     public var recipes: [Recipe] {
-        let rawArray = mach_voucher_attr_raw_recipe_array_t.allocate(capacity: 1)
+        let rawArray = mach_voucher_attr_raw_recipe_array_t.allocate(
+            capacity: Int(mach_voucher_attr_raw_recipe_size_t.max)
+        )
         // The kernel return an error if the size is too small, so we use the maximum size.
         var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_all_attr_recipes(self.rawValue, rawArray, &size)
