@@ -50,9 +50,24 @@ public class MachVoucher: RawRepresentable {
     /// - Parameters:
     ///   - key: The key to use.
     ///   - command: The command to invoke.
-    ///   - inContent: The input content.
-    ///   - outContent: The output content.
+    ///   - in: The input content.
     /// - Throws: An error if the command could not be invoked.
+    /// - Returns: The output content.
+    public func command<T>(
+        key: Key, command: any Command, in: Any? = nil, as: T.Type
+    ) throws -> T? {
+        return try self.command(key: key, command: command, in: `in`).map({
+            $0.withUnsafeBytes({ $0.load(as: T.self) })
+        })
+    }
+
+    /// Invoke a command on the voucher.
+    /// - Parameters:
+    ///   - key: The key to use.
+    ///   - command: The command to invoke.
+    ///   - in: The input content.
+    /// - Throws: An error if the command could not be invoked.
+    /// - Returns: The output content as a `Data` object.
     public func command(
         key: Key, command: any Command, in: Any? = nil
     ) throws -> Data? {
