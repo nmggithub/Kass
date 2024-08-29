@@ -16,12 +16,4 @@ open class MachPort: RawRepresentable {
     public convenience init() {
         self.init(rawValue: mach_port_t(MACH_PORT_NULL))
     }
-    // /// Initialize a new Mach port.
-    // /// - Parameters:
-    // ///   - port: The port.
-    // ///   - disposition: The disposition of the port.
-    // public init(port: mach_port_t, disposition: Disposition) {
-    //     self.port = port
-    //     self.disposition = disposition
-    // }
 }
