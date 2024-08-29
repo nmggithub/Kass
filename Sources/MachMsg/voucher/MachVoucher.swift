@@ -100,17 +100,16 @@ public class MachVoucher: RawRepresentable {
         var sizeRemaining = size
         var rawRecipePointer = rawArray
         while sizeRemaining > 0 {
-            recipes.append(Recipe(rawValue: rawRecipePointer))
+            let recipeToAdd = Recipe(rawValue: rawRecipePointer)
+            recipes.append(recipeToAdd)
             let recipeSize = mach_voucher_attr_raw_recipe_size_t(
                 MemoryLayout<mach_voucher_attr_recipe_data_t>.size
-                    // I'm really trying to code-golf this and not create a separate `Recipe` instance. It should be fine,
-                    // as the recipes array is created in this function. So there should be no way for the last recipe not
-                    // to be the one we just appended. At least, I hope so.
-                    + Int(recipes.last!.content.count)
+                    + recipeToAdd.content.count
             )
             sizeRemaining -= recipeSize
             rawRecipePointer = rawRecipePointer.advanced(by: Int(recipeSize))
         }
+        rawArray.deallocate()
         return recipes
     }
 
