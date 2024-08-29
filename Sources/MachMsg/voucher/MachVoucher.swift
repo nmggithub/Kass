@@ -54,7 +54,7 @@ public class MachVoucher: RawRepresentable {
     ///   - outContent: The output content.
     /// - Throws: An error if the command could not be invoked.
     public func command(
-        key: Key, command: any Command, in: Any?
+        key: Key, command: any Command, in: Any? = nil
     ) throws -> Data? {
         let inContent = `in` != nil ? withUnsafeBytes(of: `in`, { Data($0) }) : Data()
         let outContentPointer = mach_voucher_attr_content_t.allocate(capacity: 1)
