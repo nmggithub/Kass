@@ -18,6 +18,7 @@ public class MachVoucher: RawRepresentable {
         let rawArray: mach_voucher_attr_raw_recipe_array_t = UnsafeMutablePointer<UInt8>.allocate(
             capacity: totalSize
         )
+        defer { rawArray.deallocate() }
         var sizeRemaining = totalSize
         var rawRecipePointer = rawArray
         for recipe in recipes {
@@ -35,7 +36,6 @@ public class MachVoucher: RawRepresentable {
             mach_msg_type_number_t(totalSize),
             &voucherToUse
         )
-        rawArray.deallocate()
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
@@ -79,6 +79,7 @@ public class MachVoucher: RawRepresentable {
         let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(
             capacity: Int(mach_voucher_attr_raw_recipe_size_t.max)
         )
+        defer { rawRecipe.deallocate() }
         // The kernel return an error if the size is too small, so we use the maximum size.
         var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_attr_recipe(self.rawValue, key.rawValue, rawRecipe, &size)
@@ -93,6 +94,7 @@ public class MachVoucher: RawRepresentable {
         let rawArray = mach_voucher_attr_raw_recipe_array_t.allocate(
             capacity: Int(mach_voucher_attr_raw_recipe_size_t.max)
         )
+        defer { rawArray.deallocate() }
         // The kernel return an error if the size is too small, so we use the maximum size.
         var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_all_attr_recipes(self.rawValue, rawArray, &size)
@@ -113,7 +115,6 @@ public class MachVoucher: RawRepresentable {
             sizeRemaining -= recipeSize
             rawRecipePointer = rawRecipePointer.advanced(by: Int(recipeSize))
         }
-        rawArray.deallocate()
         return recipes
     }
 
