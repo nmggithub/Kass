@@ -35,6 +35,7 @@ public class MachVoucher: RawRepresentable {
             mach_msg_type_number_t(totalSize),
             &voucherToUse
         )
+        rawArray.deallocate()
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
