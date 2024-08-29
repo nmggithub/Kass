@@ -36,6 +36,10 @@ public class MachVoucherAttrRecipe: RawRepresentable {
     public var command: Command? {
         Command(rawValue: self.typedValue.pointee.command)
     }
+    /// The previous voucher.
+    public var previous: MachVoucher? {
+        return MachVoucher(rawValue: self.typedValue.pointee.previous_voucher)
+    }
     /// The content of the recipe.
     public var content: Data {
         Data(
@@ -55,6 +59,7 @@ public class MachVoucherAttrRecipe: RawRepresentable {
     ///   - content: The content of the recipe.
     public init(
         key: Key, command: Command,
+        previous: MachVoucher? = nil,
         content: Data? = nil
     ) {
         let contentSize = content?.count ?? 0
@@ -66,6 +71,7 @@ public class MachVoucherAttrRecipe: RawRepresentable {
         ) { recipe in
             recipe.pointee.key = key.rawValue
             recipe.pointee.command = command.rawValue
+            recipe.pointee.previous_voucher = previous?.rawValue ?? IPC_VOUCHER_NULL
             recipe.pointee.content_size = mach_msg_size_t(contentSize)
             if content != nil {
                 let contentPointer = recipe.advanced(by: 1)
