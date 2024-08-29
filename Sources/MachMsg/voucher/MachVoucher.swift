@@ -58,7 +58,7 @@ public class MachVoucher: RawRepresentable {
         outContent: inout Data
     ) throws {
         let outContentPointer = mach_voucher_attr_content_t.allocate(capacity: 1)
-        var outContentSize = mach_voucher_attr_content_size_t(0)
+        var outContentSize = mach_voucher_attr_content_size_t.max
         let ret = mach_voucher_attr_command(
             self.rawValue, key.rawValue, command.rawValue,
             UnsafeMutablePointer(
