@@ -43,7 +43,7 @@ public class MachVoucherAttrRecipe: RawRepresentable {
     /// The content of the recipe.
     public var content: Data {
         Data(
-            bytes: UnsafeRawPointer(self.rawValue.advanced(by: 1)),
+            bytes: UnsafeRawPointer(self.typedValue.advanced(by: 1)),
             count: Int(self.typedValue.pointee.content_size)
         )
     }
