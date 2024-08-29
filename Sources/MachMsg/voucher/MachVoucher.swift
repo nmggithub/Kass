@@ -76,7 +76,8 @@ public class MachVoucher: RawRepresentable {
     /// - Returns: The recipe.
     public func recipe(forKey key: Recipe.Key) throws -> Recipe {
         let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(capacity: 1)
-        var size = mach_voucher_attr_raw_recipe_size_t(0)
+        // The kernel return an error if the size is too small, so we use the maximum size.
+        var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_attr_recipe(self.rawValue, key.rawValue, rawRecipe, &size)
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
@@ -87,7 +88,8 @@ public class MachVoucher: RawRepresentable {
     /// A list of recipes in the voucher.
     public var recipes: [Recipe] {
         let rawArray = mach_voucher_attr_raw_recipe_array_t.allocate(capacity: 1)
-        var size = mach_voucher_attr_raw_recipe_size_t(0)
+        // The kernel return an error if the size is too small, so we use the maximum size.
+        var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_all_attr_recipes(self.rawValue, rawArray, &size)
         guard ret == KERN_SUCCESS else {
             // No recipes could be extracted (we can't throw from an accessor, so we return an empty array).
