@@ -76,12 +76,13 @@ public class MachVoucher: RawRepresentable {
     /// - Throws: An error if the recipe could not be retrieved.
     /// - Returns: The recipe.
     public func recipe(forKey key: Recipe.Key) throws -> Recipe {
-        let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(
-            capacity: Int(mach_voucher_attr_raw_recipe_size_t.max)
-        )
+        // The kernel return an error if the size is too small or too large, so we use the maximum size. I'm not sure
+        // why the kernel checks the size against a macro called MAX_RAW_RECIPE_ARRAY_SIZE when we're only extracting
+        // a single recipe, but I have to work with it. Interestingly, the kernel doesn't check against this macro in
+        // the case of extracting all recipes, which would have made more sense, given the name of the macro.
+        var size = mach_voucher_attr_raw_recipe_size_t(MACH_VOUCHER_ATTR_MAX_RAW_RECIPE_ARRAY_SIZE)
+        let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(capacity: Int(size))
         defer { rawRecipe.deallocate() }
-        // The kernel return an error if the size is too small, so we use the maximum size.
-        var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_attr_recipe(self.rawValue, key.rawValue, rawRecipe, &size)
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
