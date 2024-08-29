@@ -76,7 +76,9 @@ public class MachVoucher: RawRepresentable {
     /// - Throws: An error if the recipe could not be retrieved.
     /// - Returns: The recipe.
     public func recipe(forKey key: Recipe.Key) throws -> Recipe {
-        let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(capacity: 1)
+        let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(
+            capacity: Int(mach_voucher_attr_raw_recipe_size_t.max)
+        )
         // The kernel return an error if the size is too small, so we use the maximum size.
         var size = mach_voucher_attr_raw_recipe_size_t.max
         let ret = mach_voucher_extract_attr_recipe(self.rawValue, key.rawValue, rawRecipe, &size)
