@@ -54,9 +54,8 @@ public class MachVoucher: RawRepresentable {
     ///   - outContent: The output content.
     /// - Throws: An error if the command could not be invoked.
     public func command(
-        key: Key, command: any Command, inContent: Data,
-        outContent: inout Data
-    ) throws {
+        key: Key, command: any Command, inContent: Data = Data()
+    ) throws -> Data? {
         let outContentPointer = mach_voucher_attr_content_t.allocate(capacity: 1)
         var outContentSize = mach_voucher_attr_content_size_t.max
         let ret = mach_voucher_attr_command(
@@ -70,7 +69,10 @@ public class MachVoucher: RawRepresentable {
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
-        outContent = Data(
+        guard outContentSize > 0 else {
+            return nil
+        }
+        return Data(
             bytes: outContentPointer, count: Int(outContentSize)
         )
     }
