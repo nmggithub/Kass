@@ -25,8 +25,8 @@ public class MachMessaging {
         let sendSize = message.bufferSize
         let ret = mach_msg(
             message.header.pointer, options.rawValue,
-            sendSize, 0, mach_port_t(MACH_PORT_NULL),
-            timeout, mach_port_t(MACH_PORT_NULL)
+            sendSize, 0, MachPort.null.rawValue,
+            timeout, MachPort.null.rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
 
@@ -47,8 +47,8 @@ public class MachMessaging {
         let receiveSize: mach_msg_size_t = message.bufferSize
         let ret = mach_msg(
             message.header.pointer, options.rawValue,
-            0, receiveSize, message.header.localPort.port,
-            timeout, mach_port_t(MACH_PORT_NULL)
+            0, receiveSize, message.header.localPort.rawValue,
+            timeout, MachPort.null.rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
     }
@@ -77,8 +77,8 @@ public class MachMessaging {
         try transient.copyIn(from: sendMessage)
         let ret = mach_msg(
             transient.header.pointer, options.rawValue | 0x3000003,
-            sendSize, receiveMax, transient.header.localPort.port,
-            timeout, mach_port_t(MACH_PORT_NULL)
+            sendSize, receiveMax, transient.header.localPort.rawValue,
+            timeout, MachPort.null.rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
         let endPointer = UnsafeMutableRawPointer(

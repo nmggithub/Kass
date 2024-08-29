@@ -4,20 +4,20 @@ import Darwin
 open class MIGRequest<Payload>: MachMessage<Payload> {
     /// The remote port to send the MIG request to.
     public var migRemotePort: mach_port_t {
-        get { self.header.remotePort.port }
+        get { self.header.remotePort.rawValue }
         set {
             self.header.remotePort = .init(
-                port: newValue,
+                rawPort: newValue,
                 disposition: .copySend
             )
         }
     }
     /// The reply port to receive the MIG reply on.
     public var migReplyPort: mach_port_t {
-        get { self.header.localPort.port }
+        get { self.header.localPort.rawValue }
         set {
             self.header.localPort = .init(
-                port: newValue,
+                rawPort: newValue,
                 disposition: .makeSendOnce
             )
         }

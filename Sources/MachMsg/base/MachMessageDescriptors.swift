@@ -53,17 +53,17 @@ public struct PortDescriptor: MachMessageDescriptor {
         self.rawValue = rawValue
     }
     /// The port.
-    public var port: MachPort {
+    public var port: MachMessagePort {
         .init(
-            port: self.rawValue.name,
+            rawPort: self.rawValue.name,
             disposition: .init(rawValue: self.rawValue.disposition)!
         )
     }
     /// Initialize a new port descriptor.
     /// - Parameter port: The port.
-    public init(port: MachPort) {
+    public init(port: MachMessagePort) {
         self.rawValue = mach_msg_port_descriptor_t(
-            name: port.port,
+            name: port.rawValue,
             pad1: 0,
             pad2: 0,
             disposition: port.disposition.rawValue,
@@ -162,12 +162,12 @@ public struct OOLPortsDescriptor: MachMessageDescriptor {
     ///   - copyMethod: The copy method.
     public init(
         ports: [MachPort],
-        disposition: MachPort.Disposition,
+        disposition: MachMessagePort.Disposition,
         deallocate: Bool = false,
         copyMethod: CopyOption = .physical
     ) {
         let portsPointer = UnsafeMutablePointer<mach_port_t>.allocate(capacity: ports.count)
-        portsPointer.initialize(from: ports.map(\.port), count: ports.count)
+        portsPointer.initialize(from: ports.map(\.rawValue), count: ports.count)
         self.rawValue = mach_msg_ool_ports_descriptor_t(
             address: portsPointer,
             deallocate: deallocate ? 1 : 0,
@@ -209,13 +209,13 @@ public struct GuardedPortDescriptor: MachMessageDescriptor {
     ///   - port: The port.
     ///   - guardValue: The guard value.
     ///   - flags: The guard flags.
-    public init(port: MachPort, guardValue: UInt, flags: GuardFlags = []) {
+    public init(port: MachMessagePort, guardValue: UInt, flags: GuardFlags = []) {
         self.rawValue = mach_msg_guarded_port_descriptor_t(
             context: guardValue,  // this seems to use the context field for the guard value (will probably fail if there is already context data)
             flags: flags.rawValue,
             disposition: port.disposition.rawValue,
             type: DescriptorType.guardedPort.rawValue,
-            name: port.port
+            name: port.rawValue
         )
     }
 }

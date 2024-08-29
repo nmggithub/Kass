@@ -107,40 +107,40 @@ public class MachMessageHeader {
     }
 
     /// The port right being sent to.
-    public var remotePort: MachPort {
+    public var remotePort: MachMessagePort {
         get {
-            MachPort(
-                port: self.pointer.pointee.msgh_remote_port,
+            MachMessagePort(
+                rawPort: self.pointer.pointee.msgh_remote_port,
                 disposition: .init(rawValue: self.bits.remote) ?? .unknown)
         }
         set {
-            self.pointer.pointee.msgh_remote_port = newValue.port
+            self.pointer.pointee.msgh_remote_port = newValue.rawValue
             self.bits.remote = newValue.disposition.rawValue
         }
     }
 
     /// The port right being sent from.
-    public var localPort: MachPort {
+    public var localPort: MachMessagePort {
         get {
-            MachPort(
-                port: self.pointer.pointee.msgh_local_port,
+            MachMessagePort(
+                rawPort: self.pointer.pointee.msgh_local_port,
                 disposition: .init(rawValue: self.bits.local) ?? .unknown)
         }
         set {
-            self.pointer.pointee.msgh_local_port = newValue.port
+            self.pointer.pointee.msgh_local_port = newValue.rawValue
             self.bits.local = newValue.disposition.rawValue
         }
     }
 
     /// The voucher port.
-    public var voucherPort: MachPort {
+    public var voucherPort: MachMessagePort {
         get {
-            MachPort(
-                port: self.pointer.pointee.msgh_voucher_port,
+            MachMessagePort(
+                rawPort: self.pointer.pointee.msgh_voucher_port,
                 disposition: .init(rawValue: self.bits.voucher) ?? .unknown)
         }
         set {
-            self.pointer.pointee.msgh_voucher_port = newValue.port
+            self.pointer.pointee.msgh_voucher_port = newValue.rawValue
             self.bits.voucher = newValue.disposition.rawValue
         }
     }

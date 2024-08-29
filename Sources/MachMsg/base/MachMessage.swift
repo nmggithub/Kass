@@ -43,32 +43,32 @@ open class MachMessage<Payload> {
     }
 
     /// The sending port of the message.
-    public var localPort: MachPort {
+    public var localPort: MachMessagePort {
         get { self.header.localPort }
         set { self.header.localPort = newValue }
     }
 
     /// The receiving port of the message.
-    public var remotePort: MachPort {
+    public var remotePort: MachMessagePort {
         get { self.header.remotePort }
         set { self.header.remotePort = newValue }
     }
 
     /// The voucher port of the message.
-    public var voucherPort: MachPort {
+    public var voucherPort: MachMessagePort {
         get { self.header.voucherPort }
         set { self.header.voucherPort = newValue }
     }
 
     public var voucher: MachVoucher? {
-        get { MachVoucher(rawValue: self.voucherPort.port) }
+        get { MachVoucher(rawValue: self.voucherPort.rawValue) }
         set {
             self.voucherPort =
                 newValue != nil
                 // The kernel only accepts the voucher port if the disposition is `copySend` or `moveSend`. We
                 // will use `copySend` here, as it is what the built-in `voucher_mach_msg_set` function uses.
-                ? MachPort(port: newValue!.rawValue, disposition: .copySend)
-                : MachPort()
+                ? MachMessagePort(rawPort: newValue!.rawValue, disposition: .copySend)
+                : MachMessagePort()
         }
     }
 
