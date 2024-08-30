@@ -1,6 +1,7 @@
 import CCompat
 import MachO
 
+/// A type of kernel object.
 public enum KernelObjectType: natural_t, CBinIntMacroEnum {
     case none = 0
     case threadControl = 1
@@ -12,35 +13,50 @@ public enum KernelObjectType: natural_t, CBinIntMacroEnum {
     case psetName = 7
     case timer = 8
     case portSubstOnce = 9
-    case mig = 10  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case mig = 10
     case memoryObject = 11
-    case xmmPager = 12  // not used
-    case xmmKernel = 13  // not used
-    case xmmReply = 14  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case xmmPager = 12
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case xmmKernel = 13
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case xmmReply = 14
     case undReply = 15
-    case hostNotify = 16  // not used
-    case hostSecurity = 17  // not used
-    case ledger = 18  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case hostNotify = 16
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case hostSecurity = 17
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case ledger = 18
     case mainDevice = 19
     case taskName = 20
-    case subsystem = 21  // not used
-    case ioDoneQueue = 22  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case subsystem = 21
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case ioDoneQueue = 22
     case semaphore = 23
-    case lockSet = 24  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case lockSet = 24
     case clock = 25
-    case clockCtrl = 26  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case clockCtrl = 26
     case iokitIdent = 27
     case namedEntry = 28
     case iokitConnect = 29
     case iokitObject = 30
-    case upl = 31  // not used
-    case memObjControl = 32  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case upl = 31
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case memObjControl = 32
     case auSessionport = 33
     case fileport = 34
-    case labelh = 35  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case labelh = 35
     case taskResume = 36
     case voucher = 37
-    case voucherAttrControl = 38  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case voucherAttrControl = 38
     case workInterval = 39
     case uxHandler = 40
     case uextObject = 41
@@ -50,7 +66,8 @@ public enum KernelObjectType: natural_t, CBinIntMacroEnum {
     case taskRead = 45
     case threadInspect = 46
     case threadRead = 47
-    case suidCred = 48  // not used
+    @available(*, deprecated, message: "This kernel object type is commented out in the kernel.")
+    case suidCred = 48
     case hypervisor = 49
     case taskIdToken = 50
     case taskFatal = 51

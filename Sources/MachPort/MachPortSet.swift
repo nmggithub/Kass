@@ -1,10 +1,11 @@
 import MachO
 
 /// A set of Mach ports.
-class MachPortSet: MachPort {
-    /// Initialize a Mach port set with the given raw port.
-    /// - Parameter rawValue: The port.
-    required init(rawValue: mach_port_t) {
+open class MachPortSet: MachPort {
+    /// Wrap a given port set reference.
+    /// - Parameter rawValue: The port referencing the port set.
+    /// - Warning: The given port must reference a port set. If it is not, this initializer will wrap a null port.
+    public required init(rawValue: mach_port_t) {
         // Ensure that the port is a port set.
         guard MachPort.rights(of: rawValue).contains(.portSet) else {
             super.init(rawValue: mach_port_t(MACH_PORT_NULL))
@@ -12,13 +13,7 @@ class MachPortSet: MachPort {
         }
         super.init(rawValue: rawValue)
     }
-    /// Allocate a new Mach port set with the given right (and optionally a name).
-    /// - Parameters:
-    ///   - right: The right to allocate the port set with.
-    ///   - name: The name to allocate the port set with.
-    ///   - in: The task to allocate the port set in.
-    /// - Returns: The allocated port set.
-    /// - Warning: The right must be `.portSet`. Otherwise, a null port will be returned. For an easier way to allocate a port set, use `allocate(name:)`.
+    @available(*, deprecated, message: "Use `allocate(name:)` instead.")
     override public class func allocate(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
     ) -> Self {
@@ -35,7 +30,7 @@ class MachPortSet: MachPort {
 
     /// The Mach ports in the set.
     /// - Note: Both inserting and removing ports are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
-    /// - Warning: Inserting and removing ports are not guarenRemoving a port from this set will also remove it from any other sets it is in.
+    /// - Warning: Removing a port from this set will also remove it from any other sets it is in.
     public var ports: Set<MachPort> {
         get {
             var namesCount = mach_msg_type_number_t.max

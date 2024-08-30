@@ -2,12 +2,13 @@ import CCompat
 import Foundation
 import MachO
 
-/// A Mach port.
+/// A wrapper for a Mach port.
 open class MachPort: RawRepresentable, Hashable {
-    /// The task that a Mach port is in.
+    /// The raw reference to the task that the Mach port is in.
     internal var rawTask: task_t = task_t(mach_task_self_)
+
     /// The task which the Mach port is in.
-    /// - Important: This defaults to the current task, but can be set to any task. This is the task that will be used for all operations on the port.
+    /// - Warning: This is the task that will be used for all operations on the port, so be careful when changing it.
     public var task: MachTask {
         get {
             MachTask(rawValue: self.rawTask)
@@ -16,6 +17,7 @@ open class MachPort: RawRepresentable, Hashable {
             self.rawTask = newValue.rawValue
         }
     }
+
     /// A right for a Mach port.
     public enum Right: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
         case send = 0
@@ -88,9 +90,8 @@ open class MachPort: RawRepresentable, Hashable {
     }
 
     /// Whether the Mach port is guarded or not.
-    /// - Warning:
-    ///     This is not atomic, as it requires attempting to guard the port, and then unguarding it if needed. If an unexpected error
-    ///     occurs during this process, the program will deliberately crash as the port would then be in an unknown state.
+    /// - Warning: This is not atomic, as it requires attempting to guard the port, and then unguarding it if needed. If an unexpected error
+    ///            occurs during this process, the program will deliberately crash as the port would then be in an unknown state.
     public var guarded: Bool {
         // Only ports with the `.receive` right can be guarded, so if the port does not have the `.receive` right, it is not guarded.
         guard self.rights.contains(.receive) else { return false }
@@ -134,7 +135,6 @@ open class MachPort: RawRepresentable, Hashable {
     /// - Parameters:
     ///   - context: The context to guard the port with.
     ///   - flags: The flags to guard the port with.
-    /// - Throws: An error if the guarding fails.
     public func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlag>) throws {
         let guardRet = mach_port_guard_with_flags(
             self.task.rawValue, self.rawValue, context, flags.rawValue
@@ -148,7 +148,6 @@ open class MachPort: RawRepresentable, Hashable {
     /// - Parameters:
     ///   - old: The old context.
     ///   - new: The new context.
-    /// - Throws: An error if the swapping fails.
     public func swapGuard(old: mach_port_context_t, new: mach_port_context_t) throws {
         let swapRet = mach_port_swap_guard(
             self.task.rawValue, self.rawValue, old, new
@@ -160,7 +159,6 @@ open class MachPort: RawRepresentable, Hashable {
 
     /// Unguard the Mach port using the given context.
     /// - Parameter context: The context to unguard the port with.
-    /// - Throws: An error if the unguarding fails.
     public func unguard(context: mach_port_context_t) throws {
         let unguardRet = mach_port_unguard(self.task.rawValue, self.rawValue, context)
         guard unguardRet == KERN_SUCCESS else {
@@ -182,6 +180,7 @@ open class MachPort: RawRepresentable, Hashable {
         }
     }
 
+    /// The kernel object underlying the Mach port.
     public var kernelObject: KernelObject? {
         KernelObject(port: self)
     }
@@ -250,7 +249,7 @@ open class MachPort: RawRepresentable, Hashable {
     }
     /// The raw Mach port.
     public var rawValue: mach_port_t
-    /// Initialize a new Mach port with the given raw port.
+    /// Wrap the given raw Mach port.
     public required init(rawValue: mach_port_t) {
         self.rawValue = rawValue
     }
@@ -258,6 +257,7 @@ open class MachPort: RawRepresentable, Hashable {
     /// - Parameters:
     ///   - right: The right to allocate the port with.
     ///   - name: The name to allocate the port with.
+    ///   - task: The task to allocate the port in.
     /// - Returns: The allocated port.
     public class func allocate(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
@@ -304,7 +304,7 @@ open class MachPort: RawRepresentable, Hashable {
     ///   - flags: The flags to construct the port with.
     ///   - context: The context to construct the port with.
     ///   - name: The name to construct the port with.
-    ///   - in: The task to construct the port in.
+    ///   - task: The task to construct the port in.
     /// - Returns: The constructed port, or a null port if the construction failed.
     public class func construct(
         queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,

@@ -8,13 +8,13 @@ public class KernelObject {
     public let address: mach_vm_address_t
     /// A description of the kernel object.
     public let description: String
-    /// Creates a kernel object from a Mach port.
+    /// Get a kernel object from a Mach port.
     /// - Parameter port: The Mach port.
     public convenience init?(port: MachPort) {
         self.init(rawPort: port.rawValue, rawTask: port.task.rawValue)
     }
 
-    /// Creates a kernel object from a raw port and task.
+    /// Get a kernel object from a raw port and task.
     /// - Parameters:
     ///   - rawPort: The raw port.
     ///   - rawTask: The raw task that the port is in.
