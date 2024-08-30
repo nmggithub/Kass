@@ -1,5 +1,6 @@
 import CCompat
 import Darwin
+import Foundation
 
 /// A Mach port.
 open class MachPort: RawRepresentable {
@@ -62,6 +63,70 @@ open class MachPort: RawRepresentable {
                 )
                 guard modRefsRet == KERN_SUCCESS else { continue }
             }
+        }
+    }
+
+    /// Whether the Mach port is guarded or not.
+    public var guarded: Bool {
+        let testGuard = mach_port_context_t()
+        // There is no way to check if a port is guarded without attempting to guard it.
+        let guardRet = mach_port_guard(mach_task_self_, self.rawValue, testGuard, 0)
+        // The kernel will return `KERN_INVALID_ARGUMENT` if the port is already guarded.
+        if guardRet == KERN_INVALID_ARGUMENT { return true }
+        // If the guarding worked, we need to unguard it, as we were only testing if it is guarded.
+        let unguardRet = mach_port_unguard(mach_task_self_, self.rawValue, testGuard)
+        guard unguardRet == KERN_SUCCESS else {
+            // This should hopefully never happen, but if it does, we need to crash the program, as the port is now in an unknown state.
+            fatalError("Failed to unguard the port after testing if it was guarded.")
+        }
+        return false
+    }
+    public enum GuardFlags: UInt64, COptionMacroEnum {
+        case strict = 1
+        case immovableReceive = 2
+        public var cMacroName: String {
+            "MPG_"
+                + "\(self)".replacingOccurrences(
+                    of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
+                ).uppercased()
+        }
+    }
+
+    /// Guard the Mach port using the given context and flags.
+    /// - Parameters:
+    ///   - context: The context to guard the port with.
+    ///   - flags: The flags to guard the port with.
+    /// - Throws: An error if the guarding fails.
+    public func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlags>) throws {
+        let guardRet = mach_port_guard_with_flags(
+            mach_task_self_, self.rawValue, context, flags.rawValue
+        )
+        guard guardRet == KERN_SUCCESS else {
+            throw NSError(domain: NSMachErrorDomain, code: Int(guardRet))
+        }
+    }
+
+    /// Swap the guard of the Mach port from the old context to the new context.
+    /// - Parameters:
+    ///   - old: The old context.
+    ///   - new: The new context.
+    /// - Throws: An error if the swapping fails.
+    public func swapGuard(old: mach_port_context_t, new: mach_port_context_t) throws {
+        let swapRet = mach_port_swap_guard(
+            mach_task_self_, self.rawValue, old, new
+        )
+        guard swapRet == KERN_SUCCESS else {
+            throw NSError(domain: NSMachErrorDomain, code: Int(swapRet))
+        }
+    }
+
+    /// Unguard the Mach port using the given context.
+    /// - Parameter context: The context to unguard the port with.
+    /// - Throws: An error if the unguarding fails.
+    public func unguard(context: mach_port_context_t) throws {
+        let unguardRet = mach_port_unguard(mach_task_self_, self.rawValue, context)
+        guard unguardRet == KERN_SUCCESS else {
+            throw NSError(domain: NSMachErrorDomain, code: Int(unguardRet))
         }
     }
 
