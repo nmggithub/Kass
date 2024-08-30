@@ -19,7 +19,7 @@ open class MachTask: MachPort {
             super.init(rawValue: TASK_NULL)
             return
         }
-        super.init(rawValue: rawValue)
+        super.init(rawValue: rawValue, rawTask: mach_task_self_)
     }
     /// Initialize a new Mach task with the given raw port in the given task.
     public required init(rawValue: task_t, rawTask: MachTask.RawValue) {
