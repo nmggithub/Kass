@@ -4,6 +4,9 @@ import Foundation
 
 /// A Mach port.
 open class MachPort: RawRepresentable, Hashable {
+    /// The task which the Mach port is in.
+    /// - Important: This defaults to the current task and can only be changed internally. To get a port in another task, use `MachTask.ports`.
+    public internal(set) var task: MachTask = .current
     /// A right for a Mach port.
     public enum Right: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
         case send = 0
@@ -23,12 +26,14 @@ open class MachPort: RawRepresentable, Hashable {
         }
     }
 
-    /// Get the rights of the given Mach port.
-    /// - Parameter port: The Mach port.
-    /// - Returns: The rights of the Mach port.
-    public static func rights(of port: mach_port_t) -> Set<Right> {
+    /// Get the rights of a Mach port in a task.
+    /// - Parameters:
+    ///   - port: The Mach port.
+    ///   - task: The task that the port is in.
+    /// - Returns: The rights of the port.
+    public static func rights(of port: mach_port_t, in task: MachTask = .current) -> Set<Right> {
         var type = mach_port_type_t()
-        let ret = mach_port_type(mach_task_self_, port, &type)
+        let ret = mach_port_type(task.rawValue, port, &type)
         guard ret == KERN_SUCCESS else { return [] }
         var rights = Set<Right>()
         for right in Right.allCases {
@@ -52,21 +57,22 @@ open class MachPort: RawRepresentable, Hashable {
             let oldRights = self.rights.subtracting(newValue)
             for newRight in newRights {
                 mach_port_insert_right(
-                    mach_task_self_, self.rawValue, self.rawValue, newRight.rawValue
+                    self.task.rawValue, self.rawValue, self.rawValue, newRight.rawValue
                 )
             }
             for oldRight in oldRights {
                 var refCount = mach_port_urefs_t()
                 // First, we get the current reference count for the right.
                 let ret = mach_port_get_refs(
-                    mach_task_self_, self.rawValue, oldRight.rawValue, &refCount
+                    self.task.rawValue, self.rawValue, oldRight.rawValue, &refCount
                 )
                 guard ret == KERN_SUCCESS else { continue }
                 // Then we decrement the reference count by the current reference count, to decrement it to zero,
                 // which will deallocate the right. If the reference count somehow changes between the two calls,
                 // the deallocation will fail, but there doesn't seem to be an atomic way to do this.
                 mach_port_mod_refs(
-                    mach_task_self_, self.rawValue, oldRight.rawValue, -mach_port_delta_t(refCount)
+                    self.task.rawValue, self.rawValue, oldRight.rawValue,
+                    -mach_port_delta_t(refCount)
                 )
             }
         }
@@ -81,7 +87,7 @@ open class MachPort: RawRepresentable, Hashable {
         guard self.rights.contains(.receive) else { return false }
         // There is no way to check if a port is guarded without attempting to guard it.
         let testGuard = mach_port_context_t()
-        let guardRet = mach_port_guard(mach_task_self_, self.rawValue, testGuard, 0)
+        let guardRet = mach_port_guard(self.task.rawValue, self.rawValue, testGuard, 0)
         switch guardRet {
         // The kernel will return `KERN_INVALID_ARGUMENT` if the port is already guarded.
         case KERN_INVALID_ARGUMENT: return true
@@ -94,7 +100,8 @@ open class MachPort: RawRepresentable, Hashable {
         default: fatalError("Unexpected return code from `mach_port_guard`: \(guardRet)")
         }
 
-        let unguardRet: kern_return_t = mach_port_unguard(mach_task_self_, self.rawValue, testGuard)
+        let unguardRet: kern_return_t = mach_port_unguard(
+            self.task.rawValue, self.rawValue, testGuard)
         guard unguardRet == KERN_SUCCESS else {
             // This should hopefully never happen, but if it does, we need to crash the program, as the port is now in an unknown state.
             fatalError("Failed to unguard the port after testing if it was guarded.")
@@ -121,7 +128,7 @@ open class MachPort: RawRepresentable, Hashable {
     /// - Throws: An error if the guarding fails.
     public func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlag>) throws {
         let guardRet = mach_port_guard_with_flags(
-            mach_task_self_, self.rawValue, context, flags.rawValue
+            self.task.rawValue, self.rawValue, context, flags.rawValue
         )
         guard guardRet == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(guardRet))
@@ -135,7 +142,7 @@ open class MachPort: RawRepresentable, Hashable {
     /// - Throws: An error if the swapping fails.
     public func swapGuard(old: mach_port_context_t, new: mach_port_context_t) throws {
         let swapRet = mach_port_swap_guard(
-            mach_task_self_, self.rawValue, old, new
+            self.task.rawValue, self.rawValue, old, new
         )
         guard swapRet == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(swapRet))
@@ -146,7 +153,7 @@ open class MachPort: RawRepresentable, Hashable {
     /// - Parameter context: The context to unguard the port with.
     /// - Throws: An error if the unguarding fails.
     public func unguard(context: mach_port_context_t) throws {
-        let unguardRet = mach_port_unguard(mach_task_self_, self.rawValue, context)
+        let unguardRet = mach_port_unguard(self.task.rawValue, self.rawValue, context)
         guard unguardRet == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(unguardRet))
         }
@@ -156,12 +163,12 @@ open class MachPort: RawRepresentable, Hashable {
     public var context: mach_port_context_t {
         get {
             var context = mach_port_context_t()
-            let ret = mach_port_get_context(mach_task_self_, self.rawValue, &context)
+            let ret = mach_port_get_context(self.task.rawValue, self.rawValue, &context)
             guard ret == KERN_SUCCESS else { return mach_port_context_t() }
             return context
         }
         set {
-            let ret = mach_port_set_context(mach_task_self_, self.rawValue, newValue)
+            let ret = mach_port_set_context(self.task.rawValue, self.rawValue, newValue)
             guard ret == KERN_SUCCESS else { return }
         }
     }
@@ -193,13 +200,13 @@ open class MachPort: RawRepresentable, Hashable {
 
     /// The attributes of the Mach port.
     public struct Attributes {
-        internal let rawPort: mach_port_t
+        internal let port: MachPort
         public subscript<T>(flavor: Attribute, as: T.Type) -> T? {
             get {
                 var count = mach_msg_type_number_t.max
                 let info = mach_port_info_t.allocate(capacity: Int(count))
                 let ret = mach_port_get_attributes(
-                    mach_task_self_, self.rawPort, flavor.rawValue, info, &count
+                    self.port.task.rawValue, self.port.rawValue, flavor.rawValue, info, &count
                 )
                 guard ret == KERN_SUCCESS else { return nil }
                 return info.withMemoryRebound(to: T.self, capacity: Int(count)) { $0.pointee }
@@ -211,7 +218,7 @@ open class MachPort: RawRepresentable, Hashable {
                 let info = mach_port_info_t.allocate(capacity: Int(count))
                 info.withMemoryRebound(to: T.self, capacity: Int(count)) { $0.pointee = newValue! }
                 let ret = mach_port_set_attributes(
-                    mach_task_self_, self.rawPort, flavor.rawValue, info, count
+                    self.port.task.rawValue, self.port.rawValue, flavor.rawValue, info, count
                 )
                 guard ret == KERN_SUCCESS else { return }
             }
@@ -221,7 +228,7 @@ open class MachPort: RawRepresentable, Hashable {
     /// The attributes of the Mach port.
     public var attributes: Attributes {
         get {
-            Attributes(rawPort: self.rawValue)
+            Attributes(port: self)
         }
         set {
             // This is a no-op, as the subscript setter is used to set the attributes. This is just here to allow the user to set the attributes.
@@ -243,13 +250,15 @@ open class MachPort: RawRepresentable, Hashable {
     ///   - right: The right to allocate the port with.
     ///   - name: The name to allocate the port with.
     /// - Returns: The allocated port.
-    public class func allocate(right: Right, name: mach_port_name_t? = nil) -> Self {
+    public class func allocate(
+        right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
+    ) -> Self {
         guard [.receive, .portSet, .deadName].contains(right) else { return Self.null }
         var generatedPortName = mach_port_name_t()
         let ret =
             name != nil
-            ? mach_port_allocate_name(mach_task_self_, right.rawValue, name!)
-            : mach_port_allocate(mach_task_self_, MACH_PORT_RIGHT_RECEIVE, &generatedPortName)
+            ? mach_port_allocate_name(task.rawValue, right.rawValue, name!)
+            : mach_port_allocate(task.rawValue, MACH_PORT_RIGHT_RECEIVE, &generatedPortName)
         guard ret == KERN_SUCCESS else { return Self.null }
         return Self(rawValue: generatedPortName)
     }
@@ -286,34 +295,20 @@ open class MachPort: RawRepresentable, Hashable {
     ///   - flags: The flags to construct the port with.
     ///   - context: The context to construct the port with.
     ///   - name: The name to construct the port with.
+    ///   - in: The task to construct the port in.
     /// - Returns: The constructed port, or a null port if the construction failed.
     public class func construct(
         queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,
         context: mach_port_context_t = 0,
-        name: mach_port_name_t? = nil
+        name: mach_port_name_t? = nil,
+        in task: MachTask = .current
     ) -> Self {
         var options = mach_port_options_t()
         options.mpl.mpl_qlimit = queueLimit
         options.flags = flags.rawValue
         var portName = name ?? mach_port_name_t(MACH_PORT_NULL)
-        let ret = mach_port_construct(mach_task_self_, &options, context, &portName)
+        let ret = mach_port_construct(task.rawValue, &options, context, &portName)
         guard ret == KERN_SUCCESS else { return Self.null }
         return Self(rawValue: portName)
-    }
-
-    /// All Mach ports in the current task.
-    public static var all: [MachPort] {
-        var namesCount = mach_msg_type_number_t.max
-        var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
-            capacity: Int(namesCount)
-        )
-        // the types array is not used, but it is required by `mach_port_names`
-        var typesCount = mach_msg_type_number_t.max
-        var types: mach_port_type_array_t? = mach_port_type_array_t.allocate(
-            capacity: Int(typesCount)
-        )
-        let ret = mach_port_names(mach_task_self_, &names, &namesCount, &types, &typesCount)
-        guard ret == KERN_SUCCESS else { return [] }
-        return (0..<Int(namesCount)).map { MachPort(rawValue: names![$0]) }
     }
 }
