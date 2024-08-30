@@ -51,25 +51,23 @@ open class MachPort: RawRepresentable, Hashable {
             let newRights = newValue.subtracting(self.rights)
             let oldRights = self.rights.subtracting(newValue)
             for newRight in newRights {
-                let insertRightRet = mach_port_insert_right(
+                mach_port_insert_right(
                     mach_task_self_, self.rawValue, self.rawValue, newRight.rawValue
                 )
-                guard insertRightRet == KERN_SUCCESS else { continue }
             }
             for oldRight in oldRights {
                 var refCount = mach_port_urefs_t()
                 // First, we get the current reference count for the right.
-                let getRefsRet = mach_port_get_refs(
+                let ret = mach_port_get_refs(
                     mach_task_self_, self.rawValue, oldRight.rawValue, &refCount
                 )
-                guard getRefsRet == KERN_SUCCESS else { continue }
+                guard ret == KERN_SUCCESS else { continue }
                 // Then we decrement the reference count by the current reference count, to decrement it to zero,
                 // which will deallocate the right. If the reference count somehow changes between the two calls,
                 // the deallocation will fail, but there doesn't seem to be an atomic way to do this.
-                let modRefsRet = mach_port_mod_refs(
+                mach_port_mod_refs(
                     mach_task_self_, self.rawValue, oldRight.rawValue, -mach_port_delta_t(refCount)
                 )
-                guard modRefsRet == KERN_SUCCESS else { continue }
             }
         }
     }
