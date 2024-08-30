@@ -194,6 +194,53 @@ open class MachPort: RawRepresentable, Hashable {
         return Self(rawValue: generatedPortName)
     }
 
+    /// A flag for constructing a Mach port.
+    public enum ConstructFlag: UInt32, COptionMacroEnum {
+        case contextAsGuard = 0x01
+        case queueLimit = 0x02
+        case tempowner = 0x04
+        case importanceReceiver = 0x08
+        case insertSendRight = 0x10
+        case strict = 0x20
+        case denapReceiver = 0x40
+        case immovableReceive = 0x80
+        case filterMsg = 0x100
+        case tgBlockTracking = 0x200
+        case servicePort = 0x400
+        case connectionPort = 0x800
+        case replyPort = 0x1000
+        case replyPortSemantics = 0x2000
+        case provisionalReplyPort = 0x4000
+        case provisionalIdProtOutput = 0x8000
+        public var cMacroName: String {
+            "MPO_"
+                + "\(self)".replacingOccurrences(
+                    of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
+                ).uppercased()
+        }
+    }
+
+    /// Construct a new Mach port.
+    /// - Parameters:
+    ///   - queueLimit: The queue limit of the port.
+    ///   - flags: The flags to construct the port with.
+    ///   - context: The context to construct the port with.
+    ///   - name: The name to construct the port with.
+    /// - Returns: The constructed port, or a null port if the construction failed.
+    public class func construct(
+        queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,
+        context: mach_port_context_t = 0,
+        name: mach_port_name_t? = nil
+    ) -> Self {
+        var options = mach_port_options_t()
+        options.mpl.mpl_qlimit = queueLimit
+        options.flags = flags.rawValue
+        var portName = name ?? mach_port_name_t(MACH_PORT_NULL)
+        let ret = mach_port_construct(mach_task_self_, &options, context, &portName)
+        guard ret == KERN_SUCCESS else { return Self.null }
+        return Self(rawValue: portName)
+    }
+
     /// All Mach ports in the current task.
     public static var all: [MachPort] {
         var namesCount = mach_msg_type_number_t.max
