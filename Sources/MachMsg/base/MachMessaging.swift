@@ -82,13 +82,6 @@ public class MachMessaging {
             timeout, MachPort.null.rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
-        let endPointer = UnsafeMutableRawPointer(
-            transient.startPointer
-        ).advanced(by: Int(receiveMax))
-        // zero out the remaining buffer space
-        endPointer.initializeMemory(
-            as: UInt8.self, repeating: 0, count: Int(transient.bufferSize - receiveMax)
-        )
         try! receiveMessage.copyIn(from: transient)  // we can force-try here because we know it will succeed
         receiveMessage.cleanUpLeftoverData()  // clean up any leftover data from the sent message (as the buffer is reused)
     }
