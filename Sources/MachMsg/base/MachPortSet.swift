@@ -32,7 +32,8 @@ class MachPortSet: MachPort {
     }
 
     /// The Mach ports in the set.
-    /// - Warning: Removing a port from this set will also remove it from any other sets it is in.
+    /// - Note: Both inserting and removing ports are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
+    /// - Warning: Inserting and removing ports are not guarenRemoving a port from this set will also remove it from any other sets it is in.
     public var ports: Set<MachPort> {
         get {
             var namesCount = mach_msg_type_number_t.max
