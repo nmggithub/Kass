@@ -101,7 +101,7 @@ open class MachPort: RawRepresentable, Hashable {
         }
         return false
     }
-    public enum GuardFlags: UInt64, COptionMacroEnum {
+    public enum GuardFlag: UInt64, COptionMacroEnum {
         case strict = 1
         case immovableReceive = 2
         public var cMacroName: String {
@@ -117,7 +117,7 @@ open class MachPort: RawRepresentable, Hashable {
     ///   - context: The context to guard the port with.
     ///   - flags: The flags to guard the port with.
     /// - Throws: An error if the guarding fails.
-    public func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlags>) throws {
+    public func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlag>) throws {
         let guardRet = mach_port_guard_with_flags(
             mach_task_self_, self.rawValue, context, flags.rawValue
         )
