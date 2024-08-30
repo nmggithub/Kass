@@ -22,7 +22,7 @@ open class MachPort: RawRepresentable {
         }
     }
     /// The rights of the Mach port.
-    /// - Note: Both Inserting and removing rights are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
+    /// - Note: Both inserting and removing rights are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
     public var rights: Set<Right> {
         get {
             var type = mach_port_type_t()
