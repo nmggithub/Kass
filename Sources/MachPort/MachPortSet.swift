@@ -13,8 +13,8 @@ class MachPortSet: MachPort {
         super.init(rawValue: rawValue)
     }
     /// Initialize a new Mach port set with the given raw port in the given task.
-    public required init(rawValue: mach_port_t, in task: MachTask) {
-        super.init(rawValue: rawValue, in: task)
+    public required init(rawValue: task_t, rawTask: MachTask.RawValue) {
+        super.init(rawValue: rawValue, rawTask: rawTask)
     }
     /// Allocate a new Mach port set with the given right (and optionally a name).
     /// - Parameters:

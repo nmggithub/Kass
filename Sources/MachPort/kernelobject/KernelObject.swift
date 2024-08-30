@@ -25,7 +25,7 @@ public class KernelObject {
             capacity: Int(KOBJECT_DESCRIPTION_LENGTH)
         )
         let ret = mach_port_kobject_description(
-            rawTask, rawPort, &type, &address, descriptionPointer
+            rawTask, rawPort, &type, &address, nil
         )
         guard ret == KERN_SUCCESS else { return nil }
         self.type = KernelObjectType(rawValue: type) ?? .unknown
