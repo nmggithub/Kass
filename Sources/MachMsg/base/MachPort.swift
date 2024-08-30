@@ -49,13 +49,11 @@ open class MachPort: RawRepresentable {
         var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
             capacity: Int(namesCount)
         )
-        defer { names!.deallocate() }
         // the types array is not used, but it is required by `mach_port_names`
         var typesCount = mach_msg_type_number_t.max
         var types: mach_port_type_array_t? = mach_port_type_array_t.allocate(
             capacity: Int(typesCount)
         )
-        defer { types!.deallocate() }
         let ret = mach_port_names(mach_task_self_, &names, &namesCount, &types, &typesCount)
         guard ret == KERN_SUCCESS else { return [] }
         return (0..<Int(namesCount)).map { MachPort(rawValue: names![$0]) }
