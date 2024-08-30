@@ -3,8 +3,7 @@ import Darwin
 
 /// A Mach port.
 open class MachPort: RawRepresentable {
-    public enum Right: mach_port_right_t, CBinIntMacroEnum {
-        case unknown = 0xFFFF_FFFF
+    public enum Right: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
         case send = 0
         case receive = 1
         case sendOnce = 2
@@ -20,15 +19,18 @@ open class MachPort: RawRepresentable {
                 )
                 .uppercased()
         }
-        public init(fromType type: mach_port_type_t) {
-            self = Self(rawValue: mach_port_right_t(log2(Double(type)) - 16)) ?? .unknown
-        }
     }
-    public var right: Right {
+    public var rights: Set<Right> {
         var type = mach_port_type_t()
         let ret = mach_port_type(mach_task_self_, self.rawValue, &type)
-        guard ret == KERN_SUCCESS else { return .unknown }
-        return Right(fromType: type)
+        guard ret == KERN_SUCCESS else { return [] }
+        var rights = Set<Right>()
+        for right in Right.allCases {
+            if type & 1 << (right.rawValue + 16) != 0 {
+                rights.insert(right)
+            }
+        }
+        return rights
     }
     /// A null Mach port.
     public static var null: Self {
