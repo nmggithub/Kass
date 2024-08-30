@@ -78,6 +78,10 @@ open class MachPort: RawRepresentable {
         }
     }
 
+    public var kernelObject: KernelObject? {
+        KernelObject(port: self)
+    }
+
     /// A null Mach port.
     public static var null: Self {
         Self(rawValue: mach_port_t(MACH_PORT_NULL))
