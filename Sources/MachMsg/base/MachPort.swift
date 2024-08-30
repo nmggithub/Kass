@@ -68,8 +68,10 @@ open class MachPort: RawRepresentable {
 
     /// Whether the Mach port is guarded or not.
     public var guarded: Bool {
-        let testGuard = mach_port_context_t()
+        // Only ports with the `.receive` right can be guarded, so if the port does not have the `.receive` right, it is not guarded.
+        guard self.rights.contains(.receive) else { return false }
         // There is no way to check if a port is guarded without attempting to guard it.
+        let testGuard = mach_port_context_t()
         let guardRet = mach_port_guard(mach_task_self_, self.rawValue, testGuard, 0)
         // The kernel will return `KERN_INVALID_ARGUMENT` if the port is already guarded.
         if guardRet == KERN_INVALID_ARGUMENT { return true }
