@@ -15,7 +15,8 @@ struct Module {
 let modules: [Module] = [
     .init(name: "CCompat", dependencies: []),
     .init(name: "Linking", dependencies: []),
-    .init(name: "MachMsg", dependencies: ["CCompat", "Linking"]),
+    .init(name: "MachPort", dependencies: ["CCompat", "Linking"]),
+    .init(name: "MachMsg", dependencies: ["CCompat", "Linking", "MachPort"]),
 ]
 
 /// The name of the package.

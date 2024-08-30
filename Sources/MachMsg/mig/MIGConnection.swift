@@ -52,7 +52,7 @@ open class MIGConnection: ServiceConnection {
         // sanity checks (use locally defined error codes)
         guard reply.id != MACH_NOTIFY_SEND_ONCE else { throw MIGError(.serverDied) }  // server deallocated the send-once right without using it, assume it died
         guard reply.id == routineId + 100 else { throw MIGError(.replyMismatch) }  // the reply ID should be the request ID + 100
-        guard reply.remotePort == MachPort.null else { throw MIGError(.typeError) }  // the reply should clear the remote port
+        guard reply.remotePort == .null else { throw MIGError(.typeError) }  // the reply should clear the remote port
         let errorReply = MIGErrorReply()  // create a temporary error reply to check the reply against
         if !reply.isComplex && reply.size == errorReply.messageSize {
             try! errorReply.copyIn(from: reply)  // the reply is probably an error, so copy it into the error reply

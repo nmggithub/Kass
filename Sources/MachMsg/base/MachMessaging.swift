@@ -1,6 +1,7 @@
 import CCompat
 import Foundation
 import MachO
+import MachPort
 
 /// A helper class for sending and receiving messages.
 public class MachMessaging {

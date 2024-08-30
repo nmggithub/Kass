@@ -13,9 +13,13 @@ This is simply a helper module to allow for option sets where each option can be
 
 This module provides a simple API to access symbols that uses the `dlopen`/`dlsym` functions internally.
 
+### [`MachPort`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machport/)
+
+In userspace, many objects are represented by underlying Mach ports. This module provides a set of API's for interacting with these ports.
+
 ### [`MachMsg`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machmsg/)
 
-This is the most complicated module, by far. It provides an API for interacting with, sending, and receiving Mach messages. It also provides an API for interacting with MIG servers. Currently, MIG messages must be hand-built. This may change in future versions.
+This module provides an API for interacting with, sending, and receiving Mach messages. It also provides an API for interacting with MIG servers. Currently, MIG messages must be hand-built. This may change in future versions.
 
 ## Notes
 

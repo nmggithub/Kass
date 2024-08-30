@@ -1,5 +1,6 @@
 import CCompat
 import MachO
+import MachPort
 
 /// A Mach port with an associated disposition.
 public class MachMessagePort: MachPort {

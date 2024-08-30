@@ -1,6 +1,7 @@
 import CCompat
 import Foundation
 import MachO
+import MachPort
 
 /// A descriptor type.
 public enum DescriptorType: mach_msg_descriptor_type_t, NameableByCMacro, Sendable {
