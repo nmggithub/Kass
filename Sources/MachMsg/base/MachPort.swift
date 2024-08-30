@@ -247,7 +247,7 @@ open class MachPort: RawRepresentable, Hashable {
         self.task = .current
     }
     /// Initialize a new Mach port with the given raw port in the given task.
-    public init(rawValue: mach_port_t, in task: MachTask) {
+    public required init(rawValue: mach_port_t, in task: MachTask) {
         self.rawValue = rawValue
         self.task = task
     }

@@ -43,4 +43,9 @@ public class MachMessagePort: MachPort {
         self.disposition = .none
         super.init(rawValue: rawValue)
     }
+    /// Initialize a new Mach message port with the given raw port in the given task.
+    public required init(rawValue: mach_port_t, in task: MachTask) {
+        self.disposition = .none
+        super.init(rawValue: rawValue, in: task)
+    }
 }
