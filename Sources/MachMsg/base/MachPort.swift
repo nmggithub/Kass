@@ -101,6 +101,8 @@ open class MachPort: RawRepresentable, Hashable {
         }
         return false
     }
+
+    /// A flag for guarding a Mach port.
     public enum GuardFlag: UInt64, COptionMacroEnum {
         case strict = 1
         case immovableReceive = 2
