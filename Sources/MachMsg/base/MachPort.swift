@@ -231,7 +231,7 @@ open class MachPort: RawRepresentable, Hashable {
             Attributes(port: self)
         }
         set {
-            // This is a no-op, as the subscript setter is used to set the attributes. This is just here to allow the user to set the attributes.
+            // This is a no-op, as the subscript setter is used to set the attributes. This is just here to tell the compiler that the attributes are settable.
         }
     }
 
