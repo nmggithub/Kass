@@ -9,7 +9,7 @@ public enum KernelObjectType: natural_t, CBinIntMacroEnum {
     case hostPriv = 4
     case processor = 5
     case pset = 6
-    case pset_name = 7
+    case psetName = 7
     case timer = 8
     case portSubstOnce = 9
     case mig = 10  // not used
