@@ -31,7 +31,6 @@ public class Library: Handle {
     let pathURL: URL
     /// Create a new library handle.
     /// - Parameter path: The path to the library.
-    /// - Remark: Returns `nil` if the library could not be loaded.
     public init?(path: String) {
         guard
             let pathURL = URL(string: path),
@@ -42,9 +41,8 @@ public class Library: Handle {
             name: pathURL.lastPathComponent, rawHandle: handle, type: .library)
     }
     /// Link the library.
-    /// - Remark:
-    ///     This is technically a no-op, as the library is linked when the class is initialized. This function is provided
-    ///     as a Void-returning "escape hatch" for users who do not wish to use the return value of the initializer.
+    /// - Note: This is technically a no-op, as the library is linked when the class is initialized. This function is provided
+    ///         as a Void-returning "escape hatch" for users who do not wish to use the return value of the initializer.
     public func link() {}
     /// Get a symbol handle from the library.
     /// - Parameter symbol: The name of the symbol.
@@ -56,25 +54,26 @@ public class Library: Handle {
     /// Get a symbol handle from the library at a specific address.
     /// - Parameters:
     ///   - symbol: The name of the symbol.
-    ///   - atExpectedAddress: The address of the symbol.
-    ///   - otherSymbol: The name of another symbol in the library to use as a reference. This symbol should be exported by the library.
-    ///   - expectedOtherSymbolAddress: The exepected address of the other symbol.
+    ///   - expectedAddress: The address of the symbol.
+    ///   - otherSymbol: The name of another symbol in the library to use as a reference.
+    ///   - otherSymbolExpectedAddress: The exepected address of the other symbol.
     /// - Returns: The symbol handle, or `nil` if the symbol could not be found.
-    /// - Remark:
-    ///     Both `atExpectedAddress` and `expectedOtherSymbolAddress` should be the addresses of the symbols in memory, gathered
-    ///     from other analysis tools. In some cases, the actual addresses in memory may be offset by some unknown amount. Thus,
-    ///     this function will find use the other symbol to calculate the offset and find the symbol's actual address in memory.
+    /// - Note: Use a binary analysis tool to find the expected addresses of the symbols.
+    /// - Important: `otherSymbol` must be an exported symbol in the same library. This is because the actual addresses at runtime may
+    ///              noy be the expected addresses, but the difference between them should be the same. This function uses the address
+    ///              of `otherSymbol` and the offset between the two expected addresses to get the actual address of `symbol`. However,
+    ///              it cannot determine the address of `otherSymbol` if it's not an exported symbol.
     public func get(
         symbol: String, atExpectedAddress expectedAddress: vm_address_t, otherSymbol: String,
-        expectedOtherSymbolAddress: vm_address_t
+        otherSymbolExpectedAddress: vm_address_t
     ) -> Symbol? {
         guard
             let actualOtherSymbolAddress = dlsym(self.rawHandle, otherSymbol),
             let expectedOtherSymbolPointer = UnsafeRawPointer(
-                bitPattern: expectedOtherSymbolAddress
+                bitPattern: otherSymbolExpectedAddress
             )
         else { return nil }
-        // the addresses may be offset by some amount, so we need to calculate the offset
+        // The addresses may be offset by some amount, so we need to calculate the offset.
         // TODO: determine if there is a way to calculate the offset without using the other symbol
         let imageOffset = expectedOtherSymbolPointer.distance(to: actualOtherSymbolAddress)
         guard
@@ -110,14 +109,14 @@ public class Symbol: Handle {
     /// Cast the symbol to a specific type.
     /// - Parameter to: The type to cast the symbol to.
     /// - Returns: The symbol cast to the specified type.
-    /// - Remark: This is equivalent to `unsafeBitCast(self.rawHandle, to: T.self)`.
+    /// - Note: This is equivalent to `unsafeBitCast(self.rawHandle, to: T.self)`.
     public func cast<T>(to: T.Type = T.self) -> T {
         return unsafeBitCast(self.rawHandle, to: T.self)
     }
     /// Load the symbol as a specific type.
     /// - Parameter as: The type to load the symbol as.
     /// - Returns: The symbol loaded as the specified type.
-    /// - Remark: This is equivalent to `self.rawHandle.load(as: T.self)`.
+    /// - Note: This is equivalent to `self.rawHandle.load(as: T.self)`.
     public func load<T>(as: T.Type = T.self) -> T {
         return self.rawHandle.load(as: T.self)
     }
@@ -148,7 +147,7 @@ public class Framework: Library {
     /// Get the path to a framework.
     /// - Parameters:
     ///   - name: The name of the framework.
-    ///   - inPath: The directory containing the framework.
+    ///   - path: The directory containing the framework.
     /// - Returns: The path to the framework.
     private static func frameworkPath(for name: String, inPath path: URL) -> String {
         return path.appending(component: "\(name).framework/\(name)").path
@@ -157,15 +156,13 @@ public class Framework: Library {
     /// - Parameters:
     ///   - name: The name of the framework.
     ///   - isPrivate: Whether the framework is private.
-    /// - Remark: Returns `nil` if the framework could not be loaded.
     public init?(_ name: String, isPrivate: Bool = false) {
         super.init(path: Self.frameworkPath(for: name, isPrivate: isPrivate))
     }
     /// Create a new framework handle.
     /// - Parameters:
     ///   - name: The name of the framework.
-    ///   - inPath: The directory containing the framework.
-    /// - Remark: Returns `nil` if the framework could not be loaded.
+    ///   - path: The directory containing the framework.
     public init?(_ name: String, inPath path: URL) {
         super.init(path: Self.frameworkPath(for: name, inPath: path))
     }
