@@ -1,3 +1,4 @@
+import CCompat
 @preconcurrency import MachO
 
 /// A Mach task, represented by a task port.
@@ -42,10 +43,6 @@ open class MachTask: MachPort {
         )
         let ret = mach_port_names(self.rawValue, &names, &namesCount, &types, &typesCount)
         guard ret == KERN_SUCCESS else { return [] }
-        return (0..<Int(namesCount)).map {
-            let port = MachPort(rawValue: names![$0])
-            port.task = self
-            return port
-        }
+        return (0..<Int(namesCount)).map { MachPort(rawValue: names![$0], in: self) }
     }
 }
