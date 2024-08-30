@@ -1,5 +1,5 @@
 version: 1
 builder:
-    configs:
-        - documentation_targets: [MachMsg, Linking, CCompat]
-          platform: macos
+  configs:
+    - documentation_targets: [MachPort, MachMsg, Linking, CCompat]
+      platform: macos
