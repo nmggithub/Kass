@@ -6,11 +6,11 @@ open class MachTask: MachPort {
     public typealias RawValue = task_t
     /// A null task.
     public override class var null: Self {
-        Self(rawValue: TASK_NULL, rawTask: mach_task_self_)
+        Self(rawValue: TASK_NULL)
     }
     /// The current task.
     public static var current: Self {
-        Self(rawValue: mach_task_self_, rawTask: mach_task_self_)
+        Self(rawValue: mach_task_self_)
     }
     /// Initialize a Mach task with the given raw port.
     /// - Parameter rawValue: The port.
@@ -19,11 +19,8 @@ open class MachTask: MachPort {
             super.init(rawValue: TASK_NULL)
             return
         }
-        super.init(rawValue: rawValue, rawTask: mach_task_self_)
-    }
-    /// Initialize a new Mach task with the given raw port in the given task.
-    public required init(rawValue: task_t, rawTask: MachTask.RawValue) {
-        super.init(rawValue: rawValue, rawTask: rawTask)
+        super.init(rawValue: rawValue)
+        self.rawTask = self.rawValue
     }
     /// Initialize a Mach task with the given process ID.
     /// - Parameter pid: The process ID.
@@ -47,7 +44,11 @@ open class MachTask: MachPort {
         )
         let ret = mach_port_names(self.rawValue, &names, &namesCount, &types, &typesCount)
         guard ret == KERN_SUCCESS else { return [] }
-        return (0..<Int(namesCount)).map { MachPort(rawValue: names![$0], rawTask: self.rawValue) }
+        return (0..<Int(namesCount)).map {
+            let portInTask = MachPort(rawValue: names![$0])
+            portInTask.rawTask = self.rawValue
+            return portInTask
+        }
     }
 
     /// A special port of a Mach task.
@@ -81,10 +82,12 @@ open class MachTask: MachPort {
             -> T?
         {
             get {
-                var specialPort = T.RawValue()
-                let ret = task_get_special_port(self.task.rawValue, portType.rawValue, &specialPort)
+                var rawPort = T.RawValue()
+                let ret = task_get_special_port(self.task.rawValue, portType.rawValue, &rawPort)
                 guard ret == KERN_SUCCESS else { return nil }
-                return T.init(rawValue: specialPort, rawTask: self.task.rawValue)
+                let port = T.init(rawValue: rawPort)
+                port.rawTask = self.task.rawValue
+                return port
             }
             set(newValue) {
                 let portToUse = newValue?.rawValue ?? T.RawValue(MACH_PORT_NULL)

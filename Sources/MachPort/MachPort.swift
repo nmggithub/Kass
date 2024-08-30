@@ -4,9 +4,18 @@ import MachO
 
 /// A Mach port.
 open class MachPort: RawRepresentable, Hashable {
+    /// The task that a Mach port is in.
+    internal var rawTask: task_t = task_t(mach_task_self_)
     /// The task which the Mach port is in.
-    /// - Important: This defaults to the current task. To get a port in another task, use `MachTask.ports`.
-    public let task: MachTask
+    /// - Important: This defaults to the current task, but can be set to any task. This is the task that will be used for all operations on the port.
+    public var task: MachTask {
+        get {
+            MachTask(rawValue: self.rawTask)
+        }
+        set {
+            self.rawTask = newValue.rawValue
+        }
+    }
     /// A right for a Mach port.
     public enum Right: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
         case send = 0
@@ -244,12 +253,6 @@ open class MachPort: RawRepresentable, Hashable {
     /// Initialize a new Mach port with the given raw port.
     public required init(rawValue: mach_port_t) {
         self.rawValue = rawValue
-        self.task = .current
-    }
-    /// Initialize a new Mach port with the given raw port in the given task.
-    public required init(rawValue: mach_port_t, rawTask: MachTask.RawValue) {
-        self.rawValue = rawValue
-        self.task = MachTask(rawValue: rawTask, rawTask: rawTask)
     }
     /// Allocate a new Mach port with the given right (and optionally a name).
     /// - Parameters:

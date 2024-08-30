@@ -16,8 +16,4 @@ open class MachTaskName: MachPort {
         }
         super.init(rawValue: rawValue)
     }
-    /// Initialize a new Mach task name port with the given raw port in the given task.
-    public required init(rawValue: task_t, rawTask: MachTask.RawValue) {
-        super.init(rawValue: rawValue, rawTask: rawTask)
-    }
 }
