@@ -18,7 +18,7 @@ where RawValue: BinaryInteger {}
 /// A protocol for a C option macro enum.
 public protocol COptionMacroEnum: CBinIntMacroEnum, Hashable, CaseIterable {}
 
-/// A class that represents a set of options defined by C option macros.
+/// A struct that represents a set of options defined by C option macros.
 public struct COptionMacroSet<CMacroEnum: COptionMacroEnum>: NameableByCMacros,
     ExpressibleByArrayLiteral, RawRepresentable
 {
