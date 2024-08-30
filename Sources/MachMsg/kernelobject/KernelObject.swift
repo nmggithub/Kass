@@ -10,14 +10,19 @@ public class KernelObject {
     public let description: String
     /// Creates a kernel object from a Mach port.
     /// - Parameter port: The Mach port.
-    public init?(port: MachPort) {
+    public convenience init?(port: MachPort) {
+        self.init(rawPort: port.rawValue)
+    }
+    /// Creates a kernel object from a raw Mach port.
+    /// - Parameter rawPort: The raw Mach port.
+    public init?(rawPort: mach_port_t) {
         var type = natural_t()
         var address = mach_vm_address_t()
         let descriptionPointer = UnsafeMutablePointer<CChar>.allocate(
             capacity: Int(KOBJECT_DESCRIPTION_LENGTH)
         )
         let ret = mach_port_kobject_description(
-            mach_task_self_, port.rawValue, &type, &address, descriptionPointer)
+            mach_task_self_, rawPort, &type, &address, descriptionPointer)
         guard ret == KERN_SUCCESS else { return nil }
         self.type = KernelObjectType(rawValue: type) ?? .unknown
         self.address = address

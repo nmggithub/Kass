@@ -229,7 +229,7 @@ open class MachPort: RawRepresentable, Hashable {
     }
 
     /// A null Mach port.
-    public static var null: Self {
+    public class var null: Self {
         Self(rawValue: mach_port_t(MACH_PORT_NULL))
     }
     /// The raw Mach port.
