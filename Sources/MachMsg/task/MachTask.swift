@@ -25,6 +25,7 @@ open class MachTask: MachPort {
     /// - Parameter pid: The process ID.
     public convenience init(pid: pid_t) {
         var task = task_t()
+        // The first parameter doesn't really affect the result, but we set to `mach_task_self_` for historical reasons.
         task_for_pid(mach_task_self_, pid, &task)
         self.init(rawValue: task)
     }
