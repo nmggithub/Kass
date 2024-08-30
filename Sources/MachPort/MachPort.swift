@@ -249,7 +249,7 @@ open class MachPort: RawRepresentable, Hashable {
     }
     /// The raw Mach port.
     public var rawValue: mach_port_t
-    /// Wrap the given raw Mach port.
+    /// Wrap a given port.
     public required init(rawValue: mach_port_t) {
         self.rawValue = rawValue
     }
