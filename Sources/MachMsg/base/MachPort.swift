@@ -67,16 +67,28 @@ open class MachPort: RawRepresentable {
     }
 
     /// Whether the Mach port is guarded or not.
+    /// - Warning:
+    ///     This is not atomic, as it requires attempting to guard the port, and then unguarding it if needed. If an unexpected error
+    ///     occurs during this process, the program will deliberately crash as the port would then be in an unknown state.
     public var guarded: Bool {
         // Only ports with the `.receive` right can be guarded, so if the port does not have the `.receive` right, it is not guarded.
         guard self.rights.contains(.receive) else { return false }
         // There is no way to check if a port is guarded without attempting to guard it.
         let testGuard = mach_port_context_t()
         let guardRet = mach_port_guard(mach_task_self_, self.rawValue, testGuard, 0)
+        switch guardRet {
         // The kernel will return `KERN_INVALID_ARGUMENT` if the port is already guarded.
-        if guardRet == KERN_INVALID_ARGUMENT { return true }
-        // If the guarding worked, we need to unguard it, as we were only testing if it is guarded.
-        let unguardRet = mach_port_unguard(mach_task_self_, self.rawValue, testGuard)
+        case KERN_INVALID_ARGUMENT: return true
+        // These errors are expected from the kernel implementation of `mach_port_guard`.
+        case KERN_INVALID_TASK, KERN_INVALID_NAME, KERN_INVALID_RIGHT:
+            return false
+        case KERN_SUCCESS: break  // The guarding worked, so we need to unguard it.
+        // The userspace implementation of `mach_port_guard` sends a Mach message to the kernel, and has its own family of
+        // errors. If we get one of these errors, we need to crash the program, as the port is now in an unknown state.
+        default: fatalError("Unexpected return code from `mach_port_guard`: \(guardRet)")
+        }
+
+        let unguardRet: kern_return_t = mach_port_unguard(mach_task_self_, self.rawValue, testGuard)
         guard unguardRet == KERN_SUCCESS else {
             // This should hopefully never happen, but if it does, we need to crash the program, as the port is now in an unknown state.
             fatalError("Failed to unguard the port after testing if it was guarded.")
