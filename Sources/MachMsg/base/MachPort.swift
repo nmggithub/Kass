@@ -63,6 +63,21 @@ open class MachPort: RawRepresentable {
             }
         }
     }
+
+    /// The Mach port context.
+    public var context: mach_port_context_t {
+        get {
+            var context = mach_port_context_t()
+            let ret = mach_port_get_context(mach_task_self_, self.rawValue, &context)
+            guard ret == KERN_SUCCESS else { return mach_port_context_t() }
+            return context
+        }
+        set {
+            let ret = mach_port_set_context(mach_task_self_, self.rawValue, newValue)
+            guard ret == KERN_SUCCESS else { return }
+        }
+    }
+
     /// A null Mach port.
     public static var null: Self {
         Self(rawValue: mach_port_t(MACH_PORT_NULL))
