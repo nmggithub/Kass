@@ -12,6 +12,25 @@ class MachPortSet: MachPort {
         }
         super.init(rawValue: rawValue)
     }
+
+    /// Allocate a new Mach port set with the given right (and optionally a name).
+    /// - Parameters:
+    ///   - right: The right to allocate the port set with.
+    ///   - name: The name to allocate the port set with.
+    /// - Returns: The allocated port set.
+    /// - Warning: The right must be `.portSet`. Otherwise, a null port will be returned. For an easier way to allocate a port set, use `allocate(name:)`.
+    override public class func allocate(right: Right, name: mach_port_name_t? = nil) -> Self {
+        guard right == .portSet else { return Self.null }
+        return super.allocate(right: right, name: name)
+    }
+
+    /// Allocate a new Mach port set with an optional name.
+    /// - Parameter name: The name to allocate the port set with.
+    /// - Returns: The allocated port set.
+    public class func allocate(name: mach_port_name_t? = nil) -> Self {
+        return super.allocate(right: .portSet, name: name)
+    }
+
     /// The Mach ports in the set.
     /// - Warning: Adding or removing a port from this set will also remove it from any other sets it is in.
     public var ports: Set<MachPort> {

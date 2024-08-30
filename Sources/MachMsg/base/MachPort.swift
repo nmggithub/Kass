@@ -185,7 +185,7 @@ open class MachPort: RawRepresentable, Hashable {
     ///   - right: The right to allocate the port with.
     ///   - name: The name to allocate the port with.
     /// - Returns: The allocated port.
-    public static func allocate(right: Right, name: mach_port_name_t? = nil) -> Self {
+    public class func allocate(right: Right, name: mach_port_name_t? = nil) -> Self {
         guard [.receive, .portSet, .deadName].contains(right) else { return Self.null }
         var generatedPortName = mach_port_name_t()
         let ret =
