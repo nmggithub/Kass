@@ -9,7 +9,7 @@ open class MachTask: MachPort {
         Self(rawValue: TASK_NULL)
     }
     /// The current task.
-    static var current: Self {
+    public static var current: Self {
         Self(rawValue: mach_task_self_)
     }
     /// Initialize a Mach task with the given raw port.
