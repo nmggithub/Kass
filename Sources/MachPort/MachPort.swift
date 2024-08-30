@@ -249,7 +249,7 @@ open class MachPort: RawRepresentable, Hashable {
     /// Initialize a new Mach port with the given raw port in the given task.
     public required init(rawValue: mach_port_t, rawTask: MachTask.RawValue) {
         self.rawValue = rawValue
-        self.task = MachTask(rawValue: rawTask)
+        self.task = MachTask(rawValue: rawTask, rawTask: rawTask)
     }
     /// Allocate a new Mach port with the given right (and optionally a name).
     /// - Parameters:
