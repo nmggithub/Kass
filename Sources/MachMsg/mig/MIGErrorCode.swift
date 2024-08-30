@@ -1,6 +1,6 @@
 import CCompat
-import Darwin
 import Foundation
+import MachO
 
 /// Error codes from a Mach Interface Generator (MIG) server routine.
 /// - Remark: Most of the comments documenting the cases are taken from the XNU source code.

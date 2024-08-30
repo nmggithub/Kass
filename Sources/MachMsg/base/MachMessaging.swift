@@ -1,6 +1,6 @@
 import CCompat
-import Darwin
 import Foundation
+import MachO
 
 /// A helper class for sending and receiving messages.
 public class MachMessaging {

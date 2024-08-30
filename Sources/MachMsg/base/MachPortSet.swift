@@ -1,4 +1,4 @@
-import Darwin
+import MachO
 
 /// A set of Mach ports.
 class MachPortSet: MachPort {

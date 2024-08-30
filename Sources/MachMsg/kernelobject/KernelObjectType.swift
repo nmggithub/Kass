@@ -1,5 +1,5 @@
 import CCompat
-import Darwin
+import MachO
 
 public enum KernelObjectType: natural_t, CBinIntMacroEnum {
     case none = 0

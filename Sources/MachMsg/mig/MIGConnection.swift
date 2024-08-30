@@ -1,5 +1,5 @@
 import CCompat
-import Darwin
+import MachO
 
 /// A connection to a MIG server.
 open class MIGConnection: ServiceConnection {

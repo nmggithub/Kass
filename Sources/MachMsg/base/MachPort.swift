@@ -1,6 +1,6 @@
 import CCompat
-import Darwin
 import Foundation
+import MachO
 
 /// A Mach port.
 open class MachPort: RawRepresentable, Hashable {

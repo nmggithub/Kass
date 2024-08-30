@@ -1,6 +1,6 @@
 import CCompat
-import Darwin
 import Foundation
+import MachO
 
 /// A descriptor type.
 public enum DescriptorType: mach_msg_descriptor_type_t, NameableByCMacro, Sendable {

@@ -1,8 +1,7 @@
 import CCompat
-@preconcurrency import Darwin
 import Foundation
 import Linking
-import System
+@preconcurrency import MachO
 
 private let bootstrap_look_up:
     @convention(c) (

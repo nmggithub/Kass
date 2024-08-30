@@ -1,4 +1,4 @@
-import Darwin
+import MachO
 
 /// A connection to a Mach port.
 open class MachConnection {

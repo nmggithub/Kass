@@ -1,5 +1,5 @@
 import CCompat
-import Darwin
+import MachO
 
 private let MACH_MSGH_BITS_PORTS_MASK = mach_msg_type_name_t(
     MACH_MSGH_BITS_REMOTE_MASK | MACH_MSGH_BITS_LOCAL_MASK | MACH_MSGH_BITS_VOUCHER_MASK)

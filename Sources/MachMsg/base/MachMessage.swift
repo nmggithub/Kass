@@ -1,5 +1,5 @@
-import Darwin
 import Foundation
+import MachO
 
 /// A Mach message.
 open class MachMessage<Payload> {

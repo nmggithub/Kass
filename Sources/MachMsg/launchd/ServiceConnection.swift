@@ -1,4 +1,4 @@
-import Darwin
+import MachO
 
 open class ServiceConnection: MachConnection {
     /// Create a new connection to a service in launchd.

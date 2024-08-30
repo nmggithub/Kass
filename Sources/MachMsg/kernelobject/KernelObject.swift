@@ -1,4 +1,4 @@
-import Darwin
+import MachO
 
 /// A kernel object underlying a Mach port.
 public class KernelObject {

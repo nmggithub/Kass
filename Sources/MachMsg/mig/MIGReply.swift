@@ -1,4 +1,4 @@
-import Darwin
+import MachO
 
 /// A Mach Interface Generator (MIG) reply message.
 open class MIGReply<Payload>: MachMessage<Payload> {

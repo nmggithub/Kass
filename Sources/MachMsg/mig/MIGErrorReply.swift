@@ -1,6 +1,6 @@
 import CCompat
-import Darwin
 import Foundation
+import MachO
 
 /// An error reply to a Mach Interface Generator (MIG) message.
 public class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {

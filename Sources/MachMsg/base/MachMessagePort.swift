@@ -1,5 +1,5 @@
 import CCompat
-import Darwin
+import MachO
 
 /// A Mach port with an associated disposition.
 public class MachMessagePort: MachPort {
