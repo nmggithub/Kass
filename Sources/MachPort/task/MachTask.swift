@@ -32,7 +32,7 @@ open class MachTask: MachPort {
         self.init(rawValue: task)
     }
 
-    /// All Mach ports in the current task's namespace.
+    /// All Mach ports in the task's namespace.
     public var ports: [MachPort] {
         var namesCount = mach_msg_type_number_t.max
         var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
