@@ -32,7 +32,7 @@ class MachPortSet: MachPort {
     }
 
     /// The Mach ports in the set.
-    /// - Warning: Adding or removing a port from this set will also remove it from any other sets it is in.
+    /// - Warning: Removing a port from this set will also remove it from any other sets it is in.
     public var ports: Set<MachPort> {
         get {
             var namesCount = mach_msg_type_number_t.max
@@ -47,7 +47,7 @@ class MachPortSet: MachPort {
             let newPorts = newValue.subtracting(self.ports)
             let oldPorts = self.ports.subtracting(newValue)
             for newPort in newPorts {
-                mach_port_move_member(mach_task_self_, newPort.rawValue, self.rawValue)
+                mach_port_insert_member(mach_task_self_, newPort.rawValue, self.rawValue)
             }
             for oldPort in oldPorts {
                 mach_port_move_member(
