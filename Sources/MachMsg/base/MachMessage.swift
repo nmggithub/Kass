@@ -68,7 +68,7 @@ open class MachMessage<Payload> {
                 // The kernel only accepts the voucher port if the disposition is `copySend` or `moveSend`. We
                 // will use `copySend` here, as it is what the built-in `voucher_mach_msg_set` function uses.
                 ? MachMessagePort(rawPort: newValue!.rawValue, disposition: .copySend)
-                : MachMessagePort()
+                : MachMessagePort.null
         }
     }
 

@@ -40,7 +40,7 @@ public class MachMessagePort: MachPort {
     }
     /// Initialize a new Mach port with the given raw port.
     public required init(rawValue: mach_port_t) {
-        self.disposition = .unknown
+        self.disposition = .none
         super.init(rawValue: rawValue)
     }
 }
