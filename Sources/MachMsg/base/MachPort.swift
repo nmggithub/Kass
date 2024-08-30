@@ -23,9 +23,7 @@ open class MachPort: RawRepresentable {
     }
     /// The rights of the Mach port.
     /// - Note: Both inserting and removing rights are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
-    /// - Warning:
-    ///     Attempting to remove the `.receive` right from a guarded Mach port may crash the program. It does not seem to be possible
-    ///     to check if a port is guarded, so it is recommended to avoid removing the `.receive` right from any port.
+    /// - Warning: Attempting to remove the `.receive` right from a guarded Mach port may crash the program.
     public var rights: Set<Right> {
         get {
             var type = mach_port_type_t()
