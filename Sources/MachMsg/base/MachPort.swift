@@ -44,7 +44,6 @@ open class MachPort: RawRepresentable {
                 let insertRightRet = mach_port_insert_right(
                     mach_task_self_, self.rawValue, self.rawValue, newRight.rawValue
                 )
-                print(insertRightRet)
                 guard insertRightRet == KERN_SUCCESS else { continue }
             }
             for oldRight in oldRights {
