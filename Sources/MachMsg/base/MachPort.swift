@@ -3,7 +3,7 @@ import Darwin
 import Foundation
 
 /// A Mach port.
-open class MachPort: RawRepresentable {
+open class MachPort: RawRepresentable, Hashable {
     /// A right for a Mach port.
     public enum Right: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
         case send = 0
@@ -22,22 +22,30 @@ open class MachPort: RawRepresentable {
                 .uppercased()
         }
     }
+
+    /// Get the rights of the given Mach port.
+    /// - Parameter port: The Mach port.
+    /// - Returns: The rights of the Mach port.
+    public static func rights(of port: mach_port_t) -> Set<Right> {
+        var type = mach_port_type_t()
+        let ret = mach_port_type(mach_task_self_, port, &type)
+        guard ret == KERN_SUCCESS else { return [] }
+        var rights = Set<Right>()
+        for right in Right.allCases {
+            // `mach_port_type_t` is a bitfield for the rights
+            if type & 1 << (right.rawValue + 16) != 0 {
+                rights.insert(right)
+            }
+        }
+        return rights
+    }
+
     /// The rights of the Mach port.
     /// - Note: Both inserting and removing rights are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
     /// - Warning: Attempting to remove the `.receive` right from a guarded Mach port may crash the program.
     public var rights: Set<Right> {
         get {
-            var type = mach_port_type_t()
-            let ret = mach_port_type(mach_task_self_, self.rawValue, &type)
-            guard ret == KERN_SUCCESS else { return [] }
-            var rights = Set<Right>()
-            for right in Right.allCases {
-                // `mach_port_type_t` is a bitfield for the rights
-                if type & 1 << (right.rawValue + 16) != 0 {
-                    rights.insert(right)
-                }
-            }
-            return rights
+            Self.rights(of: self.rawValue)
         }
         set {
             let newRights = newValue.subtracting(self.rights)
