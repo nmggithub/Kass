@@ -15,9 +15,7 @@ private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafeP
 public class BootstrapPort: MachSpecialPort {
     public func lookUp(serviceName: String) throws -> MachPort {
         var port = mach_port_t()
-        let ret = bootstrap_look_up(
-            MachTask.current.specialPorts[.bootstrap]!.rawValue, serviceName, &port
-        )
+        let ret = bootstrap_look_up(self.rawValue, serviceName, &port)
         guard ret == KERN_SUCCESS else {
             guard let errorString = bootstrap_strerror(ret) else {
                 // If we can't get the error string, just throw the return code
