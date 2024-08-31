@@ -1,7 +1,7 @@
 @preconcurrency import MachO
 
 /// A wrapper for a Mach task name port.
-open class MachTaskName: MachPort {
+open class MachTaskName: MachSpecialPort {
     typealias RawValue = task_name_t
     /// A null task name port.
     public override class var null: Self {

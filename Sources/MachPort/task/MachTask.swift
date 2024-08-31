@@ -2,7 +2,7 @@ import CCompat
 @preconcurrency import MachO
 
 /// A wrapper for a Mach task control port.
-open class MachTask: MachPort {
+open class MachTask: MachSpecialPort {
     public typealias RawValue = task_t
     /// A null task.
     public override class var null: Self {
@@ -89,7 +89,9 @@ open class MachTask: MachPort {
         /// - Parameters:
         ///   - portType: The type of the special port.
         ///   - portClass: The class of the special port.
-        public subscript<T: MachPort>(portType: SpecialPort, portClass: T.Type = MachPort.self)
+        public subscript<T: MachSpecialPort>(portType: SpecialPort,
+            portClass: T.Type = MachSpecialPort.self
+        )
             -> T?
         {
             get {

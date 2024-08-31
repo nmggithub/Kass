@@ -1,7 +1,7 @@
 @preconcurrency import MachO
 
 /// A wrapper for a Mach task read port.
-open class MachTaskRead: MachPort {
+open class MachTaskRead: MachSpecialPort {
     typealias RawValue = task_read_t
     /// A null task read port.
     public override class var null: Self {

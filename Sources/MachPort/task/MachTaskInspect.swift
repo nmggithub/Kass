@@ -1,7 +1,7 @@
 @preconcurrency import MachO
 
 /// A wrapper for a Mach task inspect port.
-open class MachTaskInspect: MachPort {
+open class MachTaskInspect: MachSpecialPort {
     typealias RawValue = task_inspect_t
     /// A null task inspect port.
     public override class var null: Self {

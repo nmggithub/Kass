@@ -2,7 +2,7 @@
 
 ## Topics
 
-### Wrapping an existing task port
+### Wrapping an existing task control port
 
 - ``init(rawValue:)``
 - ``init(pid:)``
