@@ -59,6 +59,7 @@ open class MachMessage<Payload> {
         set { self.header.voucherPort = newValue }
     }
 
+    /// The voucher attached to the message.
     public var voucher: MachVoucher? {
         get { MachVoucher(rawValue: self.voucherPort.rawValue) }
         set {
