@@ -4,7 +4,7 @@ import MachO
 open class MachPortSet: MachPort {
     /// Wrap a given port set reference.
     /// - Parameter rawValue: The port referencing the port set.
-    /// - Warning: The given port must reference a port set. If it is not, this initializer will wrap a null port.
+    /// - Warning: The given port must reference a port set. If it does not, this initializer will wrap a null port.
     public required init(rawValue: mach_port_t) {
         // Ensure that the port is a port set.
         guard MachPort.rights(of: rawValue).contains(.portSet) else {
