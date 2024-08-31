@@ -1,7 +1,7 @@
 import CCompat
 import Foundation
 import Linking
-@preconcurrency import MachO
+import MachPort
 
 private let bootstrap_look_up:
     @convention(c) (
@@ -22,7 +22,9 @@ private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafeP
 /// - Returns: The port for the service
 func bootstrapLookUp(serviceName: String) throws -> mach_port_t {
     var port = mach_port_t()
-    let ret = bootstrap_look_up(bootstrap_port, serviceName, &port)
+    let ret = bootstrap_look_up(
+        MachTask.current.specialPorts[.bootstrap]!.rawValue, serviceName, &port
+    )
     guard ret == KERN_SUCCESS else {
         guard let errorString = bootstrap_strerror(ret) else {
             // If we can't get the error string, just throw the return code
