@@ -1,9 +1,9 @@
 @preconcurrency import MachO
 import MachPort
 
-/// A connection to a service in launchd.
+/// A connection to a service.
 open class ServiceConnection: MachConnection {
-    /// Create a new connection to a service in launchd.
+    /// Create a new connection to a service.
     /// - Parameter serviceName: The name of the service to connect to.
     public init(serviceName: String) throws {
         let bootstrapPort =
