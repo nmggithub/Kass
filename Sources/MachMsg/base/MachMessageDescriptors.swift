@@ -37,10 +37,10 @@ public protocol MachMessageDescriptor: RawRepresentable {
 // Stored values for Mach message descriptors (stored values cannot be defined in protocols, so we use an extension)
 extension MachMessageDescriptor {
     /// The size of the descriptor in bytes.
-    /// - Remark: This is static so that it can be accessed without an instance.
+    /// - Note: This is static so that it can be accessed without an instance.
     public static var size: Int { MemoryLayout<Self.RawDescriptorType>.size }
     /// The size of the descriptor in bytes.
-    /// - Remark: This is an instance property so that it can be accessed with an instance.
+    /// - Note: This is an instance property so that it can be accessed with an instance.
     public var size: Int { MemoryLayout<Self.RawDescriptorType>.size }
     /// The type of the descriptor.
     public var type: DescriptorType { Self.type }
@@ -74,7 +74,6 @@ public struct PortDescriptor: MachMessageDescriptor {
 }
 
 /// A copy option.
-/// - Remark: This is used for out-of-line descriptors.
 public enum CopyOption: mach_msg_copy_options_t, NameableByCMacro {
     case physical = 0
     case virtual = 1
@@ -177,7 +176,7 @@ public struct OOLPortsDescriptor: MachMessageDescriptor {
             type: DescriptorType.oolPorts.rawValue,
             count: mach_msg_size_t(ports.count)
         )
-        // We could call `.deallocate()` here, but we won't (instead, we'll respect the deallocate flag and let the kernel handle it)
+        // We could call `.deallocate()` here, but we won't (instead, we'll respect the deallocate flag and let the kernel handle it).
     }
 }
 

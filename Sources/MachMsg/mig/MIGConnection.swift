@@ -1,5 +1,6 @@
 import CCompat
 import MachO
+import MachPort
 
 /// A connection to a MIG server.
 open class MIGConnection: ServiceConnection {
@@ -36,7 +37,7 @@ open class MIGConnection: ServiceConnection {
     ///   - port: The port to connect to.
     ///   - baseRoutineId: The base routine ID for the MIG server.
     public init(
-        port: mach_port_t, baseRoutineId: mach_msg_id_t
+        port: MachPort, baseRoutineId: mach_msg_id_t
     ) {
         self.baseRoutineId = baseRoutineId
         super.init(port: port)
@@ -71,8 +72,9 @@ open class MIGConnection: ServiceConnection {
     /// Perform a MIG routine.
     /// - Parameters:
     ///   - routineIndex: The index of the routine to perform (offset from the base routine ID).
-    ///   - requestOptions: The options for the request.
-    ///   - replyOptions: The options for the reply.
+    ///   - request: The request to send.
+    ///   - reply: The reply to receive.
+    ///   - machMsgOptions: The options to pass to `mach_msg`.
     public func doRoutine<RequestPayload, ReplyPayload>(
         _ routineIndex: mach_msg_id_t,
         request: Request<RequestPayload>,
@@ -87,7 +89,7 @@ open class MIGConnection: ServiceConnection {
 
         // build the request and reply
         request.id = routineId
-        request.migRemotePort = self.connectionPort
+        request.migRemotePort = self.connectionPort.rawValue
 
         try MachMessaging.sendAndReceive(
             request,

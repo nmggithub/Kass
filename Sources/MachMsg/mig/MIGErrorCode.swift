@@ -28,7 +28,7 @@ public enum MIGErrorCode: kern_return_t {
 }
 
 /// An error from a Mach Interface Generator (MIG) server routine.
-public class MIGError: NSError {
+public class MIGError: NSError, @unchecked Sendable {
     /// Create a new MIG error from an error code.
     /// - Parameter error: The error code.
     init(_ error: MIGErrorCode) {

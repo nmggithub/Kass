@@ -1,13 +1,14 @@
 import MachO
+import MachPort
 
 /// A connection to a Mach port.
 open class MachConnection {
-    /// The connection port for the service.
-    public let connectionPort: mach_port_t
+    /// The port for the connection.
+    public let connectionPort: MachPort
 
     /// Create a new connection to a Mach port.
     /// - Parameter port: The connection port to use.
-    public init(port: mach_port_t) {
+    public init(port: MachPort) {
         self.connectionPort = port
     }
 }

@@ -54,6 +54,7 @@ public class MachVoucherAttrRecipe: RawRepresentable {
     /// - Parameters:
     ///   - key: The key of the recipe.
     ///   - command: The command of the recipe.
+    ///   - previous: The previous voucher.
     ///   - content: The content of the recipe.
     public init(
         key: MachVoucher.Key, command: Command,

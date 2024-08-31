@@ -51,6 +51,7 @@ public class MachVoucher: RawRepresentable {
     ///   - key: The key to use.
     ///   - command: The command to invoke.
     ///   - in: The input content.
+    ///   - as: The type to cast the output content to.
     /// - Throws: An error if the command could not be invoked.
     /// - Returns: The output content.
     public func command<T>(

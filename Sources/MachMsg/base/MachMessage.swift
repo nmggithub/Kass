@@ -14,11 +14,10 @@ open class MachMessage<Payload> {
     /// The size of the message buffer in bytes.
     public let bufferSize: mach_msg_size_t
     /// The size of the message data in bytes.
-    /// - Remark:
-    ///     This specifically excludes the trailer, but also excludes any alignment padding
-    ///     between the payload (or the header, if there is no payload) and the trailer. It
-    ///     is calculated manually on initialization, and is the best guess as what will be
-    ///     in the `mach_msg_size` field, inserted by the kernel, when the message is sent.
+    /// - Note: This specifically excludes the trailer, but also excludes any alignment padding
+    ///         between the payload (or the header, if there is no payload) and the trailer. It
+    ///         is calculated manually on initialization, and is the best guess as what will be
+    ///         in the `mach_msg_size` field, inserted by the kernel, when the message is sent.
     public var messageSize: mach_msg_size_t {
         mach_msg_size_t(
             MemoryLayout<mach_msg_header_t>.size
@@ -104,7 +103,6 @@ open class MachMessage<Payload> {
     }
 
     /// Get the payload data as a `Data` object.
-    /// - Throws: A `PayloadDataError` if the payload is typed, or if there is no payload to get.
     /// - Returns: The payload data as a `Data` object.
     public func getPayloadData() throws -> Data {
         guard Payload.self == Never.self else { throw PayloadDataError.payloadIsTyped }
@@ -119,7 +117,6 @@ open class MachMessage<Payload> {
 
     /// Set the payload data from a `Data` object.
     /// - Parameter payloadData: The payload data to set.
-    /// - Throws: A `PayloadDataError` if the payload is typed, if there is no payload to set, or if the payload is too large.
     public func setPayloadData(_ payloadData: Data) throws {
         guard Payload.self == Never.self else { throw PayloadDataError.payloadIsTyped }
         // These are both testing essentially the same thing (`payloadPointer` should not be
@@ -141,9 +138,6 @@ open class MachMessage<Payload> {
     }
 
     /// The trailer for the message.
-    /// - Remark:
-    ///     It appears that Mach may have used to allow more variety in the trailer, but now it's basically
-    ///     guaranteed to be `mach_msg_max_trailer_t` (although some fields may be unused).
     public var trailer: mach_msg_max_trailer_t {
         get { self.trailerPointer.pointee }
         set { self.trailerPointer.pointee = newValue }
@@ -172,7 +166,7 @@ open class MachMessage<Payload> {
             let descriptorSize = descriptorTypes!.reduce(0) { $0 + $1.size }
             _bufferSize += descriptorSize
         }
-        // the payload could be typed (via `Payload`), or untyped (via `payloadSize`), so get the appropriate size
+        // The payload could be typed (via `Payload`), or untyped (via `payloadSize`), so get the appropriate size.
         self.payloadSize =
             MemoryLayout<Payload>.size > 0
             ? MemoryLayout<Payload>.size
@@ -243,13 +237,12 @@ open class MachMessage<Payload> {
     }
 
     /// Cleans up the message buffer by zeroing out any extra data after the trailer.
-    /// - Remark:
-    ///     The Mach message system reuses the same buffer for sent messages and received messages. If you send a message of
-    ///     a certain size, and then receive a message of a smaller size, the extra data from the sent message will still be
-    ///     in the buffer. This method will zero out any data after the trailer, which should effectively zero out any extra
-    ///     data left over from the sent message. This method is called automatically after a message is received, but it is
-    ///     exposed here in case you need to manually clean up the buffer. Note that it really only makes sense to call this
-    ///     method on received messages, as sent messages should not have any extra data in the buffer.
+    /// - Note: The Mach message system reuses the same buffer for sent messages and received messages. If you send a message of
+    ///         a certain size, and then receive a message of a smaller size, the extra data from the sent message will still be
+    ///         in the buffer. This method will zero out any data after the trailer, which should effectively zero out any extra
+    ///         data left over from the sent message. This method is called automatically after a message is received, but it is
+    ///         exposed here in case you need to manually clean up the buffer. Note that it really only makes sense to call this
+    ///         method on received messages, as sent messages should not have any extra data in the buffer.
     public func cleanUpLeftoverData() {
         // get the pointer to the end of the buffer
         let endPointer = self.startPointer.advanced(by: Int(self.bufferSize))
