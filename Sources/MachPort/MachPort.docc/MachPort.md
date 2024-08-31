@@ -8,11 +8,14 @@ The term "special port" applies to extant ports that are intended for specific p
 
 ## Topics
 
-### Mach ports and "special ports"
+### Mach ports
 
 
 - ``MachPort``  
+
+### Special ports
 - ``MachSpecialPort``
+- ``BootstrapPort``
 
 ### Port sets
 
