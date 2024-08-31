@@ -101,7 +101,7 @@ public class MachMessageHeader {
     }
 
     /// The size of the received message data in bytes. It is 0 for sent messages.
-    /// - Remark: This excludes any alignment padding between the payload and the trailer and the trailer itself.
+    /// - Note: This excludes any alignment padding between the payload and the trailer and the trailer itself.
     public var messageSize: mach_msg_size_t {
         self.pointer.pointee.msgh_size
     }

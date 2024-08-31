@@ -60,7 +60,7 @@ public class MachMessaging {
     ///   - receiveMessage: The message to receive.
     ///   - options: The options to use when sending and receiving the message.
     ///   - timeout: The timeout to use when sending and receiving the message.
-    /// - Remark: When finished, the receive message will contain the response.
+    /// - Note: When finished, the receive message will contain the response.
     public static func sendAndReceive<SendPayload, ReceivePayload>(
         _ sendMessage: MachMessage<SendPayload>,
         receiveMessage: MachMessage<ReceivePayload>,

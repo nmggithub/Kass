@@ -211,7 +211,7 @@ open class MachMessage<Payload> {
 
     /// Copy the contents of the given message into this message (allows message of any arbitrary type).
     /// - Parameter from: the message to copy from
-    /// - Remark: If the `from` message contains data outside the bounds of what this message can hold, an error will be thrown.
+    /// - Note: If the `from` message contains data outside the bounds of what this message can hold, an error will be thrown.
     public func copyIn<FromPayload>(
         from: MachMessage<FromPayload>
     ) throws {
