@@ -26,8 +26,8 @@ public class MachMessaging {
         let sendSize = message.bufferSize
         let ret = mach_msg(
             message.header.pointer, options.rawValue,
-            sendSize, 0, MachPort.null.rawValue,
-            timeout, MachPort.null.rawValue
+            sendSize, 0, (nil as MachPort).rawValue,
+            timeout, (nil as MachPort).rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
 
@@ -49,7 +49,7 @@ public class MachMessaging {
         let ret = mach_msg(
             message.header.pointer, options.rawValue,
             0, receiveSize, message.header.localPort.rawValue,
-            timeout, MachPort.null.rawValue
+            timeout, (nil as MachPort).rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
     }
@@ -79,7 +79,7 @@ public class MachMessaging {
         let ret = mach_msg(
             transient.header.pointer, options.rawValue | 0x3000003,
             sendSize, receiveMax, transient.header.localPort.rawValue,
-            timeout, MachPort.null.rawValue
+            timeout, (nil as MachPort).rawValue
         )
         guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
         try! receiveMessage.copyIn(from: transient)  // we can force-try here because we know it will succeed

@@ -4,6 +4,13 @@ import MachPort
 
 /// A wrapper for a Mach port with an associated disposition.
 public class MachMessagePort: MachPort {
+    /// A special initializer for a null port.
+    /// - Parameter nilLiteral: The nil literal.
+    /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
+    public required init(nilLiteral: ()) {
+        self.disposition = .none
+        super.init(rawValue: TASK_NULL)
+    }
     /// A disposition of a Mach port.
     public enum Disposition: mach_msg_type_name_t, CBinIntMacroEnum {
         case unknown = 0xFFFF_FFFF

@@ -2,13 +2,19 @@ import MachO
 
 /// A set of Mach ports.
 open class MachPortSet: MachPort {
+    /// A special initializer for a null port.
+    /// - Parameter nilLiteral: The nil literal.
+    /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
+    public required init(nilLiteral: ()) {
+        super.init(rawValue: TASK_READ_NULL)
+    }
     /// Wrap a given port set reference.
     /// - Parameter rawValue: The port referencing the port set.
     /// - Warning: The given port must reference a port set. If it does not, this initializer will wrap a null port.
     public required init(rawValue: mach_port_t) {
         // Ensure that the port is a port set.
         guard MachPort.rights(of: rawValue).contains(.portSet) else {
-            super.init(rawValue: mach_port_t(MACH_PORT_NULL))
+            super.init(nilLiteral: ())
             return
         }
         super.init(rawValue: rawValue)
@@ -17,7 +23,7 @@ open class MachPortSet: MachPort {
     override public class func allocate(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
     ) -> Self {
-        guard right == .portSet else { return Self.null }
+        guard right == .portSet else { return nil }
         return super.allocate(right: right, name: name, in: task)
     }
 

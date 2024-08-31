@@ -3,7 +3,14 @@ import Foundation
 import MachO
 
 /// A wrapper for a Mach port.
-open class MachPort: RawRepresentable, Hashable {
+open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
+    /// A special initializer for a null port.
+    /// - Parameter nilLiteral: The nil literal.
+    /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
+    public required init(nilLiteral: ()) {
+        self.rawValue = mach_port_t(MACH_PORT_NULL)
+    }
+
     /// The raw reference to the task that the Mach port is in.
     internal var rawTask: task_t = task_t(mach_task_self_)
 
@@ -243,10 +250,6 @@ open class MachPort: RawRepresentable, Hashable {
         }
     }
 
-    /// A null Mach port.
-    public class var null: Self {
-        Self(rawValue: mach_port_t(MACH_PORT_NULL))
-    }
     /// The raw Mach port.
     public var rawValue: mach_port_t
     /// Wrap a given port.
@@ -262,13 +265,13 @@ open class MachPort: RawRepresentable, Hashable {
     public class func allocate(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
     ) -> Self {
-        guard [.receive, .portSet, .deadName].contains(right) else { return Self.null }
+        guard [.receive, .portSet, .deadName].contains(right) else { return nil }
         var generatedPortName = mach_port_name_t()
         let ret =
             name != nil
             ? mach_port_allocate_name(task.rawValue, right.rawValue, name!)
             : mach_port_allocate(task.rawValue, MACH_PORT_RIGHT_RECEIVE, &generatedPortName)
-        guard ret == KERN_SUCCESS else { return Self.null }
+        guard ret == KERN_SUCCESS else { return nil }
         return Self(rawValue: generatedPortName)
     }
 
@@ -317,7 +320,7 @@ open class MachPort: RawRepresentable, Hashable {
         options.flags = flags.rawValue
         var portName = name ?? mach_port_name_t(MACH_PORT_NULL)
         let ret = mach_port_construct(task.rawValue, &options, context, &portName)
-        guard ret == KERN_SUCCESS else { return Self.null }
+        guard ret == KERN_SUCCESS else { return nil }
         return Self(rawValue: portName)
     }
 }

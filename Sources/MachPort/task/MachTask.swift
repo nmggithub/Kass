@@ -4,9 +4,11 @@ import CCompat
 /// A wrapper for a Mach task control port.
 open class MachTask: MachSpecialPort {
     public typealias RawValue = task_t
-    /// A null task.
-    public override class var null: Self {
-        Self(rawValue: TASK_NULL)
+    /// A special initializer for a null task port.
+    /// - Parameter nilLiteral: The nil literal.
+    /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
+    public required init(nilLiteral: ()) {
+        super.init(rawValue: TASK_NULL)
     }
     /// The current task.
     public static var current: Self {
@@ -17,7 +19,7 @@ open class MachTask: MachSpecialPort {
     /// - Warning: The given port must be a task control port in the current task's namespace. If it is not, this initializer will wrap a null task control port.
     public required init(rawValue: task_t) {
         guard KernelObject(rawPort: rawValue, rawTask: mach_task_self_)?.type == .taskControl else {
-            super.init(rawValue: TASK_NULL)
+            super.init(nilLiteral: ())
             return
         }
         super.init(rawValue: rawValue)
