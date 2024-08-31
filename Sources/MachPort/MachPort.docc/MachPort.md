@@ -1,6 +1,6 @@
 # ``MachPort``
 
-A collection of classes for interacting with an manipulating Mach ports.
+A collection of classes for interacting with and manipulating Mach ports.
 
 The XNU kernel provides many different concepts to userspace in the form of Mach ports. A Mach port is a reference to a set of rights in a given Mach task's namespace. It could be more-correctly referred to as a "port name", but the "port" term is used here because it is simpler and more widely used. This module provides a helper class, ``MachPort``, that wraps a raw port (`mach_port_t`). Additional subclasses are provided for different kinds of ports.
 
