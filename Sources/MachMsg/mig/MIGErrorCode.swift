@@ -37,8 +37,7 @@ public class MIGError: NSError, @unchecked Sendable {
             code: Int(error.rawValue)
         )
     }
-    // Swift complains if we don't implement this initializer
     required init?(coder: NSCoder) {
-        return nil
+        super.init(coder: coder)
     }
 }
