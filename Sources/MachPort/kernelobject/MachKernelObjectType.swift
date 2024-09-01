@@ -2,7 +2,7 @@ import CCompat
 import MachO
 
 /// A type of kernel object.
-public enum KernelObjectType: natural_t, CBinIntMacroEnum {
+public enum MachKernelObjectType: natural_t, CBinIntMacroEnum {
     case none = 0
     case threadControl = 1
     case taskControl = 2

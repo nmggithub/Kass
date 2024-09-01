@@ -10,6 +10,7 @@ where RawValue == mach_port_t {
     typealias ConstructFlag = MachPortConstructFlag
     typealias Attributes = MachPortAttributes
     typealias Attribute = MachPortAttribute
+    typealias KernelObject = MachKernelObject
     init(rawValue: mach_port_t)
     func `as`<T: MachPort>(_ type: T.Type) -> T
     var task: MachTask { get set }

@@ -1,9 +1,9 @@
 import MachO
 
 /// A kernel object underlying a Mach port.
-public class KernelObject {
+public class MachKernelObject {
     /// The type of the kernel object.
-    public let type: KernelObjectType
+    public let type: MachKernelObjectType
     /// The address of the kernel object.
     public let address: mach_vm_address_t
     /// A description of the kernel object.
@@ -28,7 +28,7 @@ public class KernelObject {
             rawTask, rawPort, &type, &address, descriptionPointer
         )
         guard ret == KERN_SUCCESS else { return nil }
-        self.type = KernelObjectType(rawValue: type) ?? .unknown
+        self.type = MachKernelObjectType(rawValue: type) ?? .unknown
         self.address = address
         self.description = String(cString: descriptionPointer)
     }

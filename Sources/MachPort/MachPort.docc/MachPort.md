@@ -28,8 +28,8 @@ Mach ports can be grouped into port sets. Each port set is referenced, itself, b
 
 Each Mach port is underlain by a kernel object of a specific type (or no type).
 
-- ``KernelObject``
-- ``KernelObjectType``
+- ``MachKernelObject``
+- ``MachKernelObjectType``
 
 ### Mach tasks
 
