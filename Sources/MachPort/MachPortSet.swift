@@ -1,7 +1,7 @@
 import MachO
 
 /// A set of Mach ports.
-open class MachPortSet: MachPort {
+open class MachPortSet: MachPortImpl {
     /// A special initializer for a null port.
     /// - Parameter nilLiteral: The nil literal.
     /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
@@ -13,13 +13,13 @@ open class MachPortSet: MachPort {
     /// - Warning: The given port must reference a port set. If it does not, this initializer will wrap a null port.
     public required init(rawValue: mach_port_t) {
         // Ensure that the port is a port set.
-        guard MachPort.rights(of: rawValue).contains(.portSet) else {
+        guard MachPortImpl.rights(of: rawValue).contains(.portSet) else {
             super.init(nilLiteral: ())
             return
         }
         super.init(rawValue: rawValue)
     }
-    @available(*, deprecated, message: "Use `allocate(name:)` instead.")
+    @available(*, unavailable, message: "Use `allocate(name:)` instead.")
     override public class func allocate(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
     ) -> Self {
@@ -37,7 +37,7 @@ open class MachPortSet: MachPort {
     /// The Mach ports in the set.
     /// - Note: Both inserting and removing ports are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
     /// - Warning: Removing a port from this set will also remove it from any other sets it is in.
-    public var ports: Set<MachPort> {
+    public var ports: Set<MachPortImpl> {
         get {
             var namesCount = mach_msg_type_number_t.max
             var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
@@ -46,7 +46,7 @@ open class MachPortSet: MachPort {
             let ret = mach_port_get_set_status(
                 self.task.rawValue, self.rawValue, &names, &namesCount)
             guard ret == KERN_SUCCESS else { return [] }
-            return Set((0..<Int(namesCount)).map { MachPort(rawValue: names![$0]) })
+            return Set((0..<Int(namesCount)).map { MachPortImpl(rawValue: names![$0]) })
         }
         set {
             let newPorts = newValue.subtracting(self.ports)

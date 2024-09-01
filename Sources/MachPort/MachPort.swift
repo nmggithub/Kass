@@ -2,8 +2,36 @@ import CCompat
 import Foundation
 import MachO
 
+/// A Mach port.
+public protocol MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral
+where RawValue == mach_port_t {
+    typealias Right = MachPortRight
+    typealias GuardFlag = MachPortGuardFlag
+    typealias ConstructFlag = MachPortConstructFlag
+    typealias Attributes = MachPortAttributes
+    typealias Attribute = MachPortAttribute
+    init(rawValue: mach_port_t)
+    func `as`<T: MachPort>(_ type: T.Type) -> T
+    var task: MachTask { get set }
+    var rights: Set<Right> { get set }
+    var guarded: Bool { get }
+    func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlag>) throws
+    func swapGuard(old: mach_port_context_t, new: mach_port_context_t) throws
+    func unguard(context: mach_port_context_t) throws
+    var context: mach_port_context_t { get set }
+    var kernelObject: KernelObject? { get }
+    var attributes: Attributes { get set }
+    static func allocate(
+        right: Right, name: mach_port_name_t?, in task: MachTask
+    ) -> Self
+    static func construct(
+        queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,
+        context: mach_port_context_t, name: mach_port_name_t?, in task: MachTask
+    ) -> Self
+}
+
 /// A wrapper for a Mach port.
-open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
+open class MachPortImpl: MachPort {
     /// A special initializer for a null port.
     /// - Parameter nilLiteral: The nil literal.
     /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
@@ -22,25 +50,6 @@ open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
         }
         set {
             self.rawTask = newValue.rawValue
-        }
-    }
-
-    /// A right for a Mach port.
-    public enum Right: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
-        case send = 0
-        case receive = 1
-        case sendOnce = 2
-        case portSet = 3
-        case deadName = 4
-        case labelh = 5
-        case number = 6
-        public var cMacroName: String {
-            "MACH_PORT_RIGHT_"
-                + "\(self)"
-                .replacingOccurrences(
-                    of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
-                )
-                .uppercased()
         }
     }
 
@@ -126,18 +135,6 @@ open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
         return false
     }
 
-    /// A flag for guarding a Mach port.
-    public enum GuardFlag: UInt64, COptionMacroEnum {
-        case strict = 1
-        case immovableReceive = 2
-        public var cMacroName: String {
-            "MPG_"
-                + "\(self)".replacingOccurrences(
-                    of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
-                ).uppercased()
-        }
-    }
-
     /// Guard the Mach port using the given context and flags.
     /// - Parameters:
     ///   - context: The context to guard the port with.
@@ -192,62 +189,11 @@ open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
         KernelObject(port: self)
     }
 
-    /// An attribute of a Mach port.
-    public enum Attribute: mach_port_flavor_t, CBinIntMacroEnum {
-        case limitsInfo = 1
-        case receiveStatus = 2
-        case dnrequestsSize = 3
-        case tempowner = 4
-        case importanceReceiver = 5
-        case denapReceiver = 6
-        case infoExt = 7
-        case guardInfo = 8
-        case serviceThrottled = 9
-        public var cMacroName: String {
-            "MACH_PORT_"
-                + "\(self)"
-                .replacingOccurrences(
-                    of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
-                )
-                .uppercased()
-        }
-    }
-
-    /// The attributes of the Mach port.
-    public struct Attributes {
-        internal let port: MachPort
-        public subscript<T>(flavor: Attribute, as: T.Type) -> T? {
-            get {
-                var count = mach_msg_type_number_t.max
-                let info = mach_port_info_t.allocate(capacity: Int(count))
-                let ret = mach_port_get_attributes(
-                    self.port.task.rawValue, self.port.rawValue, flavor.rawValue, info, &count
-                )
-                guard ret == KERN_SUCCESS else { return nil }
-                return info.withMemoryRebound(to: T.self, capacity: Int(count)) { $0.pointee }
-            }
-            set(newValue) {
-                guard newValue != nil else { return }
-                // The kernel will return `MIG_ARRAY_TOO_LARGE` if the count is too large.
-                let count = mach_msg_type_number_t(0x11)
-                let info = mach_port_info_t.allocate(capacity: Int(count))
-                info.withMemoryRebound(to: T.self, capacity: Int(count)) { $0.pointee = newValue! }
-                let ret = mach_port_set_attributes(
-                    self.port.task.rawValue, self.port.rawValue, flavor.rawValue, info, count
-                )
-                guard ret == KERN_SUCCESS else { return }
-            }
-        }
-    }
-
     /// The attributes of the Mach port.
     public var attributes: Attributes {
-        get {
-            Attributes(port: self)
-        }
-        set {
-            // This is a no-op, as the subscript setter is used to set the attributes. This is just here to tell the compiler that the attributes are settable.
-        }
+        get { Attributes(port: self) }
+        // This is a no-op, as the subscript setter is used to set the attributes. This is just here to tell the compiler that the attributes are settable.
+        set {}
     }
 
     /// The raw Mach port.
@@ -256,6 +202,11 @@ open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
     public required init(rawValue: mach_port_t) {
         self.rawValue = rawValue
     }
+
+    public func `as`<T: MachPort>(_ type: T.Type) -> T {
+        type.init(rawValue: self.rawValue)
+    }
+
     /// Allocate a new Mach port with the given right (and optionally a name).
     /// - Parameters:
     ///   - right: The right to allocate the port with.
@@ -273,32 +224,6 @@ open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
             : mach_port_allocate(task.rawValue, MACH_PORT_RIGHT_RECEIVE, &generatedPortName)
         guard ret == KERN_SUCCESS else { return nil }
         return Self(rawValue: generatedPortName)
-    }
-
-    /// A flag for constructing a Mach port.
-    public enum ConstructFlag: UInt32, COptionMacroEnum {
-        case contextAsGuard = 0x01
-        case queueLimit = 0x02
-        case tempowner = 0x04
-        case importanceReceiver = 0x08
-        case insertSendRight = 0x10
-        case strict = 0x20
-        case denapReceiver = 0x40
-        case immovableReceive = 0x80
-        case filterMsg = 0x100
-        case tgBlockTracking = 0x200
-        case servicePort = 0x400
-        case connectionPort = 0x800
-        case replyPort = 0x1000
-        case replyPortSemantics = 0x2000
-        case provisionalReplyPort = 0x4000
-        case provisionalIdProtOutput = 0x8000
-        public var cMacroName: String {
-            "MPO_"
-                + "\(self)".replacingOccurrences(
-                    of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
-                ).uppercased()
-        }
     }
 
     /// Construct a new Mach port.

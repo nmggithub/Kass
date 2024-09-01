@@ -3,7 +3,7 @@ import MachO
 
 /// A wrapper for a special non-allocatable and non-constructable Mach port.
 /// - Warning: Do not use this class directly. Instead, use one of its subclasses.
-open class MachSpecialPort: MachPort {
+open class MachSpecialPort: MachPortImpl {
     @available(*, unavailable, message: "Special ports cannot be allocated.")
     public override class func allocate(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
