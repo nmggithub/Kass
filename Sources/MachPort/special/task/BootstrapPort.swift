@@ -13,7 +13,7 @@ private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafeP
     libSystem().get(symbol: "bootstrap_strerror")!.cast()
 
 /// A port for communicating with the bootstrap server.
-public class BootstrapPort: MachSpecialPort {
+public class BootstrapPort: MachTaskSpecialPort {
     /// Look up a service by name in the bootstrap server.
     /// - Parameter serviceName: The name of the service to look up.
     /// - Returns: The port for the service.
