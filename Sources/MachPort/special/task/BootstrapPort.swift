@@ -12,7 +12,7 @@ private let bootstrap_look_up:
 private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafePointer<CChar>? =
     libSystem().get(symbol: "bootstrap_strerror")!.cast()
 
-/// A wrapper for a port to the bootstrap server.
+/// A port for communicating with the bootstrap server.
 public class BootstrapPort: MachSpecialPort {
     /// Look up a service by name in the bootstrap server.
     /// - Parameter serviceName: The name of the service to look up.

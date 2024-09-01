@@ -2,7 +2,7 @@
 
 ## Topics
 
-### Wrapping an existing port set
+### Representing an existing port set
 
 - ``init(rawValue:)``
 

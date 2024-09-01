@@ -1,7 +1,7 @@
 import CCompat
 import MachO
 
-/// A right for a Mach port.
+/// A right for a port.
 public enum MachPortRight: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
     case send = 0
     case receive = 1
@@ -20,6 +20,7 @@ public enum MachPortRight: mach_port_right_t, CBinIntMacroEnum, CaseIterable {
     }
 }
 
+/// A flag for guarding a port.
 public enum MachPortGuardFlag: UInt64, COptionMacroEnum {
     case strict = 1
     case immovableReceive = 2
@@ -31,7 +32,7 @@ public enum MachPortGuardFlag: UInt64, COptionMacroEnum {
     }
 }
 
-/// A flag for constructing a Mach port.
+/// A flag for constructing a port.
 public enum MachPortConstructFlag: UInt32, COptionMacroEnum {
     case contextAsGuard = 0x01
     case queueLimit = 0x02

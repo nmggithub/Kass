@@ -2,11 +2,11 @@
 
 ## Topics
 
-### Wrapping an existing port
+### Representing an existing port
 
 - ``init(rawValue:)``
 
-### Creating a new port
+### Allocating a new port
 
 - ``init(right:name:in:)``
 - ``MachPortConstructFlag``

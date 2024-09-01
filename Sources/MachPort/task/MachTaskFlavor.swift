@@ -1,7 +1,7 @@
 import CCompat
 import MachO
 
-/// A flavor of Mach task.
+/// A flavor of task.
 public enum MachTaskFlavor: mach_task_flavor_t, CBinIntMacroEnum {
     case control = 0
     case read = 1

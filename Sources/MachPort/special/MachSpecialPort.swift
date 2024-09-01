@@ -1,7 +1,7 @@
 import CCompat
 import MachO
 
-/// A wrapper for a special non-allocatable and non-constructable Mach port.
+/// A special non-allocatable port.
 /// - Warning: Do not use this class directly. Instead, use one of its subclasses.
 open class MachSpecialPort: MachPortImpl {
     @available(*, unavailable, message: "Special ports cannot be allocated.")

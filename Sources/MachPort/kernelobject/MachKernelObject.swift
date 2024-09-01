@@ -1,6 +1,6 @@
 import MachO
 
-/// A kernel object underlying a Mach port.
+/// A kernel object underlying a port.
 public class MachKernelObject {
     /// The type of the kernel object.
     public let type: MachKernelObjectType
@@ -8,8 +8,8 @@ public class MachKernelObject {
     public let address: mach_vm_address_t
     /// A description of the kernel object.
     public let description: String
-    /// Get a kernel object from a Mach port.
-    /// - Parameter port: The Mach port.
+    /// Get a kernel object from a port.
+    /// - Parameter port: The port.
     public convenience init?(port: MachPortImpl) {
         self.init(rawPort: port.rawValue, rawTask: port.task.rawValue)
     }

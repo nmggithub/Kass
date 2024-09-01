@@ -2,7 +2,7 @@ import CCompat
 import Foundation
 import MachO
 
-/// A Mach port.
+/// A representation of a Mach port.
 public protocol MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral
 where RawValue == mach_port_t {
     typealias Right = MachPortRight
@@ -25,7 +25,7 @@ where RawValue == mach_port_t {
     func deallocate()
 }
 
-/// A wrapper for a Mach port.
+/// A Mach port.
 open class MachPortImpl: MachPort {
     /// Whether or the port was allocated by the user.
     private let userAllocated: Bool
@@ -37,10 +37,10 @@ open class MachPortImpl: MachPort {
         self.userAllocated = false
     }
 
-    /// The raw reference to the task that the Mach port is in.
+    /// The raw task which the port is in.
     internal var rawTask: task_t = task_t(mach_task_self_)
 
-    /// The task which the Mach port is in.
+    /// The task which the port is in.
     /// - Warning: This is the task that will be used for all operations on the port, so be careful when changing it.
     public var task: MachTask {
         get {
@@ -51,9 +51,9 @@ open class MachPortImpl: MachPort {
         }
     }
 
-    /// Get the rights of a Mach port in a task.
+    /// Get the rights of a raw port in a task.
     /// - Parameters:
-    ///   - port: The Mach port.
+    ///   - port: The raw port.
     ///   - task: The task that the port is in.
     /// - Returns: The rights of the port.
     public static func rights(of port: mach_port_t, in task: MachTask = .current) -> Set<Right> {
@@ -70,9 +70,9 @@ open class MachPortImpl: MachPort {
         return rights
     }
 
-    /// The rights of the Mach port.
-    /// - Note: Both inserting and removing rights are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
-    /// - Warning: Attempting to remove the `.receive` right from a guarded Mach port may crash the program.
+    /// The rights of the port.
+    /// - Note: Both inserting and removing rights are not guaranteed to succeed. Any errors from the kernel when doing so are ignored.
+    /// - Warning: Attempting to remove the `.receive` right from a guarded port may crash the program.
     public var rights: Set<Right> {
         get {
             Self.rights(of: self.rawValue)
@@ -103,7 +103,7 @@ open class MachPortImpl: MachPort {
         }
     }
 
-    /// Whether the Mach port is guarded or not.
+    /// Whether the port is guarded or not.
     /// - Warning: This is not atomic, as it requires attempting to guard the port, and then unguarding it if needed. If an unexpected error
     ///            occurs during this process, the program will deliberately crash as the port would then be in an unknown state.
     public var guarded: Bool {
@@ -119,8 +119,7 @@ open class MachPortImpl: MachPort {
         case KERN_INVALID_TASK, KERN_INVALID_NAME, KERN_INVALID_RIGHT:
             return false
         case KERN_SUCCESS: break  // The guarding worked, so we need to unguard it.
-        // The userspace implementation of `mach_port_guard` sends a Mach message to the kernel, and has its own family of
-        // errors. If we get one of these errors, we need to crash the program, as the port is now in an unknown state.
+        // If the return code is not one of the expected ones, we need to crash the program, as the port is now in an unknown state.
         default: fatalError("Unexpected return code from `mach_port_guard`: \(guardRet)")
         }
 
@@ -133,7 +132,7 @@ open class MachPortImpl: MachPort {
         return false
     }
 
-    /// Guard the Mach port using the given context and flags.
+    /// Guard the port using the given context and flags.
     /// - Parameters:
     ///   - context: The context to guard the port with.
     ///   - flags: The flags to guard the port with.
@@ -146,7 +145,7 @@ open class MachPortImpl: MachPort {
         }
     }
 
-    /// Swap the guard of the Mach port from the old context to the new context.
+    /// Swap the guard of the port from the old context to the new context.
     /// - Parameters:
     ///   - old: The old context.
     ///   - new: The new context.
@@ -159,7 +158,7 @@ open class MachPortImpl: MachPort {
         }
     }
 
-    /// Unguard the Mach port using the given context.
+    /// Unguard the port using the given context.
     /// - Parameter context: The context to unguard the port with.
     public func unguard(context: mach_port_context_t) throws {
         let unguardRet = mach_port_unguard(self.task.rawValue, self.rawValue, context)
@@ -168,7 +167,7 @@ open class MachPortImpl: MachPort {
         }
     }
 
-    /// The Mach port context.
+    /// The port context.
     public var context: mach_port_context_t {
         get {
             var context = mach_port_context_t()
@@ -182,40 +181,41 @@ open class MachPortImpl: MachPort {
         }
     }
 
-    /// The kernel object underlying the Mach port.
+    /// The kernel object underlying the port.
     public var kernelObject: KernelObject? {
         KernelObject(port: self)
     }
 
-    /// The attributes of the Mach port.
+    /// The attributes of the port.
     public var attributes: Attributes {
         get { Attributes(port: self) }
         // This is a no-op, as the subscript setter is used to set the attributes. This is just here to tell the compiler that the attributes are settable.
         set {}
     }
 
-    /// The raw Mach port.
+    /// The raw port.
     public var rawValue: mach_port_t
 
-    /// Wrap a given port.
+    /// Represent an existing raw port.
+    /// - Parameter rawValue: The raw port.
     public required init(rawValue: mach_port_t) {
         self.rawValue = rawValue
         self.userAllocated = false
     }
 
-    /// Wrap the port in another Mach port type.
-    /// - Parameter type: The type to wrap the port in.
-    /// - Returns: The port wrapped in the given type.
+    /// Represent the raw port as another port type.
+    /// - Parameter type: The type to represent the raw port as.
+    /// - Returns: The raw port, represented as the given type.
     public func `as`<T: MachPort>(_ type: T.Type) -> T {
         type.init(rawValue: self.rawValue)
     }
 
-    /// Allocate a new Mach port with the given right (and optionally a name).
+    /// Allocate a new port with the given right (and optionally a name).
     /// - Parameters:
     ///   - right: The right to allocate the port with.
     ///   - name: The name to allocate the port with.
     ///   - task: The task to allocate the port in.
-    /// - Returns: The allocated port.
+    /// - Returns: The allocated port, or `nil` if the allocation failed.
     public init?(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
     ) {
@@ -230,14 +230,14 @@ open class MachPortImpl: MachPort {
         self.userAllocated = true
     }
 
-    /// Construct a new Mach port.
+    /// Construct a new port.
     /// - Parameters:
     ///   - queueLimit: The queue limit of the port.
     ///   - flags: The flags to construct the port with.
     ///   - context: The context to construct the port with.
     ///   - name: The name to construct the port with.
     ///   - task: The task to construct the port in.
-    /// - Returns: The constructed port, or a null port if the construction failed.
+    /// - Returns: The constructed port, or `nil` if the construction failed.
     public init?(
         queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,
         context: mach_port_context_t = 0,
@@ -254,7 +254,7 @@ open class MachPortImpl: MachPort {
         self.userAllocated = true
     }
 
-    /// Deallocate the Mach port.
+    /// Deallocate the port.
     public func deallocate() {
         mach_port_deallocate(self.task.rawValue, self.rawValue)
     }

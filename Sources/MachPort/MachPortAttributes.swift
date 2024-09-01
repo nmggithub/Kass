@@ -1,7 +1,7 @@
 import CCompat
 import MachO
 
-/// An attribute of a Mach port.
+/// An attribute of a port.
 public enum MachPortAttribute: mach_port_flavor_t, CBinIntMacroEnum {
     case limitsInfo = 1
     case receiveStatus = 2
@@ -22,7 +22,7 @@ public enum MachPortAttribute: mach_port_flavor_t, CBinIntMacroEnum {
     }
 }
 
-/// The attributes of the Mach port.
+/// The attributes of the port.
 public struct MachPortAttributes {
     internal let port: any MachPort
     public subscript<T>(flavor: MachPortAttribute, as: T.Type) -> T? {

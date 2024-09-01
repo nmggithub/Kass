@@ -1,6 +1,6 @@
 import MachO
 
-/// A set of Mach ports.
+/// A set of ports.
 open class MachPortSet: MachPortImpl {
     /// A special initializer for a null port.
     /// - Parameter nilLiteral: The nil literal.
@@ -8,9 +8,9 @@ open class MachPortSet: MachPortImpl {
     public required init(nilLiteral: ()) {
         super.init(rawValue: TASK_READ_NULL)
     }
-    /// Wrap a given port set reference.
-    /// - Parameter rawValue: The port referencing the port set.
-    /// - Warning: The given port must reference a port set. If it does not, this initializer will wrap a null port.
+    /// Represent an existing raw port set.
+    /// - Parameter rawValue: The raw port set.
+    /// - Warning: The given port must contain the ``MachPortRight/portSet`` right. If it does not, this initializer will return a null port.
     public required init(rawValue: mach_port_t) {
         // Ensure that the port is a port set.
         guard MachPortImpl.rights(of: rawValue).contains(.portSet) else {
@@ -27,15 +27,15 @@ open class MachPortSet: MachPortImpl {
         super.init(right: right, name: name, in: task)
     }
 
-    /// Allocate a new Mach port set with an optional name.
+    /// Allocate a new port set with an optional name.
     /// - Parameter name: The name to allocate the port set with.
     /// - Returns: The allocated port set.
     public init?(name: mach_port_name_t? = nil) {
         super.init(right: .portSet, name: name)
     }
 
-    /// The Mach ports in the set.
-    /// - Note: Both inserting and removing ports are not guaranteed to succeed. Any errors from the Mach kernel when doing so are ignored.
+    /// The ports in the set.
+    /// - Note: Both inserting and removing ports are not guaranteed to succeed. Any errors from the kernel when doing so are ignored.
     /// - Warning: Removing a port from this set will also remove it from any other sets it is in.
     public var ports: Set<MachPortImpl> {
         get {
