@@ -20,18 +20,18 @@ open class MachPortSet: MachPortImpl {
         super.init(rawValue: rawValue)
     }
     @available(*, unavailable, message: "Use `allocate(name:)` instead.")
-    override public class func allocate(
+    override public init?(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
-    ) -> Self {
+    ) {
         guard right == .portSet else { return nil }
-        return super.allocate(right: right, name: name, in: task)
+        super.init(right: right, name: name, in: task)
     }
 
     /// Allocate a new Mach port set with an optional name.
     /// - Parameter name: The name to allocate the port set with.
     /// - Returns: The allocated port set.
-    public class func allocate(name: mach_port_name_t? = nil) -> Self {
-        return super.allocate(right: .portSet, name: name)
+    public init?(name: mach_port_name_t? = nil) {
+        super.init(right: .portSet, name: name)
     }
 
     /// The Mach ports in the set.

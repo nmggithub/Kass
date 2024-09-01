@@ -8,5 +8,4 @@
 
 ### Allocating a new port set
 
-- ``allocate(name:)``
-- ``allocate(right:name:in:)``
+- ``init(name:)``

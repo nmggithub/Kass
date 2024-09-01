@@ -22,13 +22,6 @@ where RawValue == mach_port_t {
     var context: mach_port_context_t { get set }
     var kernelObject: KernelObject? { get }
     var attributes: Attributes { get set }
-    static func allocate(
-        right: Right, name: mach_port_name_t?, in task: MachTask
-    ) -> Self
-    static func construct(
-        queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,
-        context: mach_port_context_t, name: mach_port_name_t?, in task: MachTask
-    ) -> Self
 }
 
 /// A wrapper for a Mach port.
@@ -204,6 +197,9 @@ open class MachPortImpl: MachPort {
         self.rawValue = rawValue
     }
 
+    /// Wrap the port in another Mach port type.
+    /// - Parameter type: The type to wrap the port in.
+    /// - Returns: The port wrapped in the given type.
     public func `as`<T: MachPort>(_ type: T.Type) -> T {
         type.init(rawValue: self.rawValue)
     }
@@ -214,9 +210,9 @@ open class MachPortImpl: MachPort {
     ///   - name: The name to allocate the port with.
     ///   - task: The task to allocate the port in.
     /// - Returns: The allocated port.
-    public class func allocate(
+    public init?(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
-    ) -> Self {
+    ) {
         guard [.receive, .portSet, .deadName].contains(right) else { return nil }
         var generatedPortName = mach_port_name_t()
         let ret =
@@ -224,7 +220,7 @@ open class MachPortImpl: MachPort {
             ? mach_port_allocate_name(task.rawValue, right.rawValue, name!)
             : mach_port_allocate(task.rawValue, MACH_PORT_RIGHT_RECEIVE, &generatedPortName)
         guard ret == KERN_SUCCESS else { return nil }
-        return Self(rawValue: generatedPortName)
+        self.rawValue = name ?? generatedPortName
     }
 
     /// Construct a new Mach port.
@@ -235,18 +231,18 @@ open class MachPortImpl: MachPort {
     ///   - name: The name to construct the port with.
     ///   - task: The task to construct the port in.
     /// - Returns: The constructed port, or a null port if the construction failed.
-    public class func construct(
+    public init?(
         queueLimit: mach_port_msgcount_t, flags: COptionMacroSet<ConstructFlag>,
         context: mach_port_context_t = 0,
         name: mach_port_name_t? = nil,
         in task: MachTask = .current
-    ) -> Self {
+    ) {
         var options = mach_port_options_t()
         options.mpl.mpl_qlimit = queueLimit
         options.flags = flags.rawValue
         var portName = name ?? mach_port_name_t(MACH_PORT_NULL)
         let ret = mach_port_construct(task.rawValue, &options, context, &portName)
         guard ret == KERN_SUCCESS else { return nil }
-        return Self(rawValue: portName)
+        self.rawValue = portName
     }
 }

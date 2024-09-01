@@ -1,4 +1,4 @@
-# ``MachPort/MachPort``
+# ``MachPort/MachPortImpl``
 
 ## Topics
 
@@ -8,18 +8,18 @@
 
 ### Creating a new port
 
-- ``allocate(right:name:in:)``
-- ``ConstructFlag``
-- ``construct(queueLimit:flags:context:name:in:)``
+- ``init(right:name:in:)``
+- ``MachPortConstructFlag``
+- ``init(queueLimit:flags:context:name:in:)``
 
 ### Managing the port rights
 - ``rights``
 - ``rights(of:in:)``
-- ``Right``
+- ``MachPortRight``
 
 ### Guarding the port
 
-- ``GuardFlag``
+- ``MachPortGuardFlag``
 - ``context``
 - ``guard(context:flags:)``
 - ``unguard(context:)``
@@ -29,5 +29,5 @@
 ### Getting and setting the port attributes
 
 - ``attributes``
-- ``Attributes``
-- ``Attribute``
+- ``MachPortAttributes``
+- ``MachPortAttribute``
