@@ -22,15 +22,19 @@ where RawValue == mach_port_t {
     var context: mach_port_context_t { get set }
     var kernelObject: KernelObject? { get }
     var attributes: Attributes { get set }
+    func deallocate()
 }
 
 /// A wrapper for a Mach port.
 open class MachPortImpl: MachPort {
+    /// Whether or the port was allocated by the user.
+    private let userAllocated: Bool
     /// A special initializer for a null port.
     /// - Parameter nilLiteral: The nil literal.
     /// - Warning: Do not use this initializer directly. Instead, initialize this class with `nil`.
     public required init(nilLiteral: ()) {
         self.rawValue = mach_port_t(MACH_PORT_NULL)
+        self.userAllocated = false
     }
 
     /// The raw reference to the task that the Mach port is in.
@@ -192,9 +196,11 @@ open class MachPortImpl: MachPort {
 
     /// The raw Mach port.
     public var rawValue: mach_port_t
+
     /// Wrap a given port.
     public required init(rawValue: mach_port_t) {
         self.rawValue = rawValue
+        self.userAllocated = false
     }
 
     /// Wrap the port in another Mach port type.
@@ -221,6 +227,7 @@ open class MachPortImpl: MachPort {
             : mach_port_allocate(task.rawValue, MACH_PORT_RIGHT_RECEIVE, &generatedPortName)
         guard ret == KERN_SUCCESS else { return nil }
         self.rawValue = name ?? generatedPortName
+        self.userAllocated = true
     }
 
     /// Construct a new Mach port.
@@ -244,5 +251,15 @@ open class MachPortImpl: MachPort {
         let ret = mach_port_construct(task.rawValue, &options, context, &portName)
         guard ret == KERN_SUCCESS else { return nil }
         self.rawValue = portName
+        self.userAllocated = true
+    }
+
+    /// Deallocate the Mach port.
+    public func deallocate() {
+        mach_port_deallocate(self.task.rawValue, self.rawValue)
+    }
+
+    deinit {
+        if self.userAllocated { self.deallocate() }
     }
 }
