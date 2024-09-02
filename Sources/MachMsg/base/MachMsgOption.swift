@@ -1,7 +1,7 @@
 import CCompat
 import MachO
 
-/// Options for Mach messages.
+/// An option for `mach_msg` calls.
 public enum MachMsgOption: mach_msg_option_t, COptionMacroEnum {
     case send = 0x0000_0001
     case receive = 0x0000_0002
@@ -27,21 +27,6 @@ public enum MachMsgOption: mach_msg_option_t, COptionMacroEnum {
         return "MACH_"
             + "\(self)"
             .replacingOccurrences(of: "receive", with: "rcv", options: .literal)
-            .replacingOccurrences(
-                of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
-            )
-            .uppercased()
-    }
-}
-
-/// Kernel options for Mach messages (unused, for now).
-public enum MachMsgKernelOption: mach_msg_option_t, COptionMacroEnum {
-    case sendImportance = 0x0008_0000
-    case sendAlways = 0x0001_0000
-    case sendKernel = 0x0040_0000
-    public var cMacroName: String {
-        return "MACH_"
-            + "\(self)"
             .replacingOccurrences(
                 of: "([a-z])([A-Z])", with: "$1_$2", options: .regularExpression
             )
