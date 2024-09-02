@@ -3,86 +3,131 @@ import Foundation
 import MachO
 import MachPort
 
-/// A helper class for sending and receiving messages.
-public class MachMessaging {
-    /// Create an error from a return code.
-    /// - Parameter ret: The return code.
-    /// - Returns: An error representing the return code.
-    private static func errorForReturnCode(_ ret: mach_msg_return_t) -> Error {
-        NSError(domain: NSMachErrorDomain, code: Int(ret))
+extension MachMessage {
+    /// The size to pass to `mach_msg` for sending the message.
+    var sendSize: mach_msg_size_t {
+        mach_msg_size_t(
+            MemoryLayout<mach_msg_header_t>.size
+                + bodySize
+                + payloadSize
+        )
     }
+}
 
+struct MachMessaging {
+    /// A transient buffer for receiving messages, set to the theoretical maximum size.
+    static var transientBuffer: UnsafeMutableRawBufferPointer {
+        let bufferSize = Int(mach_msg_size_t.max)
+        let bufferPointer = UnsafeMutableRawPointer.allocate(
+            byteCount: bufferSize,
+            alignment: MemoryLayout<mach_msg_header_t>.alignment
+        )
+        let buffer = UnsafeMutableRawBufferPointer(start: bufferPointer, count: bufferSize)
+        buffer.initializeMemory(as: UInt8.self, repeating: 0)
+        return buffer
+    }
     /// Send a message.
     /// - Parameters:
     ///   - message: The message to send.
-    ///   - options: The options to use when sending the message.
-    ///   - timeout: The timeout to use when sending the message.
-    public static func send<SendPayload>(
-        _ message: MachMessage<SendPayload>,
-        options: consuming MachMsgOptions = [], timeout: mach_msg_timeout_t = 0
+    ///   - remoteMessagePort: The port to send the message to. Don't specify to use the message's remote port.
+    ///   - options: The options for sending the message.
+    ///   - timeout: The timeout for sending the message.
+    static func send(
+        _ message: MachMessage<some MachMessagePayload>,
+        to remoteMessagePort: MachMessagePort? = nil,
+        options: consuming MachMsgOptions = [],
+        timeout: mach_msg_timeout_t = 0
     ) throws {
         options.set(.send)
         options.unset(.receive)
-        let sendSize = message.bufferSize
+        if let remoteMessagePort = remoteMessagePort {
+            message.header.remoteMessagePort = remoteMessagePort
+        }
         let ret = mach_msg(
-            message.header.pointer, options.rawValue,
-            sendSize, 0, (nil as MachPort).rawValue,
+            message.rawValue, options.rawValue,
+            message.sendSize, 0, (nil as MachPort).rawValue,
             timeout, (nil as MachPort).rawValue
         )
-        guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
-
+        guard ret == MACH_MSG_SUCCESS else {
+            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
+        }
     }
-
-    /// Receive a message.
-    /// - Parameters:
-    ///   - message: The message to receive.
-    ///   - options: The options to use when receiving the message.
-    ///   - timeout: The timeout to use when receiving the message.
-    public static func receive<ReceivePayload>(
-        _ message: MachMessage<ReceivePayload>,
-        options: consuming MachMsgOptions = [],
-        timeout: mach_msg_timeout_t = 0
-    ) throws {
-        options.unset(.send)
-        options.set(.receive)
-        let receiveSize: mach_msg_size_t = message.bufferSize
-        let ret = mach_msg(
-            message.header.pointer, options.rawValue,
-            0, receiveSize, message.header.localPort.rawValue,
-            timeout, (nil as MachPort).rawValue
-        )
-        guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
-    }
-
     /// Send a message and receive a response.
     /// - Parameters:
-    ///   - sendMessage: The message to send.
-    ///   - receiveMessage: The message to receive.
-    ///   - options: The options to use when sending and receiving the message.
-    ///   - timeout: The timeout to use when sending and receiving the message.
-    /// - Note: When finished, the receive message will contain the response.
-    public static func sendAndReceive<SendPayload, ReceivePayload>(
-        _ sendMessage: MachMessage<SendPayload>,
-        receiveMessage: MachMessage<ReceivePayload>,
+    ///   - message: The message to send.
+    ///   - remoteMessagePort: The port to send the message to. Don't specify to use the message's remote port.
+    ///   - receiving: The type of message to receive.
+    ///   - localMessagePort: The port to receive the response on. Don't specify to use the message's local port.
+    ///   - options: The options for sending and receiving the message.
+    ///   - timeout: The timeout for sending and receiving the message.
+    static func send<
+        ReceivePayload: MachMessagePayload,
+        ReceiveMessage: MachMessage<ReceivePayload>
+    >(
+        _ message: MachMessage<some MachMessagePayload>,
+        to remoteMessagePort: MachMessagePort? = nil,
+        receiving: ReceiveMessage.Type,
+        on localMessagePort: MachMessagePort? = nil,
         options: consuming MachMsgOptions = [],
         timeout: mach_msg_timeout_t = 0
-    ) throws {
+    ) throws -> ReceiveMessage {
         options.set(.send, .receive)
-        let sendSize = sendMessage.messageSize  // does not include the trailer
-        let receiveMax: mach_msg_size_t = receiveMessage.bufferSize  // does include the trailer
-
-        // premake a transient message buffer, so that we are not mutating the original buffer
-        let transient = MachMessage<Never>(
-            payloadSize: Int(max(receiveMax, sendSize)) - MemoryLayout<mach_msg_header_t>.size
+        if let remoteMessagePort = remoteMessagePort {
+            message.header.remoteMessagePort = remoteMessagePort
+        }
+        if let localMessagePort = localMessagePort {
+            message.header.localMessagePort = localMessagePort
+        }
+        let originalMessageBuffer = UnsafeRawBufferPointer(
+            start: message.rawValue, count: Int(message.sendSize)
         )
-        try transient.copyIn(from: sendMessage)
+        let rawMessageBuffer = self.transientBuffer
+        rawMessageBuffer.copyMemory(from: originalMessageBuffer)
+        let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
+            to: mach_msg_header_t.self, capacity: 1
+        )
         let ret = mach_msg(
-            transient.header.pointer, options.rawValue | 0x3000003,
-            sendSize, receiveMax, transient.header.localPort.rawValue,
-            timeout, (nil as MachPort).rawValue
+            messageBuffer, options.rawValue, message.sendSize,
+            mach_msg_size_t(rawMessageBuffer.count),
+            message.header.localPort.rawValue, timeout,
+            (nil as MachPort).rawValue
         )
-        guard ret == MACH_MSG_SUCCESS else { throw Self.errorForReturnCode(ret) }
-        try! receiveMessage.copyIn(from: transient)  // we can force-try here because we know it will succeed
-        receiveMessage.cleanUpLeftoverData()  // clean up any leftover data from the sent message (as the buffer is reused)
+        guard ret == MACH_MSG_SUCCESS else {
+            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
+        }
+        return ReceiveMessage.init(rawValue: messageBuffer)
+    }
+    /// Receive a message.
+    /// - Parameters:
+    ///   - messageType: The type of message to receive.
+    ///   - localPort: The port to receive the message on.
+    ///   - options: The options for receiving the message.
+    ///   - timeout: The timeout for receiving the message.
+    static func receive<
+        ReceivePayload: MachMessagePayload,
+        ReceiveMessage: MachMessage<ReceivePayload>
+    >(
+        _ messageType: ReceiveMessage.Type,
+        on localPort: MachPort,
+        options: consuming MachMsgOptions = [],
+        timeout: mach_msg_timeout_t = 0
+    ) throws -> ReceiveMessage {
+        options.unset(.send)
+        options.set(.receive)
+
+        let rawMessageBuffer = self.transientBuffer
+        let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
+            to: mach_msg_header_t.self, capacity: 1
+        )
+        let ret = mach_msg(
+            messageBuffer, options.rawValue, 0,
+            mach_msg_size_t(rawMessageBuffer.count),
+            localPort.rawValue, timeout,
+            (nil as MachPort).rawValue
+        )
+        guard ret == MACH_MSG_SUCCESS else {
+            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
+        }
+        return ReceiveMessage.init(rawValue: messageBuffer)
     }
 }

@@ -2,22 +2,22 @@ import CCompat
 import Foundation
 import MachO
 
-/// An error reply to a Mach Interface Generator (MIG) message.
-public class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
+/// An error reply to a MIG message.
+/// - Important: This really just represents an empty reply with a return code, which might be `KERN_SUCCESS`. So
+/// the name "MIG error reply" is bit of a misnomer, but it's based on the name of the corresponding C struct.
+final class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
     /// The error represented by the reply.
     public var error: Swift.Error {
         NSError(domain: NSMachErrorDomain, code: Int(self.payload!.returnCode))
     }
     /// The payload of a MIG error reply.
-    public struct Payload {  // based on `mig_reply_error_t`
-        fileprivate let NDR: NDR_record_t
-        public let returnCode: Int32
+    public struct Payload: MIGPayload {
+        // based on `mig_reply_error_t`
+        public let NDR: NDR_record_t = NDR_record_t()
+        public let returnCode: Int32 = 0
+        public init() {}
     }
-    /// Create a new MIG error message.
-    public required init() {
-        super.init(
-            descriptorTypes: nil,
-            payloadType: Payload.self
-        )
+    public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
+        super.init(rawValue: rawValue)
     }
 }
