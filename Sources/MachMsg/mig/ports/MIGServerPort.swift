@@ -34,14 +34,14 @@ open class MIGServerPort: ServicePort {
     /// - Throws: If the routine fails.
     /// - Returns: The reply to the request.
     public func doRoutine<
-        ReceivePayload: MIGPayload,
-        ReceiveReply: MIGReply<ReceivePayload>
+        ReplyPayload: MIGPayload,
+        ReplyReply: MIGReply<ReplyPayload>
     >(
         _ routineIndex: mach_msg_id_t,
         request: MIGRequest<some MIGPayload>,
-        receiving: ReceiveReply.Type,
+        receiving: ReplyReply.Type,
         on replyPort: MachMessagePort? = nil
-    ) throws -> ReceiveReply {
+    ) throws -> ReplyReply {
         let routineId = self.baseRoutineId + routineIndex
         request.header.messageID = routineId
         let reply = try MachMessaging.send(
