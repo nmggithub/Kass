@@ -35,7 +35,7 @@ open class MachTask: MachSpecialPort {
     }
 
     /// All ports in the task's namespace.
-    public var ports: [any MachPort] {
+    public var ports: [MachPort] {
         var namesCount = mach_msg_type_number_t.max
         var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
             capacity: Int(namesCount)
@@ -48,7 +48,7 @@ open class MachTask: MachSpecialPort {
         let ret = mach_port_names(self.rawValue, &names, &namesCount, &types, &typesCount)
         guard ret == KERN_SUCCESS else { return [] }
         return (0..<Int(namesCount)).map {
-            let portInTask = MachPortImpl(rawValue: names![$0])
+            let portInTask = MachPort(rawValue: names![$0])
             portInTask.rawTask = self.rawValue
             return portInTask
         }

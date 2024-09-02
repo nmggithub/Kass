@@ -17,7 +17,7 @@ public class BootstrapPort: MachTaskSpecialPort {
     /// Look up a service by name in the bootstrap server.
     /// - Parameter serviceName: The name of the service to look up.
     /// - Returns: The port for the service.
-    public func lookUp(serviceName: String) throws -> MachPortImpl {
+    public func lookUp(serviceName: String) throws -> MachPort {
         var port = mach_port_t()
         let ret = bootstrap_look_up(self.rawValue, serviceName, &port)
         guard ret == KERN_SUCCESS else {
@@ -32,6 +32,6 @@ public class BootstrapPort: MachTaskSpecialPort {
                 ]
             )
         }
-        return MachPortImpl(rawValue: port)
+        return MachPort(rawValue: port)
     }
 }

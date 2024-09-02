@@ -10,7 +10,7 @@ public class MachKernelObject {
     public let description: String
     /// Get a kernel object from a port.
     /// - Parameter port: The port.
-    public convenience init?(port: MachPortImpl) {
+    public convenience init?(port: MachPort) {
         self.init(rawPort: port.rawValue, rawTask: port.task.rawValue)
     }
 

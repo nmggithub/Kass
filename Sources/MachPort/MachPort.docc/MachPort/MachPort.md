@@ -1,4 +1,4 @@
-# ``MachPort/MachPortImpl``
+# ``MachPort/MachPort``
 
 ## Topics
 

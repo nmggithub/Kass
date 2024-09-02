@@ -2,31 +2,14 @@ import CCompat
 import Foundation
 import MachO
 
-/// A representation of a Mach port.
-public protocol MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral
-where RawValue == mach_port_t {
-    typealias Right = MachPortRight
-    typealias GuardFlag = MachPortGuardFlag
-    typealias ConstructFlag = MachPortConstructFlag
-    typealias Attributes = MachPortAttributes
-    typealias Attribute = MachPortAttribute
-    typealias KernelObject = MachKernelObject
-    init(rawValue: mach_port_t)
-    func `as`<T: MachPort>(_ type: T.Type) -> T
-    var task: MachTask { get set }
-    var rights: Set<Right> { get set }
-    var guarded: Bool { get }
-    func `guard`(context: mach_port_context_t, flags: COptionMacroSet<GuardFlag>) throws
-    func swapGuard(old: mach_port_context_t, new: mach_port_context_t) throws
-    func unguard(context: mach_port_context_t) throws
-    var context: mach_port_context_t { get set }
-    var kernelObject: KernelObject? { get }
-    var attributes: Attributes { get set }
-    func deallocate()
-}
-
 /// A Mach port.
-open class MachPortImpl: MachPort {
+open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
+    public typealias Right = MachPortRight
+    public typealias GuardFlag = MachPortGuardFlag
+    public typealias ConstructFlag = MachPortConstructFlag
+    public typealias Attributes = MachPortAttributes
+    public typealias Attribute = MachPortAttribute
+    public typealias KernelObject = MachKernelObject
     /// Whether or the port was allocated by the user.
     private let userAllocated: Bool
     /// A special initializer for a null port.

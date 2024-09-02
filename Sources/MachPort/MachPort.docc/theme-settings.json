@@ -1,0 +1,12 @@
+{
+  "features": {
+    "docs": {
+      "quickNavigation": {
+        "enable": true
+      },
+      "onThisPageNavigator": {
+        "disable": true
+      }
+    }
+  }
+}

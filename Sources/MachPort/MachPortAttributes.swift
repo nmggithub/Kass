@@ -24,7 +24,7 @@ public enum MachPortAttribute: mach_port_flavor_t, CBinIntMacroEnum {
 
 /// The attributes of the port.
 public struct MachPortAttributes {
-    internal let port: any MachPort
+    internal let port: MachPort
     public subscript<T>(flavor: MachPortAttribute, as: T.Type) -> T? {
         get {
             var count = mach_msg_type_number_t.max

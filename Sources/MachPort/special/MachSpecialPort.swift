@@ -3,7 +3,7 @@ import MachO
 
 /// A special non-allocatable port.
 /// - Warning: Do not use this class directly. Instead, use one of its subclasses.
-open class MachSpecialPort: MachPortImpl {
+open class MachSpecialPort: MachPort {
     @available(*, unavailable, message: "Special ports cannot be allocated.")
     override public init?(
         right: Right, name: mach_port_name_t? = nil, in task: MachTask = .current
