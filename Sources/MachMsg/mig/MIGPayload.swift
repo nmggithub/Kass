@@ -11,4 +11,5 @@ public protocol MIGPayloadWithNDR: MIGPayload {
     var NDR: NDR_record_t { get }
 }
 
+extension Data: MIGPayload {}
 extension ZeroLengthPayload: MIGPayload {}
