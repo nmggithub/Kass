@@ -3,18 +3,10 @@ import MachO
 import MachPort
 
 /// A port to a MIG server.
-open class MIGServerPort: MachPort, InitializableByServiceName {
+open class MIGServerPort: MachPort {
     /// The base routine ID for the MIG server.
     var baseRoutineId: mach_msg_id_t
 
-    /// Connect to a MIG server.
-    /// - Parameters:
-    ///   - serviceName: The service name of the MIG server.
-    ///   - baseRoutineId: The base routine ID for the MIG server.
-    public convenience init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
-        try self.init(serviceName: serviceName)
-        self.baseRoutineId = baseRoutineId
-    }
     /// Represent an existing raw MIG server port.
     /// - Parameters:
     ///   - rawPort: The raw port.
