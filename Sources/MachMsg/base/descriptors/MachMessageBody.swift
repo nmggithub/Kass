@@ -18,7 +18,8 @@ public struct MachMessageBody: RawRepresentable {
             .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
         for descriptor in self.descriptors {
             MachMessageDescriptorManager.serialize(descriptor: descriptor, to: descriptorPointer)
-            descriptorPointer += descriptor.size
+            descriptorPointer = (UnsafeMutableRawPointer(descriptorPointer) + descriptor.size)
+                .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
         }
         return bodyPointer
     }
