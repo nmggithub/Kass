@@ -8,6 +8,8 @@ internal typealias MachMessageDescriptorPointer = UnsafePointer<mach_msg_type_de
 /// An iterator for a set of descriptor pointers.
 internal struct MachMessageDescriptorIterator: IteratorProtocol {
     typealias Element = MachMessageDescriptorPointer
+    /// The count of descriptors.
+    private let count: Int
     /// The current index.
     private var index: Int = 0
     /// The current descriptor pointer.
@@ -15,6 +17,7 @@ internal struct MachMessageDescriptorIterator: IteratorProtocol {
     /// Create an iterator for a set of descriptor pointers.
     /// - Parameter bodyPointer: A pointer to a message body.
     init(bodyPointer: UnsafePointer<mach_msg_body_t>) {
+        self.count = Int(bodyPointer.pointee.msgh_descriptor_count)
         self.pointer = UnsafeRawPointer(bodyPointer + 1)
             .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
     }
@@ -22,12 +25,14 @@ internal struct MachMessageDescriptorIterator: IteratorProtocol {
     /// - Returns: The next descriptor pointer, or `nil` if there are no more descriptors.
     /// - Warning: This method also returns `nil` if the type of the next descriptor is invalid.
     mutating func next() -> MachMessageDescriptorPointer? {
+        guard self.index < self.count else { return nil }  // No more descriptors.
         let rawDescriptorType = self.pointer.pointee.type
         guard let descriptorType = MachMessageDescriptor.DescriptorType(rawValue: rawDescriptorType)
         else { return nil }  // Invalid descriptor type.
         let descriptorPointer = self.pointer
         self.pointer = (UnsafeRawPointer(self.pointer) + descriptorType.swiftStructType.size)
             .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
+        self.index += 1
         return descriptorPointer
     }
 }
