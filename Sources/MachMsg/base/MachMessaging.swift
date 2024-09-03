@@ -6,11 +6,11 @@ import MachPort
 extension MachMessage {
     /// The size to pass to `mach_msg` for sending the message.
     var sendSize: mach_msg_size_t {
-        mach_msg_size_t(
+        let unalignedSize =
             MemoryLayout<mach_msg_header_t>.size
-                + bodySize
-                + payloadSize
-        )
+            + bodySize
+            + payloadSize
+        return mach_msg_size_t(unalignedSize + (Self.alignment - 1) & ~(Self.alignment - 1))
     }
 }
 
@@ -38,7 +38,7 @@ struct MachMessaging {
     ///   - options: The options for sending the message.
     ///   - timeout: The timeout for sending the message.
     static func send(
-        _ message: MachMessage<some MachMessagePayload>,
+        _ message: MachMessage,
         to remoteMessagePort: MachMessagePort? = nil,
         options: consuming MachMsgOptions = [],
         timeout: mach_msg_timeout_t = 0
@@ -65,11 +65,8 @@ struct MachMessaging {
     ///   - localMessagePort: The port to receive the response on. Don't specify to use the message's local port.
     ///   - options: The options for sending and receiving the message.
     ///   - timeout: The timeout for sending and receiving the message.
-    static func send<
-        ReceivePayload: MachMessagePayload,
-        ReceiveMessage: MachMessage<ReceivePayload>
-    >(
-        _ message: MachMessage<some MachMessagePayload>,
+    static func send<ReceiveMessage: MachMessage>(
+        _ message: MachMessage,
         to remoteMessagePort: MachMessagePort? = nil,
         receiving receiveType: ReceiveMessage.Type,
         ofMaxSize maxSize: Int = Self.defaultMaxReceiveSize,
@@ -111,10 +108,7 @@ struct MachMessaging {
     ///   - localPort: The port to receive the message on.
     ///   - options: The options for receiving the message.
     ///   - timeout: The timeout for receiving the message.
-    static func receive<
-        ReceivePayload: MachMessagePayload,
-        ReceiveMessage: MachMessage<ReceivePayload>
-    >(
+    static func receive<ReceiveMessage: MachMessage>(
         _ messageType: ReceiveMessage.Type,
         ofMaxSize maxSize: Int = Self.defaultMaxReceiveSize,
         on localPort: MachPort,

@@ -1,8 +1,21 @@
 import Foundation
 
+/// A message with a typed payload.
+public protocol WithTypedPayload: MachMessage {
+    associatedtype Payload: MachMessagePayload
+    /// The typed payload of the message.
+    var payload: Payload? { get }
+}
+
 /// A payload for a message.
 public protocol MachMessagePayload {
-    static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self
+    /// Load a payload from a raw buffer.
+    /// - Parameter buffer: The raw buffer.
+    /// - Returns: The payload, or `nil` if the buffer does not contain a valid payload of this type.
+    static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self?
+    /// Convert the payload to a raw buffer.
+    /// - Returns: The raw buffer.
+    func toRawPayloadBuffer() -> UnsafeRawBufferPointer
 }
 
 /// A payload with a fixed length and trivial representation.
@@ -14,7 +27,7 @@ public protocol MachMessagePayload {
 #endif
 
 extension TrivialPayload {
-    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self {
+    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? {
         #if swift(<6)
             assert(
                 _isPOD(Self.self),
@@ -24,25 +37,30 @@ extension TrivialPayload {
                 """
             )
         #endif
-        guard buffer.count == MemoryLayout<Self>.size else {
-            fatalError(
-                """
-                Cannot load payload of type \(Self.self) from buffer. \(Self.self) has a fixed size of \
-                \(MemoryLayout<Self>.size) bytes, but the buffer has a size of \(buffer.count) bytes.
-                """)
-        }
+        guard buffer.count == MemoryLayout<Self>.size else { return nil }
         return buffer.load(as: Self.self)
+    }
+    public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
+        withUnsafeBytes(of: self) {
+            UnsafeRawBufferPointer(start: $0.baseAddress, count: $0.count)
+        }
     }
 }
 
 extension Never: MachMessagePayload {
-    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self {
-        fatalError("Cannot load payload of type Never from buffer.")
+    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? { nil }
+    public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
+        UnsafeRawBufferPointer(start: nil, count: 0)
     }
 }
 
 extension Data: MachMessagePayload {
-    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self {
+    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? {
         Self(buffer)
+    }
+    public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
+        withUnsafeBytes {
+            UnsafeRawBufferPointer(start: $0.baseAddress, count: $0.count)
+        }
     }
 }
