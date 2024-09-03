@@ -20,7 +20,9 @@ public struct OOLDescriptor: MachMessageDescriptor {
             deallocate: self.deallocateOnSend ? 1 : 0,
             copy: self.copyMethod.rawValue,
             pad1: 0,
-            type: DescriptorType.ool.rawValue,
+            type: self.isVolatile
+                ? DescriptorType.oolVolatile.rawValue
+                : DescriptorType.ool.rawValue,
             size: mach_msg_size_t(dataCopy?.count ?? 0)
         )
     }
@@ -40,7 +42,6 @@ public struct OOLDescriptor: MachMessageDescriptor {
             Data(bytes: $0, count: Int(rawValue.size))
         }
         self.deallocateOnSend = rawValue.deallocate != 0
-        self.isVolatile = rawValue.type == DescriptorType.oolVolatile.rawValue
     }
     /// Create a new out-of-line descriptor.
     public init() {
