@@ -27,37 +27,46 @@ open class MachMessage: RawRepresentable {
     public var trailer: mach_msg_max_trailer_t?
     /// A pointer to the raw message.
     public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
-        let newBufferSize =
+        let rawBufferSize =
             MemoryLayout<mach_msg_header_t>.size
             + self.bodySize
             + self.payloadSize
             + MemoryLayout<mach_msg_max_trailer_t>.size
         var serializingPointer = UnsafeMutableRawPointer.allocate(
-            byteCount: newBufferSize, alignment: Self.alignment
+            byteCount: rawBufferSize, alignment: Self.alignment
         )
-        serializingPointer.initializeMemory(as: UInt8.self, repeating: 0, count: newBufferSize)
+        serializingPointer.initializeMemory(as: UInt8.self, repeating: 0, count: rawBufferSize)  // Start with a zeroed-out buffer.
         let headerPointer = serializingPointer.bindMemory(to: mach_msg_header_t.self, capacity: 1)
-        headerPointer.pointee = header.rawValue
+        headerPointer.pointee = self.header.rawValue
         serializingPointer += MemoryLayout<mach_msg_header_t>.size
         let bodyPointer = serializingPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1)
-        if let body = body {
+        if let body = self.body {
             UnsafeMutableRawPointer(bodyPointer).copyMemory(
                 from: UnsafeRawPointer(body.rawValue),
                 byteCount: body.totalSize
             )
             serializingPointer += body.totalSize
         }
-        if let payloadBuffer = payloadBuffer {
+        if let payloadBuffer = self.payloadBuffer {
             payloadBuffer.copyBytes(
                 to: UnsafeMutableRawBufferPointer(
                     start: serializingPointer, count: payloadBuffer.count
                 ))
             serializingPointer += payloadBuffer.count
         }
-        // The payload might not be aligned, so we need to add alignment padding
-        serializingPointer = serializingPointer.alignedUp(
-            toMultipleOf: MemoryLayout<mach_msg_header_t>.alignment
-        )
+        // While convention might dictate that we keep this field set to zero for sent messages (as it is a kernel-set
+        // field), we still need to be able to deserialize this raw representation back into a `MachMessage`. Thus, we
+        // set it to what the kernel would set it to. The kernel allegedly ignores this field for sent messages, so it
+        // should be safe to set it here. If the value is non-zero, we leave it as-is and assume it's purposeful.
+        if headerPointer.pointee.msgh_size == 0 {
+            // `serializingPointer` sould be at the end of the payload, so we can calculate the size of the message.
+            let payloadEndPointer = serializingPointer
+            headerPointer.pointee.msgh_size = mach_msg_size_t(
+                payloadEndPointer - UnsafeMutableRawPointer(headerPointer)
+            )
+        }
+        // We may not be aligned after writing the arbitrarily-sized payload, so we align up here before continuing.
+        serializingPointer = serializingPointer.alignedUp(toMultipleOf: Self.alignment)
         if let trailer = trailer {
             let trailerPointer = serializingPointer.bindMemory(
                 to: mach_msg_max_trailer_t.self, capacity: 1
