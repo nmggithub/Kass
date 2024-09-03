@@ -26,17 +26,17 @@ public struct MachMessageHeader: RawRepresentable {
         self.messageID = rawValue.msgh_id
     }
     /// The configuration bits.
-    var bits: MachMessageHeaderBits
+    public var bits: MachMessageHeaderBits
     /// The advertised message size.
-    var messageSize: mach_msg_size_t
+    public var messageSize: mach_msg_size_t
     /// The remote port.
-    var remotePort: MachPort
+    public var remotePort: MachPort
     /// The local port.
-    var localPort: MachPort
+    public var localPort: MachPort
     /// The voucher port.
-    var voucherPort: MachPort
+    public var voucherPort: MachPort
     /// The message ID.
-    var messageID: mach_msg_id_t
+    public var messageID: mach_msg_id_t
     /// Create a new message header.
     public init() { self.init(rawValue: mach_msg_header_t()) }
 }
