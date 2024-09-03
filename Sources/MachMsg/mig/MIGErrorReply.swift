@@ -5,7 +5,7 @@ import MachO
 /// An error reply to a MIG message.
 /// - Important: This really just represents an empty reply with a return code, which might be `KERN_SUCCESS`. So
 /// the name "MIG error reply" is bit of a misnomer, but it's based on the name of the corresponding C struct.
-final class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
+public final class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
     /// The error represented by the reply.
     public var error: Swift.Error {
         NSError(domain: NSMachErrorDomain, code: Int(self.payload!.returnCode))
