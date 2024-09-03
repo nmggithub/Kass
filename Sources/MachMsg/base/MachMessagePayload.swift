@@ -21,6 +21,7 @@ extension MachMessagePayload {
 public protocol FixedLengthTrivialPayload: MachMessagePayload {}
 extension FixedLengthTrivialPayload {
     public static var empty: Self {
+        assert(_isPOD(Self.self), "The payload type \(Self.self) is not trivial!")
         let buffer = UnsafeMutablePointer<Self>.allocate(capacity: 1)
         UnsafeMutableRawPointer(buffer).initializeMemory(
             as: UInt8.self, repeating: 0, count: MemoryLayout<Self>.size
