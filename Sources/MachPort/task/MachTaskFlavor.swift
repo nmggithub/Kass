@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A flavor of task.
 public enum MachTaskFlavor: mach_task_flavor_t, CBinIntMacroEnum {

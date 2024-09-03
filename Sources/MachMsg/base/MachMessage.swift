@@ -1,5 +1,5 @@
+import Darwin.Mach
 import Foundation
-import MachO
 
 extension MachMessage {
     /// The size of the message body.

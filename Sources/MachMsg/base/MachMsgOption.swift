@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// An option for `mach_msg` calls.
 public enum MachMsgOption: mach_msg_option_t, COptionMacroEnum {

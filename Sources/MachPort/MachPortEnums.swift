@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A right for a port.
 public enum MachPortRight: mach_port_right_t, CBinIntMacroEnum, CaseIterable {

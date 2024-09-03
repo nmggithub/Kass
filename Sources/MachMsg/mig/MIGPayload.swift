@@ -1,5 +1,5 @@
+import Darwin.Mach
 import Foundation
-import MachO
 
 /// A payload for a MIG message.
 public protocol MIGPayload: MachMessagePayload {}

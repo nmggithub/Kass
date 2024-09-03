@@ -1,4 +1,4 @@
-import MachO
+import Darwin.Mach
 
 /// A kernel object underlying a port.
 public class MachKernelObject {

@@ -1,4 +1,4 @@
-import MachO
+import Darwin.Mach
 import MachPort
 
 /// An out-of-line ports descriptor.

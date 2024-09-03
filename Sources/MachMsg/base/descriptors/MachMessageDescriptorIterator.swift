@@ -1,5 +1,5 @@
+import Darwin.Mach
 import Foundation
-import MachO
 
 /// A pointer to a Mach message descriptor.
 /// - Note: All Mach message descriptors can be cast to `mach_msg_type_descriptor_t` to get the type.

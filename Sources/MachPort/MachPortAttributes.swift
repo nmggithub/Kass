@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// An attribute of a port.
 public enum MachPortAttribute: mach_port_flavor_t, CBinIntMacroEnum {

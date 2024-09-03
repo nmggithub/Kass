@@ -1,6 +1,6 @@
 import CCompat
+import Darwin.Mach
 import Foundation
-import MachO
 
 /// An out-of-line descriptor.
 public struct OOLDescriptor: MachMessageDescriptor {

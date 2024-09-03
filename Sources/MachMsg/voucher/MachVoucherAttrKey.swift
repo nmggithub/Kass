@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A Mach voucher attribute key.
 public enum MachVoucherAttrKey: mach_voucher_attr_key_t, COptionMacroEnum {

@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A special non-allocatable port.
 /// - Warning: Do not use this class directly. Instead, use one of its subclasses.

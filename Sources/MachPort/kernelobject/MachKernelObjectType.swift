@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A type of kernel object.
 public enum MachKernelObjectType: natural_t, CBinIntMacroEnum {

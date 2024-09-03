@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A copy option.
 public enum OOLDescriptorCopyOption: mach_msg_copy_options_t, CBinIntMacroEnum {

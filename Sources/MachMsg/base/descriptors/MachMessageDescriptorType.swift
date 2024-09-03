@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A descriptor type.
 public enum MachMessageDescriptorType: mach_msg_descriptor_type_t, CBinIntMacroEnum, Sendable {

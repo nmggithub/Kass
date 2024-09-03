@@ -1,5 +1,5 @@
 import CCompat
-@preconcurrency import MachO
+@preconcurrency import Darwin.Mach
 
 /// A task control port.
 open class MachTask: MachSpecialPort {

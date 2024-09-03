@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A Mach voucher attribute command.
 public protocol MachVoucherAttrCommand: RawRepresentable<mach_voucher_attr_command_t>,

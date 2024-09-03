@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A type of special port for a task.
 public enum MachTaskSpecialPortType: task_special_port_t, CBinIntMacroEnum {

@@ -1,4 +1,4 @@
-import MachO
+import Darwin.Mach
 
 /// A set of ports.
 open class MachPortSet: MachPort {

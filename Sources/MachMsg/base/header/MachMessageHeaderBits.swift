@@ -1,4 +1,4 @@
-import MachO
+import Darwin.Mach
 import MachPort
 
 private let MACH_MSGH_BITS_PORTS_MASK = UInt32(

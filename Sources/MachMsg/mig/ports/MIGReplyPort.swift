@@ -1,4 +1,4 @@
-import MachO
+import Darwin.Mach
 
 /// A port for a MIG reply.
 public final class MIGReplyPort: MachMessagePort {

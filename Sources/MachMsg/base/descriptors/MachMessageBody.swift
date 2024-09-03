@@ -1,6 +1,6 @@
 import CCompat
+import Darwin.Mach
 import Foundation
-import MachO
 import MachPort
 
 /// A set of descriptors with a preceding descriptor count.

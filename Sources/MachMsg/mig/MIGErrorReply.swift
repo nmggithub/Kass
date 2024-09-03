@@ -1,6 +1,6 @@
 import CCompat
+import Darwin.Mach
 import Foundation
-import MachO
 
 /// An error reply to a MIG message.
 /// - Important: This really just represents an empty reply with a return code, which might be `KERN_SUCCESS`. So

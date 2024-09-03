@@ -1,4 +1,4 @@
-@preconcurrency import MachO
+@preconcurrency import Darwin.Mach
 
 /// A task name port.
 open class MachTaskName: MachSpecialPort {

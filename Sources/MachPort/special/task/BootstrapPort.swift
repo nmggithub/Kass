@@ -1,6 +1,6 @@
+import Darwin.Mach
 import Foundation
 import Linking
-import MachO
 
 private let bootstrap_look_up:
     @convention(c) (

@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 import MachPort
 
 /// A disposition for a port.

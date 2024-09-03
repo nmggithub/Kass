@@ -1,5 +1,5 @@
 import CCompat
-import MachO
+import Darwin.Mach
 
 /// A Mach voucher attribute recipe command.
 public enum MachVoucherAttrRecipeCommand: mach_voucher_attr_recipe_command_t, COptionMacroEnum {

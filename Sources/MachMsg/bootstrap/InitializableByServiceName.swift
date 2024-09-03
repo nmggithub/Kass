@@ -1,4 +1,4 @@
-import MachO
+@preconcurrency import Darwin.Mach
 import MachPort
 
 /// A port that can be initialized by looking up a service name.

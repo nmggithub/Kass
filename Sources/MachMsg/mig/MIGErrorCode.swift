@@ -1,6 +1,6 @@
 import CCompat
+import Darwin.Mach
 import Foundation
-import MachO
 
 /// Error codes from a Mach Interface Generator (MIG) server routine.
 public enum MIGErrorCode: kern_return_t {

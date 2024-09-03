@@ -1,6 +1,6 @@
 import CCompat
+@preconcurrency import Darwin.Mach
 import Foundation
-import MachO
 
 /// A Mach port.
 open class MachPort: RawRepresentable, Hashable, ExpressibleByNilLiteral {
