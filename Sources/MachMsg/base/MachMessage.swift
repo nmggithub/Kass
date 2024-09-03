@@ -35,7 +35,6 @@ open class MachMessage<Payload: MachMessagePayload>: RawRepresentable {
     public var trailer: mach_msg_max_trailer_t?
     /// A pointer to the raw message.
     public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
-        let payloadBufferPointer = payload?.withUnsafeBytes { $0 }
         let bufferSize =
             MemoryLayout<mach_msg_header_t>.size
             + bodySize
@@ -53,7 +52,7 @@ open class MachMessage<Payload: MachMessagePayload>: RawRepresentable {
                 byteCount: body.totalSize
             )
         }
-        if let payloadBufferPointer = payloadBufferPointer {
+        if let payloadBufferPointer = payload?.withUnsafeBytes({ $0 }) {
             let payloadPointer = UnsafeMutableRawBufferPointer(
                 start: walkingPointer, count: payloadBufferPointer.count
             )
@@ -90,7 +89,7 @@ open class MachMessage<Payload: MachMessagePayload>: RawRepresentable {
             let payloadBufferPointer = UnsafeMutableRawBufferPointer(
                 start: walkingPointer, count: payloadSize
             )
-            self.payload = Payload()
+            self.payload = Payload.empty
             self.payload?.withUnsafeBytes { (payloadPointer: UnsafeRawBufferPointer) in
                 payloadBufferPointer.copyBytes(from: payloadPointer)
             }

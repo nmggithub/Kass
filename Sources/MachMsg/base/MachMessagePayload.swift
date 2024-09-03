@@ -2,7 +2,8 @@ import Foundation
 
 /// A payload for a message.
 public protocol MachMessagePayload: ContiguousBytes {
-    init()
+    /// An empty payload, to be filled with the raw bytes of a payload.
+    static var empty: Self { get }
     /// Access the payload as a raw buffer pointer.
     /// - Parameter body: The closure to execute.
     /// - Returns: The result of the closure.
@@ -15,24 +16,27 @@ extension MachMessagePayload {
     }
 }
 
-/// An empty payload.
-public struct EmptyMachMessagePayload: MachMessagePayload {
-    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
-        try body(UnsafeRawBufferPointer(start: nil, count: 0))  // pass an empty buffer
-    }
-    public init() {}
-}
-
-/// A payload with an external representation.
-public protocol MachMessageExternalPayload: MachMessagePayload {
-    /// The external representation of the payload.
-    var external: ContiguousBytes { get set }
-}
-
-extension MachMessageExternalPayload {
-    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
-        try self.external.withUnsafeBytes(body)  // use the external representation's bytes
+/// A payload with a fixed length and trivial representation.
+/// - Important: The payload must be trivial, i.e. it must not have any reference types.
+public protocol FixedLengthTrivialPayload: MachMessagePayload {}
+extension FixedLengthTrivialPayload {
+    public static var empty: Self {
+        let buffer = UnsafeMutablePointer<Self>.allocate(capacity: 1)
+        UnsafeMutableRawPointer(buffer).initializeMemory(
+            as: UInt8.self, repeating: 0, count: MemoryLayout<Self>.size
+        )
+        return buffer.pointee
     }
 }
 
-extension Data: MachMessagePayload {}  // Data can be used as a payload
+/// A zero-length payload.
+public struct ZeroLengthPayload: MachMessagePayload {
+    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
+        try body(UnsafeRawBufferPointer(start: nil, count: 0))
+    }
+    public static var empty: ZeroLengthPayload { ZeroLengthPayload() }
+}
+
+extension Data: MachMessagePayload {
+    public static var empty: Data { Data() }
+}

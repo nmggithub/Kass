@@ -11,11 +11,10 @@ final class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
         NSError(domain: NSMachErrorDomain, code: Int(self.payload!.returnCode))
     }
     /// The payload of a MIG error reply.
-    public struct Payload: MIGPayload {
+    public struct Payload: FixedLengthTrivialPayload, MIGPayloadWithNDR {
         // based on `mig_reply_error_t`
-        public let NDR: NDR_record_t = NDR_record_t()
-        public let returnCode: Int32 = 0
-        public init() {}
+        public let NDR: NDR_record_t
+        public let returnCode: Int32
     }
     public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
         super.init(rawValue: rawValue)
