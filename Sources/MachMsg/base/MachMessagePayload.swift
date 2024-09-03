@@ -18,7 +18,11 @@ extension MachMessagePayload {
 
 /// A payload with a fixed length and trivial representation.
 /// - Important: The payload must be trivial, i.e. it must not have any reference types.
-public protocol FixedLengthTrivialPayload: MachMessagePayload {}
+#if swift(>=6.0)
+    public protocol FixedLengthTrivialPayload: MachMessagePayload, BitwiseCopyable {}
+#else
+    public protocol FixedLengthTrivialPayload: MachMessagePayload {}
+#endif
 extension FixedLengthTrivialPayload {
     public static var empty: Self {
         assert(_isPOD(Self.self), "The payload type \(Self.self) is not trivial!")
