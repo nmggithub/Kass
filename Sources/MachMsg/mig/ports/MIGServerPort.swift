@@ -5,7 +5,7 @@ import MachPort
 /// A port to a MIG server.
 open class MIGServerPort: MachPort {
     /// The base routine ID for the MIG server.
-    var baseRoutineId: mach_msg_id_t
+    public var baseRoutineId: mach_msg_id_t
 
     /// Represent an existing raw MIG server port.
     /// - Parameters:
