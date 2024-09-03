@@ -1,4 +1,5 @@
 import CCompat
+import Foundation
 import MachO
 import MachPort
 
@@ -20,8 +21,27 @@ open class MIGServerPort: MachPort {
     /// - Parameters:
     ///   - routineIndex: The index of the routine.
     ///   - request: The request to send.
+    ///   - replyPort: The port on which to receive the reply.
+    /// - Returns: The reply to the request.
+    @discardableResult  // users can ignore the reply message if they want to
+    func doRoutine(
+        _ routineIndex: mach_msg_id_t,
+        request: MIGRequest<some MIGPayload>,
+        on replyPort: MachMessagePort? = nil
+    ) throws -> MIGReply<Data> {
+        try self.doRoutine(
+            routineIndex,
+            request: request,
+            receiving: MIGReply<Data>.self
+        )
+    }
+
+    /// Perform a MIG routine.
+    /// - Parameters:
+    ///   - routineIndex: The index of the routine.
+    ///   - request: The request to send.
     ///   - receiving: The type of the reply to receive.
-    /// - Throws: If the routine fails.
+    ///   - replyPort: The port on which to receive the reply.
     /// - Returns: The reply to the request.
     @discardableResult  // users can ignore the reply message if they want to
     public func doRoutine<
@@ -31,13 +51,13 @@ open class MIGServerPort: MachPort {
         _ routineIndex: mach_msg_id_t,
         request: MIGRequest<some MIGPayload>,
         receiving replyType: Reply.Type,
-        on replyPort: MachMessagePort? = nil
+        on replyPort: MachMessagePort = MIGReplyPort()
     ) throws -> Reply {
         let routineId = self.baseRoutineId + routineIndex
         request.header.messageID = routineId
         let reply = try MachMessaging.send(
             request, to: self.withDisposition(.copySend),
-            receiving: replyType, on: replyPort ?? MIGReplyPort()
+            receiving: replyType, on: replyPort
         )
         guard reply.header.messageID != MACH_NOTIFY_SEND_ONCE else { throw MIGError(.serverDied) }  // the server deallocated the send-once right without using it, assume it died
         guard reply.header.messageID == routineId + 100 else { throw MIGError(.replyMismatch) }  // the reply ID should be the request ID + 100
