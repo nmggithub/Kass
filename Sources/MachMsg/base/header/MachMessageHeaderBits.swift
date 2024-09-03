@@ -51,6 +51,12 @@ extension MachMessageHeaderBits {
     }
     public var isMessageComplex: Bool {
         get { self.otherBits & MACH_MSGH_BITS_COMPLEX != 0 }
-        set { self.otherBits |= MACH_MSGH_BITS_COMPLEX }
+        set {
+            if newValue {
+                self.otherBits |= MACH_MSGH_BITS_COMPLEX
+            } else {
+                self.otherBits &= ~MACH_MSGH_BITS_COMPLEX
+            }
+        }
     }
 }
