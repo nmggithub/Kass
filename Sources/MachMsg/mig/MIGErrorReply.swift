@@ -11,7 +11,7 @@ public final class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
         NSError(domain: NSMachErrorDomain, code: Int(self.payload!.returnCode))
     }
     /// The payload of a MIG error reply.
-    public struct Payload: FixedLengthTrivialPayload, MIGPayloadWithNDR {
+    public struct Payload: TrivialPayload, MIGPayloadWithNDR {
         // based on `mig_reply_error_t`
         public let NDR: NDR_record_t
         public let returnCode: Int32
