@@ -99,7 +99,7 @@ open class MachMessage: RawRepresentable {
     /// - Parameters:
     ///   - descriptors: The descriptors to include in the message.
     ///   - payloadBuffer: The payload buffer to include in the message.
-    public init(
+    public required init(
         descriptors: [any MachMessageDescriptor]? = nil,
         payloadBuffer: UnsafeRawBufferPointer? = nil
     ) {
@@ -120,25 +120,4 @@ open class MachMessage: RawRepresentable {
 
 }
 
-open class TypedMachMessage<Payload: MachMessagePayload>: MachMessage, WithTypedPayload {
-    /// The message payload.
-    public var payload: Payload? {
-        get {
-            guard let payloadBuffer = payloadBuffer else { return nil }
-            return Payload.fromRawPayloadBuffer(payloadBuffer)
-        }
-        set {
-            payloadBuffer = newValue?.toRawPayloadBuffer()
-        }
-    }
-    /// Create a message with a set of descriptors and a payload.
-    /// - Parameters:
-    ///   - descriptors: The descriptors to include in the message.
-    ///   - payload: The payload to include in the message.
-    public convenience init(
-        descriptors: [any MachMessageDescriptor]? = nil,
-        payload: Payload
-    ) {
-        self.init(descriptors: descriptors, payloadBuffer: payload.toRawPayloadBuffer())
-    }
-}
+open class TypedMachMessage<Payload: MachMessagePayload>: MachMessage, WithTypedPayload {}

@@ -1,12 +1,5 @@
 import Foundation
 
-/// A message with a typed payload.
-public protocol WithTypedPayload: MachMessage {
-    associatedtype Payload: MachMessagePayload
-    /// The typed payload of the message.
-    var payload: Payload? { get }
-}
-
 /// A payload for a message.
 public protocol MachMessagePayload {
     /// Load a payload from a raw buffer.
@@ -62,5 +55,36 @@ extension Data: MachMessagePayload {
         withUnsafeBytes {
             UnsafeRawBufferPointer(start: $0.baseAddress, count: $0.count)
         }
+    }
+}
+
+/// A message with a typed payload.
+public protocol WithTypedPayload: MachMessage {
+    associatedtype Payload: MachMessagePayload
+    /// The typed message payload.
+    var payload: Payload? { get }
+
+}
+
+extension WithTypedPayload {
+    /// The typed message payload.
+    public var payload: Payload? {
+        get {
+            guard let payloadBuffer = payloadBuffer else { return nil }
+            return Payload.fromRawPayloadBuffer(payloadBuffer)
+        }
+        set {
+            payloadBuffer = newValue?.toRawPayloadBuffer()
+        }
+    }
+    /// Create a message with a set of descriptors and a payload.
+    /// - Parameters:
+    ///   - descriptors: The descriptors to include in the message.
+    ///   - payload: The payload to include in the message.
+    public init(
+        descriptors: [any MachMessageDescriptor]? = nil,
+        payload: Payload
+    ) {
+        self.init(descriptors: descriptors, payloadBuffer: payload.toRawPayloadBuffer())
     }
 }
