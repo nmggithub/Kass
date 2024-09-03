@@ -1,8 +1,4 @@
 import Darwin.Mach
 
 /// A Mach Interface Generator (MIG) reply message.
-open class MIGReply<Payload: MIGPayload>: TypedMachMessage<Payload> {
-    public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
-        super.init(rawValue: rawValue)
-    }
-}
+open class MIGReply<Payload: MIGPayload>: TypedMachMessage<Payload> {}
