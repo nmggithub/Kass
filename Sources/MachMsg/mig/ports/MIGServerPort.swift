@@ -33,6 +33,7 @@ open class MIGServerPort: ServicePort {
     ///   - receiving: The type of the reply to receive.
     /// - Throws: If the routine fails.
     /// - Returns: The reply to the request.
+    @discardableResult  // users can ignore the reply message if they want to
     public func doRoutine<
         ReplyPayload: MIGPayload,
         Reply: MIGReply<ReplyPayload>
