@@ -49,6 +49,7 @@ extension MachMessageHeaderBits {
         get { MachPortDisposition(rawValue: self.voucherBits) ?? .unknown }
         set { self.voucherBits = newValue.rawValue }
     }
+    /// Whether the message is complex.
     public var isMessageComplex: Bool {
         get { self.otherBits & MACH_MSGH_BITS_COMPLEX != 0 }
         set {
