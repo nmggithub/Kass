@@ -16,7 +16,4 @@ public final class MIGErrorReply: MIGReply<MIGErrorReply.Payload> {
         public let NDR: NDR_record_t
         public let returnCode: Int32
     }
-    public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
-        super.init(rawValue: rawValue)
-    }
 }
