@@ -24,7 +24,7 @@ open class MIGServerPort: MachPort {
     ///   - replyPort: The port on which to receive the reply.
     /// - Returns: The reply to the request.
     @discardableResult  // users can ignore the reply message if they want to
-    func doRoutine(
+    public func doRoutine(
         _ routineIndex: mach_msg_id_t,
         request: MIGRequest<some MIGPayload>,
         on replyPort: MachMessagePort? = nil
