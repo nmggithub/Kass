@@ -12,4 +12,4 @@ public protocol MIGPayloadWithNDR: MIGPayload {
 }
 
 extension Data: MIGPayload {}
-extension ZeroLengthPayload: MIGPayload {}
+extension Never: MIGPayload {}

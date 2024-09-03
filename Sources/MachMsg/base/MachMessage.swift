@@ -7,8 +7,15 @@ extension MachMessage {
         body?.totalSize ?? 0
     }
     /// The size of the message payload.
-    var payloadSize: Int {
-        payload?.withUnsafeBytes { $0.count } ?? 0
+    var payloadSize: Int { payloadBufferPointer.count }
+    var payloadBufferPointer: UnsafeRawBufferPointer {
+        switch Payload.self {
+        case is TrivialPayload.Type:
+            return withUnsafeBytes(of: payload, { $0 })
+        case is Data.Type:
+            return (payload as! Data).withUnsafeBytes { $0 }
+        default: return UnsafeRawBufferPointer(start: nil, count: 0)
+        }
     }
 }
 
@@ -52,13 +59,11 @@ open class MachMessage<Payload: MachMessagePayload>: RawRepresentable {
                 byteCount: body.totalSize
             )
         }
-        if let payloadBufferPointer = payload?.withUnsafeBytes({ $0 }) {
-            let payloadPointer = UnsafeMutableRawBufferPointer(
-                start: walkingPointer, count: payloadBufferPointer.count
-            )
-            payloadBufferPointer.copyBytes(to: payloadPointer, count: payloadBufferPointer.count)
-            walkingPointer += payloadBufferPointer.count
-        }
+        let payloadPointer = UnsafeMutableRawBufferPointer(
+            start: walkingPointer, count: self.payloadBufferPointer.count
+        )
+        self.payloadBufferPointer.copyBytes(to: payloadPointer)
+        walkingPointer += payloadBufferPointer.count
         // The payload might not be aligned, so we need to add alignment padding
         walkingPointer = walkingPointer.alignedUp(
             toMultipleOf: MemoryLayout<mach_msg_header_t>.alignment
@@ -84,16 +89,13 @@ open class MachMessage<Payload: MachMessagePayload>: RawRepresentable {
         } else {
             self.body = nil
         }
-        let payloadSize = Int(header.messageSize) - MemoryLayout<mach_msg_header_t>.size
-        if payloadSize > 0 {
-            let payloadBufferPointer = UnsafeMutableRawBufferPointer(
-                start: walkingPointer, count: payloadSize
+        let rawPayloadSize = Int(header.messageSize) - MemoryLayout<mach_msg_header_t>.size
+        if rawPayloadSize > 0 {
+            let rawPayloadBufferPointer = UnsafeRawBufferPointer(
+                start: walkingPointer, count: rawPayloadSize
             )
-            self.payload = Payload.empty
-            self.payload?.withUnsafeBytes { (payloadPointer: UnsafeRawBufferPointer) in
-                payloadBufferPointer.copyBytes(from: payloadPointer)
-            }
-            walkingPointer += payloadSize
+            self.payload = Payload.fromRawPayloadBuffer(rawPayloadBufferPointer)
+            walkingPointer += rawPayloadSize
         } else {
             self.payload = nil
         }

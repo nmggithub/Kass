@@ -1,19 +1,8 @@
 import Foundation
 
 /// A payload for a message.
-public protocol MachMessagePayload: ContiguousBytes {
-    /// An empty payload, to be filled with the raw bytes of a payload.
-    static var empty: Self { get }
-    /// Access the payload as a raw buffer pointer.
-    /// - Parameter body: The closure to execute.
-    /// - Returns: The result of the closure.
-    func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R
-}
-
-extension MachMessagePayload {
-    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
-        try Swift.withUnsafeBytes(of: self, body)  // by default, use the object's own bytes
-    }
+public protocol MachMessagePayload {
+    static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self
 }
 
 /// A payload with a fixed length and trivial representation.
@@ -23,25 +12,37 @@ extension MachMessagePayload {
 #else
     public protocol TrivialPayload: MachMessagePayload {}
 #endif
+
 extension TrivialPayload {
-    public static var empty: Self {
-        assert(_isPOD(Self.self), "The payload type \(Self.self) is not trivial!")
-        let buffer = UnsafeMutablePointer<Self>.allocate(capacity: 1)
-        UnsafeMutableRawPointer(buffer).initializeMemory(
-            as: UInt8.self, repeating: 0, count: MemoryLayout<Self>.size
-        )
-        return buffer.pointee
+    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self {
+        #if swift(<6)
+            assert(
+                _isPOD(Self.self),
+                """
+                Cannot load payload of type \(Self.self) from buffer. It was declared to conform to \
+                TrivialPayload, but is not a POD type.
+                """
+            )
+        #endif
+        guard buffer.count == MemoryLayout<Self>.size else {
+            fatalError(
+                """
+                Cannot load payload of type \(Self.self) from buffer. \(Self.self) has a fixed size of \
+                \(MemoryLayout<Self>.size) bytes, but the buffer has a size of \(buffer.count) bytes.
+                """)
+        }
+        return buffer.load(as: Self.self)
     }
 }
 
-/// A zero-length payload.
-public struct ZeroLengthPayload: MachMessagePayload {
-    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) throws -> R) rethrows -> R {
-        try body(UnsafeRawBufferPointer(start: nil, count: 0))
+extension Never: MachMessagePayload {
+    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self {
+        fatalError("Cannot load payload of type Never from buffer.")
     }
-    public static var empty: ZeroLengthPayload { ZeroLengthPayload() }
 }
 
 extension Data: MachMessagePayload {
-    public static var empty: Data { Data() }
+    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self {
+        Self(buffer)
+    }
 }
