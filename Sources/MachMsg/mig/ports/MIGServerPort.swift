@@ -35,18 +35,18 @@ open class MIGServerPort: ServicePort {
     /// - Returns: The reply to the request.
     public func doRoutine<
         ReplyPayload: MIGPayload,
-        ReplyReply: MIGReply<ReplyPayload>
+        Reply: MIGReply<ReplyPayload>
     >(
         _ routineIndex: mach_msg_id_t,
         request: MIGRequest<some MIGPayload>,
-        receiving: ReplyReply.Type,
+        receiving replyType: Reply.Type,
         on replyPort: MachMessagePort? = nil
-    ) throws -> ReplyReply {
+    ) throws -> Reply {
         let routineId = self.baseRoutineId + routineIndex
         request.header.messageID = routineId
         let reply = try MachMessaging.send(
             request, to: self.withDisposition(.copySend),
-            receiving: receiving, on: replyPort ?? MIGReplyPort()
+            receiving: replyType, on: replyPort ?? MIGReplyPort()
         )
         guard reply.header.messageID != MACH_NOTIFY_SEND_ONCE else { throw MIGError(.serverDied) }  // the server deallocated the send-once right without using it, assume it died
         guard reply.header.messageID == routineId + 100 else { throw MIGError(.replyMismatch) }  // the reply ID should be the request ID + 100

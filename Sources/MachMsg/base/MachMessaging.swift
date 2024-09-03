@@ -56,7 +56,7 @@ struct MachMessaging {
     /// - Parameters:
     ///   - message: The message to send.
     ///   - remoteMessagePort: The port to send the message to. Don't specify to use the message's remote port.
-    ///   - receiving: The type of message to receive.
+    ///   - receiveType: The type of message to receive.
     ///   - localMessagePort: The port to receive the response on. Don't specify to use the message's local port.
     ///   - options: The options for sending and receiving the message.
     ///   - timeout: The timeout for sending and receiving the message.
@@ -66,7 +66,7 @@ struct MachMessaging {
     >(
         _ message: MachMessage<some MachMessagePayload>,
         to remoteMessagePort: MachMessagePort? = nil,
-        receiving: ReceiveMessage.Type,
+        receiving receiveType: ReceiveMessage.Type,
         on localMessagePort: MachMessagePort? = nil,
         options: consuming MachMsgOptions = [],
         timeout: mach_msg_timeout_t = 0
