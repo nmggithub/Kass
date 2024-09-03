@@ -11,7 +11,7 @@ open class MIGServerPort: MachPort, InitializableByServiceName {
     /// - Parameters:
     ///   - serviceName: The service name of the MIG server.
     ///   - baseRoutineId: The base routine ID for the MIG server.
-    convenience init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
+    public convenience init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
         try self.init(serviceName: serviceName)
         self.baseRoutineId = baseRoutineId
     }
