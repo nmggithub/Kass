@@ -15,14 +15,19 @@ extension MachMessage {
 }
 
 struct MachMessaging {
-    /// A transient buffer for receiving messages, set to the theoretical maximum size.
-    static var transientBuffer: UnsafeMutableRawBufferPointer {
-        let bufferSize = Int(mach_msg_size_t.max)
+    /// The default maximum size for receiving messages.
+    private static let defaultMaxReceiveSize: Int = 0xFFFF
+    /// A transient buffer for receiving messages, set to a given maximum size.
+    /// - Parameter size: The size of the buffer.
+    /// - Returns: The buffer.
+    /// - Warning: The size must be at least the size of a `mach_msg_header_t`.
+    /// - Warning: The size must not be unreasonably large.
+    private static func transientBuffer(_ size: Int) -> UnsafeMutableRawBufferPointer {
         let bufferPointer = UnsafeMutableRawPointer.allocate(
-            byteCount: bufferSize,
+            byteCount: size,
             alignment: MemoryLayout<mach_msg_header_t>.alignment
         )
-        let buffer = UnsafeMutableRawBufferPointer(start: bufferPointer, count: bufferSize)
+        let buffer = UnsafeMutableRawBufferPointer(start: bufferPointer, count: size)
         buffer.initializeMemory(as: UInt8.self, repeating: 0)
         return buffer
     }
@@ -67,6 +72,7 @@ struct MachMessaging {
         _ message: MachMessage<some MachMessagePayload>,
         to remoteMessagePort: MachMessagePort? = nil,
         receiving receiveType: ReceiveMessage.Type,
+        ofMaxSize maxSize: Int = Self.defaultMaxReceiveSize,
         on localMessagePort: MachMessagePort? = nil,
         options: consuming MachMsgOptions = [],
         timeout: mach_msg_timeout_t = 0
@@ -81,7 +87,7 @@ struct MachMessaging {
         let originalMessageBuffer = UnsafeRawBufferPointer(
             start: message.rawValue, count: Int(message.sendSize)
         )
-        let rawMessageBuffer = self.transientBuffer
+        let rawMessageBuffer = self.transientBuffer(maxSize)
         rawMessageBuffer.copyMemory(from: originalMessageBuffer)
         let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
             to: mach_msg_header_t.self, capacity: 1
@@ -108,6 +114,7 @@ struct MachMessaging {
         ReceiveMessage: MachMessage<ReceivePayload>
     >(
         _ messageType: ReceiveMessage.Type,
+        ofMaxSize maxSize: Int = Self.defaultMaxReceiveSize,
         on localPort: MachPort,
         options: consuming MachMsgOptions = [],
         timeout: mach_msg_timeout_t = 0
@@ -115,7 +122,7 @@ struct MachMessaging {
         options.unset(.send)
         options.set(.receive)
 
-        let rawMessageBuffer = self.transientBuffer
+        let rawMessageBuffer = self.transientBuffer(maxSize)
         let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
             to: mach_msg_header_t.self, capacity: 1
         )
