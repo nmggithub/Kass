@@ -24,32 +24,32 @@ public struct MachMessageHeaderBits: RawRepresentable {
     }
 
     /// The raw remote port disposition.
-    var remoteBits: mach_msg_type_name_t
+    public var remoteBits: mach_msg_type_name_t
     /// The raw local port disposition.
-    var localBits: mach_msg_type_name_t
+    public var localBits: mach_msg_type_name_t
     /// The raw voucher port disposition.
-    var voucherBits: mach_msg_type_name_t
+    public var voucherBits: mach_msg_type_name_t
     /// The other configuration bits.
-    var otherBits: UInt32
+    public var otherBits: UInt32
 }
 
 extension MachMessageHeaderBits {
     /// The remote port disposition.
-    var remotePortDisposition: MachPortDisposition {
+    public var remotePortDisposition: MachPortDisposition {
         get { MachPortDisposition(rawValue: self.remoteBits) ?? .unknown }
         set { self.remoteBits = newValue.rawValue }
     }
     /// The local port disposition.
-    var localPortDisposition: MachPortDisposition {
+    public var localPortDisposition: MachPortDisposition {
         get { MachPortDisposition(rawValue: self.localBits) ?? .unknown }
         set { self.localBits = newValue.rawValue }
     }
     /// The voucher port disposition.
-    var voucherPortDisposition: MachPortDisposition {
+    public var voucherPortDisposition: MachPortDisposition {
         get { MachPortDisposition(rawValue: self.voucherBits) ?? .unknown }
         set { self.voucherBits = newValue.rawValue }
     }
-    var isMessageComplex: Bool {
+    public var isMessageComplex: Bool {
         get { self.otherBits & MACH_MSGH_BITS_COMPLEX != 0 }
         set { self.otherBits |= MACH_MSGH_BITS_COMPLEX }
     }
