@@ -176,6 +176,7 @@ public class Framework: Library {
     /// - Returns: A handle to the sub-framework, or `nil` if the sub-framework could not be found.
     public func get(subFramework: String) -> Framework? {
         let subFrameworksPath = self.pathURL.deletingLastPathComponent()
+            .appending(component: "Frameworks")
         return Framework(
             path: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
         )
