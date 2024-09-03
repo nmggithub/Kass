@@ -2,11 +2,19 @@ import CCompat
 import MachO
 import MachPort
 
-/// A port for a remote MIG server.
-open class MIGServerPort: MachPort {
+/// A port to a MIG server.
+open class MIGServerPort: MachPort, InitializableByServiceName {
     /// The base routine ID for the MIG server.
-    let baseRoutineId: mach_msg_id_t
+    var baseRoutineId: mach_msg_id_t
 
+    /// Connect to a MIG server.
+    /// - Parameters:
+    ///   - serviceName: The service name of the MIG server.
+    ///   - baseRoutineId: The base routine ID for the MIG server.
+    convenience init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
+        try self.init(serviceName: serviceName)
+        self.baseRoutineId = baseRoutineId
+    }
     /// Represent an existing raw MIG server port.
     /// - Parameters:
     ///   - rawPort: The raw port.
