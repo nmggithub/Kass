@@ -3,21 +3,11 @@ import MachO
 import MachPort
 
 /// A port for a remote MIG server.
-open class MIGServerPort: ServicePort {
+open class MIGServerPort: MachPort {
     /// The base routine ID for the MIG server.
-    var baseRoutineId: mach_msg_id_t
+    let baseRoutineId: mach_msg_id_t
 
-    /// Create a port for a remote MIG server.
-    /// - Parameters:
-    ///   - serviceName: The name of the service.
-    ///   - baseRoutineId: The base routine ID for the MIG server.
-    /// - Throws: If the service could not be found.
-    public init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
-        self.baseRoutineId = baseRoutineId
-        try super.init(serviceName: serviceName)
-    }
-
-    /// Represent an existing raw port for a remote MIG server.
+    /// Represent an existing raw MIG server port.
     /// - Parameters:
     ///   - rawPort: The raw port.
     ///   - baseRoutineId: The base routine ID for the MIG server.
