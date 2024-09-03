@@ -101,7 +101,9 @@ struct MachMessaging {
         guard ret == MACH_MSG_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
-        return ReceiveMessage.init(rawValue: messageBuffer)
+        let receivedMessage = ReceiveMessage.init(rawValue: messageBuffer)
+        rawMessageBuffer.deallocate()
+        return receivedMessage
     }
     /// Receive a message.
     /// - Parameters:
@@ -135,6 +137,8 @@ struct MachMessaging {
         guard ret == MACH_MSG_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
-        return ReceiveMessage.init(rawValue: messageBuffer)
+        let receivedMessage = ReceiveMessage.init(rawValue: messageBuffer)
+        rawMessageBuffer.deallocate()
+        return receivedMessage
     }
 }
