@@ -75,11 +75,14 @@ open class MachMessage: RawRepresentable {
         if self.header.bits.isMessageComplex {
             let bodyPointer = deserializingPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1)
             self.body = MachMessageBody(rawValue: bodyPointer)
-            deserializingPointer += self.body!.totalSize
+            deserializingPointer += self.bodySize
         } else {
             self.body = nil
         }
-        let rawPayloadSize = Int(header.messageSize) - MemoryLayout<mach_msg_header_t>.size
+        let rawPayloadSize =
+            Int(header.messageSize)
+            - MemoryLayout<mach_msg_header_t>.size
+            - self.bodySize
         if rawPayloadSize > 0 {
             self.payloadBuffer = UnsafeRawBufferPointer(
                 start: deserializingPointer, count: rawPayloadSize
