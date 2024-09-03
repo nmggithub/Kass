@@ -10,3 +10,5 @@ public protocol MIGPayloadWithNDR: MIGPayload {
     /// - Important: The NDR record must be the first field in the payload.
     var NDR: NDR_record_t { get }
 }
+
+extension ZeroLengthPayload: MIGPayload {}
