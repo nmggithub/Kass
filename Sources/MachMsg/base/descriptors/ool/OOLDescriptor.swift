@@ -10,7 +10,8 @@ public struct OOLDescriptor: MachMessageDescriptor {
         let dataCopy = self.data?.withUnsafeBytes {
             buffer in
             let bufferCopy = UnsafeMutableRawBufferPointer.allocate(
-                byteCount: buffer.count, alignment: 1)
+                byteCount: buffer.count, alignment: 1
+            )
             bufferCopy.copyMemory(from: buffer)
             return bufferCopy
         }
