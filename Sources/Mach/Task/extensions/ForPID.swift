@@ -4,6 +4,9 @@ import MachBase
 import MachPort
 
 extension Mach.Task.ControlPort {
+    /// Get the task control port for a process.
+    /// - Parameter pid: The process ID.
+    /// - Throws: If the task control port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var controlPort = task_t()
         /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
@@ -15,6 +18,9 @@ extension Mach.Task.ControlPort {
     }
 }
 extension Mach.Task.NamePort {
+    /// Get the task name port for a process.
+    /// - Parameter pid: The process ID.
+    /// - Throws: If the task name port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var namePort = task_name_t()
         /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
@@ -27,6 +33,9 @@ extension Mach.Task.NamePort {
 }
 
 extension Mach.Task.InspectPort {
+    /// Get the task inspect port for a process.
+    /// - Parameter pid: The process ID.
+    /// - Throws: If the task inspect port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var namePort = task_name_t()
         /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
