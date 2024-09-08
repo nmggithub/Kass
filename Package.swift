@@ -21,18 +21,6 @@ struct BasicModule: Module {
     }
 }
 
-struct MachModule: Module {
-    let targetName: String
-    let dependencies: [String]
-    let path: String
-    internal init(subModuleName: String, folderName: String? = nil, dependencies: [String]) {
-        let prefixedTargetName = "Mach\(subModuleName)"
-        self.targetName = prefixedTargetName
-        self.path = "Sources/Mach/\(folderName ?? subModuleName)"
-        self.dependencies = dependencies
-    }
-}
-
 struct MachSubModule: Module {
     let targetName: String
     let dependencies: [String]
