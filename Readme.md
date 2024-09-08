@@ -4,6 +4,10 @@
 
 Kass is a collection of modules for reverse-engineering and security research on macOS, written in Swift.
 
+## Notice
+
+This package is in a state of transition. Documentation may be inaccurate.
+
 ## Modules
 
 ### [`CCompat`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/ccompat/)

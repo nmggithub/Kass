@@ -1,5 +1,6 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [MachPort, MachMsg, Linking, CCompat]
+    - documentation_targets:
+        [Kass, MachBase, MachPort, MackTask, MachThread, MachHost, MachMsg, MachMIG, Linking, CCompat]
       platform: macos
