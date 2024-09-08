@@ -6,6 +6,6 @@ extension Mach {
     /// - Throws: An error if the syscall fails.
     public static func Syscall(_ syscall: @autoclosure () -> kern_return_t) throws {
         let kr = syscall()
-        guard kr != KERN_SUCCESS else { throw Mach.KernelError(kr) }
+        guard kr == KERN_SUCCESS else { throw Mach.KernelError(kr) }
     }
 }
