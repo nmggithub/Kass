@@ -33,11 +33,26 @@ struct MachSubModule: Module {
     }
 }
 
+struct BSDSubModule: Module {
+    let targetName: String
+    let dependencies: [String]
+    let path: String
+    internal init(subModuleName: String, folderName: String? = nil, dependencies: [String]) {
+        let prefixedTargetName = "BSD\(subModuleName)"
+        self.targetName = prefixedTargetName
+        self.path = "Sources/BSD/\(folderName ?? subModuleName)"
+        self.dependencies = ["BSDBase"] + dependencies
+    }
+}
+
 /// The modules that are part of the package, in build order.
 let modules: [Module] = [
     BasicModule.init(targetName: "Kass", dependencies: []),
     BasicModule.init(targetName: "CCompat", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
+    BasicModule.init(
+        targetName: "BSDBase", path: "Sources/BSD/Base", dependencies: ["CCompat", "Linking"]
+    ),
     BasicModule.init(
         targetName: "MachBase", path: "Sources/Mach/Base", dependencies: ["CCompat", "Linking"]
     ),
