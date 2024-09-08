@@ -1,7 +1,7 @@
 import Darwin.Mach
 import MachBase
 
-extension Mach.MachMsg {
+extension Mach.Messaging {
     /// An option for sending and receiving messages.
     public enum Option: mach_msg_option_t {
         case send = 0x0000_0001

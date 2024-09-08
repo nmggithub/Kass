@@ -5,7 +5,7 @@ import MachPort
 extension Mach.Message {
     /// A message queue.
     /// - Important: This does not support a combined send and receive operation. For such an operation, use
-    /// the ``Mach/MachMsg/send(_:to:receiving:ofMaxSize:on:options:timeout:)`` function.
+    /// the ``Mach/Messaging/send(_:to:receiving:ofMaxSize:on:options:timeout:)`` function.
     public class Queue: Mach.Port {
         /// Send a message to the queue.
         /// - Parameters:
@@ -14,10 +14,10 @@ extension Mach.Message {
         ///   - timeout: The timeout for sending the message.
         /// - Throws: An error if the message could not be sent.
         public func enqueue(
-            _ message: Mach.Message, options: Set<Mach.MachMsg.Option> = [],
+            _ message: Mach.Message, options: Set<Mach.Messaging.Option> = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws {
-            try Mach.MachMsg.send(message, to: self, options: options, timeout: timeout)
+            try Mach.Messaging.send(message, to: self, options: options, timeout: timeout)
         }
         /// Receive a message from the queue.
         /// - Parameters:
@@ -29,10 +29,10 @@ extension Mach.Message {
         /// - Warning: This function blocks until a message is received.
         public func dequeue<ReceiveMessage: Mach.Message>(
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
-            options: Set<Mach.MachMsg.Option> = [],
+            options: Set<Mach.Messaging.Option> = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws -> Mach.Message {
-            try Mach.MachMsg.receive(messageType, on: self, options: options, timeout: timeout)
+            try Mach.Messaging.receive(messageType, on: self, options: options, timeout: timeout)
         }
     }
 }

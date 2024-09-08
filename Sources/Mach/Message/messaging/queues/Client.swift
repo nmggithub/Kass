@@ -7,7 +7,7 @@ extension Mach.Message {
         @available(*, unavailable, message: "Clients can only enqueue messages.")
         override public func dequeue<ReceiveMessage>(
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
-            options: Set<Mach.MachMsg.Option> = [],
+            options: Set<Mach.Messaging.Option> = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws -> Mach.Message where ReceiveMessage: Mach.Message {
             Mach.Message()

@@ -15,7 +15,7 @@ extension Mach.Message {
 
 extension Mach {
     /// A set of helper functions for sending and receiving messages.
-    public struct MachMsg {
+    public struct Messaging {
         /// Call the `mach_msg` syscall.
         /// - Parameters:
         ///   - messageBuffer: The message buffer. This buffer is reused for receiving messages.

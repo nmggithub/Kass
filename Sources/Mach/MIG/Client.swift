@@ -42,7 +42,7 @@ extension Mach.Message.MIG {
             let routineId = self.baseRoutineId + routineIndex
             request.header.messageID = routineId
             request.header.bits.remotePortDisposition = .copySend  // make a copy of the send right so we can reuse the port
-            let reply = try Mach.MachMsg.send(
+            let reply = try Mach.Messaging.send(
                 request, to: self,
                 receiving: replyType, on: replyPort
             )
