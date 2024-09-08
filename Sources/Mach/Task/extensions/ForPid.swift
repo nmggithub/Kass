@@ -1,4 +1,4 @@
-import Darwin.Mach
+@preconcurrency import Darwin.Mach
 import Foundation
 import MachBase
 import MachPort
@@ -6,7 +6,8 @@ import MachPort
 extension Mach.Task.ControlPort {
     public convenience init(pid: pid_t) throws {
         var controlPort = task_t()
-        let ret = task_for_pid(mach_task_self_, pid, &controlPort)
+        /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        let ret = task_for_pid(Mach.Task.current.name, pid, &controlPort)
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
@@ -16,7 +17,8 @@ extension Mach.Task.ControlPort {
 extension Mach.Task.NamePort {
     public convenience init(pid: pid_t) throws {
         var namePort = task_name_t()
-        let ret = task_name_for_pid(mach_task_self_, pid, &namePort)
+        /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        let ret = task_name_for_pid(Mach.Task.current.name, pid, &namePort)
         guard ret == KERN_SUCCESS else {
             throw NSError(domain: NSMachErrorDomain, code: Int(ret))
         }
