@@ -3,6 +3,7 @@ import Foundation
 import MachBase
 import MachMsg
 
+public typealias MIGErrorReply = Mach.Message.MIG.ErrorReply
 extension Mach.Message.MIG {
     /// An error reply to a MIG message.
     /// - Important: This really just represents an empty reply with a return code, which might be `KERN_SUCCESS`. So
