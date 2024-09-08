@@ -6,14 +6,20 @@ import MachPort
 extension Mach.Message.MIG {
     open class Client: Mach.Port {
         /// The base routine ID for the remote MIG server.
-        private(set) public var baseRoutineId: mach_msg_id_t = 0
+        public var baseRoutineId: mach_msg_id_t = 0
         /// Represent an existing raw MIG server port.
         /// - Parameters:
         ///   - name: The name of the port.
         ///   - baseRoutineId: The base routine ID for the remote MIG server.
-        public convenience init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
-            self.init(named: name)
+        public init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
             self.baseRoutineId = baseRoutineId
+            super.init(named: name)
+        }
+
+        @available(*, unavailable, message: "Use `init(named:baseRoutineId:)` instead.")
+        public required init(named name: mach_port_name_t) {
+            self.baseRoutineId = 0
+            super.init(named: name)
         }
 
         /// Perform a MIG routine.
