@@ -36,7 +36,7 @@ extension Mach.Message.WithTypedPayload {
     ///   - payload: The payload to include in the message.
     public init(
         descriptors: [any Mach.Message.Body.Descriptor]? = nil,
-        payload: Payload
+        payload: PayloadType
     ) {
         self.init(descriptors: descriptors, payloadBuffer: payload.toRawPayloadBuffer())
     }
