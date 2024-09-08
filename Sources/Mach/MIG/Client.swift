@@ -1,4 +1,5 @@
 import Darwin.Mach
+import Foundation
 import MachBase
 import MachMsg
 import MachPort
@@ -20,6 +21,25 @@ extension Mach.Message.MIG {
         public required init(named name: mach_port_name_t) {
             self.baseRoutineId = 0
             super.init(named: name)
+        }
+
+        /// Perform a MIG routine.
+        /// - Parameters:
+        ///   - routineIndex: The index of the routine.
+        ///   - request: The request to send.
+        ///   - replyPort: The port on which to receive the reply.
+        /// - Returns: The reply to the request.
+        @discardableResult  // users can ignore the reply message if they want to
+        public func doRoutine(
+            _ routineIndex: mach_msg_id_t,
+            request: MIGRequest<some Payload>,
+            on replyPort: Mach.Port? = nil
+        ) throws -> MIGReply<Data> {
+            try self.doRoutine(
+                routineIndex,
+                request: request,
+                receiving: MIGReply<Data>.self
+            )
         }
 
         /// Perform a MIG routine.
