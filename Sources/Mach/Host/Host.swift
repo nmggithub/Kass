@@ -6,7 +6,7 @@ extension Mach {
     /// A host (port).
     public class Host: Mach.Port {
         /// The current host.
-        public static let current = Host(named: mach_host_self())
+        public static var current: Self { Self(named: mach_host_self()) }
         /// The boot info for the host.
         public var bootInfo: String {
             get throws {

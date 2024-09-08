@@ -5,7 +5,7 @@ import MachPort
 extension Mach {
     public class Thread: Mach.Port {
         /// The current thread.
-        public static let current = Thread(named: mach_thread_self())
+        public static var current: Self { Self(named: mach_thread_self()) }
 
         /// Create a new thread in a given task.
         /// - Parameter task: The task in which to create the thread.

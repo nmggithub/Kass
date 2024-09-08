@@ -1,4 +1,4 @@
-import Darwin.Mach
+@preconcurrency import Darwin.Mach
 import MachBase
 
 extension Mach {

@@ -47,7 +47,8 @@ extension Mach {
                 ))
         }
         /// The default maximum size for receiving messages.
-        public static var defaultMaxReceiveSize: Int = 1024
+        @usableFromInline
+        static let defaultMaxReceiveSize: Int = 1024
         /// A transient buffer for receiving messages, set to a given maximum size.
         /// - Parameter size: The size of the buffer.
         /// - Returns: The buffer.
