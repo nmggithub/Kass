@@ -1,5 +1,4 @@
 import Darwin.Mach
-import Foundation.NSError
 
 extension Mach.Thread {
     /// The thread's state.

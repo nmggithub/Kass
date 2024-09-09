@@ -26,14 +26,14 @@ extension Mach.Task {
         /// - Returns: The port for the service.
         public func lookUp(serviceName: String) throws -> Mach.Port {
             var portName = mach_port_name_t()
-            let ret = bootstrap_look_up(self.name, serviceName, &portName)
-            guard ret == KERN_SUCCESS else {
-                guard let errorString = bootstrap_strerror(ret) else {
+            let kr = bootstrap_look_up(self.name, serviceName, &portName)
+            guard kr == KERN_SUCCESS else {
+                guard let errorString = bootstrap_strerror(kr) else {
                     // If we can't get the error string, throw the return code only
-                    throw NSError(domain: NSMachErrorDomain, code: Int(ret))
+                    throw NSError(domain: NSMachErrorDomain, code: Int(kr))
                 }
                 throw NSError(
-                    domain: NSMachErrorDomain, code: Int(ret),
+                    domain: NSMachErrorDomain, code: Int(kr),
                     userInfo: [
                         NSLocalizedDescriptionKey: String(cString: errorString)
                     ]

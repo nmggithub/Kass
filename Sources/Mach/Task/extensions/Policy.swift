@@ -1,5 +1,4 @@
 import Darwin.Mach
-import Foundation.NSError
 
 extension Mach.Task {
     // The task's policy.
@@ -64,12 +63,11 @@ extension Mach.Task {
             let valuePointer = task_policy_t.allocate(capacity: Int(copy count))
             let get_default = UnsafeMutablePointer<boolean_t>.allocate(capacity: 1)
             get_default.pointee = getDefault ? 1 : 0
-            let ret = task_policy_get(
-                self.task.name, flavor.rawValue, valuePointer, &count, get_default
+            try Mach.Syscall(
+                task_policy_get(
+                    self.task.name, flavor.rawValue, valuePointer, &count, get_default
+                )
             )
-            guard ret == KERN_SUCCESS else {
-                throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-            }
             return valuePointer
         }
     }

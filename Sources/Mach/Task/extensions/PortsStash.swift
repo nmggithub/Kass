@@ -1,5 +1,4 @@
 import Darwin.Mach
-import Foundation.NSError
 
 extension Mach.Task {
     /// Get the task's stashed ports.
@@ -10,10 +9,7 @@ extension Mach.Task {
         var ports: mach_port_array_t? = mach_port_array_t.allocate(
             capacity: Int(portsCount)
         )
-        let ret = mach_ports_lookup(self.name, &ports, &portsCount)
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
+        try Mach.Syscall(mach_ports_lookup(self.name, &ports, &portsCount))
         return (0..<Int(portsCount)).map {
             let port = Mach.Port(named: ports![$0])
             port.owningTask = self
@@ -27,9 +23,6 @@ extension Mach.Task {
     public func setStashedPorts(_ ports: [Mach.Port]) throws {
         let portsCount = mach_msg_type_number_t(ports.count)
         var portNames = ports.map(\.name)
-        let ret = mach_ports_register(self.name, &portNames, portsCount)
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
+        try Mach.Syscall(mach_ports_register(self.name, &portNames, portsCount))
     }
 }
