@@ -23,7 +23,7 @@ extension Mach {
             case number = 6
         }
         /// Compare two ports by their names.
-        public static func == (lhs: MachBase.Mach.Port, rhs: MachBase.Mach.Port) -> Bool {
+        public static func == (lhs: Mach.Port, rhs: Mach.Port) -> Bool {
             return lhs.name == rhs.name
         }
         /// The raw task that the port name is in the namespace of.
