@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 
 extension Mach.Port {
     public struct SpecialPortManager<ParentPortType: Mach.Port, SpecialPort: RawRepresentable> {

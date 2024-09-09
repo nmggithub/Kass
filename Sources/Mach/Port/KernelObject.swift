@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 
 /// A kernel object.
 typealias MachKernelObject = Mach.KernelObject

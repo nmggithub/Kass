@@ -1,5 +1,3 @@
-import MachBase
-
 extension Mach.Message {
     /// A message payload.
     public protocol Payload {

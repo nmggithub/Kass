@@ -1,6 +1,4 @@
 import Darwin.Mach
-import MachBase
-import MachMsg
 import MachPort
 
 extension Mach.Message.MIG {

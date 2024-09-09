@@ -1,5 +1,4 @@
 import Foundation
-import MachBase
 
 /// Data as a message payload.
 extension Data: Mach.Message.Payload {

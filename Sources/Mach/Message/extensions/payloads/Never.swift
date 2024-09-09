@@ -1,5 +1,3 @@
-import MachBase
-
 /// A non-existent payload.
 extension Never: Mach.Message.Payload {
     /// Return `nil`.

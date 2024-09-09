@@ -69,7 +69,6 @@
  */
 
 import Darwin.Mach
-import MachPort
 
 extension Mach.Host {
     /// A host special port.

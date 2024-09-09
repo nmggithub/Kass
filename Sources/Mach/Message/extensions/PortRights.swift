@@ -1,4 +1,3 @@
-import MachBase
 import MachPort
 
 extension Mach.Message {

@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachBase
 
 extension Mach.Port {
     /// A port that can be allocated.

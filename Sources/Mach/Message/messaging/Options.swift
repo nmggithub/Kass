@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 
 extension Mach.Messaging {
     /// An option for sending and receiving messages.

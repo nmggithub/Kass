@@ -1,7 +1,5 @@
 import Darwin.Mach
 import Foundation.NSError
-import MachBase
-import MachPort
 
 extension Mach.Task {
     /// Get the task's stashed ports.

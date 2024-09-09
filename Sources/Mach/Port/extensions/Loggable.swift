@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachBase
 
 extension Mach.Port {
     /// A port with a loggable name.

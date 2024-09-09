@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 import MachPort
 
 extension Mach.Message.Body.Descriptor {

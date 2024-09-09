@@ -1,6 +1,4 @@
 import Darwin.Mach
-import MachBase
-import MachPort
 import MachThread
 
 extension Mach.Task {

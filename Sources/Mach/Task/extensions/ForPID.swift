@@ -2,8 +2,6 @@ import BSDBase
 @preconcurrency import Darwin.Mach
 import Foundation
 import Linking
-import MachBase
-import MachPort
 
 private let task_inspect_for_pid:
     @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_inspect_t>) -> kern_return_t =

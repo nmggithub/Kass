@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachBase
 
 extension Mach.Message.Body.Descriptor {
     /// An iterator for a set of descriptor pointers.

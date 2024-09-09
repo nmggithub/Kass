@@ -1,6 +1,4 @@
 import Darwin.Mach
-import MachBase
-import MachPort
 
 extension Mach.Task {
     // A flavor of task (port).

@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachBase
 
 extension Mach.Port {
     /// A flag to use when constructing a port.

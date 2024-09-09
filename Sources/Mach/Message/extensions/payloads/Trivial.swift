@@ -1,5 +1,3 @@
-import MachBase
-
 extension Mach.Message.Payload {
     /// A payload with a fixed length and trivial representation.
     public typealias Trivial = Mach.Message.TrivialPayload

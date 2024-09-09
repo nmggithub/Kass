@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 
 extension Mach.Port {
     /// The number of user references to a port right.

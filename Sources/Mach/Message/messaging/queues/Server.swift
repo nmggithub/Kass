@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 
 extension Mach.Message {
     /// A message server for dequeuing messages.

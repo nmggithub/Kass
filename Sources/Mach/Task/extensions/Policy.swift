@@ -1,7 +1,5 @@
 import Darwin.Mach
 import Foundation.NSError
-import MachBase
-import MachPort
 
 extension Mach.Task {
     // The task's policy.

@@ -1,6 +1,5 @@
 import Darwin.Mach
 import MachBase
-import MachPort
 
 extension Mach.Task {
     public enum SpecialPort: task_special_port_t {

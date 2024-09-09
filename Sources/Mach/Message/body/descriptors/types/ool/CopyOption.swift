@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 
 extension Mach.Message.Body {
     /// A copy option for OOL descriptors.

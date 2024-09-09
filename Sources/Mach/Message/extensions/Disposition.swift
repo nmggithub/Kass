@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachBase
 import MachPort
 
 /// Port extensions.

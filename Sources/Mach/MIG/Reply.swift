@@ -1,6 +1,3 @@
-import MachBase
-import MachMsg
-
 public typealias MIGReply = Mach.Message.MIG.Reply
 
 extension Mach.Message.MIG {

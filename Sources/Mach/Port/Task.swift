@@ -1,5 +1,4 @@
 @preconcurrency import Darwin.Mach
-import MachBase
 
 /// A task (port).
 typealias MachTask = Mach.Task

@@ -1,7 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachBase
-import MachMsg
 
 extension Mach.Message.MIG {
     public class Error: NSError {
