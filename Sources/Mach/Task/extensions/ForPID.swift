@@ -21,7 +21,7 @@ extension Mach.Task.ControlPort {
     /// - Throws: If the task control port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var controlPort = task_t()
-        /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
         try Mach.Syscall(task_for_pid(Mach.Task.current.name, pid, &controlPort))
         self.init(named: controlPort)
     }
@@ -32,7 +32,7 @@ extension Mach.Task.NamePort {
     /// - Throws: If the task name port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var namePort = task_name_t()
-        /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
         try Mach.Syscall(task_name_for_pid(Mach.Task.current.name, pid, &namePort))
         self.init(named: namePort)
     }
@@ -44,7 +44,7 @@ extension Mach.Task.InspectPort {
     /// - Throws: If the task inspect port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var namePort = task_inspect_t()
-        /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
         try BSD.Syscall(task_inspect_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach syscall.
         self.init(named: namePort)
     }
@@ -56,7 +56,7 @@ extension Mach.Task.ReadPort {
     /// - Throws: If the task inspect port cannot be retrieved.
     public convenience init(pid: pid_t) throws {
         var namePort = task_read_t()
-        /// The first argument doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
         try BSD.Syscall(task_read_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach syscall.
         self.init(named: namePort)
     }
