@@ -1,5 +1,4 @@
 @preconcurrency import Darwin.Mach
-import MachTask
 
 /// A port that can be initialized by looking up a service name.
 public protocol InitializableByServiceName: Mach.Port {

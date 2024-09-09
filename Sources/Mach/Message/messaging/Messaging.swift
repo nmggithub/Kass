@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachPort
 
 extension Mach.Message {
     /// The size to pass to `mach_msg` for sending the message.

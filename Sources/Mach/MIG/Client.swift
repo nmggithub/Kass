@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachPort
 
 extension Mach.Message.MIG {
     open class Client: Mach.Port {

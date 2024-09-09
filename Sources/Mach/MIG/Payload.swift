@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachMsg
 
 extension Mach.Message.MIG {
     /// A payload for a MIG message.

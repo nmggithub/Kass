@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachThread
 
 extension Mach.Task {
     /// The threads in the task.

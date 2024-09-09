@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachPort
 
 extension Mach.Message.MIG {
     public class ReplyPort: Mach.Port {

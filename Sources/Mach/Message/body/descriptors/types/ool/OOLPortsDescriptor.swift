@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachPort
 
 extension Mach.Message.Body.Descriptor {
     /// An out-of-line ports descriptor.
