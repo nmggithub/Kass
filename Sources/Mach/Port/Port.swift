@@ -71,8 +71,9 @@ extension Mach {
         /// The rights to the port named by the ``Port/name`` property.
         public var rights: Set<Right> {
             var type = mach_port_type_t()
-            let ret = mach_port_type(self.owningTask.name, self.name, &type)
-            guard ret == KERN_SUCCESS else { return [] }
+            do {
+                try Mach.Syscall(mach_port_type(self.owningTask.name, self.name, &type))
+            } catch { return [] }
             var rights = Set<Right>()
             for right in Right.allCases {
                 // `mach_port_type_t` is a bitfield for the rights

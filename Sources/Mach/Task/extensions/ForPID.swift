@@ -1,6 +1,5 @@
 import BSDBase
 @preconcurrency import Darwin.Mach
-import Foundation
 import Linking
 
 private let task_inspect_for_pid:

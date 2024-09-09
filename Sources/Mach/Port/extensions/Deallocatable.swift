@@ -1,5 +1,4 @@
 import Darwin.Mach
-import Foundation
 
 extension Mach.Port {
     /// A port that can be allocated.
@@ -11,9 +10,7 @@ extension Mach.Port {
 
 extension Mach.Port.Deallocatable {
     public func deallocate() throws {
-        let ret = mach_port_deallocate(self.owningTask.name, self.name)
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
+        try Mach.Syscall(mach_port_deallocate(self.owningTask.name, self.name))
+
     }
 }

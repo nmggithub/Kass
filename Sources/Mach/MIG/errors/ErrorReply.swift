@@ -1,5 +1,5 @@
 import Darwin.Mach
-import Foundation
+import Foundation.NSError
 
 public typealias MIGErrorReply = Mach.Message.MIG.ErrorReply
 extension Mach.Message.MIG {

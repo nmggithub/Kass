@@ -1,5 +1,4 @@
 import Darwin.Mach
-import Foundation
 
 extension Mach.Port {
     /// A flag to use when constructing a port.
@@ -55,18 +54,14 @@ extension Mach.Port.Constructable {
         var options = mach_port_options_t()
         options.mpl.mpl_qlimit = queueLimit
         options.flags = flags.reduce(0) { $0 | $1.rawValue }
-        let ret = mach_port_construct(task.name, &options, context, &generatedPortName)
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
+        try Mach.Syscall(mach_port_construct(task.name, &options, context, &generatedPortName))
         return self.init(named: mach_port_name_t(generatedPortName))
     }
     public func destruct(
         guard: mach_port_context_t = mach_port_context_t(), sendRightDelta: mach_port_delta_t
     ) throws {
-        let ret = mach_port_destruct(self.owningTask.name, self.name, sendRightDelta, `guard`)
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
+        try Mach.Syscall(
+            mach_port_destruct(self.owningTask.name, self.name, sendRightDelta, `guard`)
+        )
     }
 }

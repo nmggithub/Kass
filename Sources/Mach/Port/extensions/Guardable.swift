@@ -1,5 +1,5 @@
 import Darwin.Mach
-import Foundation
+import Foundation.NSError
 
 extension Mach.Port {
     /// A flag to guard a port with.
@@ -31,18 +31,14 @@ extension Mach.Port.Guardable {
     public func `guard`(_ context: mach_port_context_t, flags: Set<Mach.Port.GuardFlag> = [])
         throws
     {
-        let ret = mach_port_guard_with_flags(
-            self.owningTask.name, self.name, context, flags.reduce(0) { $0 | $1.rawValue }
+        try Mach.Syscall(
+            mach_port_guard_with_flags(
+                self.owningTask.name, self.name, context, flags.reduce(0) { $0 | $1.rawValue }
+            )
         )
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
     }
     public func unguard(_ context: mach_port_context_t) throws {
-        let ret = mach_port_unguard(self.owningTask.name, self.name, context)
-        guard ret == KERN_SUCCESS else {
-            throw NSError(domain: NSMachErrorDomain, code: Int(ret))
-        }
+        try Mach.Syscall(mach_port_unguard(self.owningTask.name, self.name, context))
     }
 }
 
@@ -63,10 +59,10 @@ extension Mach.Port.GuardableExperimental {
             case Int(KERN_INVALID_NAME): return false  // The port doesn't exist.
             case Int(KERN_INVALID_TASK): return false  // The port's task doesn't exist.
             case Int(KERN_INVALID_RIGHT): return false  // The port doesn't have the correct rights.
-            case Int(KERN_SUCCESS): break  // The guarding worked, so we need to unguard it.
             default: fatalError(self.loggable("Unexpected error when guarding: \(error)"))
             }
         }
+        // The guarding worked, so we need to unguard it.
         do { try self.unguard(testGuard) } catch {
             fatalError(self.loggable("Failed to unguard the port: \(error)"))
         }
