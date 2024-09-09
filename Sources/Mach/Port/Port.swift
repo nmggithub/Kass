@@ -4,10 +4,12 @@
 extension Mach {
     /// A port (name) in a task's namespace.
     open class Port: Equatable, Hashable {
+        /// Hash the port.
+        /// - Parameter hasher: The hasher to use.
         public func hash(into hasher: inout Hasher) {
-            // TODO: Implement this
+            hasher.combine(self.name)
+            hasher.combine(self.owningTask)
         }
-
         /// The nil port.
         open class var Nil: Self {
             return Self(named: mach_port_name_t(MACH_PORT_NULL))
