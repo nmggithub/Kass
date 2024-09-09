@@ -4,7 +4,7 @@ import MachBase
 
 extension Mach.Port {
     /// A port with a loggable name.
-    public protocol Loggable: Mach.Port {
+    public protocol Loggable: Mach.Port, CustomStringConvertible {
         /// The name of the port formatted for logging.
         var loggableName: String { get }
         /// Format a message about the port for logging.
@@ -18,6 +18,9 @@ extension Mach.Port {
 }
 
 extension Mach.Port.Loggable {
+    public var description: String {
+        return self.loggableName
+    }
     public var loggableName: String {
         return String(format: "0x%08x", self.name)
     }
