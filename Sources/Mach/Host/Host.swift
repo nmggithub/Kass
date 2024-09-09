@@ -1,6 +1,6 @@
 import Darwin.Mach
-import MachBase
-import MachPort
+@_exported import MachBase
+@_exported import MachPort
 
 extension Mach {
     /// A host (port).

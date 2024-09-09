@@ -1,5 +1,5 @@
-import MachBase
-import MachMsg
+@_exported import MachBase
+@_exported import MachMsg
 
 extension Mach.Message {
     /// The Mach Interface Generator (MIG) namespace.

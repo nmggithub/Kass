@@ -1,5 +1,5 @@
 @preconcurrency import Darwin.Mach
-import MachBase
+@_exported import MachBase
 
 extension Mach {
     /// A port (name) in a task's namespace.

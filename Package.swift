@@ -93,7 +93,7 @@ let moduleTargets = modules.map {
 let moduleProducts = modules.map {
     Product.library(
         name: $0.targetName,
-        targets: [$0.targetName]
+        targets: [$0.targetName] + $0.dependencies
     )
 }
 
