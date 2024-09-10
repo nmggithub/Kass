@@ -6,8 +6,7 @@ extension Mach.Task {
     // A task's policy.
     public class Policy: Mach.FlavoredDataManager<
         Policy.Flavor, task_policy_t.Pointee,
-        UnsafeMutablePointer<boolean_t>?,
-        ()?
+        UnsafeMutablePointer<boolean_t>?, Never?
     >
     {
         /// Get a task's policy.

@@ -1,6 +1,10 @@
 import Darwin.Mach
 
 extension Mach {
+    public typealias FlavoredDataManagerNoAdditionalArgs<Flavor, ArrayPointee> =
+        FlavoredDataManager<
+            Flavor, ArrayPointee, Never?, Never?
+        >
     open class FlavoredDataManager<
         Flavor, ArrayPointee,
         AdditionalGetterArgs: ExpressibleByNilLiteral,

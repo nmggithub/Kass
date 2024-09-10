@@ -5,7 +5,7 @@ extension Mach.Task {
     public var info: Info { Info(about: self) }
     /// A task's info.
 
-    public class Info: Mach.FlavoredDataManager<Info.Flavor, task_info_t.Pointee, ()?, ()?> {
+    public class Info: Mach.FlavoredDataManagerNoAdditionalArgs<Info.Flavor, task_info_t.Pointee> {
         /// A flavor of task info.
         public enum Flavor: task_flavor_t {
             case absoluteTime = 1
@@ -49,7 +49,7 @@ extension Mach.Task {
         }
 
         /// Create a task info manager.
-        /// - Parameter task: The task to get info about.
+        /// - Parameter task: The task to manage info about.
         public convenience init(about task: Mach.Task) {
             self.init(
                 getter: { flavor, array, count, _ in

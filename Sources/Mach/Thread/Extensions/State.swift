@@ -4,9 +4,8 @@ extension Mach.Thread {
     /// The thread's state.
     public var state: State { State(about: self) }
     /// A thread's state.
-    public class State: Mach.FlavoredDataManager<
-        State.Flavor, thread_state_t.Pointee,
-        ()?, ()?
+    public class State: Mach.FlavoredDataManagerNoAdditionalArgs<
+        State.Flavor, thread_state_t.Pointee
     >
     {
         /// The thread.
