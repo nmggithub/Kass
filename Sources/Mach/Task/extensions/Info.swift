@@ -4,14 +4,8 @@ extension Mach.Task {
     /// The task's info.
     public var info: Info { Info(about: self) }
     /// A task's info.
-    public struct Info {
-        public typealias ArrayPointee = task_info_t.Pointee
-        public let task: Mach.Task
-        /// Get a task's info.
-        /// - Parameter task: The task get the info of.
-        public init(about task: Mach.Task) {
-            self.task = task
-        }
+
+    public class Info: Mach.FlavoredDataManager<Info.Flavor, task_info_t.Pointee, ()?, ()?> {
         /// A flavor of task info.
         public enum Flavor: task_flavor_t {
             case absoluteTime = 1
@@ -53,57 +47,39 @@ extension Mach.Task {
             case suspendStats = 30
             case suspendSources = 31
         }
+
+        /// Create a task info manager.
+        /// - Parameter task: The task to get info about.
+        public convenience init(about task: Mach.Task) {
+            self.init(
+                getter: { flavor, array, count, _ in
+                    task_info(task.name, flavor.rawValue, array, &count)
+                },
+                setter: { flavor, array, count, _ in
+                    task_set_info(task.name, flavor.rawValue, array, count)
+                }
+            )
+        }
+
         /// Get a task's info.
         /// - Parameters:
         ///   - flavor: The flavor of the info.
         ///   - type: The type to load the info as.
         /// - Throws: An error if the info cannot be retrieved.
-        public func get<InfoType>(_ flavor: Flavor, as type: InfoType.Type) throws -> InfoType {
-            var count = mach_msg_type_number_t(
-                MemoryLayout<InfoType>.size / MemoryLayout<task_info_t.Pointee>.size
-            )
-            let arrayPointer = task_info_t.allocate(capacity: Int(copy count))
-            defer { arrayPointer.deallocate() }
-            try Mach.Syscall(task_info(self.task.name, flavor.rawValue, arrayPointer, &count))
-            return UnsafeMutableRawPointer(arrayPointer).load(as: InfoType.self)
-        }
-        /// Get a task's info.
-        /// - Parameters:
-        ///   - flavor: The flavor of the info.
-        ///   - count: The size of the info, in `integer_t`'s.
-        /// - Throws: An error if the info cannot be retrieved.
-        /// - Important: This function is for advanced use only. ``get(_:as:)`` is recommended.
-        public func get(
-            _ flavor: Flavor,
-            count: inout mach_msg_type_number_t
-        ) throws -> task_info_t {
-            let arrayPointer = task_info_t.allocate(capacity: Int(copy count))
-            try Mach.Syscall(
-                task_info(self.task.name, flavor.rawValue, arrayPointer, &count)
-            )
-            return arrayPointer
+        /// - Returns: The task's info.
+        public func get<InfoType>(_ flavor: Flavor, as type: InfoType.Type) throws
+            -> InfoType
+        {
+            try super.get(flavor, as: type)
         }
 
         /// Set a task's info.
         /// - Parameters:
-        ///   - flavor: The flavor of the info.
-        ///   - value: The value to set the info to.
-        /// - Throws: An error if the info cannot be set.
-        /// - Warning: The kernel seems to always return an error for this function, but it is still included for completeness.
+        ///  - flavor: The flavor of the info.
+        ///  - value: The value to set the info to.
+        ///  - Throws: An error if the info cannot be set.
         public func set<InfoType>(_ flavor: Flavor, to value: consuming InfoType) throws {
-            let count = mach_msg_type_number_t(
-                MemoryLayout<InfoType>.size / MemoryLayout<integer_t>.size
-            )
-            let valuePointer = UnsafeMutablePointer<task_info_t.Pointee>.allocate(
-                capacity: Int(count)
-            )
-            defer { valuePointer.deallocate() }
-            withUnsafeBytes(of: value) { valueBytes in
-                UnsafeMutableRawPointer(valuePointer).copyMemory(
-                    from: valueBytes.baseAddress!, byteCount: valueBytes.count
-                )
-            }
-            task_set_info(self.task.name, flavor.rawValue, valuePointer, count)
+            try super.set(flavor, to: value)
         }
     }
 }

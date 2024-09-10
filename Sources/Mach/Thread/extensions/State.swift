@@ -4,13 +4,24 @@ extension Mach.Thread {
     /// The thread's state.
     public var state: State { State(about: self) }
     /// A thread's state.
-    public struct State {
+    public class State: Mach.FlavoredDataManager<
+        State.Flavor, thread_state_t.Pointee,
+        ()?, ()?
+    >
+    {
         /// The thread.
-        let thread: Mach.Thread
+        // let thread: Mach.Thread
         /// Get a thread's state.
         /// - Parameter thread: The thread to get the state of.
-        init(about thread: Mach.Thread) {
-            self.thread = thread
+        public convenience init(about thread: Mach.Thread) {
+            self.init(
+                getter: { flavor, array, count, _ in
+                    return thread_get_state(thread.name, flavor.rawValue, array, &count)
+                },
+                setter: { flavor, array, count, _ in
+                    return thread_set_state(thread.name, flavor.rawValue, array, count)
+                }
+            )
         }
         /// A flavor of thread state.
         /// - Warning: Some of these cases are [conditionally-compiled](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/statements/#Compiler-Control-Statements)
@@ -81,15 +92,16 @@ extension Mach.Thread {
         ///   - type: The type to load the state as.
         /// - Throws: An error if the state cannot be retrieved.
         public func get<InfoType>(_ flavor: Flavor, as type: InfoType.Type) throws -> InfoType {
-            var count = mach_msg_type_number_t(
-                MemoryLayout<InfoType>.size / MemoryLayout<thread_state_t.Pointee>.size
-            )
-            let arrayPointer = thread_state_t.allocate(capacity: Int(copy count))
-            defer { arrayPointer.deallocate() }
-            try Mach.Syscall(
-                thread_get_state(self.thread.name, flavor.rawValue, arrayPointer, &count)
-            )
-            return UnsafeMutableRawPointer(arrayPointer).load(as: InfoType.self)
+            try super.get(flavor, as: type)
+        }
+
+        /// Set a thread's state.
+        /// - Parameters:
+        ///   - flavor: The flavor of the state.
+        ///   - value: The value to set the state to.
+        /// - Throws: An error if the state cannot be set.
+        public func set<InfoType>(_ flavor: Flavor, to value: consuming InfoType) throws {
+            try super.set(flavor, to: value)
         }
     }
 }
