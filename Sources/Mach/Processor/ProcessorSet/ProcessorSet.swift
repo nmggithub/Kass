@@ -41,5 +41,16 @@ extension Mach.Host {
                 }
             }
         }
+        /// Whether the processor set is a processor set control port.
+        public var isControl: Bool {
+            get throws {
+                let kernelObject = try Mach.KernelObject(underlying: self)
+                switch kernelObject.type {
+                case .psetName: return false
+                case .pset: return true
+                default: fatalError("Processor set is somehow not a processor set")
+                }
+            }
+        }
     }
 }
