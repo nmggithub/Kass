@@ -10,19 +10,22 @@ extension BSD {
     public static func Sysctl<DataType>(
         _ mibNameArray: consuming [Int32],
         as type: DataType.Type = UInt8.self
-    ) throws -> UnsafeBufferPointer<DataType> {
+    ) throws -> [DataType] {
         var length = size_t()
         try BSD.Syscall(sysctl(&mibNameArray, UInt32(mibNameArray.count), nil, &length, nil, 0))
-        let buffer = UnsafeMutableRawPointer.allocate(
+        let rawPointer = UnsafeMutableRawPointer.allocate(
             byteCount: Int(length),
             alignment: MemoryLayout<DataType>.alignment
         )
+        defer { rawPointer.deallocate() }
         // hopefully the length hasn't changed
-        try BSD.Syscall(sysctl(&mibNameArray, UInt32(mibNameArray.count), buffer, &length, nil, 0))
+        try BSD.Syscall(
+            sysctl(&mibNameArray, UInt32(mibNameArray.count), rawPointer, &length, nil, 0))
         let count = length / MemoryLayout<DataType>.stride
-        return UnsafeBufferPointer<DataType>(
-            start: buffer.bindMemory(to: DataType.self, capacity: count), count: count
+        let bufferPointer = UnsafeBufferPointer<DataType>(
+            start: rawPointer.bindMemory(to: DataType.self, capacity: count), count: count
         )
+        return Array(bufferPointer)
     }
     /// Get system information.
     /// - Parameters:
@@ -33,7 +36,7 @@ extension BSD {
     public static func Sysctl<DataType>(
         _ mibName: String,
         as type: DataType.Type = UInt8.self
-    ) throws -> UnsafeBufferPointer<DataType> {
+    ) throws -> [DataType] {
         var mibNameArrayLength = size_t()
         try BSD.Syscall(sysctlnametomib(mibName, nil, &mibNameArrayLength))
         var mibNameArray = [Int32](repeating: 0, count: Int(mibNameArrayLength))
