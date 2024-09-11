@@ -4,6 +4,7 @@ extension BSD {
     /// - Throws: An error if the syscall fails.
     public static func Syscall(_ syscall: @autoclosure () -> Int32) throws {
         let ret = syscall()
-        guard ret == 0 else { throw BSD.KernelError() }  // ignore the return value (BSD.KernelError will, instead, check the errno)
+        // ignore the return value (instead, let BSD.KernelError check the errno)
+        guard ret == 0 else { throw BSD.KernelError() }
     }
 }
