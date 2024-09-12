@@ -9,7 +9,7 @@ extension BSD {
     /// - Returns: The system information.
     public static func Sysctl<DataType>(
         _ mibNameArray: consuming [Int32],
-        as type: DataType.Type = UInt8.self
+        asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
         var length = size_t()
         try BSD.Syscall(sysctl(&mibNameArray, UInt32(mibNameArray.count), nil, &length, nil, 0))
@@ -35,12 +35,12 @@ extension BSD {
     /// - Returns: The system information.
     public static func Sysctl<DataType>(
         _ mibName: String,
-        as type: DataType.Type = UInt8.self
+        asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
         var mibNameArrayLength = size_t()
         try BSD.Syscall(sysctlnametomib(mibName, nil, &mibNameArrayLength))
         var mibNameArray = [Int32](repeating: 0, count: Int(mibNameArrayLength))
         try BSD.Syscall(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
-        return try BSD.Sysctl(mibNameArray, as: type)
+        return try BSD.Sysctl(mibNameArray, asArrayOf: type)
     }
 }
