@@ -38,9 +38,9 @@ extension Mach {
             _ flavor: Flavor, as type: DataType.Type,
             additional: AdditionalGetterArgs = nil
         ) throws -> DataType {
-            try Mach.SyscallWithCountInOut(
+            try Mach.CallWithCountInOut(
                 arrayType: UnsafeMutablePointer<ArrayPointee>.self, dataType: DataType.self,
-                syscall: {
+                call: {
                     array, count in
                     getter(flavor, array, &count, additional)
                 }
@@ -56,9 +56,9 @@ extension Mach {
             _ flavor: Flavor, to value: consuming DataType,
             additional: AdditionalSetterArgs = nil
         ) throws {
-            try Mach.SyscallWithCountIn(
+            try Mach.CallWithCountIn(
                 arrayType: UnsafeMutablePointer<ArrayPointee>.self, data: value,
-                syscall: {
+                call: {
                     array, count in
                     setter(flavor, array, count, additional)
                 }

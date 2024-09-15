@@ -19,9 +19,9 @@ extension Mach.Host.Processor {
                 """
             )
         #endif
-        try Mach.SyscallWithCountIn(
+        try Mach.CallWithCountIn(
             arrayType: processor_info_t.self, data: info,
-            syscall: {
+            call: {
                 array, count in
                 processor_control(self.name, array, count)
             }

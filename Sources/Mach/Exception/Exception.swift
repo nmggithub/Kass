@@ -13,7 +13,7 @@ extension Mach {
             ofType exceptionType: exception_type_t,
             code: Int
         ) throws {
-            try Mach.SyscallWithCountIn(arrayType: exception_data_t.self, data: Int.self) {
+            try Mach.CallWithCountIn(arrayType: exception_data_t.self, data: Int.self) {
                 code, count in
                 exception_raise(self.name, thread.name, task.name, exceptionType, code, count)
             }
