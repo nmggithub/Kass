@@ -49,7 +49,7 @@ extension Mach {
         /// - Returns: The context of the port.
         public func getContext() throws -> mach_port_context_t {
             var context = mach_port_context_t()
-            try Mach.Syscall(mach_port_get_context(self.owningTask.name, self.name, &context))
+            try Mach.Call(mach_port_get_context(self.owningTask.name, self.name, &context))
             return context
         }
 
@@ -57,7 +57,7 @@ extension Mach {
         /// - Parameter context: The context to set.
         /// - Throws: If the context cannot be set.
         public func setContext(_ context: mach_port_context_t) throws {
-            try Mach.Syscall(mach_port_set_context(self.owningTask.name, self.name, context))
+            try Mach.Call(mach_port_set_context(self.owningTask.name, self.name, context))
         }
 
         /// The context of the port.
@@ -72,7 +72,7 @@ extension Mach {
         public var rights: Set<Right> {
             var type = mach_port_type_t()
             do {
-                try Mach.Syscall(mach_port_type(self.owningTask.name, self.name, &type))
+                try Mach.Call(mach_port_type(self.owningTask.name, self.name, &type))
             } catch { return [] }
             var rights = Set<Right>()
             for right in Right.allCases {

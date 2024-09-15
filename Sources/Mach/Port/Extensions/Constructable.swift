@@ -54,13 +54,13 @@ extension Mach.Port.Constructable {
         var options = mach_port_options_t()
         options.mpl.mpl_qlimit = queueLimit
         options.flags = flags.reduce(0) { $0 | $1.rawValue }
-        try Mach.Syscall(mach_port_construct(task.name, &options, context, &generatedPortName))
+        try Mach.Call(mach_port_construct(task.name, &options, context, &generatedPortName))
         return self.init(named: mach_port_name_t(generatedPortName))
     }
     public func destruct(
         guard: mach_port_context_t = mach_port_context_t(), sendRightDelta: mach_port_delta_t
     ) throws {
-        try Mach.Syscall(
+        try Mach.Call(
             mach_port_destruct(self.owningTask.name, self.name, sendRightDelta, `guard`)
         )
     }

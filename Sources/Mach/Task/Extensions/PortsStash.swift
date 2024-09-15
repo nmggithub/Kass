@@ -9,7 +9,7 @@ extension Mach.Task {
         var ports: mach_port_array_t? = mach_port_array_t.allocate(
             capacity: Int(portsCount)
         )
-        try Mach.Syscall(mach_ports_lookup(self.name, &ports, &portsCount))
+        try Mach.Call(mach_ports_lookup(self.name, &ports, &portsCount))
         return (0..<Int(portsCount)).map {
             let port = Mach.Port(named: ports![$0])
             port.owningTask = self
@@ -23,6 +23,6 @@ extension Mach.Task {
     public func setStashedPorts(_ ports: [Mach.Port]) throws {
         let portsCount = mach_msg_type_number_t(ports.count)
         var portNames = ports.map(\.name)
-        try Mach.Syscall(mach_ports_register(self.name, &portNames, portsCount))
+        try Mach.Call(mach_ports_register(self.name, &portNames, portsCount))
     }
 }

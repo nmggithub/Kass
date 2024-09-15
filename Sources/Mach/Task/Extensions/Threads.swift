@@ -6,7 +6,7 @@ extension Mach.Task {
         get throws {
             var threadList: thread_act_array_t?
             var threadCount = mach_msg_type_number_t.max
-            try Mach.Syscall(task_threads(self.name, &threadList, &threadCount))
+            try Mach.Call(task_threads(self.name, &threadList, &threadCount))
             return (0..<Int(threadCount)).map {
                 Mach.Thread(named: threadList![$0])
             }

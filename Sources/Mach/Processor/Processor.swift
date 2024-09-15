@@ -25,17 +25,17 @@ extension Mach.Host {
 
         /// Start the processor.
         /// - Throws: An error if the processor cannot be started.
-        public func start() throws { try Mach.Syscall(processor_start(self.name)) }
+        public func start() throws { try Mach.Call(processor_start(self.name)) }
         /// Stop the processor.
         /// - Throws: An error if the processor cannot be stopped.
-        public func exit() throws { try Mach.Syscall(processor_exit(self.name)) }
+        public func exit() throws { try Mach.Call(processor_exit(self.name)) }
     }
     /// The processors in the host.
     public var processors: [Processor] {
         get throws {
             var processorList: processor_array_t?
             var processorCount = mach_msg_type_number_t.max
-            try Mach.Syscall(host_processors(self.name, &processorList, &processorCount))
+            try Mach.Call(host_processors(self.name, &processorList, &processorCount))
             return (0..<Int(processorCount)).map {
                 Processor(named: processorList![$0], in: self)
             }

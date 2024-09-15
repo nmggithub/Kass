@@ -33,7 +33,7 @@ extension Mach {
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE,
             notifyPort: Mach.Port = Mach.Port.Nil
         ) throws {
-            try Mach.Syscall(
+            try Mach.Call(
                 mach_msg(
                     messageBuffer,
                     options.reduce(0, { $0 | $1.rawValue }),

@@ -13,7 +13,7 @@ extension Mach {
                 let bootInfoStr = UnsafeMutablePointer<CChar>.allocate(
                     capacity: Int(KERNEL_BOOT_INFO_MAX)
                 )
-                try Mach.Syscall(host_get_boot_info(self.name, bootInfoStr))
+                try Mach.Call(host_get_boot_info(self.name, bootInfoStr))
                 return String(cString: bootInfoStr)
             }
         }

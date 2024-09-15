@@ -8,7 +8,7 @@ extension Mach.Host {
         get throws {
             var processorSetList: processor_set_name_array_t?
             var processorSetCount = mach_msg_type_number_t.max
-            try Mach.Syscall(host_processor_sets(self.name, &processorSetList, &processorSetCount))
+            try Mach.Call(host_processor_sets(self.name, &processorSetList, &processorSetCount))
             return (0..<Int(processorSetCount)).map {
                 ProcessorSet(named: processorSetList![$0])
             }
@@ -20,7 +20,7 @@ extension Mach.Host {
     /// - Returns: The control port for the processor set.
     public func getProcessorSetControl(_ processorSet: ProcessorSet) throws -> ProcessorSet {
         var controlPortName = mach_port_name_t()
-        try Mach.Syscall(
+        try Mach.Call(
             host_processor_set_priv(self.name, processorSet.name, &controlPortName)
         )
         return ProcessorSet(named: controlPortName)

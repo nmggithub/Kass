@@ -129,7 +129,7 @@ extension Mach {
             let descriptionPointer = UnsafeMutablePointer<CChar>.allocate(
                 capacity: Int(KOBJECT_DESCRIPTION_LENGTH)
             )
-            try Mach.Syscall(
+            try Mach.Call(
                 mach_port_kobject_description(
                     port.owningTask.name, port.name, &type, &objectAddress, descriptionPointer
                 )

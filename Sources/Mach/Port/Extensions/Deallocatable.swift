@@ -10,7 +10,7 @@ extension Mach.Port {
 
 extension Mach.Port.Deallocatable {
     public func deallocate() throws {
-        try Mach.Syscall(mach_port_deallocate(self.owningTask.name, self.name))
+        try Mach.Call(mach_port_deallocate(self.owningTask.name, self.name))
 
     }
 }

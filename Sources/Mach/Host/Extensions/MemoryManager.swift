@@ -8,7 +8,7 @@ extension Mach.Host {
     /// - Returns: The default memory manager.
     public func getDefaultMemoryManager() throws -> MemoryManager {
         var name = mach_port_name_t()
-        try Mach.Syscall(
+        try Mach.Call(
             host_default_memory_manager(self.name, &name, 0)
         )
         return MemoryManager(named: name)
@@ -19,7 +19,7 @@ extension Mach.Host {
     /// - Warning: Only the kernel can set the default memory manager.
     public func setDefaultMemoryManager(to manager: MemoryManager) throws {
         var name = manager.name
-        try Mach.Syscall(
+        try Mach.Call(
             host_default_memory_manager(self.name, &name, 0)
         )
     }

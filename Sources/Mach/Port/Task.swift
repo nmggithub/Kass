@@ -22,7 +22,7 @@ extension Mach {
                 capacity: Int(typesCount)
             )
             do {
-                try Mach.Syscall(
+                try Mach.Call(
                     mach_port_names(self.name, &names, &namesCount, &types, &typesCount)
                 )
             } catch { return [] }

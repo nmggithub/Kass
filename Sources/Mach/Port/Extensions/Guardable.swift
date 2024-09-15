@@ -31,14 +31,14 @@ extension Mach.Port.Guardable {
     public func `guard`(_ context: mach_port_context_t, flags: Set<Mach.Port.GuardFlag> = [])
         throws
     {
-        try Mach.Syscall(
+        try Mach.Call(
             mach_port_guard_with_flags(
                 self.owningTask.name, self.name, context, flags.reduce(0) { $0 | $1.rawValue }
             )
         )
     }
     public func unguard(_ context: mach_port_context_t) throws {
-        try Mach.Syscall(mach_port_unguard(self.owningTask.name, self.name, context))
+        try Mach.Call(mach_port_unguard(self.owningTask.name, self.name, context))
     }
 }
 

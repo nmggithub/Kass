@@ -11,6 +11,6 @@ extension Mach.Host {
     /// - Parameter option: The reboot options.
     /// - Throws: If the reboot fails.
     public func reboot(_ options: Set<RebootOption> = []) throws {
-        try Mach.Syscall(host_reboot(self.name, options.reduce(0) { $0 | $1.rawValue }))
+        try Mach.Call(host_reboot(self.name, options.reduce(0) { $0 | $1.rawValue }))
     }
 }

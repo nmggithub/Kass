@@ -15,6 +15,6 @@ extension Mach.Port.Destroyable {
         message: "This function uses `mach_port_destroy`, which is deprecated."
     )
     public func destroy() throws {
-        try Mach.Syscall(mach_port_destroy(self.owningTask.name, self.name))
+        try Mach.Call(mach_port_destroy(self.owningTask.name, self.name))
     }
 }

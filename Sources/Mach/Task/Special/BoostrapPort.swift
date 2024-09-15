@@ -27,7 +27,7 @@ extension Mach.Task {
         public func lookUp(serviceName: String) throws -> Mach.Port {
             var portName = mach_port_name_t()
             do {
-                try Mach.Syscall(bootstrap_look_up(self.name, serviceName, &portName))
+                try Mach.Call(bootstrap_look_up(self.name, serviceName, &portName))
             } catch {
                 let kr = kern_return_t((error as NSError).code)
                 guard let errorString = bootstrap_strerror(kr) else {

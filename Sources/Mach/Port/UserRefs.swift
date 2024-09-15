@@ -11,7 +11,7 @@ extension Mach.Port {
         public var value: mach_port_urefs_t {
             get throws {
                 var refs = mach_port_urefs_t()
-                try Mach.Syscall(
+                try Mach.Call(
                     mach_port_get_refs(
                         self.port.owningTask.name, self.port.name, self.right.rawValue, &refs
                     )
@@ -25,7 +25,7 @@ extension Mach.Port {
         ///   - delta: The amount to increment by.
         /// - Throws: If the number of user references cannot be incremented.
         public static func += (refs: UserRefs, delta: mach_port_delta_t) throws {
-            try Mach.Syscall(
+            try Mach.Call(
                 mach_port_mod_refs(
                     refs.port.owningTask.name, refs.port.name, refs.right.rawValue, delta
                 )
@@ -37,7 +37,7 @@ extension Mach.Port {
         ///   - delta: The amount to decrement by.
         /// - Throws: If the number of user references cannot be decremented.
         public static func -= (refs: UserRefs, delta: mach_port_delta_t) throws {
-            try Mach.Syscall(
+            try Mach.Call(
                 mach_port_mod_refs(
                     refs.port.owningTask.name, refs.port.name, refs.right.rawValue, -delta
                 )

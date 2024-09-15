@@ -12,7 +12,7 @@ extension Mach {
         )
         let array = arrayType.allocate(capacity: Int(count))
         defer { array.deallocate() }
-        try Mach.Syscall(syscall(array, &count))
+        try Mach.Call(syscall(array, &count))
         return UnsafeMutableRawPointer(array).load(as: DataType.self)
     }
     public static func SyscallWithCountIn<ArrayPointee, DataType>(
@@ -31,7 +31,7 @@ extension Mach {
                 from: dataBytes.baseAddress!, byteCount: dataBytes.count
             )
         }
-        try Mach.Syscall(syscall(array, count))
+        try Mach.Call(syscall(array, count))
     }
 
 }

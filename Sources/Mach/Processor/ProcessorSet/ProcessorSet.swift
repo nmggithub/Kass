@@ -10,7 +10,7 @@ extension Mach.Host {
             get throws {
                 var taskList: task_array_t?
                 var taskCount = mach_msg_type_number_t.max
-                try Mach.Syscall(processor_set_tasks(self.name, &taskList, &taskCount))
+                try Mach.Call(processor_set_tasks(self.name, &taskList, &taskCount))
                 return (0..<Int(taskCount)).map {
                     Mach.Task(named: taskList![$0])
                 }
@@ -23,7 +23,7 @@ extension Mach.Host {
         public func flavoredTasks(_ flavor: Mach.Task.Flavor) throws -> [Mach.Task] {
             var taskList: task_array_t?
             var taskCount = mach_msg_type_number_t.max
-            try Mach.Syscall(
+            try Mach.Call(
                 processor_set_tasks_with_flavor(self.name, flavor.rawValue, &taskList, &taskCount)
             )
             return (0..<Int(taskCount)).map {
@@ -35,7 +35,7 @@ extension Mach.Host {
             get throws {
                 var threadList: thread_array_t?
                 var threadCount = mach_msg_type_number_t.max
-                try Mach.Syscall(processor_set_threads(self.name, &threadList, &threadCount))
+                try Mach.Call(processor_set_threads(self.name, &threadList, &threadCount))
                 return (0..<Int(threadCount)).map {
                     Mach.Thread(named: threadList![$0])
                 }
