@@ -6,6 +6,6 @@ extension Mach {
     /// - Throws: An error if the call fails.
     public static func Call(_ call: @autoclosure () -> kern_return_t) throws {
         let kr = call()
-        guard kr == KERN_SUCCESS else { throw Mach.KernelError(kr) }
+        guard kr == KERN_SUCCESS else { throw Mach.Error(kr) }
     }
 }

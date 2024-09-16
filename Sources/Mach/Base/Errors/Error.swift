@@ -1,8 +1,8 @@
 import Foundation.NSError
 
 extension Mach {
-    /// An error that occurred in the kernel.
-    public class KernelError: NSError {
+    /// An error that occurred in the Mach kernel.
+    public class Error: NSError {
         /// The kernel return code.
         public var kernelReturn: KernReturn { KernReturn(rawValue: Int32(self.code)) ?? .unknown }
         /// Initialize a new kernel error from a kernel return code.
