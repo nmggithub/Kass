@@ -34,7 +34,9 @@ extension Mach.Port {
         ///   - portType: The type to reference the port as.
         /// - Throws: An error if the port cannot be retrieved.
         /// - Returns: The special port.
-        public func get<PortType: Mach.Port>(_ specialPort: SpecialPort, as portType: PortType.Type)
+        public func get<PortType: Mach.Port>(
+            _ specialPort: SpecialPort, as portType: PortType.Type = Mach.Port.self
+        )
             throws
             -> PortType
         {
