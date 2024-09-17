@@ -2,7 +2,7 @@ import Darwin.Mach
 import Foundation.NSError
 
 extension Mach.Message.MIG {
-    public class Error: NSError {
+    public class Error: NSError, @unchecked Sendable {
         /// Error code from a Mach Interface Generator (MIG) server routine.
         public enum Code: kern_return_t {
             case typeError = -300
