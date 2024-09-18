@@ -58,7 +58,7 @@ extension BSD {
         /// Check a set of options.
         /// - Parameter options: The options to check.
         /// - Throws: An error if the options are not all in the active configuration.
-        public func Check(_ options: Set<ConfigOption>) throws {
+        public static func Check(_ options: Set<ConfigOption>) throws {
             let flags = options.reduce(0) { $0 | $1.rawValue }
             try Syscall(csr_check(flags))
         }
