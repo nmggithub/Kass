@@ -6,12 +6,12 @@ extension Mach.Thread {
     /// - Parameter host: The host that the thread is on.
     /// - Throws: An error if the operation fails.
     public func wire(host: Mach.Host = .current) throws {
-        try Mach.Call(thread_wire(host.name, self.name, 1))
+        try Mach.call(thread_wire(host.name, self.name, 1))
     }
     /// Unwire a thread.
     /// - Parameter host: The host that the thread is on.
     /// - Throws: An error if the operation fails.
     public func unwire(host: Mach.Host = .current) throws {
-        try Mach.Call(thread_wire(host.name, self.name, 0))
+        try Mach.call(thread_wire(host.name, self.name, 0))
     }
 }

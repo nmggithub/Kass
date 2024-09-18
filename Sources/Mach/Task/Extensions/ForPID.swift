@@ -9,7 +9,7 @@ extension Mach.Task.ControlPort {
     public convenience init(forPID pid: pid_t) throws {
         var controlPort = task_t()
         /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
-        try Mach.Call(task_for_pid(Mach.Task.current.name, pid, &controlPort))
+        try Mach.call(task_for_pid(Mach.Task.current.name, pid, &controlPort))
         self.init(named: controlPort)
     }
 }
@@ -20,7 +20,7 @@ extension Mach.Task.NamePort {
     public convenience init(forPID pid: pid_t) throws {
         var namePort = task_name_t()
         /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
-        try Mach.Call(task_name_for_pid(Mach.Task.current.name, pid, &namePort))
+        try Mach.call(task_name_for_pid(Mach.Task.current.name, pid, &namePort))
         self.init(named: namePort)
     }
 }
@@ -37,7 +37,7 @@ extension Mach.Task.InspectPort {
     public convenience init(forPID pid: pid_t) throws {
         var namePort = task_inspect_t()
         /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
-        try BSD.Syscall(task_inspect_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach syscall.
+        try BSD.syscall(task_inspect_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach call.
         self.init(named: namePort)
     }
 }
@@ -54,7 +54,7 @@ extension Mach.Task.ReadPort {
     public convenience init(forPID pid: pid_t) throws {
         var namePort = task_read_t()
         /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
-        try BSD.Syscall(task_read_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach syscall.
+        try BSD.syscall(task_read_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach call.
         self.init(named: namePort)
     }
 }

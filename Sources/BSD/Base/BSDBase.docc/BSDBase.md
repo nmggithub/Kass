@@ -19,7 +19,7 @@ Portions of the code for this module are covered under license. Please view the 
 
 ### Handling errors
 
-- ``BSD/Syscall(_:)``
+- ``BSD/syscall(_:)``
 - ``BSD/Error``
 ### Licenses
 

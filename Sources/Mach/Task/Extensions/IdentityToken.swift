@@ -7,7 +7,7 @@ extension Mach.Task {
         /// - Parameter task: The task to get the identity token for.
         public convenience init(for task: Mach.Task) throws {
             var token = mach_port_name_t()
-            try Mach.Call(task_create_identity_token(task.name, &token))
+            try Mach.call(task_create_identity_token(task.name, &token))
             self.init(named: token)
         }
         /// Use the identity token to get the task port for a given flavor.
@@ -15,7 +15,7 @@ extension Mach.Task {
         /// - Returns: The task port.
         public func taskPort(flavor: Flavor) throws -> Mach.Task & Flavored {
             var taskPortName = mach_port_name_t()
-            try Mach.Call(
+            try Mach.call(
                 task_identity_token_get_task_port(self.name, flavor.rawValue, &taskPortName)
             )
             switch flavor {

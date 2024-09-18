@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    public static func CallWithCountInOut<ArrayPointee, DataType>(
+    public static func callWithCountInOut<ArrayPointee, DataType>(
         arrayType: UnsafeMutablePointer<ArrayPointee>.Type,
         dataType: DataType.Type,
         call: (UnsafeMutablePointer<ArrayPointee>, inout mach_msg_type_number_t)
@@ -12,10 +12,10 @@ extension Mach {
         )
         let array = arrayType.allocate(capacity: Int(count))
         defer { array.deallocate() }
-        try Mach.Call(call(array, &count))
+        try Mach.call(call(array, &count))
         return UnsafeMutableRawPointer(array).load(as: DataType.self)
     }
-    public static func CallWithCountIn<ArrayPointee, DataType>(
+    public static func callWithCountIn<ArrayPointee, DataType>(
         arrayType: UnsafeMutablePointer<ArrayPointee>.Type,
         data: DataType,
         call: (UnsafeMutablePointer<ArrayPointee>, mach_msg_type_number_t)
@@ -31,7 +31,7 @@ extension Mach {
                 from: dataBytes.baseAddress!, byteCount: dataBytes.count
             )
         }
-        try Mach.Call(call(array, count))
+        try Mach.call(call(array, count))
     }
 
 }

@@ -29,7 +29,7 @@ extension Mach {
             type: Alarm.AlarmType,
             time: mach_timespec_t
         ) throws {
-            try Mach.Call(
+            try Mach.call(
                 clock_alarm_reply(
                     alarm.name,
                     // `clock_alarm_reply` passes this into a message header as the remote port disposition, so we copy the send right as to not lose it.
@@ -52,7 +52,7 @@ extension Mach {
         /// - Throws: An error if the clock service could not be obtained.
         public convenience init(_ type: ClockType, in host: Mach.Host) throws {
             var clockServicePortName = clock_serv_t()
-            try Mach.Call(
+            try Mach.call(
                 host_get_clock_service(host.name, type.rawValue, &clockServicePortName)
             )
             self.init(named: clockServicePortName)
@@ -61,7 +61,7 @@ extension Mach {
         public var time: mach_timespec_t {
             get throws {
                 var time = mach_timespec_t()
-                try Mach.Call(
+                try Mach.call(
                     clock_get_time(self.name, &time)
                 )
                 return time
@@ -73,7 +73,7 @@ extension Mach {
         ///   - alarm: The port to send the alarm reply to.
         /// - Throws: An error if the alarm could not be set.
         public func alarm(at time: mach_timespec_t, alarm: Alarm) throws {
-            try Mach.Call(
+            try Mach.call(
                 clock_alarm(self.name, 0, time, alarm.name)
             )
         }

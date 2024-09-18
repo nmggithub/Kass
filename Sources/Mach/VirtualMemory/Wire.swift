@@ -18,7 +18,7 @@ extension Mach.VM {
             // specifying no access protection actually unwires the memory, which we don't want
             fatalError("Specify at least one access protection.")
         }
-        try Mach.Call(
+        try Mach.call(
             vm_wire(host.name, task.name, address, size, access.reduce(0, { $0 | $1.rawValue }))
         )
     }
@@ -34,7 +34,7 @@ extension Mach.VM {
         address: vm_address_t, size: vm_size_t
     ) throws {
         let access: Set<Mach.VM.Protection> = [.none]
-        try Mach.Call(
+        try Mach.call(
             vm_wire(host.name, task.name, address, size, access.reduce(0, { $0 | $1.rawValue }))
         )
     }

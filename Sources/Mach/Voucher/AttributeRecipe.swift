@@ -98,7 +98,7 @@ extension Mach.Voucher {
             rawRecipePointer = rawRecipePointer.advanced(by: recipeSize)
         }
         var voucherToUse: ipc_voucher_t = IPC_VOUCHER_NULL
-        try Mach.Call(
+        try Mach.call(
             host_create_mach_voucher(
                 mach_host_self(), rawArray,
                 mach_msg_type_number_t(totalSize),
@@ -119,7 +119,7 @@ extension Mach.Voucher {
         var size = mach_voucher_attr_raw_recipe_size_t(MACH_VOUCHER_ATTR_MAX_RAW_RECIPE_ARRAY_SIZE)
         let rawRecipe = mach_voucher_attr_raw_recipe_t.allocate(capacity: Int(size))
         defer { rawRecipe.deallocate() }
-        try Mach.Call(mach_voucher_extract_attr_recipe(self.name, key.rawValue, rawRecipe, &size))
+        try Mach.call(mach_voucher_extract_attr_recipe(self.name, key.rawValue, rawRecipe, &size))
         return AttributeRecipe(rawValue: rawRecipe)
     }
 
@@ -132,7 +132,7 @@ extension Mach.Voucher {
             defer { rawArray.deallocate() }
             // The kernel return an error if the size is too small, so we use the maximum size.
             var size = mach_voucher_attr_raw_recipe_size_t.max
-            try Mach.Call(mach_voucher_extract_all_attr_recipes(self.name, rawArray, &size))
+            try Mach.call(mach_voucher_extract_all_attr_recipes(self.name, rawArray, &size))
             var recipes: [AttributeRecipe] = []
             var sizeRemaining = size
             var rawRecipePointer = rawArray

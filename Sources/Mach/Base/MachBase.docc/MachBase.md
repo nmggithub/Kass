@@ -20,8 +20,8 @@ Portions of the code for this module are covered under license. Please view the 
 
 ### Handling errors
 
-- ``Mach/Syscall``
-- ``Mach/KernelError``
+- ``Mach/syscall``
+- ``Mach/Error``
 - ``Mach/KernReturn``
 
 ### Licenses

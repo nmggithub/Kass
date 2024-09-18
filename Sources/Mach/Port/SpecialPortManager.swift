@@ -41,7 +41,7 @@ extension Mach.Port {
             -> PortType
         {
             var portName = mach_port_name_t()
-            try Mach.Call(self.getter(self.parentPort, specialPort, &portName))
+            try Mach.call(self.getter(self.parentPort, specialPort, &portName))
             return PortType(named: portName)
         }
         /// Set a special port.
@@ -50,7 +50,7 @@ extension Mach.Port {
         ///   - port: The port to set as the special port.
         /// - Throws: An error if the port cannot be set.
         public func set(_ specialPort: SpecialPort, to port: Mach.Port) throws {
-            try Mach.Call(self.setter(self.parentPort, specialPort, port.name))
+            try Mach.call(self.setter(self.parentPort, specialPort, port.name))
         }
     }
 }

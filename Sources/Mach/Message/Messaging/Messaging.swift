@@ -24,7 +24,7 @@ extension Mach {
         ///   - timeout: The timeout for the syscall.
         ///   - notifyPort: The port to notify on timeout.
         /// - Throws: An error if the syscall fails.
-        public static func Syscall(
+        public static func syscall(
             _ messageBuffer: UnsafeMutablePointer<mach_msg_header_t>,
             options: Set<Option> = [],
             sendSize: mach_msg_size_t,
@@ -33,7 +33,7 @@ extension Mach {
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE,
             notifyPort: Mach.Port = Mach.Port.Nil
         ) throws {
-            try Mach.Call(
+            try Mach.call(
                 mach_msg(
                     messageBuffer,
                     options.reduce(0, { $0 | $1.rawValue }),
@@ -82,7 +82,7 @@ extension Mach {
             if remotePort != nil {
                 message.header.remotePort = remotePort!
             }
-            try Self.Syscall(
+            try Self.syscall(
                 message.rawValue, options: options, sendSize: message.sendSize,
                 receiveSize: 0, receivePort: Mach.Port.Nil, timeout: timeout,
                 notifyPort: Mach.Port.Nil
@@ -128,7 +128,7 @@ extension Mach {
             let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
                 to: mach_msg_header_t.self, capacity: 1
             )
-            try Self.Syscall(
+            try Self.syscall(
                 messageBuffer, options: options, sendSize: message.sendSize,
                 receiveSize: mach_msg_size_t(rawMessageBuffer.count),
                 receivePort: message.header.localPort, timeout: timeout,
@@ -160,7 +160,7 @@ extension Mach {
             let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
                 to: mach_msg_header_t.self, capacity: 1
             )
-            try Self.Syscall(
+            try Self.syscall(
                 messageBuffer, options: options, sendSize: 0,
                 receiveSize: mach_msg_size_t(rawMessageBuffer.count), receivePort: localPort,
                 timeout: timeout,

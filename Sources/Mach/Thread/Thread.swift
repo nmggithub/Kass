@@ -13,7 +13,7 @@ extension Mach {
         /// - Warning: The initial execution state of the thread is undefined.
         public convenience init(in task: Task) throws {
             var thread = thread_act_t()
-            try Mach.Call(thread_create(task.name, &thread))
+            try Mach.call(thread_create(task.name, &thread))
             self.init(named: thread)
         }
     }

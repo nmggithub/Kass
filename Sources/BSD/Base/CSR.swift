@@ -58,15 +58,15 @@ extension BSD {
         /// Check a set of options.
         /// - Parameter options: The options to check.
         /// - Throws: An error if the options are not all in the active configuration.
-        public static func Check(_ options: Set<ConfigOption>) throws {
+        public static func check(_ options: Set<ConfigOption>) throws {
             let flags = options.reduce(0) { $0 | $1.rawValue }
-            try Syscall(csr_check(flags))
+            try BSD.syscall(csr_check(flags))
         }
         /// The active configuration.
         public static var activeConfig: Set<ConfigOption> {
             get throws {
                 var flags: UInt32 = 0
-                try Syscall(csr_get_active_config(&flags))
+                try BSD.syscall(csr_get_active_config(&flags))
                 return Set(ConfigOption.allCases.filter { flags & $0.rawValue != 0 })
             }
         }

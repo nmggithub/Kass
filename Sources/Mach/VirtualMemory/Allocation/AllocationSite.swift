@@ -126,7 +126,7 @@ extension Mach.VM {
 
         var memoryInfos: mach_memory_info_array_t?
         var memoryInfoCount = mach_msg_type_number_t.max
-        try Mach.Call(
+        try Mach.call(
             mach_memory_info(
                 host.name, &names, &nameCount, &infos, &infoCount,
                 &memoryInfos, &memoryInfoCount

@@ -24,7 +24,7 @@ extension Mach.Port.Allocatable {
             return nil
         }
         var generatedPortName = mach_port_name_t()
-        try Mach.Call(
+        try Mach.call(
             name != nil
                 ? mach_port_allocate_name(task.name, right.rawValue, name!)
                 : mach_port_allocate(task.name, right.rawValue, &generatedPortName)

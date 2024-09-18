@@ -20,7 +20,7 @@ extension Mach.Host {
         var responseAddress = vm_offset_t()
         var responseCount = mach_msg_size_t()
         var actualReturn = kern_return_t()
-        try Mach.Call(
+        try Mach.call(
             kext_request(
                 self.name,
                 0,
@@ -30,7 +30,7 @@ extension Mach.Host {
                 nil, nil, &actualReturn
             )
         )
-        try Mach.Call(actualReturn)
+        try Mach.call(actualReturn)
         let response = Data(
             bytes: UnsafeRawPointer(bitPattern: responseAddress)!,
             count: Int(responseCount)

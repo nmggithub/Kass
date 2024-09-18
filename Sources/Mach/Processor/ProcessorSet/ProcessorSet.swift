@@ -11,7 +11,7 @@ extension Mach.Host {
         /// - Returns: The default processor set for the host.
         public func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
             var name = processor_set_name_t()
-            try Mach.Call(processor_set_default(host.name, &name))
+            try Mach.call(processor_set_default(host.name, &name))
             return ProcessorSet(named: name)
         }
         /// The tasks in the processor set.
@@ -19,7 +19,7 @@ extension Mach.Host {
             get throws {
                 var taskList: task_array_t?
                 var taskCount = mach_msg_type_number_t.max
-                try Mach.Call(processor_set_tasks(self.name, &taskList, &taskCount))
+                try Mach.call(processor_set_tasks(self.name, &taskList, &taskCount))
                 return (0..<Int(taskCount)).map {
                     Mach.Task(named: taskList![$0])
                 }
@@ -32,7 +32,7 @@ extension Mach.Host {
         public func flavoredTasks(_ flavor: Mach.Task.Flavor) throws -> [Mach.Task] {
             var taskList: task_array_t?
             var taskCount = mach_msg_type_number_t.max
-            try Mach.Call(
+            try Mach.call(
                 processor_set_tasks_with_flavor(self.name, flavor.rawValue, &taskList, &taskCount)
             )
             return (0..<Int(taskCount)).map {
@@ -44,7 +44,7 @@ extension Mach.Host {
             get throws {
                 var threadList: thread_array_t?
                 var threadCount = mach_msg_type_number_t.max
-                try Mach.Call(processor_set_threads(self.name, &threadList, &threadCount))
+                try Mach.call(processor_set_threads(self.name, &threadList, &threadCount))
                 return (0..<Int(threadCount)).map {
                     Mach.Thread(named: threadList![$0])
                 }

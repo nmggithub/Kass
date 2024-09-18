@@ -14,7 +14,7 @@ extension Mach.VM {
         address: inout vm_address_t, size: vm_size_t,
         flags: Set<Mach.VM.AllocationFlag> = []
     ) throws {
-        try Mach.Call(
+        try Mach.call(
             vm_allocate_cpm(
                 host.name, task.name, &address, size, flags.reduce(0, { $0 | $1.rawValue })
             )

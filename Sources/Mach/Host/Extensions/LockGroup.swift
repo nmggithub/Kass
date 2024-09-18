@@ -69,7 +69,7 @@ extension Mach.Host {
         get throws {
             var lockGroupInfo: lockgroup_info_array_t?
             var lockGroupCount = mach_msg_type_number_t.max
-            try Mach.Call(host_lockgroup_info(self.name, &lockGroupInfo, &lockGroupCount))
+            try Mach.call(host_lockgroup_info(self.name, &lockGroupInfo, &lockGroupCount))
             return (0..<Int(lockGroupCount)).map {
                 LockGroup(rawValue: lockGroupInfo![$0])
             }

@@ -13,7 +13,7 @@ extension Mach {
                 let bootInfoStr = UnsafeMutablePointer<CChar>.allocate(
                     capacity: Int(KERNEL_BOOT_INFO_MAX)
                 )
-                try Mach.Call(host_get_boot_info(self.name, bootInfoStr))
+                try Mach.call(host_get_boot_info(self.name, bootInfoStr))
                 return String(cString: bootInfoStr)
             }
         }
@@ -23,7 +23,7 @@ extension Mach {
                 let kernelVersionStr = UnsafeMutablePointer<CChar>.allocate(
                     capacity: Int(512)
                 )
-                try Mach.Call(host_kernel_version(self.name, kernelVersionStr))
+                try Mach.call(host_kernel_version(self.name, kernelVersionStr))
                 return String(cString: kernelVersionStr)
             }
         }
@@ -33,7 +33,7 @@ extension Mach {
         public var pageSize: vm_size_t {
             get throws {
                 var pageSize: vm_size_t = 0
-                try Mach.Call(host_page_size(self.name, &pageSize))
+                try Mach.call(host_page_size(self.name, &pageSize))
                 return pageSize
             }
         }

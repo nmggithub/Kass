@@ -50,7 +50,7 @@ extension Mach.Voucher {
         let inContent = `in` != nil ? withUnsafeBytes(of: `in`, { Data($0) }) : Data()
         let outContentPointer = mach_voucher_attr_content_t.allocate(capacity: 1)
         var outContentSize = mach_voucher_attr_content_size_t.max
-        try Mach.Call(
+        try Mach.call(
             mach_voucher_attr_command(
                 self.name, key.rawValue, command.rawValue,
                 UnsafeMutablePointer(

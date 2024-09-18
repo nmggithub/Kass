@@ -47,7 +47,7 @@ extension Mach.VM {
         var nameCount = mach_msg_type_number_t.max
         var infos: mach_zone_info_array_t?
         var infoCount = mach_msg_type_number_t.max
-        try Mach.Call(mach_zone_info(host.name, &names, &nameCount, &infos, &infoCount))
+        try Mach.call(mach_zone_info(host.name, &names, &nameCount, &infos, &infoCount))
         guard nameCount == infoCount else {
             fatalError("Kernel returned mismatched zone name and info counts!")
         }
