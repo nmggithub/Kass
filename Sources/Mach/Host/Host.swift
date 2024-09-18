@@ -17,5 +17,15 @@ extension Mach {
                 return String(cString: bootInfoStr)
             }
         }
+        /// The kernel version for the host.
+        public var kernelVersion: String {
+            get throws {
+                let kernelVersionStr = UnsafeMutablePointer<CChar>.allocate(
+                    capacity: Int(512)
+                )
+                try Mach.Call(host_kernel_version(self.name, kernelVersionStr))
+                return String(cString: kernelVersionStr)
+            }
+        }
     }
 }
