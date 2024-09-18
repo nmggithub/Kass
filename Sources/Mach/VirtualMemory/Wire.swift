@@ -10,7 +10,7 @@ extension Mach.VM {
     ///   - access: The access protection of the memory range.
     /// - Throws: An error if the operation fails.
     public static func wire(
-        host: Mach.Host = .current, task: Mach.Task,
+        host: Mach.Host = .current, task: Mach.Task = .current,
         address: vm_address_t, size: vm_size_t,
         access: Set<Mach.VM.Protection>
     ) throws {
@@ -30,7 +30,7 @@ extension Mach.VM {
     ///   - size: The size of the memory range.
     /// - Throws: An error if the operation fails.
     public static func unwire(
-        host: Mach.Host = .current, task: Mach.Task,
+        host: Mach.Host = .current, task: Mach.Task = .current,
         address: vm_address_t, size: vm_size_t
     ) throws {
         let access: Set<Mach.VM.Protection> = [.none]

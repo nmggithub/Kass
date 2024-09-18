@@ -98,7 +98,7 @@ extension Mach.VM {
     ///   - flags: The flags that control the allocation.
     /// - Throws: An error if the operation fails.
     public static func allocate(
-        task: Mach.Task,
+        task: Mach.Task = .current,
         address: inout vm_address_t, size: vm_size_t,
         flags: Set<Mach.VM.AllocationFlag> = []
     ) throws {
