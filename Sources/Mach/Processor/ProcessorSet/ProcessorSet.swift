@@ -5,6 +5,15 @@ import MachThread
 extension Mach.Host {
     /// A set of processors in a host.
     public class ProcessorSet: Mach.Port {
+        /// Get the default processor set for a host.
+        /// - Parameter host: The host to get the default processor set for.
+        /// - Throws: If the default processor set cannot be retrieved.
+        /// - Returns: The default processor set for the host.
+        public func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
+            var name = processor_set_name_t()
+            try Mach.Call(processor_set_default(host.name, &name))
+            return ProcessorSet(named: name)
+        }
         /// The tasks in the processor set.
         public var tasks: [Mach.Task] {
             get throws {
