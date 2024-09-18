@@ -77,14 +77,18 @@ let modules: [Module] = [
         dependencies: ["MachPort", "MachTask", "MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
         subModuleName: "Clock",
         dependencies: ["MachPort", "MachHost", "MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Proc", folderName: "Processor",
+        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "VM", folderName: "VirtualMemory",
         dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
     ),
 ]
