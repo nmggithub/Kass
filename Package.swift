@@ -88,6 +88,9 @@ let modules: [Module] = [
         subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
     ),
     MachSubModule.init(
+        subModuleName: "Voucher", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
         dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
     ),
