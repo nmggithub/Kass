@@ -63,7 +63,7 @@ extension BSD {
             try Syscall(csr_check(flags))
         }
         /// The active configuration.
-        public var activeConfig: Set<ConfigOption> {
+        public static var activeConfig: Set<ConfigOption> {
             get throws {
                 var flags: UInt32 = 0
                 try Syscall(csr_get_active_config(&flags))
