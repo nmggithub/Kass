@@ -27,5 +27,15 @@ extension Mach {
                 return String(cString: kernelVersionStr)
             }
         }
+        /// The page size for the host.
+        /// - Important: As of writing, the kernel simply returns a value, so this should never fail. However,
+        /// this may change in the future, so this is marked as a throwing property.
+        public var pageSize: vm_size_t {
+            get throws {
+                var pageSize: vm_size_t = 0
+                try Mach.Call(host_page_size(self.name, &pageSize))
+                return pageSize
+            }
+        }
     }
 }
