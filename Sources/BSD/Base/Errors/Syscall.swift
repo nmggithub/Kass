@@ -8,6 +8,8 @@ extension BSD {
         case -1:
             // While it's not a standard, a return value of -1 usually indicates an error with `errno` set.
             throw BSD.Error()  // passing no return code defaults to `errno`
+        case 0:
+            return  // success
         default:
             throw BSD.Error(ret)
         }
