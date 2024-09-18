@@ -24,7 +24,7 @@ extension Mach.Thread {
         }
         /// A flavor of thread state.
         /// - Warning: Some of these cases are [conditionally-compiled](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/statements/#Compiler-Control-Statements)
-        /// based on the architecture being targeted. Swift documentation is neccessarily generated from a compiled version of the code, so any
+        /// based on the architecture being targeted. Swift documentation is specifically generated from a compiled version of the code, so any
         /// cases listed here are only those that were available on the machine that generated the documentation and may not accurately reflect
         /// those available in *your* environment. For the most accurate list of cases, see the source code for this module.
         public enum Flavor: thread_state_flavor_t {
