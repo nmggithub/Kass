@@ -1,10 +1,14 @@
 import Darwin.Mach
 
 extension Mach.Host {
+    /// The statistics for the host.
+    public var statistics: Statistics { .init(for: self) }
+    /// Statistics for a host.
     public class Statistics: Mach.FlavoredDataManagerNoAdditionalArgs<
         Statistics.Flavor, host_info_t.Pointee
     >
     {
+        /// A flavor of host statistics.
         public enum Flavor: host_flavor_t {
             case basic = 1
             case scheduling = 3
