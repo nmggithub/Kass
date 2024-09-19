@@ -97,15 +97,15 @@ extension Mach.Voucher {
             sizeRemaining -= recipeSize
             rawRecipePointer = rawRecipePointer.advanced(by: recipeSize)
         }
-        var voucherToUse: ipc_voucher_t = IPC_VOUCHER_NULL
+        var voucherName: mach_voucher_name_t = MACH_VOUCHER_NAME_NULL
         try Mach.call(
             host_create_mach_voucher(
                 mach_host_self(), rawArray,
                 mach_msg_type_number_t(totalSize),
-                &voucherToUse
+                &voucherName
             )
         )
-        self.init(named: voucherToUse)
+        self.init(named: voucherName)
     }
     /// Get a recipe from the voucher.
     /// - Parameter key: The key to use.
