@@ -103,4 +103,22 @@ extension Mach.Thread {
             try super.set(flavor, to: value)
         }
     }
+
+    /// Create a new thread in a given task.
+    /// - Parameters:
+    ///   - task: The task in which to create the thread.
+    ///   - flavor: The flavor of the initial state.
+    ///   - value: The initial state.
+    /// - Throws: An error if the thread could not be created.
+    public convenience init<StateType: BitwiseCopyable>(
+        in task: Mach.Task,
+        initialStateFlavor flavor: State.Flavor, initialStateValue value: StateType
+    ) throws {
+        var thread = thread_act_t()
+        try Mach.callWithCountIn(arrayType: thread_state_t.self, data: value) {
+            arrayPointer, count in
+            thread_create_running(task.name, flavor.rawValue, arrayPointer, count, &thread)
+        }
+        self.init(named: thread)
+    }
 }
