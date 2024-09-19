@@ -5,7 +5,7 @@ extension Mach.Port {
     public enum ConstructFlag: UInt32 {
         case contextAsGuard = 0x01
         case queueLimit = 0x02
-        case tempowner = 0x04
+        case tempOwner = 0x04
         case importanceReceiver = 0x08
         case insertSendRight = 0x10
         case strict = 0x20
