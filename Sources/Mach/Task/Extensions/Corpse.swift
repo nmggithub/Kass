@@ -1,0 +1,50 @@
+import Darwin.Mach
+import Foundation
+
+extension Mach.Task {
+    /// A corpse task.
+    public class Corpse: Mach.Task {
+        /// Information about the corpse.
+        public var corpseInfo: Data {
+            get throws {
+                switch Int.bitWidth {
+                case 32:
+                    var address = vm_address_t()
+                    var size = vm32_size_t()
+                    try Mach.call(
+                        task_map_corpse_info(self.owningTask.name, self.name, &address, &size)
+                    )
+                    guard let addressPointer = UnsafeRawPointer(bitPattern: Int(address)) else {
+                        fatalError("`task_map_corpse_info` returned a null pointer.")
+                    }
+                    return Data(
+                        bytes: addressPointer,
+                        count: Int(size)
+                    )
+                case 64:
+                    var address = mach_vm_address_t()
+                    var size = mach_vm_size_t()
+                    try Mach.call(
+                        task_map_corpse_info_64(self.owningTask.name, self.name, &address, &size)
+                    )
+                    guard let addressPointer = UnsafeRawPointer(bitPattern: Int(address)) else {
+                        fatalError("`task_map_corpse_info_64` returned a null pointer.")
+                    }
+                    return Data(
+                        bytes: addressPointer,
+                        count: Int(size)
+                    )
+                default: fatalError("Unsupported bit width.")
+                }
+            }
+        }
+    }
+    /// Generate a corpse for the task.
+    /// - Throws: An error if the corpse could not be generated.
+    /// - Returns: The corpse.
+    public func generateCorpse() throws -> Corpse {
+        var corpseName: task_name_t = TASK_NAME_NULL
+        try Mach.call(task_generate_corpse(self.name, &corpseName))
+        return Corpse(named: corpseName)
+    }
+}
