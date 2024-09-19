@@ -8,8 +8,6 @@ extension Mach.Thread {
         State.Flavor, thread_state_t.Pointee
     >
     {
-        /// The thread.
-        // let thread: Mach.Thread
         /// Get a thread's state.
         /// - Parameter thread: The thread to get the state of.
         public convenience init(about thread: Mach.Thread) {
