@@ -79,7 +79,7 @@ extension Mach {
         }
 
         /// The attributes of the clock.
-        public var attributes: Attributes { Attributes(of: self) }
+        public var clockAttributes: Attributes { Attributes(of: self) }
 
         /// Attributes of a clock.
         public class Attributes: Mach.FlavoredDataManagerNoAdditionalArgs<
