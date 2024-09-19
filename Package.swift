@@ -127,7 +127,7 @@ let package = Package(
     ],
     products: moduleProducts,
     dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.2")
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin", from: "1.4.3")
     ],
     targets: moduleTargets
 )
