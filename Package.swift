@@ -91,6 +91,10 @@ let modules: [Module] = [
         subModuleName: "Voucher", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
     ),
     MachSubModule.init(
+        subModuleName: "Sema", folderName: "Semaphore",
+        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
         dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
     ),
