@@ -90,7 +90,7 @@ extension Mach.Thread {
         ///   - flavor: The flavor of the state.
         ///   - type: The type to load the state as.
         /// - Throws: An error if the state cannot be retrieved.
-        public func get<InfoType>(_ flavor: Flavor, as type: InfoType.Type) throws -> InfoType {
+        public func get<StateType>(_ flavor: Flavor, as type: StateType.Type) throws -> StateType {
             try super.get(flavor, as: type)
         }
 
@@ -99,7 +99,7 @@ extension Mach.Thread {
         ///   - flavor: The flavor of the state.
         ///   - value: The value to set the state to.
         /// - Throws: An error if the state cannot be set.
-        public func set<InfoType>(_ flavor: Flavor, to value: consuming InfoType) throws {
+        public func set<StateType>(_ flavor: Flavor, to value: consuming StateType) throws {
             try super.set(flavor, to: value)
         }
     }
