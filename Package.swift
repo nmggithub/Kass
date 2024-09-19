@@ -72,7 +72,8 @@ let modules: [Module] = [
         dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Thread", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
+        subModuleName: "Thread",
+        dependencies: ["MachPort", "MachHost", "MachVoucher", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Task",
