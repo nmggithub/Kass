@@ -26,14 +26,14 @@ extension Mach {
         /// The message payload buffer.
         public var payloadBuffer: UnsafeRawBufferPointer?
         /// The message trailer.
-        public var trailer: mach_msg_max_trailer_t?
+        public var trailer: Trailer?
         /// A pointer to a raw representation of the message.
         public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
             let rawBufferSize =
                 MemoryLayout<mach_msg_header_t>.size
                 + self.bodySize
                 + self.payloadSize
-                + MemoryLayout<mach_msg_max_trailer_t>.size
+                + MemoryLayout<Trailer.RawValue>.size
             var serializingPointer = UnsafeMutableRawPointer.allocate(
                 byteCount: rawBufferSize, alignment: Self.alignment
             )
@@ -74,7 +74,7 @@ extension Mach {
                 let trailerPointer = serializingPointer.bindMemory(
                     to: mach_msg_max_trailer_t.self, capacity: 1
                 )
-                trailerPointer.pointee = trailer
+                trailerPointer.pointee = trailer.rawValue
             }
             return headerPointer
         }
@@ -106,7 +106,8 @@ extension Mach {
             let possibleTrailer = deserializingPointer.bindMemory(
                 to: mach_msg_max_trailer_t.self, capacity: 1
             ).pointee
-            self.trailer = possibleTrailer.msgh_trailer_size > 0 ? possibleTrailer : nil
+            self.trailer =
+                possibleTrailer.msgh_trailer_size > 0 ? Trailer(rawValue: possibleTrailer) : nil
         }
 
         /// Create a message with a set of descriptors and a payload.
