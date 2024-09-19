@@ -58,7 +58,21 @@ let modules: [Module] = [
     ),
     MachSubModule.init(subModuleName: "Port", dependencies: ["CCompat", "Linking"]),
     MachSubModule.init(
-        subModuleName: "Thread", dependencies: ["MachPort", "CCompat", "Linking"]
+        subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "Voucher", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "Sema", folderName: "Semaphore",
+        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "VM", folderName: "VirtualMemory",
+        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "Thread", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Task",
@@ -82,20 +96,6 @@ let modules: [Module] = [
     ),
     MachSubModule.init(
         subModuleName: "Proc", folderName: "Processor",
-        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Voucher", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Sema", folderName: "Semaphore",
-        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "VM", folderName: "VirtualMemory",
         dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
     ),
 ]
