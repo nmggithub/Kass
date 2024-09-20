@@ -8,7 +8,7 @@ extension Mach.Thread {
         State.Flavor, thread_state_t.Pointee
     >
     {
-        /// Get a thread's state.
+        /// Create a new thread state manager.
         /// - Parameter thread: The thread to get the state of.
         public convenience init(about thread: Mach.Thread) {
             self.init(
