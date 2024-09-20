@@ -42,10 +42,8 @@ extension BSD.FS.Attribute {
         /// Gets the attributes for a file or directory.
         /// - Parameter path: The path to the file or directory.
         /// - Throws: An error if the operation fails.
-        /// - Important: The underlying system call is called twice. The first call gets the length of
-        /// the attributes list, while the second gets the actual attribute list. Both calls can fail,
-        /// and errors from both calls are thrown from this function without any additional handling.
-        /// - Warning: This function will crash if the length of the attribute list is greater on the second call.
+        /// - Important: This function makes an initial syscall to get the buffer size. Errors from both syscalls are thrown.
+        /// - Warning: This function will crash if the length of the buffer is greater on the second call.
         public func get(of path: FilePath) throws -> Data {
             // `getattrlist` truncates, so only get the length field first
             let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
@@ -78,7 +76,7 @@ extension BSD.FS.Attribute {
             )
             // TODO: determine if there is a nicer way to handle this
             guard secondLength <= lengthPointer.pointee else {
-                fatalError("The length of the attribute list was greater on the second call.")
+                fatalError("The length of the buffer was greater on the second call.")
             }
             // TODO: Return actual attributes instead of raw data
             return Data(bytes: buffer, count: Int(lengthPointer.pointee))
