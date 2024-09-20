@@ -78,7 +78,7 @@ extension BSD.FS.Attribute {
             )
             // TODO: determine if there is a nicer way to handle this
             guard secondLength <= lengthPointer.pointee else {
-                fatalError("The length of the attribute list changed between calls.")
+                fatalError("The length of the attribute list was greater on the second call.")
             }
             // TODO: Return actual attributes instead of raw data
             return Data(bytes: buffer, count: Int(lengthPointer.pointee))
