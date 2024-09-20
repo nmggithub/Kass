@@ -21,7 +21,12 @@ extension BSD.FS {
         /// an error is returned if a symbolic link is encountered.
         case noFollowWithError = 0x0000_0800
     }
+    /// The attribute namespace.
     public struct Attribute: Namespace {
+
+        // IMPORTANT: The declaration order of these enums is important. They must be in the same order as the ones in the
+        // `getattrlist` manpage. We use this order to ensure we parse the returned attributes in the correct order.
+
         /// A common attribute.
         public enum Common: UInt32, CaseIterable {
             case returnedAttributes = 0x8000_0000
@@ -44,11 +49,9 @@ extension BSD.FS {
             case groupID = 0x0001_0000
             case accessMask = 0x0002_0000
             case flags = 0x0004_0000
+            case generationCount = 0x0008_0000
+            case documentID = 0x0010_0000
             /// An extended common attribute.
-            public enum Extended: UInt32, CaseIterable {
-                case generationCount = 0x0008_0000
-                case documentID = 0x0010_0000
-            }
             case userAccess = 0x0020_0000
             case extendedSecurity = 0x0040_0000
             case ownerUUID = 0x0080_0000
@@ -58,6 +61,19 @@ extension BSD.FS {
             case fullPath = 0x0800_0000
             case addedTime = 0x1000_0000
             case dataProtectionClass = 0x2000_0000
+            public enum Extended: UInt32, CaseIterable {
+                case relativePath = 0x0000_0004
+                case privateSize = 0x0000_0008
+                case linkID = 0x0000_0010
+                case pathWithNoFirmlinks = 0x0000_0020
+                case realDeviceID = 0x0000_0040
+                case realFilesystemID = 0x0000_0080
+                case cloneID = 0x0000_0100
+                case extraFlags = 0x0000_0200
+                case recursiveGenerationCount = 0x0000_0400
+                case attributionTag = 0x0000_0800
+                case cloneReferenceCount = 0x0000_1000
+            }
         }
         /// A volume attribute.
         public enum Volume: UInt32, CaseIterable {
@@ -66,13 +82,14 @@ extension BSD.FS {
             case size = 0x0000_0004
             case freeSpace = 0x0000_0008
             case availableSpace = 0x0000_0010
-            case usedSpace = 0x0000_0020
-            case minimumAllocationSize = 0x0000_0040
-            case allocationClumpSize = 0x0000_0080
-            case ioBlockSize = 0x0000_0100
-            case objectCount = 0x0000_0200
-            case fileCount = 0x0000_0400
-            case directoryCount = 0x0000_0800
+            case usedSpace = 0x0080_0000
+            case minimumAllocationSize = 0x0000_0020
+            case allocationClumpSize = 0x0000_0040
+            case ioBlockSize = 0x0000_0080
+            case objectCount = 0x0000_0100
+            case fileCount = 0x0000_0200
+            case directoryCount = 0x0000_0400
+            case maximumObjectCount = 0x0000_0800
             case mountPoint = 0x0000_1000
             case name = 0x0000_2000
             case mountFlags = 0x0000_4000
@@ -80,11 +97,11 @@ extension BSD.FS {
             case encodingsUsed = 0x0001_0000
             case capabilities = 0x0002_0000
             case uuid = 0x0004_0000
-            case maximumSize = 0x0008_0000
-            case minimumSize = 0x0010_0000
-            case attributes = 0x0020_0000
-            case fileSystemTypeName = 0x0040_0000
-            case fileSystemSubtype = 0x0080_0000
+            case maximumSize = 0x1000_0000
+            case minimumSize = 0x2000_0000
+            case attributes = 0x4000_0000
+            case fileSystemTypeName = 0x0010_0000
+            case fileSystemSubtype = 0x0020_0000
         }
         /// A directory attribute.
         public enum Directory: UInt32, CaseIterable {
@@ -106,7 +123,7 @@ extension BSD.FS {
             case fileType = 0x0000_0040
             case forkCount = 0x0000_0080
             case forkList = 0x0000_0100
-            case dataLength = 0x0000_0200
+            case dataLogicalSize = 0x0000_0200
             case dataPhysicalSize = 0x0000_0400
             case dataExtents = 0x0000_0800
             case resourceLogicalSize = 0x0000_1000

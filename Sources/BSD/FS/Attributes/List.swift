@@ -10,7 +10,8 @@ extension BSD.FS.Attribute {
                 bitmapcount: UInt16(ATTR_BIT_MAP_COUNT),
                 reserved: UInt16(),
                 commonattr: common.bitmap(),
-                volattr: volume.bitmap(),
+                // ATTR_VOL_INFO is not a real attribute, but a flag to indicate that volume attributes are requested
+                volattr: volume.count > 0 ? volume.bitmap() | ATTR_VOL_INFO : 0,
                 dirattr: directory.bitmap(),
                 fileattr: file.bitmap(),
                 forkattr: options.contains(.useExtendedCommonAttributes)
@@ -28,23 +29,23 @@ extension BSD.FS.Attribute {
                 : (self.fork = Fork.set(from: rawValue.forkattr))
         }
         public init() {}
-        public var common: Set<Common> = []
-        public var volume: Set<Volume> = []
-        public var directory: Set<Directory> = []
-        public var file: Set<File> = []
+        public var common: Swift.Set<Common> = []
+        public var volume: Swift.Set<Volume> = []
+        public var directory: Swift.Set<Directory> = []
+        public var file: Swift.Set<File> = []
         @available(*, deprecated)
-        public var fork: Set<Fork> = []
-        public var commonExtended: Set<Common.Extended> = []
+        public var fork: Swift.Set<Fork> = []
+        public var commonExtended: Swift.Set<Common.Extended> = []
         /// - Important: ``BSD/FS/Option`` is used for other system calls. Not all options
         /// are valid for use with attributes lists.
-        public var options: Set<BSD.FS.Option> = []
+        public var options: Swift.Set<BSD.FS.Option> = []
 
         /// Gets the attributes for a file or directory.
         /// - Parameter path: The path to the file or directory.
         /// - Throws: An error if the operation fails.
         /// - Important: This function makes an initial syscall to get the buffer size. Errors from both syscalls are thrown.
         /// - Warning: This function will crash if the length of the buffer is greater on the second call.
-        public func get(of path: FilePath) throws -> Data {
+        public func get(of path: FilePath) throws -> BSD.FS.Attribute.Buffer {
             // `getattrlist` truncates, so only get the length field first
             let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
             let listPointer = UnsafeMutablePointer<attrlist>.allocate(capacity: 1)
@@ -78,8 +79,10 @@ extension BSD.FS.Attribute {
             guard secondLength <= lengthPointer.pointee else {
                 fatalError("The length of the buffer was greater on the second call.")
             }
-            // TODO: Return actual attributes instead of raw data
-            return Data(bytes: buffer, count: Int(lengthPointer.pointee))
+            return BSD.FS.Attribute.Buffer.init(
+                UnsafeRawBufferPointer(start: buffer, count: Int(secondLength)),
+                from: self
+            )
         }
     }
 }
