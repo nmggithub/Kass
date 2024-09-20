@@ -1,4 +1,5 @@
 import Darwin.Mach
+import Foundation
 @_exported import MachBase
 @_exported import MachHost
 @_exported import MachMsg  // for Mach.Port.Disposition
@@ -25,7 +26,7 @@ extension Mach {
         /// - Throws: An error if the alarm reply could not be sent.
         public static func alarmReply(
             alarm: Alarm,
-            return: Mach.KernReturn,
+            return: MachError.Code,
             type: Alarm.AlarmType,
             time: mach_timespec_t
         ) throws {
