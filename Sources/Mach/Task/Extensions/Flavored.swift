@@ -20,7 +20,7 @@ extension Mach.Task {
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_NULL))
         }
-        /// Reference a given task from its control port.
+        /// References a given task from its control port.
         /// - Parameter name: The name of the task's control port.
         /// - Warning: This will crash the program if the port named by `name` is not a task control port.
         public required init(named name: mach_port_name_t) {
@@ -37,7 +37,7 @@ extension Mach.Task {
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_READ_NULL))
         }
-        /// Reference a given task from its read port.
+        /// References a given task from its read port.
         /// - Parameter name: The name of the task's read port.
         /// - Warning: This will crash the program if the port named by `name` is not a task read port.
         public required init(named name: mach_port_name_t) {
@@ -54,7 +54,7 @@ extension Mach.Task {
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_INSPECT_NULL))
         }
-        /// Reference a given task from its inspect port.
+        /// References a given task from its inspect port.
         /// - Parameter name: The name of the task's inspect port.
         /// - Warning: This will crash the program if the port named by `name` is not a task inspect port.
         public required init(named name: mach_port_name_t) {
@@ -71,7 +71,7 @@ extension Mach.Task {
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_NAME_NULL))
         }
-        /// Reference a given task from its name port.
+        /// References a given task from its name port.
         /// - Parameter name: The name of the task's name port.
         /// - Warning: This will crash the program if the port named by `name` is not a task name port.
         public required init(named name: mach_port_name_t) {

@@ -1,7 +1,7 @@
 import Foundation
 
 extension Mach.Task {
-    /// Get the data of a kernel cache object as a specific type.
+    /// Gets the data of a kernel cache object as a specific type.
     /// - Parameters:
     ///   - kcObject: The kernel cache object, represented as a port.
     ///   - type: The type to load the data as.
@@ -16,7 +16,7 @@ extension Mach.Task {
         }
     }
 
-    /// Get the data of a kernel cache object.
+    /// Gets the data of a kernel cache object.
     /// - Parameter kcObject: The kernel cache object, represented as a port.
     /// - Throws: An error if the data cannot be retrieved.
     /// - Returns: The data of the kernel cache object.

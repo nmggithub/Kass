@@ -91,7 +91,7 @@ extension Mach.VM {
         /// (to be used in combination with VM_FLAGS_FIXED).
         case overwrite = 0x0000_0200
     }
-    /// Allocate a new VM region in the task's address space.
+    /// Allocates a new VM region in the task's address space.
     /// - Parameters:
     ///   - task: The task that will own the memory region.
     ///   - address: The base address of the new VM region.

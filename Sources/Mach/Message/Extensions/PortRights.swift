@@ -10,7 +10,7 @@ extension Mach.Message {
     public struct PortRights {
         /// The message.
         let message: Mach.Message
-        /// Get the port rights from the message.
+        /// Gets the port rights from the message.
         /// - Parameter message: The message.
         public init(message: Mach.Message) {
             self.message = message

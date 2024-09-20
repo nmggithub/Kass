@@ -56,7 +56,7 @@ extension BSD {
             case allowExecutionPolicyOverride = 1024
             case allowUnauthenticatedRoot = 2048
         }
-        /// Check a set of options.
+        /// Checks a set of options.
         /// - Parameter options: The options to check.
         /// - Throws: An error if the options are not all in the active configuration.
         public static func check(_ options: Set<ConfigOption>) throws {

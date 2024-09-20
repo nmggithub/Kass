@@ -8,7 +8,7 @@ extension Mach.Task.InspectPort {
         InspectInfo.Flavor, task_inspect_info_t.Pointee
     >
     {
-        /// Create a task inspect info manager.
+        /// Creates a task inspect info manager.
         /// - Parameter task: The task to manage inspect info about.
         public convenience init(about task: Mach.Task.InspectPort) {
             self.init(

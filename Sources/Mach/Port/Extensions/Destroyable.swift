@@ -3,7 +3,7 @@ import Darwin.Mach
 extension Mach.Port {
     /// A port that can be destroyed.
     public protocol Destroyable: Mach.Port, Mach.Port.Allocatable {
-        /// Destroy the port.
+        /// Destroys the port.
         func destroy() throws
     }
 }

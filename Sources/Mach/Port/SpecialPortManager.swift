@@ -28,7 +28,7 @@ extension Mach.Port {
         /// The "parent" port.
         let parentPort: ParentPortType
 
-        /// Get a special port.
+        /// Gets a special port.
         /// - Parameters:
         ///   - specialPort: The special port type.
         ///   - portType: The type to reference the port as.
@@ -44,7 +44,7 @@ extension Mach.Port {
             try Mach.call(self.getter(self.parentPort, specialPort, &portName))
             return PortType(named: portName)
         }
-        /// Set a special port.
+        /// Sets a special port.
         /// - Parameters:
         ///   - specialPort: The type of special port to set.
         ///   - port: The port to set as the special port.

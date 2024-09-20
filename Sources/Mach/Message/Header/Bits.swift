@@ -14,7 +14,7 @@ extension Mach.Message.Header {
                 | self.localBits << 8
                 | self.voucherBits << 16
         }
-        /// Represent existing raw configuration bits.
+        /// Represents existing raw configuration bits.
         /// - Parameter rawValue: The raw configuration bits.
         public init(rawValue: mach_msg_bits_t) {
             self.remoteBits = rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK)

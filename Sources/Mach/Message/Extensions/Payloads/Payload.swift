@@ -1,11 +1,11 @@
 extension Mach.Message {
     /// A message payload.
     public protocol Payload {
-        /// Load a payload from a raw buffer.
+        /// Loads a payload from a raw buffer.
         /// - Parameter buffer: The raw buffer.
         /// - Returns: The payload, or `nil` if the buffer does not contain a valid payload of this type.
         static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self?
-        /// Convert the payload to a raw buffer.
+        /// Converts the payload to a raw buffer.
         /// - Returns: The raw buffer.
         func toRawPayloadBuffer() -> UnsafeRawBufferPointer
     }
@@ -28,7 +28,7 @@ extension Mach.Message.WithTypedPayload {
             payloadBuffer = newValue?.toRawPayloadBuffer()
         }
     }
-    /// Create a message with a set of descriptors and a payload.
+    /// Creates a message with a set of descriptors and a payload.
     /// - Parameters:
     ///   - descriptors: The descriptors to include in the message.
     ///   - payload: The payload to include in the message.

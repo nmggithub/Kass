@@ -8,7 +8,7 @@ extension Mach.Host.ProcessorSet {
         Statistics.Flavor, processor_set_info_t.Pointee
     >
     {
-        /// Create a new statistics manager for a processor set.
+        /// Creates a new statistics manager for a processor set.
         /// - Parameter processorSet: The processor set to manage statistics for.
         /// - Warning: Setting statistics is not supported.
         public convenience init(for processorSet: Mach.Host.ProcessorSet) {
@@ -29,7 +29,7 @@ extension Mach.Host.ProcessorSet {
             case basic = 5
         }
 
-        /// Get a processor set's statistics.
+        /// Gets a processor set's statistics.
         /// - Parameters:
         ///   - flavor: The flavor of the statistics.
         ///   - type: The type to load the statistics as.

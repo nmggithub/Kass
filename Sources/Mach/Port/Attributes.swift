@@ -8,7 +8,7 @@ extension Mach.Port {
         Attributes.Flavor, mach_port_info_t.Pointee
     >
     {
-        /// Create a new port attributes manager for the port.
+        /// Creates a new port attributes manager for the port.
         /// - Parameter port: The port to manage attributes for.
         public convenience init(of port: Mach.Port) {
             self.init(

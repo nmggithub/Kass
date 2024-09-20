@@ -9,7 +9,7 @@ extension Mach.Message {
             public var rawValue: mach_msg_trailer_type_t {
                 baseType.shiftedValue | elements.shiftedValue
             }
-            /// Represent a trailer type with a raw value.
+            /// Represents a trailer type with a raw value.
             /// - Parameter rawValue: The raw value of the trailer type.
             public init(rawValue: mach_msg_trailer_type_t) {
                 self.baseType = BaseType(rawValue: (rawValue >> 28) & 0xf)!
@@ -42,7 +42,7 @@ extension Mach.Message {
             /// The last element of the trailer.
             public let elements: Elements
 
-            /// Represent a trailer type with a base type and elements.
+            /// Represents a trailer type with a base type and elements.
             /// - Parameters:
             ///   - baseType: The base type of the trailer.
             ///   - elements: The last element of the trailer.
@@ -53,7 +53,7 @@ extension Mach.Message {
         }
         /// The raw trailer.
         public var rawValue: mach_msg_max_trailer_t
-        /// Represent an existing raw trailer.
+        /// Represents an existing raw trailer.
         /// - Parameter rawValue: The raw trailer.
         public required init(rawValue: mach_msg_max_trailer_t) {
             self.rawValue = rawValue

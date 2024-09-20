@@ -6,7 +6,7 @@ import Darwin.Mach
 typealias MachTask = Mach.Task
 
 extension Mach.Task {
-    /// Set the physical footprint limit for the task.
+    /// Sets the physical footprint limit for the task.
     /// - Parameter limit: The new limit.
     /// - Throws: An error if the limit could not be set.
     /// - Returns: The old limit.

@@ -7,7 +7,7 @@ extension Mach.Message.Body.Descriptor {
 
 extension Mach.Message.Body {
     public struct DescriptorManager {
-        /// Deserialize a descriptor from a pointer.
+        /// Deserializes a descriptor from a pointer.
         /// - Parameters:
         ///   - type: The type of the descriptor to deserialize.
         ///   - pointer: The pointer to the descriptor.
@@ -20,7 +20,7 @@ extension Mach.Message.Body {
             return type.init(rawValue: rawDescriptor)!
         }
 
-        /// Serialize a descriptor to a pointer.
+        /// Serializes a descriptor to a pointer.
         /// - Parameters:
         ///   - descriptor: The descriptor to serialize.
         ///   - pointer: The pointer to serialize the descriptor to.

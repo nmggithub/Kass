@@ -5,7 +5,7 @@ extension Mach.Message.MIG {
     open class Client: Mach.Port {
         /// The base routine ID for the remote MIG server.
         public var baseRoutineId: mach_msg_id_t = 0
-        /// Represent an existing raw MIG server port.
+        /// Represents an existing raw MIG server port.
         /// - Parameters:
         ///   - name: The name of the port.
         ///   - baseRoutineId: The base routine ID for the remote MIG server.
@@ -20,7 +20,7 @@ extension Mach.Message.MIG {
             super.init(named: name)
         }
 
-        /// Perform a MIG routine.
+        /// Performs a MIG routine.
         /// - Parameters:
         ///   - routineIndex: The index of the routine.
         ///   - request: The request to send.
@@ -39,7 +39,7 @@ extension Mach.Message.MIG {
             )
         }
 
-        /// Perform a MIG routine.
+        /// Performs a MIG routine.
         /// - Parameters:
         ///   - routineIndex: The index of the routine.
         ///   - request: The request to send.

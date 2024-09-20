@@ -2,7 +2,7 @@ import Darwin.Mach
 import Foundation
 
 extension MachError {
-    /// Initialize a new Mach error with a given code.
+    /// Initializes a new Mach error with a given code.
     /// - Parameter code: The error code.
     public init(_ code: kern_return_t) {
         guard let typedCode = MachError.Code(rawValue: code) else {
@@ -13,7 +13,7 @@ extension MachError {
 }
 
 extension Mach {
-    /// Execute a call and throw an error if it fails.
+    /// Executes a call and throw an error if it fails.
     /// - Parameter call: A statement that executes a call and returns a kernel return code.
     /// - Throws: An error if the call fails.
     public static func call(_ call: @autoclosure () -> kern_return_t) throws {

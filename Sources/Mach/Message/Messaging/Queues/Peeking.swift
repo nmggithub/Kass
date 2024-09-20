@@ -10,7 +10,7 @@ extension Mach.Message.Server {
         /// The trailer.
         public var trailer: mach_msg_max_trailer_t
     }
-    /// Peek at the message in the queue with the given sequence number, receiving a trailer of the given type.
+    /// Peeks at the message in the queue with the given sequence number, receiving a trailer of the given type.
     /// - Parameters:
     ///   - trailerType: The type of trailer to receive.
     ///   - sequenceNumber: The sequence number of the message to peek at.

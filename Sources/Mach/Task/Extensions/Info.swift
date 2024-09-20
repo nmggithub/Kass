@@ -48,7 +48,7 @@ extension Mach.Task {
             case suspendSources = 31
         }
 
-        /// Create a task info manager.
+        /// Creates a task info manager.
         /// - Parameter task: The task to manage info about.
         public convenience init(about task: Mach.Task) {
             self.init(
@@ -61,7 +61,7 @@ extension Mach.Task {
             )
         }
 
-        /// Get a task's info.
+        /// Gets a task's info.
         /// - Parameters:
         ///   - flavor: The flavor of the info.
         ///   - type: The type to load the info as.
@@ -73,7 +73,7 @@ extension Mach.Task {
             try super.get(flavor, as: type)
         }
 
-        /// Set a task's info.
+        /// Sets a task's info.
         /// - Parameters:
         ///  - flavor: The flavor of the info.
         ///  - value: The value to set the info to.

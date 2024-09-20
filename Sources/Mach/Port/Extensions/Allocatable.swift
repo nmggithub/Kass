@@ -3,7 +3,7 @@ import Darwin.Mach
 extension Mach.Port {
     /// A port that can be allocated.
     public protocol Allocatable: Mach.Port, Mach.Port.Deallocatable {
-        /// Allocate a new port with a given right in the specified task with an optional name.
+        /// Allocates a new port with a given right in the specified task with an optional name.
         /// - Parameters:
         ///   - right: The right to allocate.
         ///   - name: The name to assign to the port.

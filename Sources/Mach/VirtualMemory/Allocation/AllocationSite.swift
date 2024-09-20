@@ -5,7 +5,7 @@ extension Mach.VM {
     public class AllocationSite: RawRepresentable {
         /// The raw information about the allocation site.
         public let rawValue: mach_memory_info_t
-        /// Represent the allocation site with the given raw information.
+        /// Represents the allocation site with the given raw information.
         /// - Parameter rawValue: The raw information about the allocation site.
         public required init(rawValue: mach_memory_info_t) {
             self.rawValue = rawValue
@@ -113,7 +113,7 @@ extension Mach.VM {
         public var mapped: UInt64 { rawValue.mapped }
     }
 
-    /// Get the allocation sites in a host.
+    /// Gets the allocation sites in a host.
     /// - Parameter host: The host to get the allocation sites for.
     /// - Throws: If the allocation sites cannot be retrieved.
     /// - Returns: The allocation sites in the host.

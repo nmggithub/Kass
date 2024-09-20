@@ -17,7 +17,7 @@ extension Mach.Host {
             case extMod = 5
             case expiredTasks = 6
         }
-        /// Create a new statistics manager for the host.
+        /// Creates a new statistics manager for the host.
         /// - Parameter host: The host to manage statistics for.
         /// - Warning: Setting statistics is not supported.
         public convenience init(for host: Mach.Host) {

@@ -24,7 +24,7 @@ public struct COptionMacroSet<CMacroEnum: COptionMacroEnum>: NameableByCMacros,
 {
     /// The raw value of the set of options, as a binary integer.
     public var rawValue: CMacroEnum.RawValue { options.bitmap() }
-    /// Create a new set of options from a raw value.
+    /// Creates a new set of options from a raw value.
     /// - Parameter rawValue: The raw value.
     public init?(rawValue: CMacroEnum.RawValue) {
         self.options = Set(CMacroEnum.allCases.filter { rawValue & $0.rawValue != 0 })
@@ -33,17 +33,17 @@ public struct COptionMacroSet<CMacroEnum: COptionMacroEnum>: NameableByCMacros,
     private var options: Set<CMacroEnum> = []
     /// The set of C macro names that represent the options.
     public var cMacroNames: Set<String> { Set(options.map { $0.cMacroName }) }
-    /// Create a new set of options from an array of options.
+    /// Creates a new set of options from an array of options.
     /// - Parameter optionsIn: The options.
     public init(arrayLiteral optionsIn: CMacroEnum...) {
         self.options = Set(optionsIn)
     }
-    /// Set one or more options.
+    /// Sets one or more options.
     /// - Parameter optionsToSet: The options to set.
     public mutating func set(_ optionsToSet: CMacroEnum...) {
         self.options.formUnion(optionsToSet)
     }
-    /// Unset one or more options.
+    /// Unsets one or more options.
     /// - Parameter optionsToUnset: The options to unset.
     public mutating func unset(_ optionsToUnset: CMacroEnum...) {
         self.options.subtract(optionsToUnset)

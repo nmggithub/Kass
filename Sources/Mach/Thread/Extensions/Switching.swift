@@ -11,7 +11,7 @@ extension Mach.Thread {
             case oslockDepress = 8
             case oslockWait = 16
         }
-        /// Switch to a different thread.
+        /// Switches to a different thread.
         /// - Parameters:
         ///   - thread: The thread to switch to.
         ///   - option: The option to use.
@@ -24,7 +24,7 @@ extension Mach.Thread {
             try Mach.call(thread_switch(thread.name, option.rawValue, timeout))
         }
 
-        /// Abort the depression of a thread.
+        /// Aborts the depression of a thread.
         /// - Parameter thread: The thread to abort the depression of.
         /// - Throws: An error if the operation fails.
         public static func abortDepression(of thread: Mach.Thread) throws {

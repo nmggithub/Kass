@@ -14,7 +14,7 @@ extension Mach.Message {
                 msgh_id: self.messageID
             )
         }
-        /// Represent an existing raw message header.
+        /// Represents an existing raw message header.
         /// - Parameter rawValue: The raw message header.
         public init(rawValue: mach_msg_header_t) {
             self.bits = Bits(rawValue: rawValue.msgh_bits)
@@ -36,7 +36,7 @@ extension Mach.Message {
         public var voucherPort: Mach.Port
         /// The message ID.
         public var messageID: mach_msg_id_t
-        /// Create a new message header.
+        /// Creates a new message header.
         public init() { self.init(rawValue: mach_msg_header_t()) }
     }
 }

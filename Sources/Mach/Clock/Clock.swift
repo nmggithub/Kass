@@ -17,7 +17,7 @@ extension Mach {
             }
         }
 
-        /// Send a reply to an alarm.
+        /// Sends a reply to an alarm.
         /// - Parameters:
         ///   - alarm: The alarm to reply to.
         ///   - return: The return value to send.
@@ -48,7 +48,7 @@ extension Mach {
             case calendar = 1
         }
 
-        /// Obtain the given clock service.
+        /// Obtains the given clock service.
         /// - Parameter type: The type of clock to obtain.
         /// - Throws: An error if the clock service could not be obtained.
         public convenience init(_ type: ClockType, in host: Mach.Host) throws {
@@ -68,7 +68,7 @@ extension Mach {
                 return time
             }
         }
-        /// Set up an alarm on the clock.
+        /// Sets up an alarm on the clock.
         /// - Parameters:
         ///   - time: The time to set the alarm for.
         ///   - alarm: The port to send the alarm reply to.
@@ -87,7 +87,7 @@ extension Mach {
             Attributes.Flavor, clock_attr_t.Pointee
         >
         {
-            /// Create a clock attributes manager.
+            /// Creates a clock attributes manager.
             public convenience init(of clock: Mach.Clock) {
                 self.init(
                     getter: {
@@ -130,7 +130,7 @@ extension Mach.Host {
     public var systemClock: Mach.Clock { try! Mach.Clock(.system, in: self) }
     /// The calendar clock.
     public var calendarClock: Mach.Clock { try! Mach.Clock(.calendar, in: self) }
-    /// Obtain a clock service.
+    /// Obtains a clock service.
     /// - Parameter type: The type of clock to obtain.
     /// - Throws: An error if the clock service could not be obtained.
     /// - Returns: The clock service.

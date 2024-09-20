@@ -2,7 +2,7 @@ import CCompat
 import Darwin.Mach
 
 extension Mach.VM {
-    /// Allocate a new VM region in the task's address space using contiguous physical memory.
+    /// Allocates a new VM region in the task's address space using contiguous physical memory.
     /// - Parameters:
     ///   - host: The host that the task is on.
     ///   - task: The task that will own the memory region.

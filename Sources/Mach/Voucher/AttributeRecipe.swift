@@ -36,7 +36,7 @@ extension Mach.Voucher {
                 to: mach_voucher_attr_recipe_data_t.self, capacity: 1
             ) { $0 }
         }
-        /// Create a new recipe with the given raw value.
+        /// Creates a new recipe with the given raw value.
         /// - Parameter rawValue: The raw value to create the recipe with.
         public init(rawValue: mach_voucher_attr_raw_recipe_t) {
             let contentSize = rawValue.withMemoryRebound(
@@ -77,7 +77,7 @@ extension Mach.Voucher {
         }
     }
 
-    /// Create a new voucher with the given recipes.
+    /// Creates a new voucher with the given recipes.
     /// - Parameter recipes: The recipes to create the voucher with.
     /// - Throws: An error if the voucher could not be created.
     public convenience init(recipes: [AttributeRecipe]) throws {
@@ -107,7 +107,7 @@ extension Mach.Voucher {
         )
         self.init(named: voucherName)
     }
-    /// Get a recipe from the voucher.
+    /// Gets a recipe from the voucher.
     /// - Parameter key: The key to use.
     /// - Throws: An error if the recipe could not be retrieved.
     /// - Returns: The recipe.

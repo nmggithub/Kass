@@ -10,13 +10,13 @@ extension Mach.Port {
     }
     /// A port that can be guarded.
     public protocol Guardable: Mach.Port {
-        /// Guard the port with the specified context and flags.
+        /// Guards the port with the specified context and flags.
         /// - Parameters:
         ///   - context: The context to guard the port with.
         ///   - flags: The flags to guard the port with.
         /// - Throws: An error if the operation fails.
         func `guard`(_ context: mach_port_context_t, flags: Set<GuardFlag>) throws
-        /// Unguard the port with the specified context.
+        /// Unguards the port with the specified context.
         /// - Parameter context: The context to unguard the port with.
         /// - Throws: An error if the operation fails.
         func unguard(_ context: mach_port_context_t) throws

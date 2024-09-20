@@ -22,7 +22,7 @@ extension Mach.Task {
             }
         }
     }
-    /// Generate a corpse for the task.
+    /// Generates a corpse for the task.
     /// - Throws: An error if the corpse could not be generated.
     /// - Returns: The corpse.
     public func generateCorpse() throws -> Corpse {

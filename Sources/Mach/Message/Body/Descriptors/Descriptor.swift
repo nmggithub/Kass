@@ -8,10 +8,10 @@ extension Mach.Message.Body {
         typealias Pointer = UnsafePointer<mach_msg_type_descriptor_t>
         /// The raw C struct type for the descriptor.
         associatedtype CStruct
-        /// Represent an existing raw descriptor.
+        /// Represents an existing raw descriptor.
         /// - Parameter rawValue: The raw descriptor.
         init(rawValue: CStruct)
-        /// Create a new empty descriptor.
+        /// Creates a new empty descriptor.
         init()
     }
 }

@@ -7,7 +7,7 @@ extension Mach.Host {
         /// The host that the processor is in.
         public var owningHost: Mach.Host
 
-        /// Represent an processor existing in a host.
+        /// Represents an processor existing in a host.
         /// - Parameters:
         ///   - name: The port name for the processor.
         ///   - host: The host that the processor is in.
@@ -16,17 +16,17 @@ extension Mach.Host {
             super.init(named: name)
         }
 
-        /// Represent an existing processor in the current host.
+        /// Represents an existing processor in the current host.
         /// - Parameter name: The port name for the processor.
         required init(named name: mach_port_name_t) {
             self.owningHost = Mach.Host.current
             super.init(named: name)
         }
 
-        /// Start the processor.
+        /// Starts the processor.
         /// - Throws: An error if the processor cannot be started.
         public func start() throws { try Mach.call(processor_start(self.name)) }
-        /// Stop the processor.
+        /// Stops the processor.
         /// - Throws: An error if the processor cannot be stopped.
         public func exit() throws { try Mach.call(processor_exit(self.name)) }
     }

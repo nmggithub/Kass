@@ -38,7 +38,7 @@ extension Mach.VM {
         }
     }
 
-    /// Get the zones in a host.
+    /// Gets the zones in a host.
     /// - Parameter host: The host to get the zones for.
     /// - Throws: If the zones cannot be retrieved.
     /// - Returns: The zones in the host.

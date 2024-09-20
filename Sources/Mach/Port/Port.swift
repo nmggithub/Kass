@@ -4,7 +4,7 @@
 extension Mach {
     /// A port (name) in a task's namespace.
     open class Port: Equatable, Hashable {
-        /// Hash the port.
+        /// Hashes the port.
         /// - Parameter hasher: The hasher to use.
         public func hash(into hasher: inout Hasher) {
             hasher.combine(self.name)
@@ -24,7 +24,7 @@ extension Mach {
             case labelh = 5
             case number = 6
         }
-        /// Compare two ports by their names.
+        /// Compares two ports by their names.
         public static func == (lhs: Mach.Port, rhs: Mach.Port) -> Bool {
             return lhs.name == rhs.name
         }
@@ -44,7 +44,7 @@ extension Mach {
             }
         }
 
-        /// Get the context of the port.
+        /// Gets the context of the port.
         /// - Throws: If the context cannot be retrieved.
         /// - Returns: The context of the port.
         public func getContext() throws -> mach_port_context_t {
@@ -53,7 +53,7 @@ extension Mach {
             return context
         }
 
-        /// Set the context of the port.
+        /// Sets the context of the port.
         /// - Parameter context: The context to set.
         /// - Throws: If the context cannot be set.
         public func setContext(_ context: mach_port_context_t) throws {
@@ -83,13 +83,13 @@ extension Mach {
             }
             return rights
         }
-        /// Reference an existing port in the current task's namespace.
+        /// References an existing port in the current task's namespace.
         /// - Parameters:
         ///   - name: The name of the port.
         public required init(named name: mach_port_name_t) {
             self.name = name
         }
-        /// Reference an existing port in a given task's namespace.
+        /// References an existing port in a given task's namespace.
         /// - Parameters:
         ///   - name: The name of the port.
         ///   - task: The task that the port is in the namespace of.

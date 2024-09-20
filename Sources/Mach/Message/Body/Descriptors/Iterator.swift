@@ -16,14 +16,14 @@ extension Mach.Message.Body {
         private var index: Int = 0
         /// The current descriptor pointer.
         private var pointer: Descriptor.Pointer
-        /// Create an iterator for a set of descriptor pointers.
+        /// Creates an iterator for a set of descriptor pointers.
         /// - Parameter bodyPointer: A pointer to a message body.
         init(bodyPointer: UnsafePointer<mach_msg_body_t>) {
             self.count = Int(bodyPointer.pointee.msgh_descriptor_count)
             self.pointer = UnsafeRawPointer(bodyPointer + 1)
                 .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
         }
-        /// Get the next descriptor pointer.
+        /// Gets the next descriptor pointer.
         /// - Returns: The next descriptor pointer, or `nil` if there are no more descriptors.
         /// - Warning: This method also returns `nil` if the type of the next descriptor is invalid.
         public mutating func next() -> Descriptor.Pointer? {

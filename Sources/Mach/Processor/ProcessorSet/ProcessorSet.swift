@@ -5,7 +5,7 @@ import MachThread
 extension Mach.Host {
     /// A set of processors in a host.
     public class ProcessorSet: Mach.Port {
-        /// Get the default processor set for a host.
+        /// Gets the default processor set for a host.
         /// - Parameter host: The host to get the default processor set for.
         /// - Throws: If the default processor set cannot be retrieved.
         /// - Returns: The default processor set for the host.
@@ -25,7 +25,7 @@ extension Mach.Host {
                 }
             }
         }
-        /// Get the flavored tasks in the processor set.
+        /// Gets the flavored tasks in the processor set.
         /// - Parameter flavor: The flavor of the tasks.
         /// - Throws: If the tasks cannot be retrieved.
         /// - Returns: The flavored tasks.

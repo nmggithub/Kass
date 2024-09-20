@@ -24,7 +24,7 @@ extension Mach.Port {
     /// A port that can be constructed.
     public protocol Constructable: Mach.Port, Mach.Port.Allocatable {
         typealias Flag = Mach.Port.ConstructFlag
-        /// Construct a new port with the given options.
+        /// Constructs a new port with the given options.
         /// - Parameters:
         ///   - queueLimit: The maximum number of messages that can be queued.
         ///   - flags: The flags to use when constructing the port.
@@ -34,7 +34,7 @@ extension Mach.Port {
             queueLimit: mach_port_msgcount_t, flags: Set<Flag>,
             context: mach_port_context_t, in task: Mach.Task
         ) throws
-        /// Destruct the port.
+        /// Destructs the port.
         /// - Parameters:
         ///   - sendRightDelta: The delta to apply to the send right user ref count.
         ///   - guard: The context to unguard the port with.

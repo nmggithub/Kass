@@ -37,7 +37,7 @@ extension Mach.Message.Body {
         public typealias GuardFlags = Set<GuardFlag>
         /// The guard flags.
         public var guardFlags: GuardFlags
-        /// Represent an existing raw guarded port descriptor.
+        /// Represents an existing raw guarded port descriptor.
         /// - Parameter rawValue: The raw guarded port descriptor.
         public init(rawValue: mach_msg_guarded_port_descriptor_t) {
             self.port = .init(named: rawValue.name)
@@ -45,14 +45,14 @@ extension Mach.Message.Body {
             self.context = rawValue.context
             self.guardFlags = []  // GuardFlags(rawValue: rawValue.flags) ?? []
         }
-        /// Create a new guarded port descriptor.
+        /// Creates a new guarded port descriptor.
         public init() {
             self.port = .init(named: mach_port_t(MACH_PORT_NULL))
             self.disposition = nil
             self.context = 0
             self.guardFlags = []
         }
-        /// Create a new guarded port descriptor with a port.
+        /// Creates a new guarded port descriptor with a port.
         /// - Parameters:
         ///   - port: The port.
         ///   - disposition: The disposition.

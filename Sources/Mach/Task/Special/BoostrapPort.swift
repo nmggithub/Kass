@@ -20,7 +20,7 @@ extension Mach.Task {
     }
     /// A port for communicating with the bootstrap server.
     public class BootstrapPort: Mach.Port {
-        /// Look up a service by name.
+        /// Looks up a service by name.
         /// - Parameter serviceName: The name of the service to look up.
         /// - Throws: An error if the service lookup failed.
         /// - Returns: The port for the service.

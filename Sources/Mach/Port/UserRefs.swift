@@ -19,7 +19,7 @@ extension Mach.Port {
                 return refs
             }
         }
-        /// Increment the number of user references to the port right.
+        /// Increments the number of user references to the port right.
         /// - Parameters:
         ///   - refs: The user references.
         ///   - delta: The amount to increment by.
@@ -31,7 +31,7 @@ extension Mach.Port {
                 )
             )
         }
-        /// Decrement the number of user references to the port right.
+        /// Decrements the number of user references to the port right.
         /// - Parameters:
         ///   - refs: The user references.
         ///   - delta: The amount to decrement by.
@@ -44,7 +44,7 @@ extension Mach.Port {
             )
         }
     }
-    /// Get the number of user references to the port right.
+    /// Gets the number of user references to the port right.
     /// - Parameter right: The right to the port.
     /// - Returns: The number of user references to the port right.
     public func userRefs(for right: Right) -> UserRefs {

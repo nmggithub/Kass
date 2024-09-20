@@ -9,7 +9,7 @@ extension Mach.Task {
         UnsafeMutablePointer<boolean_t>?, Never?
     >
     {
-        /// Create a new task policy manager.
+        /// Creates a new task policy manager.
         /// - Parameter task: The task.
         public convenience init(of task: Mach.Task) {
             self.init(
@@ -32,7 +32,7 @@ extension Mach.Task {
             case throughputQoS = 11
         }
 
-        /// Get a task's policy.
+        /// Gets a task's policy.
         /// - Parameters:
         ///   - flavor: The flavor of the policy.
         ///   - type: The type to load the policy as.

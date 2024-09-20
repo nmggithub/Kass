@@ -22,18 +22,18 @@ extension Mach.Message.Body {
         public var port: Mach.Port
         /// The disposition.
         public var disposition: Mach.Port.Disposition?
-        /// Represent an existing raw port descriptor.
+        /// Represents an existing raw port descriptor.
         /// - Parameter rawValue: The raw port descriptor
         public init(rawValue: CStruct) {
             self.port = Mach.Port(named: rawValue.name)
             self.disposition = Mach.Port.Disposition(rawValue: rawValue.disposition)
         }
-        /// Create a new port descriptor.
+        /// Creates a new port descriptor.
         public init() {
             self.port = .init(named: mach_port_t(MACH_PORT_NULL))
             self.disposition = nil
         }
-        /// Create a new port descriptor.
+        /// Creates a new port descriptor.
         /// - Parameters:
         ///   - port: The port.
         ///   - disposition: The disposition.

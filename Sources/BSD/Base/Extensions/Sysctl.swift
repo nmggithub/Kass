@@ -1,7 +1,7 @@
 import Darwin.POSIX
 
 extension BSD {
-    /// Get system information.
+    /// Gets system information.
     /// - Parameters:
     ///   - mibNameArray: The MiB name, expressed as an array of integers.
     ///   - type: The data type of the system information.
@@ -28,7 +28,7 @@ extension BSD {
         )
         return Array(bufferPointer)
     }
-    /// Get system information.
+    /// Gets system information.
     /// - Parameters:
     ///   - mibName: The MiB name, expressed as a string.
     ///   - type: The data type of the system information.

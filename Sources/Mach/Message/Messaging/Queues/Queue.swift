@@ -5,7 +5,7 @@ extension Mach.Message {
     /// - Important: This does not support a combined send and receive operation. For such an operation, use
     /// the ``Mach/Messaging/send(_:to:receiving:ofMaxSize:on:options:timeout:)`` function.
     public class Queue: Mach.Port {
-        /// Send a message to the queue.
+        /// Sends a message to the queue.
         /// - Parameters:
         ///   - message: The message to send.
         ///   - options: The options for sending the message.
@@ -17,7 +17,7 @@ extension Mach.Message {
         ) throws {
             try Mach.Messaging.send(message, to: self, options: options, timeout: timeout)
         }
-        /// Receive a message from the queue.
+        /// Receives a message from the queue.
         /// - Parameters:
         ///   - messageType: The type of message to receive.
         ///   - options: The options for receiving the message.

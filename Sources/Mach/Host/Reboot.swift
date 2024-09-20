@@ -8,7 +8,7 @@ extension Mach.Host {
         case upsDelay = 0x100
         case debugger = 0x1000
     }
-    /// Reboot the host.
+    /// Reboots the host.
     /// - Parameter option: The reboot options.
     /// - Throws: If the reboot fails.
     public func reboot(_ options: Set<RebootOption> = []) throws {

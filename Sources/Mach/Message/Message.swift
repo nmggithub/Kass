@@ -78,7 +78,7 @@ extension Mach {
             }
             return headerPointer
         }
-        /// Represent an existing raw message.
+        /// Represents an existing raw message.
         /// - Parameter rawValue: A pointer to the raw message.
         public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
             var deserializingPointer = UnsafeMutableRawPointer(rawValue)
@@ -110,7 +110,7 @@ extension Mach {
                 possibleTrailer.msgh_trailer_size > 0 ? Trailer(rawValue: possibleTrailer) : nil
         }
 
-        /// Create a message with a set of descriptors and a payload.
+        /// Creates a message with a set of descriptors and a payload.
         /// - Parameters:
         ///   - descriptors: The descriptors to include in the message.
         ///   - payloadBuffer: The payload buffer to include in the message.

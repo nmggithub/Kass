@@ -2,7 +2,7 @@ import Darwin.Mach
 import Foundation
 
 extension Mach.Host {
-    /// Perform a kext request.
+    /// Performs a kext request.
     /// - Parameter request: The request data.
     /// - Throws: If the request fails.
     /// - Returns: The response data.

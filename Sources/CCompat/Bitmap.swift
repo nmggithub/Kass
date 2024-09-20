@@ -1,5 +1,5 @@
 extension CaseIterable where Self: RawRepresentable, Self: Hashable, Self.RawValue: BinaryInteger {
-    /// Create a set of options from a bitmap.
+    /// Creates a set of options from a bitmap.
     /// - Parameter bitmap: The bitmap.
     /// - Returns: The set of options.
     public static func set(from bitmap: Self.RawValue) -> Set<Self> {
@@ -10,7 +10,7 @@ extension CaseIterable where Self: RawRepresentable, Self: Hashable, Self.RawVal
 }
 
 extension Set where Element: RawRepresentable, Element.RawValue: BinaryInteger {
-    /// Create a bitmap from the given set of options.
+    /// Creates a bitmap from the given set of options.
     /// - Returns: The bitmap.
     public func bitmap() -> Element.RawValue {
         reduce(0) { $0 | $1.rawValue }

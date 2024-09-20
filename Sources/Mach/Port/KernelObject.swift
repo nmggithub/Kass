@@ -120,7 +120,7 @@ extension Mach {
         /// A string describing the kernel object.
         public let description: String
 
-        /// Get the underlying kernel object for a port.
+        /// Gets the underlying kernel object for a port.
         /// - Parameter port: The port.
         /// - Throws: An error if the kernel object cannot be retrieved.
         public init(underlying port: Mach.Port) throws {

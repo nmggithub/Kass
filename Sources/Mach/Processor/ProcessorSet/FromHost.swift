@@ -14,7 +14,7 @@ extension Mach.Host {
             }
         }
     }
-    /// Get the control port for a processor set.
+    /// Gets the control port for a processor set.
     /// - Parameter processorSet: The processor set to get the control port for.
     /// - Throws: If the control port cannot be retrieved.
     /// - Returns: The control port for the processor set.

@@ -13,7 +13,7 @@ public class Handle {
     public let rawHandle: UnsafeMutableRawPointer
     /// The type of the handle.
     public let type: HandleType
-    /// Create a new handle.
+    /// Creates a new handle.
     /// - Parameters:
     ///   - name: The name of the handle.
     ///   - rawHandle: The raw handle.
@@ -29,7 +29,7 @@ public class Handle {
 public class Library: Handle {
     /// The path to the library.
     let pathURL: URL
-    /// Create a new library handle.
+    /// Creates a new library handle.
     /// - Parameter path: The path to the library.
     public init?(path: String) {
         guard
@@ -40,18 +40,18 @@ public class Library: Handle {
         super.init(
             name: pathURL.lastPathComponent, rawHandle: handle, type: .library)
     }
-    /// Link the library.
+    /// Links the library.
     /// - Note: This is technically a no-op, as the library is linked when the class is initialized. This function is provided
     ///         as a Void-returning "escape hatch" for users who do not wish to use the return value of the initializer.
     public func link() {}
-    /// Get a symbol handle from the library.
+    /// Gets a symbol handle from the library.
     /// - Parameter symbol: The name of the symbol.
     /// - Returns: The symbol handle, or `nil` if the symbol could not be found.
     public func get(symbol: String) -> Symbol? {
         guard let handle = dlsym(self.rawHandle, symbol) else { return nil }
         return Symbol(name: symbol, rawHandle: handle)
     }
-    /// Get a symbol handle from the library at a specific address.
+    /// Gets a symbol handle from the library at a specific address.
     /// - Parameters:
     ///   - symbol: The name of the symbol.
     ///   - expectedAddress: The address of the symbol.
@@ -83,13 +83,13 @@ public class Library: Handle {
         else { return nil }
         return Symbol(name: symbol, rawHandle: expectedPointer)
     }
-    /// Get an Objective-C class from the library.
+    /// Gets an Objective-C class from the library.
     /// - Parameter className: The name of the class.
     /// - Returns: The class, or `nil` if the class could not be found.
     public func get(objCClass className: String) -> NSObjectProtocol.Type? {
         return self.get(objCClass: className, castTo: NSObjectProtocol.Type.self)
     }
-    /// Get an Objective-C class from the library.
+    /// Gets an Objective-C class from the library.
     /// - Parameters:
     ///   - className: The name of the class.
     ///   - castTo: The type to cast the class to (should be a protocol).
@@ -106,21 +106,21 @@ public class Library: Handle {
 
 /// A symbol handle.
 public class Symbol: Handle {
-    /// Cast the symbol to a specific type.
+    /// Casts the symbol to a specific type.
     /// - Parameter to: The type to cast the symbol to.
     /// - Returns: The symbol cast to the specified type.
     /// - Note: This is equivalent to `unsafeBitCast(self.rawHandle, to: T.self)`.
     public func cast<T>(to: T.Type = T.self) -> T {
         return unsafeBitCast(self.rawHandle, to: T.self)
     }
-    /// Load the symbol as a specific type.
+    /// Loads the symbol as a specific type.
     /// - Parameter as: The type to load the symbol as.
     /// - Returns: The symbol loaded as the specified type.
     /// - Note: This is equivalent to `self.rawHandle.load(as: T.self)`.
     public func load<T>(as: T.Type = T.self) -> T {
         return self.rawHandle.load(as: T.self)
     }
-    /// Create a new symbol handle.
+    /// Creates a new symbol handle.
     /// - Parameters:
     ///   - name: The name of the symbol.
     ///   - rawHandle: The raw handle.
@@ -135,7 +135,7 @@ public class Framework: Library {
     private static let publicFrameworksPath = URL(string: "/System/Library/Frameworks")!
     /// The path to the private frameworks.
     private static let privateFrameworksPath = URL(string: "/System/Library/PrivateFrameworks")!
-    /// Get the path to a framework.
+    /// Gets the path to a framework.
     /// - Parameters:
     ///   - name: The name of the framework.
     ///   - isPrivate: Whether the framework is private.
@@ -144,7 +144,7 @@ public class Framework: Library {
         let path = isPrivate ? privateFrameworksPath : publicFrameworksPath
         return frameworkPath(for: name, inPath: path)
     }
-    /// Get the path to a framework.
+    /// Gets the path to a framework.
     /// - Parameters:
     ///   - name: The name of the framework.
     ///   - path: The directory containing the framework.
@@ -152,26 +152,26 @@ public class Framework: Library {
     private static func frameworkPath(for name: String, inPath path: URL) -> String {
         return path.appending(component: "\(name).framework/\(name)").path
     }
-    /// Create a new framework handle.
+    /// Creates a new framework handle.
     /// - Parameters:
     ///   - name: The name of the framework.
     ///   - isPrivate: Whether the framework is private.
     public init?(_ name: String, isPrivate: Bool = false) {
         super.init(path: Self.frameworkPath(for: name, isPrivate: isPrivate))
     }
-    /// Create a new framework handle.
+    /// Creates a new framework handle.
     /// - Parameters:
     ///   - name: The name of the framework.
     ///   - path: The directory containing the framework.
     public init?(_ name: String, inPath path: URL) {
         super.init(path: Self.frameworkPath(for: name, inPath: path))
     }
-    /// Get a framework handle from a path (used internally for getting sub-frameworks).
+    /// Gets a framework handle from a path (used internally for getting sub-frameworks).
     /// - Parameter path: The path to the framework.
     private override init?(path: String) {
         super.init(path: path)
     }
-    /// Get a sub-framework handle from the framework.
+    /// Gets a sub-framework handle from the framework.
     /// - Parameter subFramework: The name of the sub-framework.
     /// - Returns: A handle to the sub-framework, or `nil` if the sub-framework could not be found.
     public func get(subFramework: String) -> Framework? {

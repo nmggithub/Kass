@@ -20,7 +20,7 @@ extension Mach {
                 }
             }
         }
-        /// Insert a port into the port set.
+        /// Inserts a port into the port set.
         /// - Parameter port: The port to insert.
         /// - Throws: An error if the port cannot be inserted.
         public func insert(_ port: Mach.Port) throws {
@@ -32,7 +32,7 @@ extension Mach {
 }
 
 extension Mach.Port {
-    /// Move the port into a port set.
+    /// Moves the port into a port set.
     /// - Parameter set: The port set to move the port into.
     /// - Throws: An error if the port cannot be moved.
     /// - Warning: If the port is already a member of any port sets, it will be removed from them.

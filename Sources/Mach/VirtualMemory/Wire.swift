@@ -2,7 +2,7 @@ import CCompat
 import Darwin.Mach
 
 extension Mach.VM {
-    /// Wire a range of memory.
+    /// Wires a range of memory.
     /// - Parameters:
     ///   - host: The host that the task is on.
     ///   - task: The task that owns the memory range.
@@ -23,7 +23,7 @@ extension Mach.VM {
             vm_wire(host.name, task.name, address, size, access.bitmap())
         )
     }
-    /// Unwire a range of memory.
+    /// Unwires a range of memory.
     /// - Parameters:
     ///   - host: The host that the task is on.
     ///   - task: The task that owns the memory range.

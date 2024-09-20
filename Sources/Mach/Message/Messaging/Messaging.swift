@@ -15,7 +15,7 @@ extension Mach.Message {
 extension Mach {
     /// A set of helper functions for sending and receiving messages.
     public struct Messaging {
-        /// Call the `mach_msg` syscall.
+        /// Calls the `mach_msg` syscall.
         /// - Parameters:
         ///   - messageBuffer: The message buffer. This buffer is reused for receiving messages.
         ///   - options: The options for the syscall.
@@ -48,7 +48,7 @@ extension Mach {
         /// The default maximum size for receiving messages.
         @usableFromInline
         static let defaultMaxReceiveSize: Int = 1024
-        /// A transient buffer for receiving messages, set to a given maximum size.
+        /// Allocates a transient buffer for receiving messages, set to a given maximum size.
         /// - Parameter size: The size of the buffer.
         /// - Returns: The buffer.
         /// - Warning: The size must be at least the size of a `mach_msg_header_t`.
@@ -62,7 +62,7 @@ extension Mach {
             buffer.initializeMemory(as: UInt8.self, repeating: 0)
             return buffer
         }
-        /// Send a message.
+        /// Sends a message.
         /// - Parameters:
         ///   - message: The message to send.
         ///   - remotePort: The port to send the message to.
@@ -89,7 +89,7 @@ extension Mach {
                 notifyPort: Mach.Port.Nil
             )
         }
-        /// Send a message and receive a response.
+        /// Sends a message and receive a response.
         /// - Parameters:
         ///   - message: The message to send.
         ///   - remotePort: The port to send the message to.
@@ -138,7 +138,7 @@ extension Mach {
             let receivedMessage = ReceiveMessage.init(rawValue: messageBuffer)
             return receivedMessage
         }
-        /// Receive a message.
+        /// Receives a message.
         /// - Parameters:
         ///   - messageType: The type of message to receive.
         ///   - localPort: The port to receive the message on.

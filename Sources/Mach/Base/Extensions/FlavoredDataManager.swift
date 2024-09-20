@@ -28,7 +28,7 @@ extension Mach {
             self.setter = setter
         }
 
-        /// Get flavored data.
+        /// Gets flavored data.
         /// - Parameters:
         ///   - flavor: The flavor of the data.
         ///   - type: The type to load the data as.
@@ -46,7 +46,7 @@ extension Mach {
                 }
             )
         }
-        /// Set flavored data.
+        /// Sets flavored data.
         /// - Parameters:
         ///   - flavor: The flavor of the data.
         ///   - value: The value to set the data to.

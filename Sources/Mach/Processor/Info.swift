@@ -8,7 +8,7 @@ extension Mach.Host.Processor {
         Info.Flavor, processor_info_t.Pointee
     >
     {
-        /// Create a new processor info manager.
+        /// Creates a new processor info manager.
         /// - Parameters:
         ///   - processor: The processor to get information about.
         ///   - host: The host that the processor is in.
@@ -35,7 +35,7 @@ extension Mach.Host.Processor {
             case temperature = 0x1000_0002
         }
 
-        /// Get a processor's info.
+        /// Gets a processor's info.
         /// - Parameters:
         ///   - flavor: The flavor of the info.
         ///   - type: The type to load the info as.

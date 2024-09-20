@@ -5,11 +5,11 @@ extension Mach.Port {
     public protocol Loggable: Mach.Port, CustomStringConvertible {
         /// The name of the port formatted for logging.
         var loggableName: String { get }
-        /// Format a message about the port for logging.
+        /// Formats a message about the port for logging.
         /// - Parameter message: The message to format.
         /// - Returns: The formatted message.
         func loggable(_ message: String) -> String
-        /// Log a message about the port.
+        /// Logs a message about the port.
         /// - Parameter message: The message to log.
         func log(_ message: String)
     }

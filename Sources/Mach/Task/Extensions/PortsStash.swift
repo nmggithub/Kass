@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach.Task {
-    /// Get the task's stashed ports.
+    /// Gets the task's stashed ports.
     /// - Throws: An error if the ports cannot be retrieved.
     /// - Returns: The stashed ports.
     public func getStashedPorts() throws -> [Mach.Port] {
@@ -17,7 +17,7 @@ extension Mach.Task {
         }
     }
 
-    /// Set the task's stashed ports.
+    /// Sets the task's stashed ports.
     /// - Parameter ports: The ports to stash.
     /// - Throws: An error if the ports cannot be set.
     public func setStashedPorts(_ ports: [Mach.Port]) throws {

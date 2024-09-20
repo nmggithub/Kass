@@ -3,7 +3,7 @@ import Foundation
 import System
 
 extension POSIXError {
-    /// Initialize a new POSIX error with a given code.
+    /// Initializes a new POSIX error with a given code.
     /// - Parameter code: The error code.
     public init(_ code: Int32) {
         guard let typedCode = POSIXError.Code(rawValue: code) else {
@@ -18,7 +18,7 @@ extension POSIXError {
 
 extension BSD {
     typealias Error = POSIXError
-    /// Execute a system call and throw an error if it fails.
+    /// Executes a system call and throw an error if it fails.
     /// - Parameter syscall: A statement that executes a syscall and returns the result.
     /// - Throws: An error if the syscall fails.
     public static func syscall(_ syscall: @autoclosure () -> Int32) throws {

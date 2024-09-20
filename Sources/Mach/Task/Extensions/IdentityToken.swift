@@ -4,14 +4,14 @@ extension Mach.Task {
     public var identityToken: IdentityToken { get throws { try IdentityToken(for: self) } }
     /// A task's identity token.
     public class IdentityToken: Mach.Port {
-        /// Get the identity token for a task.
+        /// Gets the identity token for a task.
         /// - Parameter task: The task to get the identity token for.
         public convenience init(for task: Mach.Task) throws {
             var token = mach_port_name_t()
             try Mach.call(task_create_identity_token(task.name, &token))
             self.init(named: token)
         }
-        /// Use the identity token to get the task port of a given flavor.
+        /// Uses the identity token to get the task port of a given flavor.
         /// - Parameter flavor: The flavor of the task port to get.
         /// - Returns: The task port.
         /// - Warning: You must cast the returned task port to the correct subclass.

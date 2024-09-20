@@ -21,7 +21,7 @@ extension Mach.Voucher {
         case dropExternal = 2
     }
 
-    /// Invoke a command on the voucher.
+    /// Invokes a command on the voucher.
     /// - Parameters:
     ///   - key: The key to use.
     ///   - command: The command to invoke.
@@ -37,7 +37,7 @@ extension Mach.Voucher {
         })
     }
 
-    /// Invoke a command on the voucher.
+    /// Invokes a command on the voucher.
     /// - Parameters:
     ///   - key: The key to use.
     ///   - command: The command to invoke.

@@ -7,7 +7,7 @@ extension Mach {
         /// The current thread.
         public static var current: Self { Self(named: mach_thread_self()) }
 
-        /// Create a new thread in a given task.
+        /// Creates a new thread in a given task.
         /// - Parameter task: The task in which to create the thread.
         /// - Throws: An error if the thread could not be created.
         /// - Warning: The initial execution state of the thread is undefined.

@@ -8,7 +8,7 @@ extension Mach.Thread {
         State.Flavor, thread_state_t.Pointee
     >
     {
-        /// Create a new thread state manager.
+        /// Creates a new thread state manager.
         /// - Parameter thread: The thread to get the state of.
         public convenience init(about thread: Mach.Thread) {
             self.init(
@@ -83,7 +83,7 @@ extension Mach.Thread {
             case list10_15 = 131
         }
 
-        /// Get a thread's state.
+        /// Gets a thread's state.
         /// - Parameters:
         ///   - flavor: The flavor of the state.
         ///   - type: The type to load the state as.
@@ -92,7 +92,7 @@ extension Mach.Thread {
             try super.get(flavor, as: type)
         }
 
-        /// Set a thread's state.
+        /// Sets a thread's state.
         /// - Parameters:
         ///   - flavor: The flavor of the state.
         ///   - value: The value to set the state to.
@@ -102,7 +102,7 @@ extension Mach.Thread {
         }
     }
 
-    /// Create a new thread in a given task.
+    /// Creates a new thread in a given task.
     /// - Parameters:
     ///   - task: The task in which to create the thread.
     ///   - flavor: The flavor of the initial state.

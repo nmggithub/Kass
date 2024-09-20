@@ -22,7 +22,7 @@ extension Mach.Message {
             }
             return bodyPointer
         }
-        /// Represent an existing raw body.
+        /// Represents an existing raw body.
         /// - Parameter rawValue: A pointer to the raw body.
         public init(rawValue: UnsafeMutablePointer<mach_msg_body_t>) {
             self.descriptorCount = rawValue.pointee.msgh_descriptor_count
@@ -53,7 +53,7 @@ extension Mach.Message {
             MemoryLayout<mach_msg_body_t>.size + self.descriptors.reduce(0) { $0 + $1.size }
         }
 
-        /// Create a new message body with a list of descriptors.
+        /// Creates a new message body with a list of descriptors.
         /// - Parameter descriptors: The descriptors.
         public init(descriptors: [any Mach.Message.Body.Descriptor]) {
             self.descriptorCount = mach_msg_size_t(descriptors.count)

@@ -39,7 +39,7 @@ extension Mach.Message.Body {
         public var deallocateOnSend: Bool
         /// Whether the data is volatile.
         public var isVolatile: Bool = false
-        /// Represent an existing raw out-of-line descriptor.
+        /// Represents an existing raw out-of-line descriptor.
         /// - Parameter rawValue: The raw out-of-line descriptor.
         public init(rawValue: mach_msg_ool_descriptor_t) {
             self.copyMethod = OOLDescriptorCopyOption(rawValue: rawValue.copy) ?? .unknown
@@ -48,13 +48,13 @@ extension Mach.Message.Body {
             }
             self.deallocateOnSend = rawValue.deallocate != 0
         }
-        /// Create a new out-of-line descriptor.
+        /// Creates a new out-of-line descriptor.
         public init() {
             self.copyMethod = .physical
             self.data = nil
             self.deallocateOnSend = false
         }
-        /// Create a new out-of-line descriptor with data.
+        /// Creates a new out-of-line descriptor with data.
         /// - Parameters:
         ///   - data: The data.
         ///   - copyMethod: The copy method.

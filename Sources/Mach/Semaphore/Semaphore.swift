@@ -38,19 +38,19 @@ extension Mach {
             self.policy = .unknown
             super.init(named: name)
         }
-        /// Destroy the semaphore.
+        /// Destroys the semaphore.
         /// - Throws: An error if the semaphore could not be destroyed.
         public func destroy() throws {
             try Mach.call(semaphore_destroy(semaphoreOwningTask.name, name))
         }
-        /// Signal the semaphore.
+        /// Signals the semaphore.
         /// - Parameter all: Whether to signal all threads waiting on the semaphore.
         /// - Throws: An error if the semaphore could not be signaled.
         public func signal(all: Bool = false) throws {
             try Mach.call(all ? semaphore_signal_all(name) : semaphore_signal(name))
         }
 
-        /// Signal a specific thread waiting on the semaphore.
+        /// Signals a specific thread waiting on the semaphore.
         /// - Parameter thread: The thread to signal.
         /// - Throws: An error if the thread could not be signaled.
         /// - Warning: If a null thread is specified, any thread waiting on the semaphore will be signaled.
@@ -58,7 +58,7 @@ extension Mach {
             try Mach.call(semaphore_signal_thread(name, thread.name))
         }
 
-        /// Wait for the semaphore.
+        /// Waits for the semaphore.
         /// - Parameter timeout: The timeout to wait for the semaphore.
         /// - Throws: An error if the semaphore could not be waited on.
         public func wait(timeout: mach_timespec_t? = nil) throws {
@@ -69,7 +69,7 @@ extension Mach {
             )
         }
 
-        /// Atomically wait for one semaphore and signal another.
+        /// Atomically waits for one semaphore and signals another.
         /// - Parameters:
         ///   - waitSemaphore: The semaphore to wait for.
         ///   - signalSemaphore: The semaphore to signal.
