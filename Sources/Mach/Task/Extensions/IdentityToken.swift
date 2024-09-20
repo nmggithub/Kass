@@ -11,7 +11,7 @@ extension Mach.Task {
             try Mach.call(task_create_identity_token(task.name, &token))
             self.init(named: token)
         }
-        /// Use the identity token to get the task port for a given flavor.
+        /// Use the identity token to get the task port of a given flavor.
         /// - Parameter flavor: The flavor of the task port to get.
         /// - Returns: The task port.
         /// - Warning: You must cast the returned task port to the correct subclass.
