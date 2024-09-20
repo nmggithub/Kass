@@ -46,8 +46,9 @@ extension BSD.FS.Attribute.Buffer {
         public let commonExtended: [BSD.FS.Attribute.Common.Extended: Any]
     }
     public func parse() -> ParsedAttributes {
-        var pointer = UnsafeRawPointer(data.withUnsafeBytes { $0.baseAddress! })
+        var pointer = self.bufferPointer.baseAddress!
             .advanced(by: MemoryLayout<UInt32>.size)  // Skip the length field
+            .advanced(by: MemoryLayout<attribute_set_t>.size)  // Skip the returned attributes field
 
         // Attributes are grouped by type and parsed in a specific order that is documented in the `getattrlist`
         // manpage. We use `allCases`, which returns the cases in declaration order, to ensure that we parse the
@@ -73,5 +74,17 @@ extension BSD.FS.Attribute.Buffer {
                 .map(from: &pointer)
         )
 
+    }
+}
+
+extension UnsafeRawPointer {
+    /// Parses an attribute from the pointer and advances the pointer.
+    /// - Parameters:
+    ///   - type: The type of the value.
+    /// - Returns: The parsed value.
+    mutating func parseAttribute<T>(as type: T.Type) -> T {
+        let value = self.load(as: type)
+        self += MemoryLayout<T>.size
+        return value
     }
 }

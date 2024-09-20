@@ -2,8 +2,8 @@ import Foundation
 
 extension BSD.FS.Attribute {
     public struct Buffer {
-        /// The raw buffer data.
-        public let data: Data
+        /// The buffer pointer.
+        public let bufferPointer: UnsafeRawBufferPointer
         /// The advertised length of the buffer.
         public let length: UInt32
         /// The attributes returned in the buffer.
@@ -15,8 +15,10 @@ extension BSD.FS.Attribute {
         ///   - bufferPointer: The pointer to the buffer.
         ///   - list: The attribute list that was used to get the buffer.
         init(_ bufferPointer: UnsafeRawBufferPointer, from list: List) {
-            self.data = Data(bytes: bufferPointer.baseAddress!, count: bufferPointer.count)
-            var walkingPointer = bufferPointer.baseAddress!
+            self.bufferPointer = bufferPointer
+            guard var walkingPointer = bufferPointer.baseAddress else {
+                fatalError("The buffer pointer is nil.")
+            }
             self.length = walkingPointer.load(as: UInt32.self)
             walkingPointer += MemoryLayout<UInt32>.size
             self.returnedAttributes =

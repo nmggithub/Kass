@@ -2,50 +2,38 @@ import Darwin.POSIX
 
 extension BSD.FS.Attribute.Common: BSD.FS.Attribute.Parseable {
     public func parse(from pointer: inout UnsafeRawPointer) -> Any {
-        let value: Any =
-            switch self {
-            case .name: pointer.load(as: attrreference.self)
-            case .deviceID: pointer.load(as: dev_t.self)
-            case .filesystemID: pointer.load(as: fsid_t.self)
-            case .objectType: pointer.load(as: fsobj_type_t.self)
-            case .objectTag: pointer.load(as: fsobj_tag_t.self)
-            case .objectID: pointer.load(as: fsobj_id_t.self)
-            case .objectPermanentID: pointer.load(as: fsobj_id_t.self)
-            case .parentObjectID: pointer.load(as: fsobj_id_t.self)
-            case .textEncoding: pointer.load(as: text_encoding_t.self)
-            case .creationTime: pointer.load(as: timespec.self)
-            case .modificationTime: pointer.load(as: timespec.self)
-            case .changeTime: pointer.load(as: timespec.self)
-            case .accessTime: pointer.load(as: timespec.self)
-            case .backupTime: pointer.load(as: timespec.self)
-            case .finderInfo: pointer.load(as: attrreference.self)
-            case .ownerID: pointer.load(as: uid_t.self)
-            case .groupID: pointer.load(as: gid_t.self)
-            case .accessMask: pointer.load(as: mode_t.self) & ~S_IFMT
-            case .flags: pointer.load(as: UInt32.self)
-            case .generationCount: pointer.load(as: UInt32.self)
-            case .documentID: pointer.load(as: UInt32.self)
-            case .userAccess: pointer.load(as: UInt32.self)
-            case .extendedSecurity: pointer.load(as: attrreference.self)
-            case .ownerUUID: pointer.load(as: guid_t.self)
-            case .groupUUID: pointer.load(as: guid_t.self)
-            case .fileID: pointer.load(as: UInt64.self)
-            case .parentID: pointer.load(as: UInt64.self)
-            case .fullPath: pointer.load(as: attrreference.self)
-            case .addedTime: pointer.load(as: timespec.self)
-            case .dataProtectionClass: pointer.load(as: UInt32.self)
-            case .returnedAttributes: fatalError("This should not be parsed")
-            }
-        pointer += MemoryLayout.size(ofValue: value)
-        return switch self {
-        case .name, .fullPath:
-            String(
-                data: Self.data(from: pointer.assumingMemoryBound(to: attrreference.self)),
-                encoding: .utf8
-            )!
-        case .finderInfo, .extendedSecurity:
-            Self.data(from: pointer.assumingMemoryBound(to: attrreference.self))
-        default: value
+        switch self {
+        case .name: pointer.getAttributeReference().parse(with: .string)
+        case .deviceID: pointer.parseAttribute(as: dev_t.self)
+        case .filesystemID: pointer.parseAttribute(as: fsid_t.self)
+        case .objectType: pointer.parseAttribute(as: fsobj_type_t.self)
+        case .objectTag: pointer.parseAttribute(as: fsobj_tag_t.self)
+        case .objectID: pointer.parseAttribute(as: fsobj_id_t.self)
+        case .objectPermanentID: pointer.parseAttribute(as: fsobj_id_t.self)
+        case .parentObjectID: pointer.parseAttribute(as: fsobj_id_t.self)
+        case .textEncoding: pointer.parseAttribute(as: text_encoding_t.self)
+        case .creationTime: pointer.parseAttribute(as: timespec.self)
+        case .modificationTime: pointer.parseAttribute(as: timespec.self)
+        case .changeTime: pointer.parseAttribute(as: timespec.self)
+        case .accessTime: pointer.parseAttribute(as: timespec.self)
+        case .backupTime: pointer.parseAttribute(as: timespec.self)
+        case .finderInfo: pointer.getAttributeReference()
+        case .ownerID: pointer.parseAttribute(as: uid_t.self)
+        case .groupID: pointer.parseAttribute(as: gid_t.self)
+        case .accessMask: pointer.parseAttribute(as: UInt32.self) & UInt32(~S_IFMT)
+        case .flags: pointer.parseAttribute(as: UInt32.self)
+        case .generationCount: pointer.parseAttribute(as: UInt32.self)
+        case .documentID: pointer.parseAttribute(as: UInt32.self)
+        case .userAccess: pointer.parseAttribute(as: UInt32.self)
+        case .extendedSecurity: pointer.getAttributeReference()
+        case .ownerUUID: pointer.parseAttribute(as: guid_t.self)
+        case .groupUUID: pointer.parseAttribute(as: guid_t.self)
+        case .fileID: pointer.parseAttribute(as: UInt64.self)
+        case .parentID: pointer.parseAttribute(as: UInt64.self)
+        case .fullPath: pointer.getAttributeReference().parse(with: .string)
+        case .addedTime: pointer.parseAttribute(as: timespec.self)
+        case .dataProtectionClass: pointer.parseAttribute(as: UInt32.self)
+        case .returnedAttributes: fatalError("This should not be parsed")
         }
     }
 }
