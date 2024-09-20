@@ -53,6 +53,7 @@ let modules: [Module] = [
     BasicModule.init(
         targetName: "BSDBase", path: "Sources/BSD/Base", dependencies: ["CCompat", "Linking"]
     ),
+    BSDSubModule.init(subModuleName: "FS", dependencies: ["CCompat", "Linking"]),
     BasicModule.init(
         targetName: "MachBase", path: "Sources/Mach/Base", dependencies: ["CCompat", "Linking"]
     ),
