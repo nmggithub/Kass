@@ -28,6 +28,7 @@
  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
  */
 
+import CCompat
 import Linking
 
 private let csr_check: @convention(c) (UInt32) -> Int32 = libSystem().get(symbol: "csr_check")!
@@ -67,7 +68,7 @@ extension BSD {
             get throws {
                 var flags: UInt32 = 0
                 try BSD.syscall(csr_get_active_config(&flags))
-                return Set(ConfigOption.allCases.filter { flags & $0.rawValue != 0 })
+                return Set(ConfigOption.setFromBitmap(flags))
             }
         }
     }
