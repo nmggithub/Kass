@@ -97,14 +97,27 @@ extension Mach.VM {
     ///   - address: The base address of the new VM region.
     ///   - size: The size of the new VM region.
     ///   - flags: The flags that control the allocation.
+    ///   - contiguous: Whether the memory should be physically contiguous.
     /// - Throws: An error if the operation fails.
+    /// - Warning: The call to allocate contiguous physical memory requires a host port. This function uses the task's host
+    /// port, but the process of getting the host port may fail. Errors in that process are thrown from this function.
     public static func allocate(
         task: Mach.Task = .current,
         address: inout vm_address_t, size: vm_size_t,
-        flags: Set<Mach.VM.AllocationFlag> = []
+        flags: Set<Mach.VM.AllocationFlag> = [],
+        contiguous: Bool = false
     ) throws {
-        try Mach.call(
-            vm_allocate(task.name, &address, size, flags.bitmap())
-        )
+        if contiguous {
+            let taskHost = try task.specialPorts.get(.host)
+            try Mach.call(
+                vm_allocate_cpm(
+                    taskHost.name, task.name, &address, size, flags.bitmap()
+                )
+            )
+        } else {
+            try Mach.call(
+                vm_allocate(task.name, &address, size, flags.bitmap())
+            )
+        }
     }
 }
