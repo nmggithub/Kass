@@ -48,9 +48,9 @@ private let task_read_for_pid:
         .get(symbol: "task_read_for_pid")!.cast()
 
 extension Mach.Task.ReadPort {
-    /// Get the task inspect port for a process.
+    /// Get the task read port for a process.
     /// - Parameter pid: The process ID.
-    /// - Throws: If the task inspect port cannot be retrieved.
+    /// - Throws: If the task read port cannot be retrieved.
     public convenience init(forPID pid: pid_t) throws {
         var namePort = task_read_t()
         /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
