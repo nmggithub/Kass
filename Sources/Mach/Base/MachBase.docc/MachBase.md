@@ -20,7 +20,7 @@ Portions of the code for this module are covered under license. Please view the 
 
 ### Handling errors
 
-- ``Mach/syscall``
+- ``Mach/call(_:)``
 - ``Mach/Error``
 - ``Mach/KernReturn``
 
