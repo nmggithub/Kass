@@ -1,3 +1,4 @@
+import CCompat
 import Darwin.Mach
 
 extension Mach.Port {
@@ -53,7 +54,7 @@ extension Mach.Port.Constructable {
         var generatedPortName = mach_port_name_t()
         var options = mach_port_options_t()
         options.mpl.mpl_qlimit = queueLimit
-        options.flags = flags.reduce(0) { $0 | $1.rawValue }
+        options.flags = flags.bitmap()
         try Mach.call(mach_port_construct(task.name, &options, context, &generatedPortName))
         return self.init(named: mach_port_name_t(generatedPortName))
     }

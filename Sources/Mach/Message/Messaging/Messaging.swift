@@ -1,3 +1,4 @@
+import CCompat
 import Darwin.Mach
 
 extension Mach.Message {
@@ -36,7 +37,7 @@ extension Mach {
             try Mach.call(
                 mach_msg(
                     messageBuffer,
-                    options.reduce(0, { $0 | $1.rawValue }),
+                    options.bitmap(),
                     sendSize,
                     receiveSize,
                     receivePort.name,

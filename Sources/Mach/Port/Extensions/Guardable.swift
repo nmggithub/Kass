@@ -1,3 +1,4 @@
+import CCompat
 import Darwin.Mach
 import Foundation.NSError
 
@@ -33,7 +34,7 @@ extension Mach.Port.Guardable {
     {
         try Mach.call(
             mach_port_guard_with_flags(
-                self.owningTask.name, self.name, context, flags.reduce(0) { $0 | $1.rawValue }
+                self.owningTask.name, self.name, context, flags.bitmap()
             )
         )
     }

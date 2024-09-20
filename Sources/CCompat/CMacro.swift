@@ -23,9 +23,7 @@ public struct COptionMacroSet<CMacroEnum: COptionMacroEnum>: NameableByCMacros,
     ExpressibleByArrayLiteral, RawRepresentable
 {
     /// The raw value of the set of options, as a binary integer.
-    public var rawValue: CMacroEnum.RawValue {
-        options.reduce(0) { $0 | $1.rawValue }
-    }
+    public var rawValue: CMacroEnum.RawValue { options.bitmap() }
     /// Create a new set of options from a raw value.
     /// - Parameter rawValue: The raw value.
     public init?(rawValue: CMacroEnum.RawValue) {

@@ -1,3 +1,4 @@
+import CCompat
 import Darwin.Mach
 
 extension Mach.VM {
@@ -19,7 +20,7 @@ extension Mach.VM {
             fatalError("Specify at least one access protection.")
         }
         try Mach.call(
-            vm_wire(host.name, task.name, address, size, access.reduce(0, { $0 | $1.rawValue }))
+            vm_wire(host.name, task.name, address, size, access.bitmap())
         )
     }
     /// Unwire a range of memory.
@@ -35,7 +36,7 @@ extension Mach.VM {
     ) throws {
         let access: Set<Mach.VM.Protection> = [.none]
         try Mach.call(
-            vm_wire(host.name, task.name, address, size, access.reduce(0, { $0 | $1.rawValue }))
+            vm_wire(host.name, task.name, address, size, access.bitmap())
         )
     }
 }

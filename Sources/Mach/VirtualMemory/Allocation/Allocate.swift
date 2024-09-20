@@ -65,6 +65,7 @@
  *
  */
 
+import CCompat
 import Darwin.Mach
 
 extension Mach.VM {
@@ -103,7 +104,7 @@ extension Mach.VM {
         flags: Set<Mach.VM.AllocationFlag> = []
     ) throws {
         try Mach.call(
-            vm_allocate(task.name, &address, size, flags.reduce(0, { $0 | $1.rawValue }))
+            vm_allocate(task.name, &address, size, flags.bitmap())
         )
     }
 }

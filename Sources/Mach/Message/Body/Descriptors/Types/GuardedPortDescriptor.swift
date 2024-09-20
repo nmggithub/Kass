@@ -1,3 +1,4 @@
+import CCompat
 import Darwin.Mach
 
 extension Mach.Message.Body.Descriptor {
@@ -13,7 +14,7 @@ extension Mach.Message.Body {
         public var rawValue: mach_msg_guarded_port_descriptor_t {
             mach_msg_guarded_port_descriptor_t(
                 context: self.context,
-                flags: self.guardFlags.reduce(0, { $0 | $1.rawValue }),
+                flags: self.guardFlags.bitmap(),
                 disposition: disposition?.rawValue ?? 0,
                 type: DescriptorType.guardedPort.rawValue,
                 name: self.port.name

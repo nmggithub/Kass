@@ -60,7 +60,7 @@ extension BSD {
         /// - Parameter options: The options to check.
         /// - Throws: An error if the options are not all in the active configuration.
         public static func check(_ options: Set<ConfigOption>) throws {
-            let flags = options.reduce(0) { $0 | $1.rawValue }
+            let flags = options.bitmap()
             try BSD.syscall(csr_check(flags))
         }
         /// The active configuration.

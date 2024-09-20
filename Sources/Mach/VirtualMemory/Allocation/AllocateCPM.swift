@@ -1,3 +1,4 @@
+import CCompat
 import Darwin.Mach
 
 extension Mach.VM {
@@ -16,7 +17,7 @@ extension Mach.VM {
     ) throws {
         try Mach.call(
             vm_allocate_cpm(
-                host.name, task.name, &address, size, flags.reduce(0, { $0 | $1.rawValue })
+                host.name, task.name, &address, size, flags.bitmap()
             )
         )
     }
