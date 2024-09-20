@@ -68,7 +68,7 @@ extension BSD {
             get throws {
                 var flags: UInt32 = 0
                 try BSD.syscall(csr_get_active_config(&flags))
-                return Set(ConfigOption.setFromBitmap(flags))
+                return Set(ConfigOption.set(from: flags))
             }
         }
     }
