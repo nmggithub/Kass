@@ -20,8 +20,7 @@ extension Mach.Port.Allocatable {
         right: Right, named name: mach_port_name_t? = nil, in task: Mach.Task = .current
     ) throws -> Self? {
         guard [.receive, .portSet, .deadName].contains(right) else {
-            print("Invalid right for port allocation: \(right)")
-            return nil
+            fatalError("Invalid right for port allocation: \(right)")
         }
         var generatedPortName = mach_port_name_t()
         try Mach.call(
