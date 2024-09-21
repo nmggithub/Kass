@@ -67,6 +67,60 @@ extension BSD.FS.Attribute.`Any` {
         }
     }
 
+    /// Gets an attribute for a file or directory.
+    /// - Parameters:
+    ///   - path: The path to the file or directory.
+    ///   - options: The options to use when getting the attribute.
+    /// - Throws: An error if the attribute cannot be retrieved.
+    /// - Returns: The attribute value, or `nil` if the attribute was not retrieved.
+    public func get(
+        for path: FilePath, options: Set<BSD.FS.Option> = []
+    ) throws -> Any? {
+        let attributeList = self.attributeList(options: options)
+        let buffer = try attributeList.get(of: path)
+        let parsedAttributes = buffer.parse()
+        switch self {
+        case is BSD.FS.Attribute.Common:
+            return parsedAttributes.common[self as! BSD.FS.Attribute.Common]
+        case is BSD.FS.Attribute.Volume:
+            return parsedAttributes.volume[self as! BSD.FS.Attribute.Volume]
+        case is BSD.FS.Attribute.Directory:
+            return parsedAttributes.directory[self as! BSD.FS.Attribute.Directory]
+        case is BSD.FS.Attribute.File:
+            return parsedAttributes.file[self as! BSD.FS.Attribute.File]
+        case is BSD.FS.Attribute.Common.Extended:
+            return parsedAttributes.commonExtended[self as! BSD.FS.Attribute.Common.Extended]
+        default: fatalError("Unsupported attribute type.")
+        }
+    }
+
+    /// Gets an attribute for a file or directory.
+    /// - Parameters:
+    ///   - fileDescriptor: The file descriptor for the file or directory.
+    ///   - options: The options to use when getting the attribute.
+    /// - Throws: An error if the attribute cannot be retrieved.
+    /// - Returns: The attribute value, or `nil` if the attribute was not retrieved.
+    public func get(
+        for fileDescriptor: FileDescriptor, options: Set<BSD.FS.Option> = []
+    ) throws -> Any? {
+        let attributeList = self.attributeList(options: options)
+        let buffer = try attributeList.get(of: fileDescriptor)
+        let parsedAttributes = buffer.parse()
+        switch self {
+        case is BSD.FS.Attribute.Common:
+            return parsedAttributes.common[self as! BSD.FS.Attribute.Common]
+        case is BSD.FS.Attribute.Volume:
+            return parsedAttributes.volume[self as! BSD.FS.Attribute.Volume]
+        case is BSD.FS.Attribute.Directory:
+            return parsedAttributes.directory[self as! BSD.FS.Attribute.Directory]
+        case is BSD.FS.Attribute.File:
+            return parsedAttributes.file[self as! BSD.FS.Attribute.File]
+        case is BSD.FS.Attribute.Common.Extended:
+            return parsedAttributes.commonExtended[self as! BSD.FS.Attribute.Common.Extended]
+        default: fatalError("Unsupported attribute type.")
+        }
+    }
+
     /// Sets an attribute for a file or directory.
     /// - Parameters:
     ///   - buffer: The buffer containing the attribute data.
