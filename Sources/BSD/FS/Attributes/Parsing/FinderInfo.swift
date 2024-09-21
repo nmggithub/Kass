@@ -7,6 +7,14 @@ extension BSD.FS {
         public let info: FndrFileInfo
         /// The extended file info.
         public let extendedInfo: FndrExtendedFileInfo
+        /// Creates a new Finder Info representation about a file.
+        /// - Parameters:
+        ///   - info: The file info.
+        ///   - extendedInfo: The extended file info.
+        public init(info: FndrFileInfo, extendedInfo: FndrExtendedFileInfo) {
+            self.info = info
+            self.extendedInfo = extendedInfo
+        }
     }
     /// Finder Info about a directory.
     public struct FinderDirectoryInfo {
@@ -14,6 +22,14 @@ extension BSD.FS {
         public let info: FndrDirInfo
         /// The extended directory info.
         public let extendedInfo: FndrExtendedDirInfo
+        /// Creates a new Finder Info representation about a directory.
+        /// - Parameters:
+        ///   - info: The directory info.
+        ///   - extendedInfo: The extended directory info.
+        public init(info: FndrDirInfo, extendedInfo: FndrExtendedDirInfo) {
+            self.info = info
+            self.extendedInfo = extendedInfo
+        }
     }
 }
 
