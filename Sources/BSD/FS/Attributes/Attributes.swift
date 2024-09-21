@@ -24,11 +24,14 @@ extension BSD.FS {
     /// The attribute namespace.
     public struct Attribute: Namespace {
 
+        /// Any attribute.
+        public protocol `Any`: CaseIterable, RawRepresentable where RawValue == UInt32 {}
+
         // IMPORTANT: The declaration order of these enums is important. They must be in the same order as the ones in the
         // `getattrlist` manpage. We use this order to ensure we parse the returned attributes in the correct order.
 
         /// A common attribute.
-        public enum Common: UInt32, CaseIterable {
+        public enum Common: UInt32, CaseIterable, `Any` {
             case returnedAttributes = 0x8000_0000
             case name = 0x0000_0001
             case deviceID = 0x0000_0002
@@ -61,7 +64,7 @@ extension BSD.FS {
             case fullPath = 0x0800_0000
             case addedTime = 0x1000_0000
             case dataProtectionClass = 0x2000_0000
-            public enum Extended: UInt32, CaseIterable {
+            public enum Extended: UInt32, CaseIterable, `Any` {
                 case relativePath = 0x0000_0004
                 case privateSize = 0x0000_0008
                 case linkID = 0x0000_0010
@@ -76,7 +79,7 @@ extension BSD.FS {
             }
         }
         /// A volume attribute.
-        public enum Volume: UInt32, CaseIterable {
+        public enum Volume: UInt32, CaseIterable, `Any` {
             case fileSystemType = 0x0000_0001
             case signature = 0x0000_0002
             case size = 0x0000_0004
@@ -104,7 +107,7 @@ extension BSD.FS {
             case fileSystemSubtype = 0x0020_0000
         }
         /// A directory attribute.
-        public enum Directory: UInt32, CaseIterable {
+        public enum Directory: UInt32, CaseIterable, `Any` {
             case linkCount = 0x0000_0001
             case entryCount = 0x0000_0002
             case mountStatus = 0x0000_0004
@@ -113,7 +116,7 @@ extension BSD.FS {
             case logicalSize = 0x0000_0020
         }
         /// A file attribute.
-        public enum File: UInt32, CaseIterable {
+        public enum File: UInt32, CaseIterable, `Any` {
             case linkCount = 0x0000_0001
             case logicalSize = 0x0000_0002
             case physicalSize = 0x0000_0004
@@ -133,7 +136,7 @@ extension BSD.FS {
         /// A fork attribute.
         /// - Warning: Fork attributes are deprecated. They are documented here for historical purposes.
         @available(*, deprecated)
-        public enum Fork: UInt32, CaseIterable {
+        public enum Fork: UInt32, CaseIterable, `Any` {
             case logicalSize = 0x0000_0001
             case physicalSize = 0x0000_0002
         }
