@@ -58,7 +58,7 @@ extension BSD.FS.Attribute.`Any` {
     /// - Throws: An error if the attribute cannot be set.
     public func set<DataType: BitwiseCopyable>(
         to value: consuming DataType,
-        for fileDescriptor: consuming FileDescriptor,
+        for fileDescriptor: FileDescriptor,
         options: Set<BSD.FS.Option> = []
     ) throws {
         let attributeList = self.attributeList(options: options)
