@@ -2,7 +2,7 @@ import Carbon
 
 extension BSD.FS {
     /// Finder Info about a file.
-    public struct FinderFileInfo {
+    public struct FinderFileInfo: BitwiseCopyable {
         /// The file info.
         public let info: FndrFileInfo
         /// The extended file info.
@@ -17,7 +17,7 @@ extension BSD.FS {
         }
     }
     /// Finder Info about a directory.
-    public struct FinderDirectoryInfo {
+    public struct FinderDirectoryInfo: BitwiseCopyable {
         /// The directory info.
         public let info: FndrDirInfo
         /// The extended directory info.
