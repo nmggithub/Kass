@@ -1,28 +1,23 @@
 import Darwin.Mach
 
 extension Mach.Task.InspectPort {
-    /// The task's inspect.
-    public var inspectInfo: InspectInfo { InspectInfo(about: self) }
-    /// A task's inspect.
-    public class InspectInfo: Mach.FlavoredDataManagerNoAdditionalArgs<
-        InspectInfo.Flavor, task_inspect_info_t.Pointee
-    >
-    {
-        /// Creates a task inspect info manager.
-        /// - Parameter task: The task to manage inspect info about.
-        public convenience init(about task: Mach.Task.InspectPort) {
-            self.init(
-                getter: { flavor, array, count, _ in
-                    task_inspect(task.name, flavor.rawValue, array, &count)
-                },
-                setter: { flavor, array, count, _ in
-                    fatalError("Task inspect info cannot be set.")
-                }
-            )
-        }
-        /// A flavor of task inspect.
-        public enum Flavor: task_inspect_flavor_t {
-            case basicCounts = 1
+    /// A type of task inspect info.
+    public enum Info: task_inspect_flavor_t {
+        case basicCounts = 1
+    }
+
+    /// Gets the task inspect port's info.
+    /// - Parameters:
+    ///   - info: The info to get.
+    ///   - type: The type to load the info as.
+    /// - Throws: An error if the info cannot be retrieved.
+    /// - Returns: The info.
+    public func getInfo<DataType: BitwiseCopyable>(
+        _ info: Info, as type: DataType.Type
+    ) throws -> DataType {
+        try Mach.callWithCountInOut(type: type) {
+            (array: task_inspect_info_t, count) in
+            task_inspect(self.name, info.rawValue, array, &count)
         }
     }
 }

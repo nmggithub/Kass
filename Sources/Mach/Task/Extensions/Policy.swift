@@ -1,49 +1,43 @@
 import Darwin.Mach
 
 extension Mach.Task {
-    // The task's policy.
-    public var policy: Policy { Policy(of: self) }
-    // A task's policy.
-    public class Policy: Mach.FlavoredDataManager<
-        Policy.Flavor, task_policy_t.Pointee,
-        UnsafeMutablePointer<boolean_t>?, Never?
-    >
-    {
-        /// Creates a new task policy manager.
-        /// - Parameter task: The task.
-        public convenience init(of task: Mach.Task) {
-            self.init(
-                getter: { flavor, array, count, getDefault in
-                    return task_policy_get(task.name, flavor.rawValue, array, &count, getDefault)
-                },
-                setter: { flavor, array, count, _ in
-                    task_policy_set(task.name, flavor.rawValue, array, count)
-                }
-            )
-        }
-        /// A flavor of task policy.
-        public enum Flavor: task_policy_flavor_t {
-            case category = 1
-            case suppression = 3
-            case state = 4
-            case baseQoS = 8
-            case overrideQoS = 9
-            case latencyQoS = 10
-            case throughputQoS = 11
-        }
+    /// A type of task policy.
+    public enum Policy: task_policy_flavor_t {
+        case category = 1
+        case suppression = 3
+        case state = 4
+        case baseQoS = 8
+        case overrideQoS = 9
+        case latencyQoS = 10
+        case throughputQoS = 11
+    }
 
-        /// Gets a task's policy.
-        /// - Parameters:
-        ///   - flavor: The flavor of the policy.
-        ///   - type: The type to load the policy as.
-        ///   - default: Whether to get the default value of the policy.
-        /// - Throws: An error if the policy cannot be retrieved.
-        public func get<PolicyType>(
-            _ flavor: Flavor, as type: PolicyType.Type, getDefault: Bool = false
-        ) throws -> PolicyType {
-            var get_default: boolean_t = getDefault ? 1 : 0
-            return try super.get(flavor, as: PolicyType.self, additional: &get_default)
+    /// Gets the task's policy.
+    /// - Parameters:
+    ///   - policy: The policy to get.
+    ///   - type: The type to load the policy as.
+    /// - Throws: An error if the policy cannot be retrieved.
+    /// - Returns: The policy.
+    public func getPolicy<DataType: BitwiseCopyable>(
+        _ policy: Policy, as type: DataType.Type
+    ) throws -> DataType {
+        try Mach.callWithCountInOut(type: type) {
+            (array: task_policy_t, count) in
+            task_policy_get(self.name, policy.rawValue, array, &count, nil)
         }
     }
 
+    /// Sets the task's policy.
+    /// - Parameters:
+    ///   - policy: The policy to set.
+    ///   - value: The value to set the policy to.
+    /// - Throws: An error if the policy cannot be set.
+    public func setPolicy<DataType: BitwiseCopyable>(
+        _ policy: Policy, to value: DataType
+    ) throws {
+        try Mach.callWithCountIn(value: value) {
+            (array: task_policy_t, count) in
+            task_policy_set(self.name, policy.rawValue, array, count)
+        }
+    }
 }

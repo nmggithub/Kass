@@ -1,41 +1,50 @@
 import Darwin.Mach
 
 extension Mach.Port {
-    /// The attributes of the port.
-    public var attributes: Attributes { Attributes(of: self) }
-    /// Attributes of a port.
-    public class Attributes: Mach.FlavoredDataManagerNoAdditionalArgs<
-        Attributes.Flavor, mach_port_info_t.Pointee
-    >
-    {
-        /// Creates a new port attributes manager for the port.
-        /// - Parameter port: The port to manage attributes for.
-        public convenience init(of port: Mach.Port) {
-            self.init(
-                getter: {
-                    flavor, arrayPointer, count, _ in
-                    mach_port_get_attributes(
-                        port.owningTask.name, port.name, flavor.rawValue, arrayPointer, &count
-                    )
-                },
-                setter: {
-                    flavor, arrayPointer, count, _ in
-                    mach_port_set_attributes(
-                        port.owningTask.name, port.name, flavor.rawValue, arrayPointer, count
-                    )
-                })
+    /// A port attribute.
+    public enum Attribute: mach_port_flavor_t {
+        case limits = 1
+        case receiveStatus = 2
+        case dnRequestsSize = 3
+        case tempOwner = 4
+        case importanceReceiver = 5
+        case denapReceiver = 6
+        case infoExt = 7
+        case `guard` = 8
+        case serviceThrottled = 9
+    }
+    /// Gets a port attribute.
+    /// - Parameters:
+    ///   - attribute: The attribute to get.
+    ///   - type: The type to load the attribute as.
+    /// - Throws: An error if the attribute cannot be retrieved.
+    /// - Returns: The attribute.
+    public func getAttribute<DataType: BitwiseCopyable>(
+        _ attribute: Attribute, as type: DataType.Type
+    ) throws -> DataType {
+        try Mach.callWithCountInOut(type: type) {
+            (array: mach_port_info_t, count) in
+            mach_port_get_attributes(
+                self.owningTask.name, self.name, attribute.rawValue, array, &count
+            )
         }
-        /// A flavor of port attribute.
-        public enum Flavor: mach_port_flavor_t {
-            case limits = 1
-            case receiveStatus = 2
-            case dnRequestsSize = 3
-            case tempOwner = 4
-            case importanceReceiver = 5
-            case denapReceiver = 6
-            case infoExt = 7
-            case `guard` = 8
-            case serviceThrottled = 9
+    }
+
+    /// Sets the value of a port attribute.
+    /// - Parameters:
+    ///   - attribute: The attribute to set.
+    ///   - value: The value to set the attribute to.
+    /// - Throws: An error if the attribute cannot be set.
+    public func setAttribute<DataType: BitwiseCopyable>(
+        _ attribute: Attribute, to value: DataType
+    )
+        throws
+    {
+        try Mach.callWithCountIn(value: value) {
+            (array: mach_port_info_t, count) in
+            mach_port_set_attributes(
+                self.owningTask.name, self.name, attribute.rawValue, array, count
+            )
         }
     }
 }

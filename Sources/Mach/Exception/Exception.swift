@@ -13,9 +13,9 @@ extension Mach {
             ofType exceptionType: exception_type_t,
             code: Int
         ) throws {
-            try Mach.callWithCountIn(arrayType: exception_data_t.self, data: Int.self) {
-                code, count in
-                exception_raise(self.name, thread.name, task.name, exceptionType, code, count)
+            try Mach.callWithCountIn(value: code) {
+                rawCode, count in
+                exception_raise(self.name, thread.name, task.name, exceptionType, rawCode, count)
             }
         }
     }

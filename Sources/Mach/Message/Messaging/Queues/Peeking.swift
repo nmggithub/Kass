@@ -22,9 +22,8 @@ extension Mach.Message.Server {
     ) throws -> PeekedMessage {
         var messageSize = mach_msg_size_t(0)
         var messageID = mach_msg_id_t(0)
-        let trailer = try Mach.callWithCountInOut(
-            arrayType: mach_msg_trailer_info_t.self, dataType: mach_msg_max_trailer_t.self
-        ) { trailerInfo, count in
+        let trailer = try Mach.callWithCountOut(type: mach_msg_max_trailer_t.self) {
+            trailerInfo, count in
             mach_port_peek(
                 self.owningTask.name,
                 self.name,
