@@ -30,7 +30,7 @@ extension Mach.Port {
         ///   - flags: The flags to use when constructing the port.
         ///   - context: The context to associate with the port.
         ///   - task: The task to construct the port in.
-        static func construct(
+        init(
             queueLimit: mach_port_msgcount_t, flags: Set<Flag>,
             context: mach_port_context_t, in task: Mach.Task
         ) throws
@@ -46,17 +46,17 @@ extension Mach.Port {
 extension Mach.Port.Constructable {
     /// - Important: The `context` parameter is only used to guard the port (and only if the
     /// ``ConstructFlag/contextAsGuard`` flag is passed).
-    public static func construct(
+    public init(
         queueLimit: mach_port_msgcount_t, flags: Set<Flag>,
         context: mach_port_context_t = mach_port_context_t(),
         in task: Mach.Task = .current
-    ) throws -> Self? {
+    ) throws {
         var generatedPortName = mach_port_name_t()
         var options = mach_port_options_t()
         options.mpl.mpl_qlimit = queueLimit
         options.flags = flags.bitmap()
         try Mach.call(mach_port_construct(task.name, &options, context, &generatedPortName))
-        return self.init(named: mach_port_name_t(generatedPortName))
+        self.init(named: mach_port_name_t(generatedPortName))
     }
     public func destruct(
         guard: mach_port_context_t = mach_port_context_t(), sendRightDelta: mach_port_delta_t
