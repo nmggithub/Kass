@@ -74,8 +74,7 @@ extension BSD.FS.Attribute.`Any` {
     ///   - options: The options to use when setting the attribute.
     /// - Throws: An error if the attribute cannot be set.
     public func set(
-        to buffer: UnsafeMutableRawBufferPointer,
-        for path: FilePath,
+        to buffer: UnsafeMutableRawBufferPointer, for path: FilePath,
         options: Set<BSD.FS.Option> = []
     ) throws {
         let attributeList = self.attributeList(options: options)
@@ -98,8 +97,7 @@ extension BSD.FS.Attribute.`Any` {
     ///   - fileDescriptor: The file descriptor for the file or directory.
     /// - Throws: An error if the attribute cannot be set.
     public func set(
-        to buffer: UnsafeMutableRawBufferPointer,
-        for fileDescriptor: FileDescriptor,
+        to buffer: UnsafeMutableRawBufferPointer, for fileDescriptor: FileDescriptor,
         options: Set<BSD.FS.Option> = []
     ) throws {
         let attributeList = self.attributeList(options: options)
@@ -124,8 +122,7 @@ extension BSD.FS.Attribute.`Any` {
     ///   - options: The options to use when setting the attribute.
     /// - Throws: An error if the attribute cannot be set.
     public func set<DataType: BitwiseCopyable>(
-        to value: consuming DataType,
-        for path: FilePath,
+        to value: consuming DataType, for path: FilePath,
         options: Set<BSD.FS.Option> = []
     ) throws {
         let buffer = UnsafeMutableRawBufferPointer.attributeData(from: &value)
@@ -138,8 +135,7 @@ extension BSD.FS.Attribute.`Any` {
     ///   - fileDescriptor: The file descriptor for the file or directory.
     /// - Throws: An error if the attribute cannot be set.
     public func set<DataType: BitwiseCopyable>(
-        to value: consuming DataType,
-        for fileDescriptor: FileDescriptor,
+        to value: consuming DataType, for fileDescriptor: FileDescriptor,
         options: Set<BSD.FS.Option> = []
     ) throws {
         let buffer = UnsafeMutableRawBufferPointer.attributeData(from: &value)
@@ -153,9 +149,10 @@ extension BSD.FS.Attribute.`Any` {
     ///   - path: The path to the file or directory.
     ///   - options: The options to use when setting the attribute.
     /// - Throws: An error if the attribute cannot be set.
-    public func setReference(to data: Data, for path: FilePath, options: Set<BSD.FS.Option> = [])
-        throws
-    {
+    public func setReference(
+        to data: Data, for path: FilePath,
+        options: Set<BSD.FS.Option> = []
+    ) throws {
         let buffer = UnsafeMutableRawBufferPointer.attributeReferenceData(from: data)
         defer { buffer.deallocate() }
         try self.set(to: buffer, for: path, options: options)
@@ -168,11 +165,40 @@ extension BSD.FS.Attribute.`Any` {
     ///   - options: The options to use when setting the attribute.
     /// - Throws: An error if the attribute cannot be set.
     public func setReference(
-        to data: Data, for fileDescriptor: FileDescriptor, options: Set<BSD.FS.Option> = []
+        to data: Data, for fileDescriptor: FileDescriptor,
+        options: Set<BSD.FS.Option> = []
     ) throws {
         let buffer = UnsafeMutableRawBufferPointer.attributeReferenceData(from: data)
         defer { buffer.deallocate() }
         try self.set(to: buffer, for: fileDescriptor, options: options)
+    }
+
+    /// Sets an attribute for a file or directory using a reference.
+    /// - Parameters:
+    ///   - value: The value to set the attribute reference to.
+    ///   - path: The path to the file or directory.
+    ///   - options: The options to use when setting the attribute.
+    /// - Throws: An error if the attribute cannot be set.
+    public func setReference<DataType: BitwiseCopyable>(
+        to value: DataType, for path: FilePath,
+        options: Set<BSD.FS.Option> = []
+    ) throws {
+        let data = withUnsafeBytes(of: value) { valueBuffer in Data(valueBuffer) }
+        try self.setReference(to: data, for: path, options: options)
+    }
+
+    /// Sets an attribute for a file or directory using a reference.
+    /// - Parameters:
+    ///   - value: The value to set the attribute reference to.
+    ///   - fileDescriptor: The file descriptor for the file or directory.
+    ///   - options: The options to use when setting the attribute.
+    /// - Throws: An error if the attribute cannot be set.
+    public func setReference<DataType: BitwiseCopyable>(
+        to value: DataType, for fileDescriptor: FileDescriptor,
+        options: Set<BSD.FS.Option> = []
+    ) throws {
+        let data = withUnsafeBytes(of: value) { valueBuffer in Data(valueBuffer) }
+        try self.setReference(to: data, for: fileDescriptor, options: options)
     }
 
 }
