@@ -42,6 +42,18 @@ extension UnsafeMutableRawBufferPointer {
     }
 }
 
+extension BSD.FS.Attribute {
+    /// Any attribute.
+    public protocol `Any`: CaseIterable, RawRepresentable where RawValue == UInt32 {}
+}
+
+extension BSD.FS.Attribute.Common: BSD.FS.Attribute.`Any` {}
+extension BSD.FS.Attribute.Volume: BSD.FS.Attribute.`Any` {}
+extension BSD.FS.Attribute.Directory: BSD.FS.Attribute.`Any` {}
+extension BSD.FS.Attribute.File: BSD.FS.Attribute.`Any` {}
+extension BSD.FS.Attribute.Fork: BSD.FS.Attribute.`Any` {}
+extension BSD.FS.Attribute.Common.Extended: BSD.FS.Attribute.`Any` {}
+
 extension BSD.FS.Attribute.`Any` {
     /// Creates an attribute list for setting the attribute.
     /// - Parameter options: The options to use when setting the attribute.
@@ -77,7 +89,7 @@ extension BSD.FS.Attribute.`Any` {
         for path: FilePath, options: Set<BSD.FS.Option> = []
     ) throws -> Any? {
         let attributeList = self.attributeList(options: options)
-        let buffer = try attributeList.get(of: path)
+        let buffer = try attributeList.get(for: path)
         let parsedAttributes = buffer.parse()
         switch self {
         case is BSD.FS.Attribute.Common:
@@ -104,7 +116,7 @@ extension BSD.FS.Attribute.`Any` {
         for fileDescriptor: FileDescriptor, options: Set<BSD.FS.Option> = []
     ) throws -> Any? {
         let attributeList = self.attributeList(options: options)
-        let buffer = try attributeList.get(of: fileDescriptor)
+        let buffer = try attributeList.get(for: fileDescriptor)
         let parsedAttributes = buffer.parse()
         switch self {
         case is BSD.FS.Attribute.Common:
