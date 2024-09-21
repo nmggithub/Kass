@@ -1,5 +1,46 @@
 import Darwin.POSIX
+import Foundation
 import System
+
+extension UnsafeMutableRawBufferPointer {
+    /// Creates an attribute data buffer from a value.
+    /// - Parameter value: The value to create the buffer from.
+    /// - Returns: The attribute data buffer.
+    fileprivate static func attributeData<DataType: BitwiseCopyable>(from value: inout DataType)
+        -> Self
+    {
+        let buffer = self.init(
+            start: UnsafeMutableRawPointer.allocate(
+                byteCount: MemoryLayout<DataType>.size,
+                alignment: MemoryLayout<DataType>.alignment
+            ),
+            count: MemoryLayout<DataType>.size
+        )
+        buffer.baseAddress!.copyMemory(from: &value, byteCount: MemoryLayout<DataType>.size)
+        return buffer
+    }
+    /// Creates an attribute reference data buffer from a value.
+    /// - Parameter value: The value to create the buffer from.
+    /// - Returns: The attribute reference data buffer.
+    fileprivate static func attributeReferenceData(from data: Data) -> Self {
+        let buffer = self.init(
+            start: UnsafeMutableRawPointer.allocate(
+                byteCount: MemoryLayout<attrreference>.size + data.count,
+                alignment: 4
+            ),
+            count: data.count
+        )
+        var walkingPointer = buffer.baseAddress!
+        let rawReferencePointer = walkingPointer.bindMemory(to: attrreference.self, capacity: 1)
+        rawReferencePointer.pointee.attr_dataoffset = Int32(MemoryLayout<attrreference>.size)  // the data will be stored directly after the reference
+        rawReferencePointer.pointee.attr_length = UInt32(data.count)
+        walkingPointer += MemoryLayout<attrreference>.size
+        data.withUnsafeBytes { (dataPointer: UnsafeRawBufferPointer) in
+            walkingPointer.copyMemory(from: dataPointer.baseAddress!, byteCount: data.count)
+        }
+        return buffer
+    }
+}
 
 extension BSD.FS.Attribute.`Any` {
     /// Creates an attribute list for setting the attribute.
@@ -26,14 +67,14 @@ extension BSD.FS.Attribute.`Any` {
         }
     }
 
-    /// Sets a common attribute for a file or directory.
+    /// Sets an attribute for a file or directory.
     /// - Parameters:
-    ///   - value: The value to set the attribute to.
+    ///   - buffer: The buffer containing the attribute data.
     ///   - path: The path to the file or directory.
     ///   - options: The options to use when setting the attribute.
     /// - Throws: An error if the attribute cannot be set.
-    public func set<DataType: BitwiseCopyable>(
-        to value: consuming DataType,
+    public func set(
+        to buffer: UnsafeMutableRawBufferPointer,
         for path: FilePath,
         options: Set<BSD.FS.Option> = []
     ) throws {
@@ -45,19 +86,19 @@ extension BSD.FS.Attribute.`Any` {
             setattrlist(
                 path.description.cString(using: .utf8),
                 attributeListPointer,
-                &value,
-                MemoryLayout<DataType>.size,
+                buffer.baseAddress!,
+                buffer.count,
                 attributeList.options.bitmap()
             )
         )
     }
     /// Sets an attribute for a file or directory.
     /// - Parameters:
-    ///   - value: The value to set the attribute to.
+    ///   - buffer: The buffer containing the attribute data.
     ///   - fileDescriptor: The file descriptor for the file or directory.
     /// - Throws: An error if the attribute cannot be set.
-    public func set<DataType: BitwiseCopyable>(
-        to value: consuming DataType,
+    public func set(
+        to buffer: UnsafeMutableRawBufferPointer,
         for fileDescriptor: FileDescriptor,
         options: Set<BSD.FS.Option> = []
     ) throws {
@@ -69,10 +110,69 @@ extension BSD.FS.Attribute.`Any` {
             fsetattrlist(
                 fileDescriptor.rawValue,
                 attributeListPointer,
-                &value,
-                MemoryLayout<DataType>.size,
+                buffer.baseAddress!,
+                buffer.count,
                 attributeList.options.bitmap()
             )
         )
     }
+
+    /// Sets an attribute for a file or directory.
+    /// - Parameters:
+    ///   - value: The value to set the attribute to.
+    ///   - path: The path to the file or directory.
+    ///   - options: The options to use when setting the attribute.
+    /// - Throws: An error if the attribute cannot be set.
+    public func set<DataType: BitwiseCopyable>(
+        to value: consuming DataType,
+        for path: FilePath,
+        options: Set<BSD.FS.Option> = []
+    ) throws {
+        let buffer = UnsafeMutableRawBufferPointer.attributeData(from: &value)
+        defer { buffer.deallocate() }
+        try self.set(to: buffer, for: path, options: options)
+    }
+    /// Sets an attribute for a file or directory.
+    /// - Parameters:
+    ///   - value: The value to set the attribute to.
+    ///   - fileDescriptor: The file descriptor for the file or directory.
+    /// - Throws: An error if the attribute cannot be set.
+    public func set<DataType: BitwiseCopyable>(
+        to value: consuming DataType,
+        for fileDescriptor: FileDescriptor,
+        options: Set<BSD.FS.Option> = []
+    ) throws {
+        let buffer = UnsafeMutableRawBufferPointer.attributeData(from: &value)
+        defer { buffer.deallocate() }
+        try self.set(to: buffer, for: fileDescriptor, options: options)
+    }
+
+    /// Sets an attribute for a file or directory using a reference.
+    /// - Parameters:
+    ///   - data: The data to set the attribute reference to.
+    ///   - path: The path to the file or directory.
+    ///   - options: The options to use when setting the attribute.
+    /// - Throws: An error if the attribute cannot be set.
+    public func setReference(to data: Data, for path: FilePath, options: Set<BSD.FS.Option> = [])
+        throws
+    {
+        let buffer = UnsafeMutableRawBufferPointer.attributeReferenceData(from: data)
+        defer { buffer.deallocate() }
+        try self.set(to: buffer, for: path, options: options)
+    }
+
+    /// Sets an attribute for a file or directory using a reference.
+    /// - Parameters:
+    ///   - data: The data to set the attribute reference to.
+    ///   - fileDescriptor: The file descriptor for the file or directory.
+    ///   - options: The options to use when setting the attribute.
+    /// - Throws: An error if the attribute cannot be set.
+    public func setReference(
+        to data: Data, for fileDescriptor: FileDescriptor, options: Set<BSD.FS.Option> = []
+    ) throws {
+        let buffer = UnsafeMutableRawBufferPointer.attributeReferenceData(from: data)
+        defer { buffer.deallocate() }
+        try self.set(to: buffer, for: fileDescriptor, options: options)
+    }
+
 }
