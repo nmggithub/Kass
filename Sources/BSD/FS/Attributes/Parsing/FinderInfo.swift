@@ -45,11 +45,11 @@ extension BSD.FS.Attribute.Reference.Parser {
             else {
                 fatalError("Invalid Finder Info data size")
             }
-            let fileInfo = data.withUnsafeBytes { $0.load(as: FndrDirInfo.self) }
-            let folderInfo = data.advanced(by: MemoryLayout<FndrDirInfo>.size).withUnsafeBytes {
+            let info = data.withUnsafeBytes { $0.load(as: FndrDirInfo.self) }
+            let extendedInfo = data.advanced(by: MemoryLayout<FndrDirInfo>.size).withUnsafeBytes {
                 $0.load(as: FndrExtendedDirInfo.self)
             }
-            return BSD.FS.FinderDirectoryInfo(fileInfo: fileInfo, folderInfo: folderInfo)
+            return BSD.FS.FinderDirectoryInfo(info: info, extendedInfo: extendedInfo)
         }
     }
 }
