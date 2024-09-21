@@ -13,8 +13,8 @@ extension MachError {
 }
 
 extension Mach {
-    /// Executes a call and throw an error if it fails.
-    /// - Parameter call: A statement that executes a call and returns a kernel return code.
+    /// Calls the kernel and throws an error if the call fails.
+    /// - Parameter call: A statement that executes a kernel call and returns the kernel return code.
     /// - Throws: An error if the call fails.
     public static func call(_ call: @autoclosure () -> kern_return_t) throws {
         let kr = call()
