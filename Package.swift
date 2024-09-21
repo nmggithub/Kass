@@ -78,7 +78,7 @@ let modules: [Module] = [
     ),
     MachSubModule.init(
         subModuleName: "Task",
-        dependencies: ["MachPort", "MachThread", "CCompat", "Linking"]
+        dependencies: ["MachPort", "MachThread", "BSDBase", "BSDFS", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Exception",
