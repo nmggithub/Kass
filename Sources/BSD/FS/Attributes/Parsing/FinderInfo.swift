@@ -1,13 +1,19 @@
 import Carbon
 
 extension BSD.FS {
+    /// Finder Info about a file.
     public struct FinderFileInfo {
+        /// The file info.
         public let info: FndrFileInfo
+        /// The extended file info.
         public let extendedInfo: FndrExtendedFileInfo
     }
+    /// Finder Info about a directory.
     public struct FinderDirectoryInfo {
-        public let fileInfo: FndrDirInfo
-        public let folderInfo: FndrExtendedDirInfo
+        /// The directory info.
+        public let info: FndrDirInfo
+        /// The extended directory info.
+        public let extendedInfo: FndrExtendedDirInfo
     }
 }
 
