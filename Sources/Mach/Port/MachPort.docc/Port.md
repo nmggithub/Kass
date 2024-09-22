@@ -7,15 +7,21 @@
 - ``name``
 - ``owningTask``
 - ``rights``
+- ``Right``
 
 ### Representing existing names
 
 - ``init(named:)``
 - ``init(named:in:)``
 
-### Creating new ports
+### Allocating new ports
 
-- <doc:Extending-ports>
+- ``init(right:named:in:)``
+
+### Constructing new ports
+
+- ``init(queueLimit:flags:context:in:)``
+- ``ConstructFlag``
 
 ### User references
 
@@ -35,8 +41,27 @@
 - ``getAttribute(_:as:)``
 - ``setAttribute(_:to:)``
 
+### Guarding ports
+
+- ``guard(_:flags:)``
+- ``unguard(_:)``
+- ``GuardFlag``
+- ``guarded``
+
 ### Using port sets
 
 - ``MachBase/Mach/PortSet``
 - ``insert(into:)``
 - ``move(to:)``
+
+### Logging
+
+- ``loggableName``
+- ``log(_:)``
+- ``loggable(_:)``
+
+### Tearing down ports
+
+- ``deallocate()``
+- ``destroy()``
+- ``destruct(guard:sendRightDelta:)``

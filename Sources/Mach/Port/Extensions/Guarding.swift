@@ -8,27 +8,11 @@ extension Mach.Port {
         case strict = 1
         case immovableReceive = 2
     }
-    /// A port that can be guarded.
-    public protocol Guardable: Mach.Port {
-        /// Guards the port with the specified context and flags.
-        /// - Parameters:
-        ///   - context: The context to guard the port with.
-        ///   - flags: The flags to guard the port with.
-        /// - Throws: An error if the operation fails.
-        func `guard`(_ context: mach_port_context_t, flags: Set<GuardFlag>) throws
-        /// Unguards the port with the specified context.
-        /// - Parameter context: The context to unguard the port with.
-        /// - Throws: An error if the operation fails.
-        func unguard(_ context: mach_port_context_t) throws
-    }
-    /// A port that can be guarded and checked if it is guarded.
-    public protocol GuardableExperimental: Mach.Port, Mach.Port.Guardable, Mach.Port.Loggable {
-        /// Whether the port is guarded.
-        var guarded: Bool { get }
-    }
-}
-
-extension Mach.Port.Guardable {
+    /// Guards the port with the specified context and flags.
+    /// - Parameters:
+    ///   - context: The context to guard the port with.
+    ///   - flags: The flags to guard the port with.
+    /// - Throws: An error if the operation fails.
     public func `guard`(_ context: mach_port_context_t, flags: Set<Mach.Port.GuardFlag> = [])
         throws
     {
@@ -38,12 +22,14 @@ extension Mach.Port.Guardable {
             )
         )
     }
+    /// Unguards the port with the specified context.
+    /// - Parameter context: The context to unguard the port with.
+    /// - Throws: An error if the operation fails.
     public func unguard(_ context: mach_port_context_t) throws {
         try Mach.call(mach_port_unguard(self.owningTask.name, self.name, context))
     }
-}
 
-extension Mach.Port.GuardableExperimental {
+    /// Whether the port is guarded. ***Experimental.***
     /// - Warning: This property being `false` doesn't mean that the port was determined *to not
     /// be guarded*. Instead, it means that it was *not* determined *to be guarded*. However, it
     /// being `true` means that the port was determined *to be guarded*.

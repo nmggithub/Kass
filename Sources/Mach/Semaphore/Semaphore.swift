@@ -40,7 +40,7 @@ extension Mach {
         }
         /// Destroys the semaphore.
         /// - Throws: An error if the semaphore could not be destroyed.
-        public func destroy() throws {
+        public func destroySemaphore() throws {
             try Mach.call(semaphore_destroy(semaphoreOwningTask.name, name))
         }
         /// Signals the semaphore.

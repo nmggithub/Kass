@@ -1,21 +1,14 @@
 import Darwin.Mach
 
 extension Mach.Port {
-    /// A port that can be allocated.
-    public protocol Allocatable: Mach.Port, Mach.Port.Deallocatable {
-        /// Allocates a new port with a given right in the specified task with an optional name.
-        /// - Parameters:
-        ///   - right: The right to allocate.
-        ///   - name: The name to assign to the port.
-        ///   - task: The task to allocate the port in.
-        init(right: Right, named name: mach_port_name_t?, in task: Mach.Task) throws
-    }
-}
-
-extension Mach.Port.Allocatable {
+    /// Allocates a new port with a given right in the specified task with an optional name.
+    /// - Parameters:
+    ///   - right: The right to allocate.
+    ///   - name: The name to assign to the port.
+    ///   - task: The task to allocate the port in.
     /// - Important: Only the ``Right/receive``, ``Right/portSet``, and ``Right/deadName`` rights
     /// are valid for port allocation.
-    public init(
+    public convenience init(
         right: Right, named name: mach_port_name_t? = nil, in task: Mach.Task = .current
     ) throws {
         var generatedPortName = mach_port_name_t()

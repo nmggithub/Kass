@@ -10,7 +10,7 @@ extension Mach.Task {
     }
 
     /// A task (port) with a flavor.
-    public protocol Flavored: Mach.Task, Mach.Port.Loggable {
+    public protocol Flavored: Mach.Task {
         var flavor: Mach.Task.Flavor { get }
     }
     /// A task's control port.

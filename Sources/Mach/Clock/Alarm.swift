@@ -3,7 +3,7 @@ import Foundation
 
 extension Mach.Clock {
     /// An alarm on a clock.
-    public class Alarm: Mach.Port, Mach.Port.Allocatable {
+    public class Alarm: Mach.Port {
         /// Sets up an alarm on a given clock.
         /// - Parameters:
         ///   - name: The name to assign to the alarm port.

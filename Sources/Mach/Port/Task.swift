@@ -2,7 +2,7 @@
 
 extension Mach {
     /// A task.
-    open class Task: Mach.Port, Mach.Port.Deallocatable {
+    open class Task: Mach.Port {
         /// The current task.
         public static var current: Self { Self(named: mach_task_self_) }
 

@@ -21,33 +21,16 @@ extension Mach.Port {
         case provisionalReplyPort = 0x4000
         case provisionalIdProtOutput = 0x8000
     }
-    /// A port that can be constructed.
-    public protocol Constructable: Mach.Port, Mach.Port.Allocatable {
-        typealias Flag = Mach.Port.ConstructFlag
-        /// Constructs a new port with the given options.
-        /// - Parameters:
-        ///   - queueLimit: The maximum number of messages that can be queued.
-        ///   - flags: The flags to use when constructing the port.
-        ///   - context: The context to associate with the port.
-        ///   - task: The task to construct the port in.
-        init(
-            queueLimit: mach_port_msgcount_t, flags: Set<Flag>,
-            context: mach_port_context_t, in task: Mach.Task
-        ) throws
-        /// Destructs the port.
-        /// - Parameters:
-        ///   - sendRightDelta: The delta to apply to the send right user ref count.
-        ///   - guard: The context to unguard the port with.
-        /// - Throws: If the port cannot be destructed.
-        func destruct(sendRightDelta: mach_port_delta_t, guard: mach_port_context_t) throws
-    }
-}
-
-extension Mach.Port.Constructable {
+    /// Constructs a new port with the given options.
+    /// - Parameters:
+    ///   - queueLimit: The maximum number of messages that can be queued.
+    ///   - flags: The flags to use when constructing the port.
+    ///   - context: The context to associate with the port.
+    ///   - task: The task to construct the port in.
     /// - Important: The `context` parameter is only used to guard the port (and only if the
     /// ``ConstructFlag/contextAsGuard`` flag is passed).
-    public init(
-        queueLimit: mach_port_msgcount_t, flags: Set<Flag>,
+    public convenience init(
+        queueLimit: mach_port_msgcount_t, flags: Set<ConstructFlag>,
         context: mach_port_context_t = mach_port_context_t(),
         in task: Mach.Task = .current
     ) throws {
@@ -58,6 +41,12 @@ extension Mach.Port.Constructable {
         try Mach.call(mach_port_construct(task.name, &options, context, &generatedPortName))
         self.init(named: mach_port_name_t(generatedPortName))
     }
+
+    /// Destructs the port.
+    /// - Parameters:
+    ///   - sendRightDelta: The delta to apply to the send right user ref count.
+    ///   - guard: The context to unguard the port with.
+    /// - Throws: If the port cannot be destructed.
     public func destruct(
         guard: mach_port_context_t = mach_port_context_t(), sendRightDelta: mach_port_delta_t
     ) throws {
