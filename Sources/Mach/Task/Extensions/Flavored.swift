@@ -13,8 +13,11 @@ extension Mach.Task {
     public protocol Flavored: Mach.Task {
         var flavor: Mach.Task.Flavor { get }
     }
+}
+
+extension Mach {
     /// A task's control port.
-    public class ControlPort: Mach.Task, Flavored {
+    public class TaskControl: Mach.Task, Mach.Task.Flavored {
         public let flavor: Mach.Task.Flavor = .control
         /// A nil task control port.
         override public class var Nil: Self {
@@ -22,7 +25,7 @@ extension Mach.Task {
         }
     }
     /// A task's read port.
-    public class ReadPort: Mach.Task, Flavored {
+    public class TaskRead: Mach.Task, Mach.Task.Flavored {
         public let flavor: Mach.Task.Flavor = .read
         /// A nil task read port.
         override public class var Nil: Self {
@@ -30,7 +33,7 @@ extension Mach.Task {
         }
     }
     /// A task's inspect port.
-    public class InspectPort: Mach.Task, Flavored {
+    public class TaskInspect: Mach.Task, Mach.Task.Flavored {
         public let flavor: Mach.Task.Flavor = .inspect
         /// A nil task inspect port.
         override public class var Nil: Self {
@@ -38,7 +41,7 @@ extension Mach.Task {
         }
     }
     /// A task's name port.
-    public class NamePort: Mach.Task, Flavored {
+    public class TaskName: Mach.Task, Mach.Task.Flavored {
         public let flavor: Mach.Task.Flavor = .name
         /// A nil task name port.
         override public class var Nil: Self {

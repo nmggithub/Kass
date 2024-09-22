@@ -1,9 +1,8 @@
 import Darwin.Mach
 
-extension Mach.Task {
-    public var identityToken: IdentityToken { get throws { try IdentityToken(for: self) } }
+extension Mach {
     /// A task's identity token.
-    public class IdentityToken: Mach.Port {
+    public class TaskIdentityToken: Mach.Port {
         /// Gets the identity token for a task.
         /// - Parameter task: The task to get the identity token for.
         public convenience init(for task: Mach.Task) throws {
@@ -15,38 +14,45 @@ extension Mach.Task {
         /// - Parameter flavor: The flavor of the task port to get.
         /// - Returns: The task port.
         /// - Warning: You must cast the returned task port to the correct subclass.
-        public func taskPort(_ flavor: Flavor) throws -> Mach.Task & Flavored {
+        public func taskPort(_ flavor: Mach.Task.Flavor) throws -> Mach.Task & Mach.Task.Flavored {
             var taskPortName = mach_port_name_t()
             try Mach.call(
                 task_identity_token_get_task_port(self.name, flavor.rawValue, &taskPortName)
             )
             switch flavor {
             case .control:
-                return Mach.Task.ControlPort(named: taskPortName)
+                return Mach.TaskControl(named: taskPortName)
             case .read:
-                return Mach.Task.ReadPort(named: taskPortName)
+                return Mach.TaskRead(named: taskPortName)
             case .inspect:
-                return Mach.Task.InspectPort(named: taskPortName)
+                return Mach.TaskInspect(named: taskPortName)
             case .name:
-                return Mach.Task.NamePort(named: taskPortName)
+                return Mach.TaskName(named: taskPortName)
             }
         }
 
         /// The control port of the task the identity token is for.
-        public var taskControlPort: ControlPort {
-            get throws { try taskPort(.control) as! ControlPort }
+        public var taskControlPort: Mach.TaskControl {
+            get throws { try taskPort(.control) as! Mach.TaskControl }
         }
         /// The read port of the task the identity token is for.
-        public var taskReadPort: ReadPort {
-            get throws { try taskPort(.read) as! ReadPort }
+        public var taskReadPort: Mach.TaskRead {
+            get throws { try taskPort(.read) as! Mach.TaskRead }
         }
         /// The inspect port of the task the identity token is for.
-        public var taskInspectPort: InspectPort {
-            get throws { try taskPort(.inspect) as! InspectPort }
+        public var taskInspectPort: Mach.TaskInspect {
+            get throws { try taskPort(.inspect) as! Mach.TaskInspect }
         }
         /// The name port of the task the identity token is for.
-        public var taskNamePort: NamePort {
-            get throws { try taskPort(.name) as! NamePort }
+        public var taskNamePort: Mach.TaskName {
+            get throws { try taskPort(.name) as! Mach.TaskName }
         }
+    }
+}
+
+extension Mach.Task {
+    /// The task's identity token.
+    public var identityToken: Mach.TaskIdentityToken {
+        get throws { try Mach.TaskIdentityToken(for: self) }
     }
 }

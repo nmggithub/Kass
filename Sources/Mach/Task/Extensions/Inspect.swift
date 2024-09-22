@@ -1,6 +1,6 @@
 import Darwin.Mach
 
-extension Mach.Task.InspectPort {
+extension Mach.TaskInspect {
     /// A type of task inspect info.
     public enum Info: task_inspect_flavor_t {
         case basicCounts = 1

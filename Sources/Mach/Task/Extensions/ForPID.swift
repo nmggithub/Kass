@@ -2,7 +2,7 @@ import BSDBase
 import Darwin.Mach
 import Linking
 
-extension Mach.Task.ControlPort {
+extension Mach.TaskControl {
     /// Gets the task control port for a process.
     /// - Parameter pid: The process ID.
     /// - Throws: If the task control port cannot be retrieved.
@@ -13,7 +13,7 @@ extension Mach.Task.ControlPort {
         self.init(named: controlPort)
     }
 }
-extension Mach.Task.NamePort {
+extension Mach.TaskName {
     /// Gets the task name port for a process.
     /// - Parameter pid: The process ID.
     /// - Throws: If the task name port cannot be retrieved.
@@ -30,7 +30,7 @@ private let task_inspect_for_pid:
         libSystem()
         .get(symbol: "task_inspect_for_pid")!.cast()
 
-extension Mach.Task.InspectPort {
+extension Mach.TaskInspect {
     /// Gets the task inspect port for a process.
     /// - Parameter pid: The process ID.
     /// - Throws: If the task inspect port cannot be retrieved.
@@ -47,7 +47,7 @@ private let task_read_for_pid:
         libSystem()
         .get(symbol: "task_read_for_pid")!.cast()
 
-extension Mach.Task.ReadPort {
+extension Mach.TaskRead {
     /// Gets the task read port for a process.
     /// - Parameter pid: The process ID.
     /// - Throws: If the task read port cannot be retrieved.
