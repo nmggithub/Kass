@@ -2,7 +2,7 @@
 @_exported import MachBase
 
 extension Mach {
-    /// A port (name) in a task's namespace.
+    /// A port name in a task's namespace.
     open class Port: Equatable, Hashable {
         /// Hashes the port.
         /// - Parameter hasher: The hasher to use.

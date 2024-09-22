@@ -1,10 +1,7 @@
 @preconcurrency import Darwin.Mach
 
-/// A task (port).
-typealias MachTask = Mach.Task
-
 extension Mach {
-    /// A task (port).
+    /// A task.
     open class Task: Mach.Port, Mach.Port.Deallocatable {
         /// The current task.
         public static var current: Self { Self(named: mach_task_self_) }
