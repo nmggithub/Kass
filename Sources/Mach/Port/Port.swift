@@ -54,12 +54,8 @@ extension Mach {
         public var owningTask: Mach.Task {
             // This parameter is computed to avoid an infinite initialization loop
             // when initializing a `Task`, which is itself a `Port`.
-            get {
-                return Task(named: self.rawOwningTask)
-            }
-            set {
-                self.rawOwningTask = newValue.name
-            }
+            get { return Task(named: self.rawOwningTask) }
+            set { self.rawOwningTask = newValue.name }
         }
 
         /// Gets the context of the port.
