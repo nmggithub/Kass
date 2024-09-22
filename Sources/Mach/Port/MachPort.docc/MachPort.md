@@ -13,11 +13,6 @@
 - ``MachBase/Mach/Port``
 - ``MachBase/Mach/PortSet``
 
-### Nil ports
-
-- ``MachBase/Mach/Port/Nil``
-- ``MachBase/Mach/Port/Nilable``
-
 ### Additional classes
 
 - ``MachBase/Mach/KernelObject``

@@ -54,12 +54,6 @@
 - ``insert(into:)``
 - ``move(to:)``
 
-### Logging
-
-- ``loggableName``
-- ``log(_:)``
-- ``loggable(_:)``
-
 ### Tearing down ports
 
 - ``deallocate()``
