@@ -13,6 +13,10 @@ Portions of the code for this module are covered under license. Please view the 
 
 ## Topics
 
+## Classes
+
+- ``MachBase/Mach/Host``
+
 ### Licenses
 
 - <doc:APSL>

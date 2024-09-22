@@ -9,7 +9,7 @@ extension Mach.Host {
         case debugger = 0x1000
     }
     /// Reboots the host.
-    /// - Parameter option: The reboot options.
+    /// - Parameter options: The reboot options.
     /// - Throws: If the reboot fails.
     public func reboot(_ options: Set<RebootOption> = []) throws {
         try Mach.call(host_reboot(self.name, options.bitmap()))

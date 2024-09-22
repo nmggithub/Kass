@@ -3,7 +3,7 @@ import Darwin.Mach
 @_exported import MachPort
 
 extension Mach {
-    /// A host (port).
+    /// A host.
     public class Host: Mach.Port {
         /// The current host.
         public static var current: Self { Self(named: mach_host_self()) }
