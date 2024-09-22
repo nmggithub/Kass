@@ -45,6 +45,33 @@ extension Mach {
             return lhs.name == rhs.name && lhs.owningTask == rhs.owningTask
         }
 
+        /// Compares a port to a port name.
+        /// - Parameters:
+        ///   - lhs: The port (on the left-hand side of the comparison).
+        ///   - rhs: The port name (on the right-hand side of the comparison).
+        /// - Returns: Whether the port's name is equal to the port name.
+        public static func == (lhs: Mach.Port, rhs: mach_port_name_t) -> Bool {
+            return lhs.name == rhs
+        }
+
+        /// Compares a port name to a port.
+        /// - Parameters:
+        ///   - lhs: The port name (on the left-hand side of the comparison).
+        ///   - rhs: The port (on the right-hand side of the comparison).
+        /// - Returns: Whether the port name is equal to the port's name.
+        public static func == (lhs: mach_port_name_t, rhs: Mach.Port) -> Bool {
+            return lhs == rhs.name
+        }
+
+        /// Compares two ports.
+        /// - Parameters:
+        ///   - lhs: The port on the left-hand side of the comparison.
+        ///   - rhs: The port on the right-hand side of the comparison.
+        /// - Returns: Whether the two ports are not equal.
+        public static func != (lhs: Mach.Port, rhs: Mach.Port) -> Bool {
+            return !(lhs == rhs)
+        }
+
         /// The name of the port in the ``Port/owningTask``'s namespace.
         public let name: mach_port_name_t
 

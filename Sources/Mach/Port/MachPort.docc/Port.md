@@ -2,17 +2,23 @@
 
 ## Topics
 
-### Basic information
+### Comparing ports
+
+- ``==(_:_:)-rt23``
+- ``==(_:_:)-mwka``
+- ``==(_:_:)-9nkdg``
+- ``!=(_:_:)-2dmw6``
+
+### Getting basic information
 
 - ``name``
 - ``owningTask``
 - ``rights``
 - ``Right``
-
-### Helpers
-
 - ``description``
-- ``hash(into:)``
+
+### Representing a nil-named port
+
 - ``Nil``
 
 ### Representing existing ports
@@ -64,3 +70,7 @@
 - ``deallocate()``
 - ``destroy()``
 - ``destruct(guard:sendRightDelta:)``
+
+### Additional helpers
+
+- ``hash(into:)``
