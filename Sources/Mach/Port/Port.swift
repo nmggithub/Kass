@@ -117,5 +117,15 @@ extension Mach {
             self.init(named: name)
             self.owningTask = task
         }
+
+        @available(
+            macOS, deprecated: 12.0,
+            message: "This API is marked as deprecated as of macOS 12.0."
+        )
+        /// Destroys the port.
+        /// - Warning: This is an inherently unsafe API.
+        open func destroy() throws {
+            try Mach.call(mach_port_destroy(self.owningTask.name, self.name))
+        }
     }
 }
