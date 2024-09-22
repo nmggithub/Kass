@@ -20,6 +20,7 @@ extension Mach {
                 }
             }
         }
+
         /// Inserts a port into the port set.
         /// - Parameter port: The port to insert.
         /// - Throws: An error if the port cannot be inserted.
@@ -40,5 +41,12 @@ extension Mach.Port {
         try Mach.call(
             mach_port_move_member(self.owningTask.name, self.name, set.name)
         )
+    }
+
+    /// Inserts the port into a port set.
+    /// - Parameter set: The port set to insert the port into.
+    /// - Throws: An error if the port cannot be inserted.
+    public func insert(into set: Mach.PortSet) throws {
+        try set.insert(self)
     }
 }

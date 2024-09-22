@@ -26,13 +26,15 @@ extension Mach {
             case portSet = 3
             /// A special right that is named by a dead name.
             case deadName = 4
-            case labelh = 5
-            case number = 6
         }
 
-        /// Compares two ports by their names.
+        /// Compares two ports.
+        /// - Parameters:
+        ///   - lhs: The port on the left-hand side of the comparison.
+        ///   - rhs: The port on the right-hand side of the comparison.
+        /// - Returns: Whether the two ports are equal.
         public static func == (lhs: Mach.Port, rhs: Mach.Port) -> Bool {
-            return lhs.name == rhs.name
+            return lhs.name == rhs.name && lhs.owningTask == rhs.owningTask
         }
 
         /// The raw task that the port name is in the namespace of.
