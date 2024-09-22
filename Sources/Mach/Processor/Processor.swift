@@ -16,11 +16,10 @@ extension Mach.Host {
             super.init(named: name)
         }
 
-        /// Represents an existing processor in the current host.
-        /// - Parameter name: The port name for the processor.
-        required init(named name: mach_port_name_t) {
+        @available(*, unavailable, message: "Use the host-based `init(named:in:)` instead.")
+        required init(named name: mach_port_name_t, in task: Mach.Task = .current) {
             self.owningHost = Mach.Host.current
-            super.init(named: name)
+            super.init(named: name, in: task)
         }
 
         /// Starts the processor.

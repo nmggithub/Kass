@@ -9,9 +9,14 @@
 - ``rights``
 - ``Right``
 
-### Representing existing names
+### Helpers
 
-- ``init(named:)``
+- ``description``
+- ``hash(into:)``
+- ``Nil``
+
+### Representing existing ports
+
 - ``init(named:in:)``
 
 ### Allocating new ports

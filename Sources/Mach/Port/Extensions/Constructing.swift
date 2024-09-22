@@ -44,8 +44,8 @@ extension Mach.Port {
 
     /// Destructs the port.
     /// - Parameters:
-    ///   - sendRightDelta: The delta to apply to the send right user ref count.
     ///   - guard: The context to unguard the port with.
+    ///   - sendRightDelta: The delta to apply to the send right user reference count.
     /// - Throws: If the port cannot be destructed.
     public func destruct(
         guard: mach_port_context_t = mach_port_context_t(), sendRightDelta: mach_port_delta_t

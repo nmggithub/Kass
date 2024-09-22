@@ -15,7 +15,7 @@ extension Mach.Message.MIG {
         }
 
         @available(*, unavailable, message: "Use `init(named:baseRoutineId:)` instead.")
-        public required init(named name: mach_port_name_t) {
+        public required init(named name: mach_port_name_t, in task: Mach.Task = .current) {
             self.baseRoutineId = 0
             super.init(named: name)
         }

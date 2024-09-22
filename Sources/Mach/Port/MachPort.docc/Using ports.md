@@ -16,10 +16,10 @@ The ``MachBase/Mach/KernelObject`` class can be used to get information about th
 
 ## How this library uses port names
 
-The ``MachBase/Mach/Port/init(named:)`` initializer can be used to represent a port for which a name is already known:
+The ``MachBase/Mach/Port/init(named:in:)`` initializer can be used to represent a port for which a name is already known:
 
 ```swift
 let port = Mach.Port(named: portName)
 ```
 
-While this initializer is extremely helpful, it will often not be needed. This library uses the choice to use the "port" moniker for the ``MachBase/Mach/Port`` class as an opportunity to abstract out the idea of port names entirely.  The vast majority of the time, this library will call this initializer internally and only expose an instance of the ``MachBase/Mach/Port`` class (or one of its subclasses). However, the underlying ``MachBase/Mach/Port/name`` will still be available on the class instance.
+While this initializer is extremely helpful, it will often not be needed when using this library. This is because the library uses the choice of the "port" moniker as an opportunity to abstract out the idea of port names entirely.  The vast majority of the time, this library will call this initializer internally and only expose an instance of the ``MachBase/Mach/Port`` class (or one of its subclasses). However, the underlying ``MachBase/Mach/Port/name`` will still be available on the class instance.

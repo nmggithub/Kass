@@ -42,7 +42,7 @@ extension Mach.Message.Body {
                     to: mach_port_t.self, capacity: Int(rawValue.count)),
                 count: Int(rawValue.count)
             )
-            self.ports = Array(portsBuffer).map(Mach.Port.init(named:))
+            self.ports = Array(portsBuffer).map({ portName in Mach.Port(named: portName) })
         }
         /// Creates a new out-of-line ports descriptor.
         public init() {

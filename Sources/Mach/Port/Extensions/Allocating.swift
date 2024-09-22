@@ -19,4 +19,8 @@ extension Mach.Port {
         )
         self.init(named: name ?? generatedPortName)
     }
+    /// Deallocates the port.
+    public func deallocate() throws {
+        try Mach.call(mach_port_deallocate(self.owningTask.name, self.name))
+    }
 }

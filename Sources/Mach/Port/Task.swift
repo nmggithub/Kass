@@ -4,7 +4,7 @@ extension Mach {
     /// A task.
     open class Task: Mach.Port {
         /// The current task.
-        public static var current: Self { Self(named: mach_task_self_) }
+        public static var current: Task { Task(named: mach_task_self_) }
 
         /// If the task is the current task.
         public var isSelf: Bool { mach_task_is_self(self.name) != 0 ? true : false }

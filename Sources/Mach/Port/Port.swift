@@ -11,16 +11,17 @@ extension Mach {
             let className = String(describing: Self.self)
             return "<Mach.Port(\(className)): name: \(formattedName), task: \(formattedTask)>"
         }
+
         /// Hashes the port.
         /// - Parameter hasher: The hasher to use.
         public func hash(into hasher: inout Hasher) {
             hasher.combine(self.name)
             hasher.combine(self.owningTask)
         }
+
         /// A nil-named port.
-        open class var Nil: Self {
-            return Self(named: mach_port_name_t(MACH_PORT_NULL))
-        }
+        open class var Nil: Port { Port(named: mach_port_name_t(MACH_PORT_NULL)) }
+
         /// A right to a port.
         public enum Right: mach_port_right_t, CaseIterable {
             /// A right to send messages to a port.
@@ -44,11 +45,11 @@ extension Mach {
             return lhs.name == rhs.name && lhs.owningTask == rhs.owningTask
         }
 
-        /// The raw task that the port name is in the namespace of.
-        private var rawOwningTask: task_t = mach_task_self_
-
         /// The name of the port in the ``Port/owningTask``'s namespace.
         public let name: mach_port_name_t
+
+        /// The raw task that the port name is in the namespace of.
+        private var rawOwningTask: task_t = mach_task_self_
 
         /// The task that the port name is in the namespace of.
         public var owningTask: Mach.Task {
@@ -98,19 +99,12 @@ extension Mach {
             return rights
         }
 
-        /// References an existing port in the current task's namespace.
-        /// - Parameters:
-        ///   - name: The name of the port.
-        public required init(named name: mach_port_name_t) {
-            self.name = name
-        }
-
         /// References an existing port in a given task's namespace.
         /// - Parameters:
         ///   - name: The name of the port.
         ///   - task: The task that the port is in the namespace of.
-        public convenience init(named name: mach_port_name_t, in task: Task) {
-            self.init(named: name)
+        public required init(named name: mach_port_name_t, in task: Task = .current) {
+            self.name = name
             self.owningTask = task
         }
 
