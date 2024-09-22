@@ -1,6 +1,7 @@
 import Darwin.Mach
 
 extension Mach.Task {
+    /// A special port for a task.
     public enum SpecialPort: task_special_port_t {
         case kernel = 1
         case host = 2
@@ -20,17 +21,31 @@ extension Mach.Task {
         case debugControl = 10
         case resourceNotify = 11
     }
-    public var specialPorts: Mach.Port.SpecialPortManager<Mach.Task, SpecialPort> {
-        Mach.Port.SpecialPortManager(
-            parentPort: self,
-            getter: {
-                task, specialPort, portName in
-                task_get_special_port(task.name, specialPort.rawValue, &portName)
-            },
-            setter: {
-                task, specialPort, portName in
-                task_set_special_port(task.name, specialPort.rawValue, portName)
-            }
+
+    /// Gets a special port for the task.
+    /// - Parameters:
+    ///   - specialPort: The special port to get.
+    ///   - as: The type to reference the port as.
+    /// - Throws: An error if the port cannot be retrieved.
+    /// - Returns: The special port.
+    public func getSpecialPort<PortType: Mach.Port>(
+        _ specialPort: SpecialPort, as: PortType.Type = Mach.Port.self
+    ) throws -> PortType {
+        var portName = mach_port_name_t()
+        try Mach.call(
+            task_get_special_port(self.name, specialPort.rawValue, &portName)
+        )
+        return PortType(named: portName)
+    }
+
+    /// Sets a special port for the task.
+    /// - Parameters:
+    ///   - specialPort: The special port to set.
+    ///   - port: The port to set as the special port.
+    /// - Throws: An error if the port cannot be set.
+    public func setSpecialPort(_ specialPort: SpecialPort, to port: Mach.Port) throws {
+        try Mach.call(
+            task_set_special_port(self.name, specialPort.rawValue, port.name)
         )
     }
 }

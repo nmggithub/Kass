@@ -71,7 +71,7 @@
 import Darwin.Mach
 
 extension Mach.Host {
-    /// A host special port.
+    /// A special port for a host.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachHost#Licenses> for more information.
     public enum SpecialPort: Int32 {
         case security = 0
@@ -109,18 +109,32 @@ extension Mach.Host {
         case memoryError
         case managedappdistd
     }
-    public var specialPorts: Mach.Port.SpecialPortManager<Mach.Host, SpecialPort> {
-        Mach.Port.SpecialPortManager<Mach.Host, SpecialPort>(
-            parentPort: self,
-            getter: {
-                host, specialPort, portName in
-                // The second parameter is actually no longer used, but we pass in HOST_LOCAL_NODE for historical reasons.
-                host_get_special_port(host.name, HOST_LOCAL_NODE, specialPort.rawValue, &portName)
-            },
-            setter: {
-                host, specialPort, portName in
-                host_set_special_port(host.name, specialPort.rawValue, portName)
-            }
+
+    /// Gets a special port for the host.
+    /// - Parameters:
+    ///   - specialPort: The special port to get.
+    ///   - as: The type to reference the port as.
+    /// - Throws: An error if the port cannot be retrieved.
+    /// - Returns: The special port.
+    public func getSpecialPort<PortType: Mach.Port>(
+        _ specialPort: SpecialPort, as: PortType.Type = Mach.Port.self
+    ) throws -> PortType {
+        var portName = mach_port_name_t()
+        try Mach.call(
+            // for historical reasons, we pass in HOST_LOCAL_NODE as the second parameter
+            host_get_special_port(self.name, HOST_LOCAL_NODE, specialPort.rawValue, &portName)
+        )
+        return PortType(named: portName)
+    }
+
+    /// Sets a special port for the host.
+    /// - Parameters:
+    ///   - specialPort: The special port to set.
+    ///   - port: The port to set as the special port.
+    /// - Throws: An error if the port cannot be set.
+    public func setSpecialPort(_ specialPort: SpecialPort, to port: Mach.Port) throws {
+        try Mach.call(
+            host_set_special_port(self.name, specialPort.rawValue, port.name)
         )
     }
 }

@@ -15,7 +15,7 @@ private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafeP
 extension Mach.Task {
     public var bootstrapPort: BootstrapPort {
         get throws {
-            try self.specialPorts.get(.bootstrap, as: BootstrapPort.self)
+            try self.getSpecialPort(.bootstrap, as: BootstrapPort.self)
         }
     }
     /// A port for communicating with the bootstrap server.

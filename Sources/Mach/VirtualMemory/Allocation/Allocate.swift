@@ -108,7 +108,7 @@ extension Mach.VM {
         contiguous: Bool = false
     ) throws {
         if contiguous {
-            let taskHost = try task.specialPorts.get(.host)
+            let taskHost = try task.getSpecialPort(.host)
             try Mach.call(
                 vm_allocate_cpm(
                     taskHost.name, task.name, &address, size, flags.bitmap()
