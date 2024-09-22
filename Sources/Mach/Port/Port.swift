@@ -16,26 +16,35 @@ extension Mach {
         }
         /// A right to a port.
         public enum Right: mach_port_right_t, CaseIterable {
+            /// A right to send messages to a port.
             case send = 0
+            /// A right to receive messages from a port.
             case receive = 1
+            /// A right to send messages to a port once.
             case sendOnce = 2
+            /// A special right to manage a collection of ports (a port set).
             case portSet = 3
+            /// A special right that is named by a dead name.
             case deadName = 4
             case labelh = 5
             case number = 6
         }
+
         /// Compares two ports by their names.
         public static func == (lhs: Mach.Port, rhs: Mach.Port) -> Bool {
             return lhs.name == rhs.name
         }
+
         /// The raw task that the port name is in the namespace of.
         private var rawOwningTask: task_t = mach_task_self_
+
         /// The name of the port in the ``Port/owningTask``'s namespace.
         public let name: mach_port_name_t
+
         /// The task that the port name is in the namespace of.
-        /// - Note: This parameter is computed to avoid an infinite initialization loop
-        /// when initializing a ``Task``, which is itself a ``Port``.
         public var owningTask: Mach.Task {
+            // This parameter is computed to avoid an infinite initialization loop
+            // when initializing a `Task`, which is itself a `Port`.
             get {
                 return Task(named: self.rawOwningTask)
             }
@@ -83,12 +92,14 @@ extension Mach {
             }
             return rights
         }
+
         /// References an existing port in the current task's namespace.
         /// - Parameters:
         ///   - name: The name of the port.
         public required init(named name: mach_port_name_t) {
             self.name = name
         }
+
         /// References an existing port in a given task's namespace.
         /// - Parameters:
         ///   - name: The name of the port.

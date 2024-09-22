@@ -1,8 +1,5 @@
 import Darwin.Mach
 
-/// A kernel object.
-typealias MachKernelObject = Mach.KernelObject
-
 extension Mach {
     /// A kernel object.
     public struct KernelObject {

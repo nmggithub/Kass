@@ -2,15 +2,21 @@
 
 ## Topics
 
-### Classes
+### Ports
 
 - ``MachBase/Mach/Port``
 - ``MachBase/Mach/PortSet``
+
+
+### Additional Classes
+
 - ``MachBase/Mach/KernelObject``
 - ``MachBase/Mach/Task``
 
-### Port Extensions
+### Using and extending ports ports
 
+- <doc:Architecture>
+- <doc:Using-ports>
 - <doc:Extending-ports>
 - ``MachBase/Mach/Port/Allocatable``
 - ``MachBase/Mach/Port/Constructable``
