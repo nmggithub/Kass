@@ -17,7 +17,7 @@ extension Mach {
             hasher.combine(self.name)
             hasher.combine(self.owningTask)
         }
-        /// The nil port.
+        /// A nil-named port.
         open class var Nil: Self {
             return Self(named: mach_port_name_t(MACH_PORT_NULL))
         }

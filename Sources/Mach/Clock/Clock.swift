@@ -10,9 +10,9 @@ extension Mach {
     public class Clock: Mach.Port {
         /// A type of time.
         public enum TimeType: alarm_type_t {
-            /// An time expressed in absolute time.
+            /// A time expressed as an absolute time value for the clock.
             case absolute = 0
-            /// An time expressed in relative time.
+            /// A time expressed relative to the current time value for the clock.
             case relative = 1
         }
         /// A type of clock.

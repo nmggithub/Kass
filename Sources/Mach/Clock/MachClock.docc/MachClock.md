@@ -10,6 +10,7 @@
 
 - ``MachBase/Mach/Clock``
 - ``MachBase/Mach/Clock/Alarm``
+- ``MachBase/Mach/ClockControl``
 
-### Extended Classes
+### Extended classes
 - ``MachBase/Mach/Host``
