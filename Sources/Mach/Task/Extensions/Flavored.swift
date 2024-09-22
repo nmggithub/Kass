@@ -20,15 +20,6 @@ extension Mach.Task {
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_NULL))
         }
-        /// References a given task from its control port.
-        /// - Parameter name: The name of the task's control port.
-        /// - Warning: This will crash the program if the port named by `name` is not a task control port.
-        public required init(named name: mach_port_name_t) {
-            super.init(named: name)
-            guard (try? Mach.KernelObject(underlying: self).type) == .taskControl else {
-                fatalError(self.loggable("Not a task control port"))
-            }
-        }
     }
     /// A task's read port.
     public class ReadPort: Mach.Task, Flavored {
@@ -36,15 +27,6 @@ extension Mach.Task {
         /// A nil task read port.
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_READ_NULL))
-        }
-        /// References a given task from its read port.
-        /// - Parameter name: The name of the task's read port.
-        /// - Warning: This will crash the program if the port named by `name` is not a task read port.
-        public required init(named name: mach_port_name_t) {
-            super.init(named: name)
-            guard (try? Mach.KernelObject(underlying: self).type) == .taskRead else {
-                fatalError(self.loggable("Not a task read port"))
-            }
         }
     }
     /// A task's inspect port.
@@ -54,15 +36,6 @@ extension Mach.Task {
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_INSPECT_NULL))
         }
-        /// References a given task from its inspect port.
-        /// - Parameter name: The name of the task's inspect port.
-        /// - Warning: This will crash the program if the port named by `name` is not a task inspect port.
-        public required init(named name: mach_port_name_t) {
-            super.init(named: name)
-            guard (try? Mach.KernelObject(underlying: self).type) == .taskInspect else {
-                fatalError(self.loggable("Not a task inspect port"))
-            }
-        }
     }
     /// A task's name port.
     public class NamePort: Mach.Task, Flavored {
@@ -70,15 +43,6 @@ extension Mach.Task {
         /// A nil task name port.
         override public class var Nil: Self {
             Self(named: mach_port_name_t(TASK_NAME_NULL))
-        }
-        /// References a given task from its name port.
-        /// - Parameter name: The name of the task's name port.
-        /// - Warning: This will crash the program if the port named by `name` is not a task name port.
-        public required init(named name: mach_port_name_t) {
-            super.init(named: name)
-            guard (try? Mach.KernelObject(underlying: self).type) == .taskName else {
-                fatalError(self.loggable("Not a task name port"))
-            }
         }
     }
 }
