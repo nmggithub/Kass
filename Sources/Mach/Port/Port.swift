@@ -3,7 +3,14 @@
 
 extension Mach {
     /// A port name in a task's namespace.
-    open class Port: Equatable, Hashable {
+    open class Port: Equatable, Hashable, CustomStringConvertible {
+        /// A description of the port.
+        public var description: String {
+            let formattedName = String(format: "0x%08x", self.name)
+            let formattedTask = String(format: "0x%08x", self.rawOwningTask)
+            let className = String(describing: Self.self)
+            return "<Mach.Port(\(className)): name: \(formattedName), task: \(formattedTask)>"
+        }
         /// Hashes the port.
         /// - Parameter hasher: The hasher to use.
         public func hash(into hasher: inout Hasher) {
