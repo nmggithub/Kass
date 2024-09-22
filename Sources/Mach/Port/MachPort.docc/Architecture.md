@@ -19,8 +19,8 @@ That was a lot of terms, and I'm sure it was quite confusing, so let's break it 
 
 Additionally:
 
-7. A task can hold more than one right of a given type to a given port.
-8. Port names are unique to tasks, and cannot be used across them.
+7. A task can hold multiple **user references** to a given right (see <doc:User-references>).
+8. Port names are unique to each task's name space, and cannot be used across tasks.
 
 
 ## On "port names"

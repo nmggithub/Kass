@@ -1,5 +1,7 @@
 # Using ports
 
+This library provides the ``MachBase/Mach/Port`` class, and its many subclasses, to help with interacting with ports.
+
 ## The port class
 
 An instance of the ``MachBase/Mach/Port`` class represents a port ``MachBase/Mach/Port/name`` in a given ``MachBase/Mach/Port/owningTask``'s name space. The class called a "port" instead of a "port name" both for brevity and because port names are already more often referred to as "ports" by developers in user space. This is likely because many user space Mach API's use the type `mach_port_t` when expecting a port name (instead of the probably-more-appropriate `mach_port_name_t`).

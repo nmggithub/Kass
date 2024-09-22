@@ -79,7 +79,7 @@ extension Mach {
                 return try self.getContext()
             }
         }
-        /// The rights to the port named by the ``Port/name`` property.
+        /// The port rights named by ``Port/name``.
         public var rights: Set<Right> {
             var type = mach_port_type_t()
             do {

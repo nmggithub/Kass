@@ -5,8 +5,10 @@ extension Mach {
     open class Task: Mach.Port, Mach.Port.Deallocatable {
         /// The current task.
         public static var current: Self { Self(named: mach_task_self_) }
+
         /// If the task is the current task.
         public var isSelf: Bool { mach_task_is_self(self.name) != 0 ? true : false }
+
         /// The ports in the task's namespace.
         public var ports: [Mach.Port] {
             get throws {

@@ -37,7 +37,7 @@ extension Mach.Port {
     /// - Parameter set: The port set to move the port into.
     /// - Throws: An error if the port cannot be moved.
     /// - Warning: If the port is already a member of any port sets, it will be removed from them.
-    public func move(into set: Mach.PortSet) throws {
+    public func move(to set: Mach.PortSet) throws {
         try Mach.call(
             mach_port_move_member(self.owningTask.name, self.name, set.name)
         )

@@ -1,6 +1,6 @@
 # Extending ports
 
-The ``MachBase/Mach/Port`` class has several optional features that it can be extended with.
+The ``MachBase/Mach/Port`` class has several optional features that it can be extended with through subclassing.
 
 The base ``MachBase/Mach/Port`` class can't do very much on its own beyond critical functionality. However, there are features of ports common to ports that are provided as optional extensions to the ``MachBase/Mach/Port`` class. These each comprise of:
 

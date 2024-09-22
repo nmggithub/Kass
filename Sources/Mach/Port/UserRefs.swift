@@ -1,14 +1,16 @@
 import Darwin.Mach
 
 extension Mach.Port {
-    /// The number of user references to a port right.
+    /// A count of user references to a port right.
     public struct UserRefs {
-        /// The port.
-        internal let port: Mach.Port
-        /// The right to the port.
+        /// The port the right is to.
+        public let port: Mach.Port
+
+        /// The port right.
         public let right: Right
-        /// The number of user references to the port right.
-        public var value: mach_port_urefs_t {
+
+        /// The count of user references.
+        public var count: mach_port_urefs_t {
             get throws {
                 var refs = mach_port_urefs_t()
                 try Mach.call(
@@ -19,11 +21,12 @@ extension Mach.Port {
                 return refs
             }
         }
-        /// Increments the number of user references to the port right.
+
+        /// Increments the count of user references.
         /// - Parameters:
         ///   - refs: The user references.
         ///   - delta: The amount to increment by.
-        /// - Throws: If the number of user references cannot be incremented.
+        /// - Throws: If the count of user references cannot be incremented.
         public static func += (refs: UserRefs, delta: mach_port_delta_t) throws {
             try Mach.call(
                 mach_port_mod_refs(
@@ -31,11 +34,12 @@ extension Mach.Port {
                 )
             )
         }
-        /// Decrements the number of user references to the port right.
+
+        /// Decrements the count of user references.
         /// - Parameters:
         ///   - refs: The user references.
         ///   - delta: The amount to decrement by.
-        /// - Throws: If the number of user references cannot be decremented.
+        /// - Throws: If the count of user references cannot be decremented.
         public static func -= (refs: UserRefs, delta: mach_port_delta_t) throws {
             try Mach.call(
                 mach_port_mod_refs(
@@ -43,10 +47,21 @@ extension Mach.Port {
                 )
             )
         }
+
+        /// Compares the count of user references to a given count.
+        /// - Parameters:
+        ///   - lhs: The user references.
+        ///   - rhs: The count to compare to.
+        /// - Throws: If the count of user references cannot be compared.
+        /// - Returns: Whether the count of user references is equal to the given count.
+        public static func == (lhs: UserRefs, rhs: Int) throws -> Bool {
+            return try lhs.count == mach_port_urefs_t(rhs)
+        }
     }
-    /// Gets the number of user references to the port right.
+
+    /// Gets the count of user references to the port right.
     /// - Parameter right: The right to the port.
-    /// - Returns: The number of user references to the port right.
+    /// - Returns: The count of user references to the port right.
     public func userRefs(for right: Right) -> UserRefs {
         return UserRefs(port: self, right: right)
     }
