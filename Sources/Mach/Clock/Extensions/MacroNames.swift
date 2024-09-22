@@ -20,7 +20,7 @@ extension Mach.Clock.Attribute: NameableByCMacro {
     }
 }
 
-extension Mach.Clock.Alarm.AlarmType: NameableByCMacro {
+extension Mach.Clock.TimeType: NameableByCMacro {
     public var cMacroName: String {
         switch self {
         case .absolute: return "TIME_ABSOLUTE"

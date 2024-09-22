@@ -9,34 +9,28 @@ extension Mach.Clock {
         ///   - name: The name to assign to the alarm port.
         ///   - clock: The clock to set the alarm on.
         ///   - time: The time to set the alarm for.
-        ///   - type: The type of alarm to set.
+        ///   - type: The type of the time.
         /// - Throws: An error if the alarm could not be set.
         public convenience init(
             named name: mach_port_name_t? = nil,
-            on clock: Mach.Clock, at time: mach_timespec_t, type: AlarmType
+            on clock: Mach.Clock, at time: mach_timespec_t, type: Mach.Clock.TimeType
         ) throws {
             try self.init(right: .receive, named: name)
             try Mach.call(
                 clock_alarm(clock.name, type.rawValue, time, self.name)
             )
         }
-        /// A type of alarm.
-        public enum AlarmType: alarm_type_t {
-            /// An alarm expressed in absolute time.
-            case absolute = 0
-            /// An alarm expressed in relative time.
-            case relative = 1
-        }
+
         /// Sends a reply to the alarm.
         /// - Parameters:
         ///   - returning: The return code to send.
-        ///   - type: The type of alarm.
         ///   - time: The time of the alarm.
+        ///   - type: The type of the time.
         /// - Throws: An error if the alarm reply could not be sent.
         public func reply(
             returning: MachError.Code,
-            type: Alarm.AlarmType,
-            time: mach_timespec_t
+            time: mach_timespec_t,
+            type: Mach.Clock.TimeType
         ) throws {
             try Mach.call(
                 clock_alarm_reply(

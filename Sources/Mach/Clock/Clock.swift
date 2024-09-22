@@ -8,6 +8,13 @@ import Foundation
 extension Mach {
     /// A clock.
     public class Clock: Mach.Port {
+        /// A type of time.
+        public enum TimeType: alarm_type_t {
+            /// An time expressed in absolute time.
+            case absolute = 0
+            /// An time expressed in relative time.
+            case relative = 1
+        }
         /// A type of clock.
         public enum ClockType: clock_id_t {
             /// The system clock (uptime).
