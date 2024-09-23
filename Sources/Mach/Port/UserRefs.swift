@@ -55,7 +55,7 @@ extension Mach.Port {
         /// - Throws: If the count of user references cannot be compared.
         /// - Returns: Whether the count of user references is equal to the given count.
         public static func == (lhs: UserRefs, rhs: Int) throws -> Bool {
-            return try lhs.count == mach_port_urefs_t(rhs)
+            try lhs.count == mach_port_urefs_t(rhs)
         }
 
         /// Compares the count of user references to a given count.
@@ -65,14 +65,12 @@ extension Mach.Port {
         /// - Throws: If the count of user references cannot be compared.
         /// - Returns: Whether the count of user references is equal to the given count.
         public static func == (lhs: Int, rhs: UserRefs) throws -> Bool {
-            return try mach_port_urefs_t(lhs) == rhs.count
+            try mach_port_urefs_t(lhs) == rhs.count
         }
     }
 
     /// Gets the count of user references to the port right.
     /// - Parameter right: The right to the port.
     /// - Returns: The count of user references to the port right.
-    public func userRefs(for right: Right) -> UserRefs {
-        return UserRefs(port: self, right: right)
-    }
+    public func userRefs(for right: Right) -> UserRefs { UserRefs(port: self, right: right) }
 }
