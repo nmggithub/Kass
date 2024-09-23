@@ -80,10 +80,22 @@ extension Mach {
         /// The raw task that the port name is in the namespace of.
         private var rawOwningTask: task_t = mach_task_self_
 
+        /// References an existing port in the current task's namespace.
+        /// - Parameters:
+        ///   - name: The name of the port.
+        ///
+        /// This initializer only exists to provide the ``Mach/Task/current`` task property with a path to
+        /// initialization that won't cause an infinite loop. The ``init(named:in:)`` initializer causes a
+        /// new task to be initialized by way of it's `in` parameter. Trying to initialize another task in
+        /// the initializer for a task causes an infinite loop. In contrast, this initializer does no such
+        /// thing. All it does is initialize a port with a name and implicitly accept the default value of
+        /// the ``Port/rawOwningTask`` property (which is the current task: `mach_task_self_`).
+        internal init(named name: mach_port_name_t) {
+            self.name = name
+        }
+
         /// The task that the port name is in the namespace of.
         public var owningTask: Mach.Task {
-            // This parameter is computed to avoid an infinite initialization loop
-            // when initializing a `Task`, which is itself a `Port`.
             get { return Task(named: self.rawOwningTask) }
             set { self.rawOwningTask = newValue.name }
         }
@@ -135,13 +147,6 @@ extension Mach {
         public required init(named name: mach_port_name_t, in task: Task = .current) {
             self.name = name
             self.owningTask = task
-        }
-
-        /// References an existing port in the current task's namespace.
-        /// - Parameters:
-        ///   - name: The name of the port.
-        init(named name: mach_port_name_t) {
-            self.name = name
         }
 
         @available(
