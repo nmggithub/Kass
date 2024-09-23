@@ -1,10 +1,10 @@
 # User references
 
-While a port name names a specific port right, it also names a specific number of user references.
+When a port name names a specific port right, it also names a specific number of user references.
 
 ## What is a user reference?
 
-A user reference is a count connected with a right named by a port name (in a task's name space). It's likely named as such as it is, conceptually, the number of references to the right in user space. While not exactly the same thing, this can be seen simply as the number of copies a task has of the right. In many cases, using a right decrements this count by one. Once the count reaches zero, the right is deallocated from the kernel, and the task can no longer use it.
+A user reference is a count connected with a right named by a port name (in a task's name space). It's likely named as such as it is, conceptually, the number of references to the right in user space. While not exactly the same thing, this can be seen simply as the number of copies a task has of the right. In many cases, using a right decrements this count by one. Once the count reaches zero, the right is deallocated in the kernel, and the task can no longer use it.
 
 ## Getting and setting the user reference count
 
