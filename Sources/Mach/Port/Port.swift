@@ -267,18 +267,17 @@ extension Mach {
         public var guarded: Bool {
             // There is no way to check if a port is guarded without attempting to guard it.
             let testGuard = mach_port_context_t(arc4random())
-            do { try self.guard(testGuard, flags: []) } catch MachError.invalidArgument {
-                return true
-            }  // The port is already guarded.
+            do { try self.guard(testGuard, flags: []) }  // Attempting to guard the port is the only way to see if it's guarded.
+            // Since the `guard` function only calls `mach_port_guard_with_flags`, we assume any caught errors are from that call. While
+            // each of these errors are a bit cryptic, we can use the XNU sources to determine what they mean in this context.
+            catch MachError.invalidArgument { return true }  // The port is already guarded.
             catch MachError.invalidName { return false }  // The port doesn't exist.
-            catch MachError.invalidTask { return false }  // The port's task doesn't exist.
-            catch MachError.invalidRight { return false }  // The port doesn't have the correct rights.
-            catch { fatalError("Unexpected error when guarding the port: \(error)") }
-            // The guarding worked, so we need to unguard it.
-            do { try self.unguard(testGuard) } catch {
-                fatalError("Failed to unguard the port: \(error)")
-            }
-            return false
+            catch MachError.invalidTask { return false }  // The port's owning task doesn't exist.
+            catch MachError.invalidRight { return false }  // The port doesn't have the correct rights to be guarded.
+            catch { fatalError("Unexpected error when guarding the port: \(error)") }  // There was some other error.
+            do { try self.unguard(testGuard) }  // The guarding worked, so we need to unguard it.
+            catch { fatalError("Failed to unguard the port: \(error)") }  // If we can't unguard it, we have a problem.
+            return false  // We successfully unguarded the port, so now we know it isn't guarded.
         }
     }
 
