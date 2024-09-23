@@ -139,7 +139,7 @@ extension Mach.Clock: Clock, @unchecked Sendable {
     public var minimumResolution: Duration { try! .init(self.getAttribute(.resolution)) }
 
     /// ***Unsafe.*** Sleeps until a given time.
-    /// - Warning: This property will crash the program if the kernel call fails.
+    /// - Warning: This function will crash the program if the kernel call fails.
     /// - Important: The `tolerance` parameter is ignored.
     public func sleep(until time: Instant, tolerance: Duration?) async {
         try! self.sleep(until: time.value)
