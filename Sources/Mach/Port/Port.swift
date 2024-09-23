@@ -84,12 +84,9 @@ extension Mach {
         /// - Parameters:
         ///   - name: The name of the port.
         ///
-        /// This initializer only exists to provide the ``Mach/Task/current`` task property with a path to
-        /// initialization that won't cause an infinite loop. The ``init(named:in:)`` initializer causes a
-        /// new task to be initialized by way of it's `in` parameter. Trying to initialize another task in
-        /// the initializer for a task causes an infinite loop. In contrast, this initializer does no such
-        /// thing. All it does is initialize a port with a name and implicitly accept the default value of
-        /// the ``Port/rawOwningTask`` property (which is the current task: `mach_task_self_`).
+        /// This initializer only exists to provide the ``Mach/Task/current`` task property an initialization
+        /// path. Since the ``init(named:in:)`` initializer references that property (as the default value of
+        /// the `in` parameter), trying to use it to initialize the property would cause an infinite loop.
         internal init(named name: mach_port_name_t) {
             self.name = name
         }
