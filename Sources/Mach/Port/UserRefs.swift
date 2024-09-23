@@ -6,7 +6,7 @@ extension Mach.Port {
         /// The port the right is to.
         public let port: Mach.Port
 
-        /// The port right.
+        /// The port right the user references are to.
         public let right: Right
 
         /// The count of user references.
@@ -58,7 +58,7 @@ extension Mach.Port {
             try lhs.count == mach_port_urefs_t(rhs)
         }
 
-        /// Compares the count of user references to a given count.
+        /// Compares a given count to the count of user references.
         /// - Parameters:
         ///   - lhs: The count to compare to.
         ///   - rhs: The user references.
