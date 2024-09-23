@@ -2,19 +2,17 @@ import Darwin.Mach
 import Foundation
 @_exported import MachBase
 @_exported import MachHost
-@_exported import MachMsg  // for Mach.Port.Disposition
 @_exported import MachPort
 
 extension Mach {
     /// A clock.
     public class Clock: Mach.Port {
-        /// A type of time.
+        /// A type of time value.
         public enum TimeType: alarm_type_t {
-            /// A time expressed as an absolute time value for the clock.
             case absolute = 0
-            /// A time expressed relative to the current time value for the clock.
             case relative = 1
         }
+
         /// A type of clock.
         public enum ClockType: clock_id_t {
             /// The system clock (uptime).
@@ -24,10 +22,6 @@ extension Mach {
         }
 
         /// Obtains the given clock.
-        /// - Parameters:
-        ///    - type: The type of clock to obtain.
-        ///    - host: The host to obtain the clock from.
-        /// - Throws: An error if the clock could not be obtained.
         public convenience init(_ type: ClockType, in host: Mach.Host) throws {
             var clockServicePortName = clock_serv_t()
             try Mach.call(
@@ -36,15 +30,19 @@ extension Mach {
             self.init(named: clockServicePortName)
         }
 
-        /// The time of the clock.
+        /// The current time of the clock.
         public var time: mach_timespec_t {
             get throws {
                 var time = mach_timespec_t()
-                try Mach.call(
-                    clock_get_time(self.name, &time)
-                )
+                try Mach.call(clock_get_time(self.name, &time))
                 return time
             }
         }
+
+        /// The system clock in the current host.
+        public static var system: Clock { get throws { try Clock(.system, in: .current) } }
+
+        /// The calendar clock in the current host.
+        public static var calendar: Clock { get throws { try Clock(.calendar, in: .current) } }
     }
 }
