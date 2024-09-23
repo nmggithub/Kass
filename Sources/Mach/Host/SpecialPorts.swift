@@ -70,10 +70,34 @@
 
 import Darwin.Mach
 
-extension Mach.Host {
+extension Mach.Host: Mach.Port.WithSpecialPorts {
     /// A special port for a host.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachHost#Licenses> for more information.
-    public enum SpecialPort: Int32 {
+    public enum SpecialPort: Int32, Mach.Port.SpecialPortType {
+        /// The parent port type.
+        public typealias ParentPort = Mach.Host
+
+        /// Gets a special port for the host.
+        /// - Parameters:
+        ///   - host: The host to get the special port for.
+        ///   - type: The type to reference the port as.
+        /// - Throws: An error if the port cannot be retrieved.
+        /// - Returns: The special port.
+        public func get<PortType: Mach.Port>(
+            for host: Mach.Host = .current, as type: PortType.Type = Mach.Port.self
+        ) throws -> PortType {
+            try host.getSpecialPort(self, as: type)
+        }
+
+        /// Sets a special port for the host.
+        /// - Parameters:
+        ///   - host: The host to set the special port for.
+        ///   - port: The port to set as the special port.
+        /// - Throws: An error if the port cannot be set.
+        public func set(for host: Mach.Host = .current, to port: Mach.Port) throws {
+            try host.setSpecialPort(self, to: port)
+        }
+
         case security = 0
         case host = 1
         case priv = 2

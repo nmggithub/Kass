@@ -1,9 +1,34 @@
 import Darwin.Mach
 import MachHost
 
-extension Mach.Task {
+extension Mach.Task: Mach.Port.WithSpecialPorts {
     /// A special port for a task.
-    public enum SpecialPort: task_special_port_t {
+    public enum SpecialPort: task_special_port_t, Mach.Port.SpecialPortType {
+        /// The parent port type.
+        public typealias ParentPort = Mach.Task
+
+        /// Gets a special port for the task.
+        /// - Parameters:
+        ///   - task: The task to get the special port for.
+        ///   - type: The type to reference the port as.
+        /// - Throws: An error if the port cannot be retrieved.
+        /// - Returns: The special port.
+        public func get<PortType: Mach.Port>(
+            for task: Mach.Task = .current, as type: PortType.Type = Mach.Port.self
+        ) throws -> PortType {
+            try task.getSpecialPort(self, as: type)
+        }
+
+        /// Sets a special port for the task.
+        /// - Parameters:
+        ///   - task: The task to set the special port for.
+        ///   - port: The port to set as the special port.
+        /// - Throws: An error if the port cannot be set.
+        /// - Returns: The special port.
+        public func set(for task: Mach.Task = .current, to port: Mach.Port) throws {
+            try task.setSpecialPort(self, to: port)
+        }
+
         /// The task control port.
         case control = 1
         /// The port to the host that the task is in.
