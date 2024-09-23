@@ -8,12 +8,13 @@ A user reference is a count connected with a right named by a port name (in a ta
 
 ## Getting and setting the user reference count
 
-The kernel can be called to either get the user reference count or to modify it by some delta. The count itself cannot be set atomically. Due to this limitation, this library uses a ``MachBase/Mach/Port/UserRefs`` structure to represent the user reference count. The ``MachBase/Mach/Port/UserRefs/+=(_:_:)`` and ``MachBase/Mach/Port/UserRefs/-=(_:_:)`` operators can be used to modify the count, and the ``MachBase/Mach/Port/UserRefs/==(_:_:)`` operator can be used to compare the count to a given value. Finally, the ``MachBase/Mach/Port/UserRefs/count`` itself is also accessible.
+The kernel can be called to either get the user reference count or to modify it by some delta. The count itself cannot be set atomically. Due to this limitation, this library uses a ``MachBase/Mach/Port/UserRefs`` structure to represent the user reference count. The ``MachBase/Mach/Port/UserRefs/+=(_:_:)`` and ``MachBase/Mach/Port/UserRefs/-=(_:_:)`` operators can be used to modify the count. The ``MachBase/Mach/Port/UserRefs/==(_:_:)-9mbh4`` and ``MachBase/Mach/Port/UserRefs/==(_:_:)-9y9kh`` operators can be used to compare the count to a given value. Finally, the ``MachBase/Mach/Port/UserRefs/count`` itself is also accessible.
 
 ```swift
 let urefs = port.userRefs(for: .send) // gets the user reference count for the send right
-let count = try urefs.count // gets the count
 try urefs += 1 // increments the count by one
 try urefs -= 1 // decrements the count by one
 let isCountTwo = try urefs == 2 // compares the value to 2
+let isCountThree = try 3 == urefs // compares the value to 3
+let count = try urefs.count // gets the count
 ```
