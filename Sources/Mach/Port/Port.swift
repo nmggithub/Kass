@@ -4,7 +4,7 @@ import Foundation
 @_exported import MachBase
 
 extension Mach {
-    /// A port name in a task's namespace.
+    /// A port ``name`` in the ``owningTask``'s name space.
     open class Port: Equatable, Hashable, CustomStringConvertible {
         /// A description of the port.
         public var description: String {
@@ -74,13 +74,13 @@ extension Mach {
             return !(lhs == rhs)
         }
 
-        /// The name of the port in the ``Port/owningTask``'s namespace.
+        /// The name of the port in the ``owningTask``'s name space.
         public let name: mach_port_name_t
 
-        /// The raw task that the port name is in the namespace of.
+        /// The raw task that the port name is in the name space of.
         private var rawOwningTask: task_t = mach_task_self_
 
-        /// References an existing port in the current task's namespace.
+        /// References an existing port in the current task's name space.
         /// - Parameters:
         ///   - name: The name of the port.
         ///
@@ -91,7 +91,7 @@ extension Mach {
             self.name = name
         }
 
-        /// The task that the port name is in the namespace of.
+        /// The task that the port ``name`` is in the name space of.
         public var owningTask: Mach.Task {
             get { return Task(named: self.rawOwningTask) }
             set { self.rawOwningTask = newValue.name }
@@ -137,10 +137,10 @@ extension Mach {
             return rights
         }
 
-        /// References an existing port in a given task's namespace.
+        /// References an existing port in a given task's name space.
         /// - Parameters:
         ///   - name: The name of the port.
-        ///   - task: The task that the port is in the namespace of.
+        ///   - task: The task that the port is in the name space of.
         public required init(named name: mach_port_name_t, in task: Task = .current) {
             self.name = name
             self.owningTask = task

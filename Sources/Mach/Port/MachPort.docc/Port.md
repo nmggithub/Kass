@@ -2,6 +2,10 @@
 
 ## Topics
 
+### About ports
+
+- <doc:Architecture>
+
 ### Comparing ports
 
 - ``==(_:_:)-rt23``
@@ -23,6 +27,7 @@
 
 ### Representing existing ports
 
+- <doc:Using-ports>
 - ``init(named:in:)``
 
 ### Allocating new ports
