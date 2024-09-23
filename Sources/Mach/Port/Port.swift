@@ -1,4 +1,6 @@
+import CCompat
 @preconcurrency import Darwin.Mach
+import Foundation
 @_exported import MachBase
 
 extension Mach {
@@ -135,6 +137,13 @@ extension Mach {
             self.owningTask = task
         }
 
+        /// References an existing port in the current task's namespace.
+        /// - Parameters:
+        ///   - name: The name of the port.
+        init(named name: mach_port_name_t) {
+            self.name = name
+        }
+
         @available(
             macOS, deprecated: 12.0,
             message: "This API is marked as deprecated as of macOS 12.0."
@@ -144,5 +153,133 @@ extension Mach {
         open func destroy() throws {
             try Mach.call(mach_port_destroy(self.owningTask.name, self.name))
         }
+
+        /// Allocates a new port with a given right in the specified task with an optional name.
+        /// - Parameters:
+        ///   - right: The right to allocate.
+        ///   - name: The name to assign to the port.
+        ///   - task: The task to allocate the port in.
+        /// - Important: Only the ``Right/receive``, ``Right/portSet``, and ``Right/deadName`` rights
+        /// are valid for port allocation.
+        public init(
+            right: Right, named name: mach_port_name_t? = nil, in task: Mach.Task = .current
+        ) throws {
+            var generatedPortName = mach_port_name_t()
+            try Mach.call(
+                name != nil
+                    ? mach_port_allocate_name(task.name, right.rawValue, name!)
+                    : mach_port_allocate(task.name, right.rawValue, &generatedPortName)
+            )
+            self.name = name ?? generatedPortName
+        }
+
+        /// Deallocates the port.
+        public func deallocate() throws {
+            try Mach.call(mach_port_deallocate(self.owningTask.name, self.name))
+        }
+
+        /// A flag to use when constructing a port.
+        public enum ConstructFlag: UInt32 {
+            case contextAsGuard = 0x01
+            case queueLimit = 0x02
+            case tempOwner = 0x04
+            case importanceReceiver = 0x08
+            case insertSendRight = 0x10
+            case strict = 0x20
+            case denapReceiver = 0x40
+            case immovableReceive = 0x80
+            case filterMsg = 0x100
+            case tgBlockTracking = 0x200
+            case servicePort = 0x400
+            case connectionPort = 0x800
+            case replyPort = 0x1000
+            case replyPortSemantics = 0x2000
+            case provisionalReplyPort = 0x4000
+            case provisionalIdProtOutput = 0x8000
+        }
+        /// Constructs a new port with the given options.
+        /// - Parameters:
+        ///   - queueLimit: The maximum number of messages that can be queued.
+        ///   - flags: The flags to use when constructing the port.
+        ///   - context: The context to associate with the port.
+        ///   - task: The task to construct the port in.
+        /// - Important: The `context` parameter is only used to guard the port (and only if the
+        /// ``ConstructFlag/contextAsGuard`` flag is passed).
+        public init(
+            queueLimit: mach_port_msgcount_t, flags: Set<ConstructFlag>,
+            context: mach_port_context_t = mach_port_context_t(),
+            in task: Mach.Task = .current
+        ) throws {
+            var generatedPortName = mach_port_name_t()
+            var options = mach_port_options_t()
+            options.mpl.mpl_qlimit = queueLimit
+            options.flags = flags.bitmap()
+            try Mach.call(mach_port_construct(task.name, &options, context, &generatedPortName))
+            self.name = generatedPortName
+        }
+
+        /// Destructs the port.
+        /// - Parameters:
+        ///   - guard: The context to unguard the port with.
+        ///   - sendRightDelta: The delta to apply to the send right user reference count.
+        /// - Throws: If the port cannot be destructed.
+        public func destruct(
+            guard: mach_port_context_t = mach_port_context_t(), sendRightDelta: mach_port_delta_t
+        ) throws {
+            try Mach.call(
+                mach_port_destruct(self.owningTask.name, self.name, sendRightDelta, `guard`)
+            )
+        }
+        /// A flag to guard a port with.
+        public enum GuardFlag: UInt64 {
+            case strict = 1
+            case immovableReceive = 2
+        }
+        /// Guards the port with the specified context and flags.
+        /// - Parameters:
+        ///   - context: The context to guard the port with.
+        ///   - flags: The flags to guard the port with.
+        /// - Throws: An error if the operation fails.
+        public func `guard`(
+            _ context: mach_port_context_t, flags: Set<Mach.Port.GuardFlag> = []
+        ) throws {
+            try Mach.call(
+                mach_port_guard_with_flags(
+                    self.owningTask.name, self.name, context, flags.bitmap()
+                )
+            )
+        }
+
+        /// Unguards the port with the specified context.
+        /// - Parameter context: The context to unguard the port with.
+        /// - Throws: An error if the operation fails.
+        public func unguard(_ context: mach_port_context_t) throws {
+            try Mach.call(mach_port_unguard(self.owningTask.name, self.name, context))
+        }
+
+        /// ***Experimental.*** Whether the port is guarded.
+        /// - Warning: This property being `false` doesn't mean that the port was determined *to not
+        /// be guarded*. Instead, it means that it was *not* determined *to be guarded*. However, it
+        /// being `true` means that the port was determined *to be guarded*.
+        /// - Warning: There is no atomic way to check if a port is guarded. This property relies on
+        /// a multi-step process to determine if the port is guarded. If a step fails and leaves the
+        /// port in an indeterminate state, this property will crash the program.
+        public var guarded: Bool {
+            // There is no way to check if a port is guarded without attempting to guard it.
+            let testGuard = mach_port_context_t(arc4random())
+            do { try self.guard(testGuard, flags: []) } catch MachError.invalidArgument {
+                return true
+            }  // The port is already guarded.
+            catch MachError.invalidName { return false }  // The port doesn't exist.
+            catch MachError.invalidTask { return false }  // The port's task doesn't exist.
+            catch MachError.invalidRight { return false }  // The port doesn't have the correct rights.
+            catch { fatalError("Unexpected error when guarding the port: \(error)") }
+            // The guarding worked, so we need to unguard it.
+            do { try self.unguard(testGuard) } catch {
+                fatalError("Failed to unguard the port: \(error)")
+            }
+            return false
+        }
     }
+
 }

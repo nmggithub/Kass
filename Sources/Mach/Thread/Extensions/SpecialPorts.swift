@@ -11,11 +11,11 @@ extension Mach.Thread {
     /// Gets a special port for the thread.
     /// - Parameters:
     ///   - specialPort: The special port to get.
-    ///   - as: The type to reference the port as.
+    ///   - type: The type to reference the port as.
     /// - Throws: An error if the port cannot be retrieved.
     /// - Returns: The special port.
     public func getSpecialPort<PortType: Mach.Port>(
-        _ specialPort: SpecialPort, as: PortType.Type = Mach.Port.self
+        _ specialPort: SpecialPort, as type: PortType.Type = Mach.Port.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
         try Mach.call(

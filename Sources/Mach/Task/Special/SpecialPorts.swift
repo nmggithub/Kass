@@ -1,22 +1,33 @@
 import Darwin.Mach
+import MachHost
 
 extension Mach.Task {
     /// A special port for a task.
     public enum SpecialPort: task_special_port_t {
-        case kernel = 1
+        /// The task control port.
+        case control = 1
+        /// The port to the host that the task is in.
         case host = 2
+        /// The task name port.
         case name = 3
+        /// The bootstrap port, used to get ports for Mach services.
         case bootstrap = 4
-        case inspection = 5
+        /// The task inspect port.
+        case inspect = 5
+        /// The task read port.
         case read = 6
-        // @available(
-        //     *, deprecated, message: "This task special port type is commented out in the kernel."
-        // )
+        @available(
+            macOS, deprecated: 12.0.1,
+            message: "The task seatbelt port was removed in macOS Monterey 12.0.1."
+        )
         case seatbelt = 7
-        // @available(
-        //     *, deprecated, message: "This task special port type is commented out in the kernel."
-        // )
+        @available(
+            macOS, deprecated: 10.8,
+            message: "This task gssd port was removed in Mac OS X 10.8 Mountain Lion."
+        )
+        /// - Note: If you can even get Swift code to compile for Max OS X 10.7 Lion or earlier, more power to you.
         case gssd = 8
+        /// A port for determining access to the different flavored task ports for the task.
         case access = 9
         case debugControl = 10
         case resourceNotify = 11
@@ -25,11 +36,11 @@ extension Mach.Task {
     /// Gets a special port for the task.
     /// - Parameters:
     ///   - specialPort: The special port to get.
-    ///   - as: The type to reference the port as.
+    ///   - type: The type to reference the port as.
     /// - Throws: An error if the port cannot be retrieved.
     /// - Returns: The special port.
     public func getSpecialPort<PortType: Mach.Port>(
-        _ specialPort: SpecialPort, as: PortType.Type = Mach.Port.self
+        _ specialPort: SpecialPort, as type: PortType.Type = Mach.Port.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
         try Mach.call(
