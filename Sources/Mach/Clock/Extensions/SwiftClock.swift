@@ -146,19 +146,6 @@ extension Mach.Clock: Clock, @unchecked Sendable {
     }
 }
 
-/// Adds the system and calendar clocks.
-extension Clock where Self == Mach.Clock {
-    /// The system clock in the current host.
-    public static var machSystem: Mach.Clock {
-        get throws { try Mach.Host.current.systemClock }
-    }
-
-    /// The calendar clock in the current host.
-    public static var machCalendar: Mach.Clock {
-        get throws { try Mach.Host.current.calendarClock }
-    }
-}
-
 extension Mach.Clock.Alarm {
     /// Sets an alarm to ring at a given time.
     public convenience init(

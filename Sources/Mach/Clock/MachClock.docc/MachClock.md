@@ -14,5 +14,4 @@
 
 ### Extended classes
 - ``MachBase/Mach/Host``
-- ``_Concurrency/Clock``
 - ``Darwin/mach_timespec``
