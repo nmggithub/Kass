@@ -2,10 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A clock control port.
-    @available(
-        macOS, deprecated: 13.0,
-        message: "Clock control ports were removed from the kernel in macOS Ventura 13."
-    )
+    @available(macOS, obsoleted: 13.0)
     public class ClockControl: Mach.Port {
         /// Obtains the control port for the given clock.
         public convenience init(_ type: Clock.ClockType, in host: Mach.Host) throws {
