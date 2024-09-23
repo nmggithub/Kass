@@ -10,7 +10,7 @@ extension Mach.Port {
         public let right: Right
 
         /// The count of user references.
-        public var count: mach_port_urefs_t {
+        public var count: Int {
             get throws {
                 var refs = mach_port_urefs_t()
                 try Mach.call(
@@ -18,7 +18,7 @@ extension Mach.Port {
                         self.port.owningTask.name, self.port.name, self.right.rawValue, &refs
                     )
                 )
-                return refs
+                return Int(refs)
             }
         }
 
@@ -56,6 +56,16 @@ extension Mach.Port {
         /// - Returns: Whether the count of user references is equal to the given count.
         public static func == (lhs: UserRefs, rhs: Int) throws -> Bool {
             return try lhs.count == mach_port_urefs_t(rhs)
+        }
+
+        /// Compares the count of user references to a given count.
+        /// - Parameters:
+        ///   - lhs: The count to compare to.
+        ///   - rhs: The user references.
+        /// - Throws: If the count of user references cannot be compared.
+        /// - Returns: Whether the count of user references is equal to the given count.
+        public static func == (lhs: Int, rhs: UserRefs) throws -> Bool {
+            return try mach_port_urefs_t(lhs) == rhs.count
         }
     }
 
