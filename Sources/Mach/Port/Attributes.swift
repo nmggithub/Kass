@@ -20,7 +20,7 @@ extension Mach.Port {
     /// - Throws: An error if the attribute cannot be retrieved.
     /// - Returns: The attribute.
     public func getAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Attribute, as type: DataType.Type
+        _ attribute: Attribute, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: mach_port_info_t, count) in

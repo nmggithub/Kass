@@ -22,8 +22,8 @@ extension Mach.Clock {
     ///   - attribute: The attribute to get.
     ///   - type: The type to load the attribute as.
     /// - Throws: An error if the attribute cannot be retrieved.
-    public func getClockAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.Clock.Attribute, as type: DataType.Type
+    public func getAttribute<DataType: BitwiseCopyable>(
+        _ attribute: Mach.Clock.Attribute, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             array, count in
