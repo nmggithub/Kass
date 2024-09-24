@@ -44,10 +44,6 @@ extension Mach.Task {
     }
 
     /// Gets the task's info.
-    /// - Parameters:
-    ///   - info: The info to get.
-    ///   - type: The type to load the info as.
-    /// - Throws: An error if the info cannot be retrieved.
     public func getInfo<DataType: BitwiseCopyable>(
         _ info: Info, as type: DataType.Type
     ) throws -> DataType {
@@ -58,10 +54,6 @@ extension Mach.Task {
     }
 
     /// Sets the task's info.
-    /// - Parameters:
-    ///   - info: The info to set.
-    ///   - value: The value to set the info to.
-    /// - Throws: An error if the info cannot be set.
     public func setInfo<DataType: BitwiseCopyable>(
         _ info: Info, to value: DataType
     ) throws {

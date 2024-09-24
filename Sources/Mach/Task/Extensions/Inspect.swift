@@ -7,11 +7,6 @@ extension Mach.TaskInspect {
     }
 
     /// Gets the task inspect port's info.
-    /// - Parameters:
-    ///   - info: The info to get.
-    ///   - type: The type to load the info as.
-    /// - Throws: An error if the info cannot be retrieved.
-    /// - Returns: The info.
     public func getInfo<DataType: BitwiseCopyable>(
         _ info: Info, as type: DataType.Type
     ) throws -> DataType {

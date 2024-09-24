@@ -2,8 +2,6 @@ import Darwin.Mach
 
 extension Mach.Task {
     /// Gets the task's stashed ports.
-    /// - Throws: An error if the ports cannot be retrieved.
-    /// - Returns: The stashed ports.
     public func getStashedPorts() throws -> [Mach.Port] {
         var portsCount = mach_msg_type_number_t.max
         var ports: mach_port_array_t? = mach_port_array_t.allocate(
@@ -18,8 +16,6 @@ extension Mach.Task {
     }
 
     /// Sets the task's stashed ports.
-    /// - Parameter ports: The ports to stash.
-    /// - Throws: An error if the ports cannot be set.
     public func setStashedPorts(_ ports: [Mach.Port]) throws {
         let portsCount = mach_msg_type_number_t(ports.count)
         var portNames = ports.map(\.name)

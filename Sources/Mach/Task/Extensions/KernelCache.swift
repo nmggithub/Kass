@@ -1,12 +1,7 @@
 import Foundation
 
 extension Mach.Task {
-    /// Gets the data of a kernel cache object as a specific type.
-    /// - Parameters:
-    ///   - kcObject: The kernel cache object, represented as a port.
-    ///   - type: The type to load the data as.
-    /// - Throws: An error if the data cannot be retrieved.
-    /// - Returns: The data of the kernel cache object.
+    /// Gets the data of a kernel cache object.
     public func data<DataType>(
         of kcObject: Mach.Port, as type: DataType.Type
     ) throws -> DataType {
@@ -17,9 +12,6 @@ extension Mach.Task {
     }
 
     /// Gets the data of a kernel cache object.
-    /// - Parameter kcObject: The kernel cache object, represented as a port.
-    /// - Throws: An error if the data cannot be retrieved.
-    /// - Returns: The data of the kernel cache object.
     public func data(of kcObject: Mach.Port) throws -> Data {
         var address = mach_vm_address_t()
         var size = mach_vm_size_t()

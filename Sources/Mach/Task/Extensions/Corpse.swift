@@ -22,9 +22,8 @@ extension Mach.Task {
             }
         }
     }
+
     /// Generates a corpse for the task.
-    /// - Throws: An error if the corpse could not be generated.
-    /// - Returns: The corpse.
     public func generateCorpse() throws -> Corpse {
         var corpseName: task_name_t = TASK_NAME_NULL
         try Mach.call(task_generate_corpse(self.name, &corpseName))

@@ -33,6 +33,7 @@ extension Mach.Task {
     public var dyld: Dyld {
         Dyld(for: self)
     }
+
     /// A dyld manager for a task.
     /// - Note: Documentation rarely refers to dyld with any capitalization, but Swift convention dictates
     /// that struct names should use PascalCase. Where capitalization is used in documentation to refer to
@@ -42,7 +43,8 @@ extension Mach.Task {
     /// - Warning: Most, if not all, of the underlying kernel calls are no longer supported. They are kept here for historical purposes.
     public struct Dyld {
         /// The task.
-        public let task: Mach.Task
+        private let task: Mach.Task
+
         /// Creates a dyld manager for a given task.
         /// - Parameter task: The task.
         public init(for task: Mach.Task) {
@@ -65,22 +67,16 @@ extension Mach.Task {
             }
 
             /// Registers a port to receive dyld notifications.
-            /// - Parameter port: The port to register.
-            /// - Throws: An error if the port could not be registered.
             public func register(_ port: Mach.Port) throws {
                 try Mach.call(task_dyld_process_info_notify_register(self.task.name, port.name))
             }
 
             /// Deregisters a port from receiving dyld notifications.
-            /// - Parameter port: The port to deregister.
-            /// - Throws: An error if the port could not be deregistered.
             public func deregister(_ port: Mach.Port) throws {
                 try Mach.call(task_dyld_process_info_notify_deregister(self.task.name, port.name))
             }
 
             /// Gets the ports registered to receive dyld notifications for the current task.
-            /// - Throws: An error if the ports could not be retrieved.
-            /// - Returns: The ports registered to receive dyld notifications for the current task.
             /// - Important: Unfortunately, there does not appear to be a way to get the ports registered
             /// to receive dyld notifications for an arbitrary task.
             public static func getForCurrentTask() throws -> [Mach.Port] {
@@ -98,22 +94,31 @@ extension Mach.Task {
 
         /// A dyld state.
         public enum State: UInt8 {
+            /// The state is unknown.
             case unknown = 0xFF
+
             /// The process is suspended, dyld has not started running yet.
             case notStarted = 0x00
+
             /// Dyld has initialized itself.
             case initialized = 0x10
+
             /// The process was terminated due to a missing library or symbol before it got to `main()`.
             case terminatedBeforeInits = 0x20
+
             /// Dyld has run libSystem's initializer.
             case libSystemInitialized = 0x30
+
             /// Dyld is running other initializers.
             case runningOtherInitializers = 0x40
+
             /// Dyld has finished and jumped into `main()``.
             case programIsRunning = 0x50
+
             /// The process was terminated by dyld post-main (e.g. bad lazying binding info).
             case terminated = 0x60
         }
+
         /// Information about dyld in a process.
         public struct ProcessInfo: RawRepresentable {
             /// The raw dyld process info.
@@ -128,8 +133,8 @@ extension Mach.Task {
                     private_cache: privateCache ? 1 : 0
                 )
             }
+
             /// Represents an existing raw dyld process info.
-            /// - Parameter rawValue: The raw dyld process info.
             public init(rawValue: dyld_kernel_process_info_t) {
                 self.cacheImageInfo = ImageInfo(rawValue: rawValue.cache_image_info)
                 self.lastChangeTimestamp = rawValue.timestamp
@@ -139,21 +144,28 @@ extension Mach.Task {
                 self.noCache = rawValue.no_cache != 0
                 self.privateCache = rawValue.private_cache != 0
             }
+
             /// The cache image info.
             public let cacheImageInfo: ImageInfo
+
             /// The timestamp of last time the dyld image list changed.
             public let lastChangeTimestamp: UInt64
+
             /// The number of images currently loaded into process.
             public let imageCount: UInt32
+
             /// The number of images statically loaded into process (before any dlopen() calls).
             public let initialImageCount: UInt32
+
             /// The state.
             public let state: State
             /// Whether the process is running without a dyld cache.
             public let noCache: Bool
+
             /// Whether the process is using a private copy of its dyld cache
             public let privateCache: Bool
         }
+
         /// Information about a dyld image.
         public struct ImageInfo: RawRepresentable {
             /// The raw dyld image info.
@@ -165,22 +177,25 @@ extension Mach.Task {
                     load_addr: UInt64(UInt(bitPattern: loadAddress))
                 )
             }
+
             /// Represents an existing raw dyld image info.
-            /// - Parameter rawValue: The raw dyld image info.
             public init(rawValue: dyld_kernel_image_info) {
-                // self.rawValue = rawValue
                 self.uuid = UUID(uuid: rawValue.uuid)
                 self.objectID = BSD.FS.ObjectID(rawValue: rawValue.fsobjid)
                 self.id = BSD.FS.ID(rawValue: rawValue.fsid)
                 // `load_addr` is a `UInt64`. I wonder what happens on 32-bit systems.
                 self.loadAddress = UnsafeRawPointer(bitPattern: UInt(rawValue.load_addr))!
             }
+
             /// The UUID.
             public let uuid: UUID
+
             /// The object ID.
             public let objectID: BSD.FS.ObjectID
+
             /// The ID.
             public let id: BSD.FS.ID
+
             /// The load address.
             public let loadAddress: UnsafeRawPointer
         }
@@ -195,15 +210,11 @@ extension Mach.Task {
         }
 
         /// Sets the dyld state.
-        /// - Parameter state: The dyld state to set.
-        /// - Throws: An error if the dyld state could not be set.
         public func setState(_ state: State) throws {
             try Mach.call(task_register_dyld_set_dyld_state(self.task.name, state.rawValue))
         }
 
         /// The dyld image infos.
-        /// - Throws: An error if the dyld image infos could not be retrieved.
-        /// - Returns: The dyld image infos.
         public var infos: [ImageInfo] {
             get throws {
                 var infos: UnsafeMutablePointer<dyld_kernel_image_info>?
@@ -216,8 +227,6 @@ extension Mach.Task {
         }
 
         /// Registers dyld image infos.
-        /// - Parameter infos: The dyld image infos to register.
-        /// - Throws: An error if the dyld image infos could not be registered.
         public func register(_ infos: [ImageInfo]) throws {
             var rawInfos = infos.map(\.rawValue)
             try Mach.call(
@@ -228,8 +237,6 @@ extension Mach.Task {
         }
 
         /// Unregisters dyld image infos.
-        /// - Parameter infos: The dyld image infos to unregister.
-        /// - Throws: An error if the dyld image infos could not be unregistered.
         public func unregister(_ infos: [ImageInfo]) throws {
             var rawInfos = infos.map(\.rawValue)
             try Mach.call(

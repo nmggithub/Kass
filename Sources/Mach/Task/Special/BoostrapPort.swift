@@ -21,25 +21,25 @@ extension Mach.Task {
     /// A port for communicating with the bootstrap server.
     public class BootstrapPort: Mach.Port {
         /// Looks up a service by name.
-        /// - Parameter serviceName: The name of the service to look up.
-        /// - Throws: An error if the service lookup failed.
-        /// - Returns: The port for the service.
         public func lookUp(serviceName: String) throws -> Mach.Port {
             var portName = mach_port_name_t()
             do {
                 try Mach.call(bootstrap_look_up(self.name, serviceName, &portName))
             } catch {
-                let kr = kern_return_t((error as NSError).code)
-                guard let errorString = bootstrap_strerror(kr) else {
-                    // If we can't get the error string, throw the return code only
-                    throw NSError(domain: NSMachErrorDomain, code: Int(kr))
+                switch error {
+                case is MachError: throw error
+                default:
+                    let kr = kern_return_t((error as NSError).code)
+                    guard let errorString = bootstrap_strerror(kr) else {
+                        throw error  // Re-throw the original error if we can't get an error string.
+                    }
+                    throw NSError(
+                        domain: NSMachErrorDomain, code: Int(kr),
+                        userInfo: [
+                            NSLocalizedDescriptionKey: String(cString: errorString)
+                        ]
+                    )
                 }
-                throw NSError(
-                    domain: NSMachErrorDomain, code: Int(kr),
-                    userInfo: [
-                        NSLocalizedDescriptionKey: String(cString: errorString)
-                    ]
-                )
             }
             return Mach.Port(named: portName)
         }
