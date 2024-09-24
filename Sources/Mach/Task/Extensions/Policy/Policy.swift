@@ -13,25 +13,17 @@ extension Mach.Task {
     }
 
     /// Gets the task's policy.
-    /// - Parameters:
-    ///   - policy: The policy to get.
-    ///   - type: The type to load the policy as.
-    /// - Throws: An error if the policy cannot be retrieved.
-    /// - Returns: The policy.
     public func getPolicy<DataType: BitwiseCopyable>(
-        _ policy: Policy, as type: DataType.Type
+        _ policy: Policy, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: task_policy_t, count) in
-            task_policy_get(self.name, policy.rawValue, array, &count, nil)
+            var dontGetDefault = boolean_t(0)
+            return task_policy_get(self.name, policy.rawValue, array, &count, &dontGetDefault)
         }
     }
 
     /// Sets the task's policy.
-    /// - Parameters:
-    ///   - policy: The policy to set.
-    ///   - value: The value to set the policy to.
-    /// - Throws: An error if the policy cannot be set.
     public func setPolicy<DataType: BitwiseCopyable>(
         _ policy: Policy, to value: DataType
     ) throws {
@@ -40,4 +32,16 @@ extension Mach.Task {
             task_policy_set(self.name, policy.rawValue, array, count)
         }
     }
+}
+
+extension Mach.Task.Policy {
+    /// Gets the policy for a task.
+    public func get<DataType: BitwiseCopyable>(
+        for task: Mach.Task = .current, as type: DataType.Type
+    ) throws -> DataType { try task.getPolicy(self, as: type) }
+
+    /// Sets the policy for a task.
+    public func set(
+        for task: Mach.Task = .current, to value: BitwiseCopyable
+    ) throws { try task.setPolicy(self, to: value) }
 }
