@@ -65,10 +65,8 @@ extension Mach {
     ///   - call: A function that executes the kernel call and passes the array pointer and count.
     /// - Throws: An error if the operation fails.
     /// - Note: This function will automatically convert the value to an array of the specified type.
-    public static func callWithCountIn<ArrayPointee, DataType: BitwiseCopyable>(
-        value: DataType,
-        _ call: (UnsafeMutablePointer<ArrayPointee>, mach_msg_type_number_t)
-            -> kern_return_t
+    public static func callWithCountIn<ArrayPointee: BitwiseCopyable, DataType: BitwiseCopyable>(
+        value: DataType, _ call: CountInCall<ArrayPointee>
     ) throws {
         let count = mach_msg_type_number_t(
             MemoryLayout<DataType>.size / MemoryLayout<ArrayPointee>.size
