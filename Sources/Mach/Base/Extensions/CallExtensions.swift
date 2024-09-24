@@ -71,14 +71,17 @@ extension Mach {
         let count = mach_msg_type_number_t(
             MemoryLayout<DataType>.size / MemoryLayout<ArrayPointee>.size
         )
-        let array = UnsafeMutablePointer<ArrayPointee>.allocate(capacity: Int(count))
-        defer { array.deallocate() }
-        withUnsafeBytes(of: value) { dataBytes in
-            UnsafeMutableRawPointer(array).copyMemory(
-                from: dataBytes.baseAddress!, byteCount: dataBytes.count
+        try withUnsafeBytes(of: value) { valueBytes in
+            guard let baseAddress = valueBytes.baseAddress else {
+                // We couldn't get the base address, so we can't interpret the value as an array. Send an empty array instead.
+                try self.callWithCountIn(array: [], call)
+                return
+            }
+            let arrayPointer = baseAddress.bindMemory(to: ArrayPointee.self, capacity: Int(count))
+            try self.callWithCountIn(
+                array: Array(UnsafeBufferPointer(start: arrayPointer, count: Int(count))), call
             )
         }
-        try Mach.call(call(array, count))
     }
 
     /// A function that executes a kernel call that returns an array of a specified type, passing an array pointer and count.
