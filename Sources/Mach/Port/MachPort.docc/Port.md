@@ -20,6 +20,7 @@
 - ``rights``
 - ``Right``
 - ``description``
+- ``debugDescription``
 
 ### Representing a nil-named port
 
@@ -36,7 +37,9 @@
 
 ### Constructing new ports
 
-- ``init(queueLimit:flags:context:in:)``
+- <doc:Using-ports>
+- ``init(options:context:in:)``
+- ``init(flags:limits:in:)``
 - ``ConstructFlag``
 
 ### User references
@@ -44,6 +47,7 @@
 - <doc:User-references>
 - ``userRefs(for:)``
 - ``UserRefs``
+- ``setUserRefs(for:to:)``
 
 ### Managing context
 
@@ -53,9 +57,25 @@
 
 ### Managing attributes
 
+- <doc:Port-attributes>
 - ``Attribute``
 - ``getAttribute(_:as:)``
 - ``setAttribute(_:to:)``
+- ``assertAttribute(_:is:)``
+
+### Managing specific attributes
+
+- <doc:Port-attributes>
+- ``limits``
+- ``setLimits(to:)``
+- ``status``
+- ``requestTableCount``
+- ``setRequestTableCount(to:)``
+- ``setWillChangeOwner()``
+- ``setIsImportanceReceiver()``
+- ``setIsDeNapReceiver()``
+- ``info``
+- ``assertGuard(is:)``
 
 ### Guarding ports
 
@@ -79,3 +99,8 @@
 ### Additional helpers
 
 - ``hash(into:)``
+
+### Getting related ports
+
+- ``WithSpecialPorts``
+- ``SpecialPortType``

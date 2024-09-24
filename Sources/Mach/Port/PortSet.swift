@@ -22,8 +22,6 @@ extension Mach {
         }
 
         /// Inserts a port into the port set.
-        /// - Parameter port: The port to insert.
-        /// - Throws: An error if the port cannot be inserted.
         public func insert(_ port: Mach.Port) throws {
             try Mach.call(
                 mach_port_insert_member(self.owningTask.name, port.name, self.name)
@@ -34,9 +32,7 @@ extension Mach {
 
 extension Mach.Port {
     /// Moves the port into a port set.
-    /// - Parameter set: The port set to move the port into.
-    /// - Throws: An error if the port cannot be moved.
-    /// - Warning: If the port is already a member of any port sets, it will be removed from them.
+    /// - Warning: If the port is already a member of any other port sets, it will be removed from them.
     public func move(to set: Mach.PortSet) throws {
         try Mach.call(
             mach_port_move_member(self.owningTask.name, self.name, set.name)
@@ -44,9 +40,5 @@ extension Mach.Port {
     }
 
     /// Inserts the port into a port set.
-    /// - Parameter set: The port set to insert the port into.
-    /// - Throws: An error if the port cannot be inserted.
-    public func insert(into set: Mach.PortSet) throws {
-        try set.insert(self)
-    }
+    public func insert(into set: Mach.PortSet) throws { try set.insert(self) }
 }

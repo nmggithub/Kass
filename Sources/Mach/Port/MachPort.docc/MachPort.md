@@ -1,17 +1,27 @@
 # ``MachPort``
 
+@Metadata {
+    @TitleHeading("Module")
+}
+
 ## Topics
 
 ### Working with ports
 
 - <doc:Architecture>
-- <doc:User-references>
 - <doc:Using-ports>
+- <doc:User-references>
+- ``MachBase/Mach/KernelObject``
 
-### Ports
+### Basic ports
 
 - ``MachBase/Mach/Port``
 - ``MachBase/Mach/PortSet``
+
+### Service-related ports
+
+- ``MachBase/Mach/ServicePort``
+- ``MachBase/Mach/ConnectionPort``
 
 ### Additional classes
 

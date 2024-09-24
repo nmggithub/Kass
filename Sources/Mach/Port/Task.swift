@@ -9,14 +9,14 @@ extension Mach {
         /// If the task is the current task.
         public var isSelf: Bool { mach_task_is_self(self.name) != 0 ? true : false }
 
-        /// The ports in the task's namespace.
+        /// The ports (really, port names) in the task's name space.
         public var ports: [Mach.Port] {
             get throws {
                 var namesCount = mach_msg_type_number_t.max
                 var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
                     capacity: Int(namesCount)
                 )
-                // the types array is not used, but it is required by `mach_port_names`
+                // The types array is not used, but it is required by `mach_port_names`.
                 var typesCount = mach_msg_type_number_t.max
                 var types: mach_port_type_array_t? = mach_port_type_array_t.allocate(
                     capacity: Int(typesCount)
