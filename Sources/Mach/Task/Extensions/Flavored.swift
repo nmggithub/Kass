@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach.Task {
-    // A flavor of task (port).
+    /// A flavor of task (port).
     public enum Flavor: mach_task_flavor_t {
         /// A task control port.
         case control = 0
@@ -18,6 +18,7 @@ extension Mach.Task {
 
     /// A task (port) with a flavor.
     public protocol Flavored: Mach.Task {
+        /// The flavor of the task port.
         var flavor: Mach.Task.Flavor { get }
     }
 }

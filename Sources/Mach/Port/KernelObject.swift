@@ -171,7 +171,7 @@ extension Mach {
             /// The port is a task fatal port.
             case taskFatal = 51
 
-            /// Kernel cache data.
+            /// Kernelcache data.
             case kcdata = 52
 
             /// An exclaves resource.

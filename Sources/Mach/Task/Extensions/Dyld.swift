@@ -40,7 +40,7 @@ extension Mach.Task {
     /// dyld, it is either PascalCase or ALL_CAPS. However, the latter is only used for constants, so it's
     /// probably safe to assume that PascalCase is the correct capitalization to represent dyld in Swift.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
-    /// - Warning: Most, if not all, of the underlying kernel calls are no longer supported. They are kept here for historical purposes.
+    /// - Warning: Most of the underlying kernel calls are no longer supported. They are kept here for historical purposes.
     public struct Dyld {
         /// The task.
         private let task: Mach.Task

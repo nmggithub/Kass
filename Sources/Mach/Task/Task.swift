@@ -1,10 +1,14 @@
 import Darwin.Mach
 @_exported import MachBase
-@_exported import MachPort  // Mach.Task lives in MachPort due to a circular dependency with Mach.Port
+@_exported import MachPort
 @_exported import MachThread
 
 typealias MachTask = Mach.Task
 
+/// A task.
+/// - Note: The actual ``MachBase/Mach/Task`` class can be found in the `MachPort` module. It lives there due to a circular
+/// dependency between it and `Mach.Port`. However, the vast majority of functionality for tasks is implemented here in the
+/// ``MachTask`` module. Please visit both modules to see the full implementation of this class.
 extension Mach.Task {
     /// Sets the physical footprint limit for the task.
     /// - Returns: The old limit.

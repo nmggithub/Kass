@@ -43,6 +43,7 @@ extension Mach.Task {
     }
 
     /// A task's suppression policy.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
     public struct SuppressionPolicy: BitwiseCopyable {
         let active: Int32
         let lowpri_cpu: Int32
@@ -73,6 +74,7 @@ extension Mach.Task {
     }
 
     /// A task's policy state.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
     public struct PolicyState: BitwiseCopyable {
         let requested: UInt64
         let effective: UInt64

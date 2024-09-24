@@ -12,7 +12,7 @@ extension Mach.Task {
     }
 
     /// Resumes the task with a suspension token.
-    public func resume2(with token: SuspensionToken) throws {
+    public func resume2(_ token: SuspensionToken) throws {
         try Mach.call(task_resume2(token.name))
     }
 }

@@ -12,12 +12,7 @@ private let bootstrap_look_up:
 private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafePointer<CChar>? =
     libSystem().get(symbol: "bootstrap_strerror")!.cast()
 
-extension Mach.Task {
-    public var bootstrapPort: BootstrapPort {
-        get throws {
-            try self.getSpecialPort(.bootstrap, as: BootstrapPort.self)
-        }
-    }
+extension Mach {
     /// A port for communicating with the bootstrap server.
     public class BootstrapPort: Mach.Port {
         /// Looks up a service by name.
@@ -42,6 +37,15 @@ extension Mach.Task {
                 }
             }
             return Mach.Port(named: portName)
+        }
+    }
+}
+
+extension Mach.Task {
+    /// The task's bootstrap port.
+    public var bootstrapPort: Mach.BootstrapPort {
+        get throws {
+            try self.getSpecialPort(.bootstrap, as: Mach.BootstrapPort.self)
         }
     }
 }

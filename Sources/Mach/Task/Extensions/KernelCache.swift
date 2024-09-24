@@ -1,18 +1,18 @@
 import Foundation
 
 extension Mach.Task {
-    /// Gets the data of a kernel cache object.
-    public func data<DataType>(
+    /// Gets the data of a kernelcache object.
+    public func kernelcacheData<DataType>(
         of kcObject: Mach.Port, as type: DataType.Type
     ) throws -> DataType {
-        let data = try self.data(of: kcObject)
+        let data = try self.kernelcacheData(of: kcObject)
         return data.withUnsafeBytes { buffer in
             buffer.load(as: DataType.self)
         }
     }
 
-    /// Gets the data of a kernel cache object.
-    public func data(of kcObject: Mach.Port) throws -> Data {
+    /// Gets the data of a kernelcache object.
+    public func kernelcacheData(of kcObject: Mach.Port) throws -> Data {
         var address = mach_vm_address_t()
         var size = mach_vm_size_t()
         try Mach.call(
