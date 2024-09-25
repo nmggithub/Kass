@@ -62,5 +62,5 @@ It is possible to get a task port of a given flavor for a process using that pro
 
 ## Additional notes on flavored task ports
 
-- **Task control ports** are severely restricted in more recent versions of macOS are are only retrievable under very limited circumstances (such as getting the task control port for the currently running process).
+- **Task control ports** are severely restricted in more recent versions of macOS are are only retrievable under very limited circumstances (such as getting the task control port for the calling process).
 - **Task name ports** are generally unrestricted as they don't indicate any level of privilege over the task itself.
