@@ -59,6 +59,14 @@ let modules: [Module] = [
     ),
     MachSubModule.init(subModuleName: "Port", dependencies: ["CCompat", "Linking"]),
     MachSubModule.init(
+        subModuleName: "Task",
+        dependencies: ["MachPort", "BSDBase", "BSDFS", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
+        subModuleName: "Thread",
+        dependencies: ["MachPort", "MachHost", "MachVoucher", "CCompat", "Linking"]
+    ),
+    MachSubModule.init(
         subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
     ),
     MachSubModule.init(
@@ -71,14 +79,6 @@ let modules: [Module] = [
     MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
         dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Thread",
-        dependencies: ["MachPort", "MachHost", "MachVoucher", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Task",
-        dependencies: ["MachPort", "MachThread", "BSDBase", "BSDFS", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Exception",

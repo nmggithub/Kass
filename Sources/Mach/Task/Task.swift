@@ -1,7 +1,6 @@
 import Darwin.Mach
 @_exported import MachBase
 @_exported import MachPort
-@_exported import MachThread
 
 typealias MachTask = Mach.Task
 
