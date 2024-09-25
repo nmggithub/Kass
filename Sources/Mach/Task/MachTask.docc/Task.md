@@ -7,10 +7,6 @@
 - ``Flavor``
 - ``identityToken``
 
-### Getting threads
-
-- ``threads``
-
 ### Managing a tasks's lifecycle
 
 - ``suspend()``
@@ -19,6 +15,12 @@
 - ``SuspensionToken``
 - ``suspend2()``
 - ``resume2(_:)``
+
+### Inspecting a port
+
+- ``InspectInfo``
+- ``inspect(_:as:)``
+- ``basicCounts``
 
 ### Managing info
 
