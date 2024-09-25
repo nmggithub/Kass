@@ -12,7 +12,7 @@ extension Mach {
 
         /// Uses the identity token to get the task port of a given flavor.
         /// - Important: The result should be cast to the appropriate subclass.
-        public func taskPort(_ flavor: Mach.Task.Flavor) throws -> Mach.FlavoredTask {
+        public func taskPort(_ flavor: Mach.Task.Flavor) throws -> Mach.Task & Mach.Task.Flavored {
             var taskPortName = mach_port_name_t()
             try Mach.call(
                 task_identity_token_get_task_port(self.name, flavor.rawValue, &taskPortName)

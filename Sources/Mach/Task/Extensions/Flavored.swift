@@ -15,16 +15,16 @@ extension Mach.Task {
         /// A task name port.
         case name = 3
     }
-}
-
-extension Mach {
     /// A task (port) with a flavor.
-    public protocol FlavoredTask: Mach.Task {
+    public protocol Flavored: Mach.Task {
         /// The flavor of the task port.
         var flavor: Mach.Task.Flavor { get }
     }
+}
+
+extension Mach {
     /// A task's control port.
-    public class TaskControl: Mach.Task, Mach.FlavoredTask {
+    public class TaskControl: Mach.Task, Mach.Task.Flavored {
         /// The ``MachBase/Mach/Task/Flavor/control`` flavor.
         public let flavor: Mach.Task.Flavor = .control
 
@@ -35,7 +35,7 @@ extension Mach {
     }
 
     /// A task's read port.
-    public class TaskRead: Mach.Task, Mach.FlavoredTask {
+    public class TaskRead: Mach.Task, Mach.Task.Flavored {
         /// The ``MachBase/Mach/Task/Flavor/read`` flavor.
         public let flavor: Mach.Task.Flavor = .read
 
@@ -46,7 +46,7 @@ extension Mach {
     }
 
     /// A task's inspect port.
-    public class TaskInspect: Mach.Task, Mach.FlavoredTask {
+    public class TaskInspect: Mach.Task, Mach.Task.Flavored {
         /// The ``MachBase/Mach/Task/Flavor/inspect`` flavor.
         public let flavor: Mach.Task.Flavor = .inspect
 
@@ -57,7 +57,7 @@ extension Mach {
     }
 
     /// A task's name port.
-    public class TaskName: Mach.Task, Mach.FlavoredTask {
+    public class TaskName: Mach.Task, Mach.Task.Flavored {
         /// The ``MachBase/Mach/Task/Flavor/name`` flavor.
         public let flavor: Mach.Task.Flavor = .name
 
