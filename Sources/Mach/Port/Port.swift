@@ -316,7 +316,8 @@ extension Mach.Port: CustomStringConvertible {
     /// A description of the port.
     public var description: String {
         let className = String(describing: Self.self)
-        return "<Mach.Port(\(className))>"
+        let formattedName = String(format: "0x%08x", self.name)
+        return "<Mach.Port(\(className)): name: \(formattedName)>"
     }
 }
 
