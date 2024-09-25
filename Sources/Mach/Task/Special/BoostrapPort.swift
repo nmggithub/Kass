@@ -44,8 +44,6 @@ extension Mach {
 extension Mach.Task {
     /// The task's bootstrap port.
     public var bootstrapPort: Mach.BootstrapPort {
-        get throws {
-            try self.getSpecialPort(.bootstrap, as: Mach.BootstrapPort.self)
-        }
+        get throws { try self.getSpecialPort(.bootstrap) }
     }
 }

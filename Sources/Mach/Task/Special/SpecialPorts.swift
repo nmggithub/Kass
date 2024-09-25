@@ -9,7 +9,7 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
 
         /// Gets the special port for a task.
         public func get<PortType: Mach.Port>(
-            for task: Mach.Task = .current, as type: PortType.Type = Mach.Port.self
+            for task: Mach.Task = .current, as type: PortType.Type = PortType.self
         ) throws -> PortType {
             try task.getSpecialPort(self, as: type)
         }
@@ -54,7 +54,7 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
 
     /// Gets a special port for the task.
     public func getSpecialPort<PortType: Mach.Port>(
-        _ specialPort: SpecialPort, as type: PortType.Type = Mach.Port.self
+        _ specialPort: SpecialPort, as type: PortType.Type = PortType.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
         try Mach.call(
