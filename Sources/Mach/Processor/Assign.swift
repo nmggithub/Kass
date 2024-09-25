@@ -1,11 +1,13 @@
 import Darwin.Mach
 
 extension Mach.Host.Processor {
-    /// Gets the processor set that the processor is in.
-    public func getAssigment() throws -> Mach.Host.ProcessorSet {
-        var processorSet = processor_set_name_t()
-        try Mach.call(processor_get_assignment(self.name, &processorSet))
-        return Mach.Host.ProcessorSet(named: processorSet)
+    /// The processor set that the processor is in.
+    public var assignment: Mach.Host.ProcessorSet {
+        get throws {
+            var processorSet = processor_set_name_t()
+            try Mach.call(processor_get_assignment(self.name, &processorSet))
+            return Mach.Host.ProcessorSet(named: processorSet)
+        }
     }
 
     /// Assigns the processor to a processor set.

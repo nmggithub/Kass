@@ -9,7 +9,7 @@ extension Mach.Host {
         /// - Parameter host: The host to get the default processor set for.
         /// - Throws: If the default processor set cannot be retrieved.
         /// - Returns: The default processor set for the host.
-        public func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
+        public static func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
             var name = processor_set_name_t()
             try Mach.call(processor_set_default(host.name, &name))
             return ProcessorSet(named: name)
