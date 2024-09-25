@@ -17,7 +17,7 @@ extension Mach {
         }
 
         /// Gets the flavored tasks in the processor set.
-        public func flavoredTasks(_ flavor: Mach.Task.Flavor) throws -> [Mach.Task.Flavored] {
+        public func flavoredTasks(_ flavor: Mach.Task.Flavor) throws -> [Mach.FlavoredTask] {
             var taskList: task_array_t?
             var taskCount = mach_msg_type_number_t.max
             try Mach.call(
