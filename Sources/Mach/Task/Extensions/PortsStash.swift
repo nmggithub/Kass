@@ -9,8 +9,7 @@ extension Mach.Task {
         )
         try Mach.call(mach_ports_lookup(self.name, &ports, &portsCount))
         return (0..<Int(portsCount)).map {
-            let port = Mach.Port(named: ports![$0])
-            port.owningTask = self
+            let port = Mach.Port(named: ports![$0], in: self)
             return port
         }
     }

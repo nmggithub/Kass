@@ -25,8 +25,7 @@ extension Mach {
                     mach_port_names(self.name, &names, &namesCount, &types, &typesCount)
                 )
                 return (0..<Int(namesCount)).map {
-                    let port = Mach.Port(named: names![$0])
-                    port.owningTask = self
+                    let port = Mach.Port(named: names![$0], in: self)
                     return port
                 }
             }

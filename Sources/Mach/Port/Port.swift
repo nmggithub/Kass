@@ -31,22 +31,10 @@ extension Mach {
         public let name: mach_port_name_t
 
         /// The raw task that the port name is in the name space of.
-        private var rawOwningTask: task_t = mach_task_self_
-
-        /// References an existing port in the current task's name space.
-        ///
-        /// This initializer only exists to provide the ``Mach/Task/current`` task property an initialization
-        /// path. Since the ``init(named:in:)`` initializer references that property (as the default value of
-        /// the `in` parameter), trying to use it to initialize the property would cause an infinite loop.
-        internal init(named name: mach_port_name_t) {
-            self.name = name
-        }
+        private let rawOwningTask: task_t
 
         /// The task that the port ``name`` is in the name space of.
-        public var owningTask: Mach.Task {
-            get { return Task(named: self.rawOwningTask) }
-            set { self.rawOwningTask = newValue.name }
-        }
+        public var owningTask: Mach.Task { Task(named: self.rawOwningTask, in: mach_task_self_) }
 
         /// The port rights named by ``Port/name``.
         public var rights: Set<Right> {
@@ -64,10 +52,21 @@ extension Mach {
             }
         }
 
+        /// References an existing port in the current task's name space.
+        internal convenience init(named name: mach_port_name_t) {
+            self.init(named: name, in: mach_task_self_)
+        }
+
+        /// References an existing port in a given task's name space.
+        internal init(named name: mach_port_name_t, in task: task_t) {
+            self.name = name
+            self.rawOwningTask = task
+        }
+
         /// References an existing port in a given task's name space.
         public required init(named name: mach_port_name_t, in task: Task = .current) {
             self.name = name
-            self.owningTask = task
+            self.rawOwningTask = task.name
         }
 
         @available(
@@ -98,6 +97,7 @@ extension Mach {
                     : mach_port_allocate(task.name, right.rawValue, &generatedPortName)
             )
             self.name = name ?? generatedPortName
+            self.rawOwningTask = task.name
         }
 
         /// Deallocates the port.
