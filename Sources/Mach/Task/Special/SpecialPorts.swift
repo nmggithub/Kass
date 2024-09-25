@@ -41,7 +41,7 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
         case seatbelt = 7
 
         @available(macOS, obsoleted: 10.8)
-        /// - Note: If you can even get Swift code to compile for Max OS X 10.7 Lion or earlier, more power to you.
+        /// - Note: If you can even get Swift code to compile for Max OS X Lion or earlier, more power to you.
         case gssd = 8
 
         /// A port for determining access to the different flavored task ports for the task.

@@ -34,7 +34,7 @@ New ports can be allocated through the ``MachBase/Mach/Port/init(right:named:in:
 
 ## Constructing new ports
 
-Starting around OS X 10.9 Mavericks, a new way of creating ports was introduced. This is referred to as "constructing" a port and can be done through the ``MachBase/Mach/Port/init(options:context:in:)`` initializer. This way of creating ports is much more advanced and mainly used internally. Nonetheless, it is still exposed in user space headers.
+Starting around OS X Mavericks, a new way of creating ports was introduced. This is referred to as "constructing" a port and can be done through the ``MachBase/Mach/Port/init(options:context:in:)`` initializer. This way of creating ports is much more advanced and mainly used internally. Nonetheless, it is still exposed in user space headers.
 
 For some more specific examples:
 - a ``MachBase/Mach/ServicePort`` can be constructed with the ``MachBase/Mach/ServicePort/init(_:domainType:context:in:limits:flags:)`` initializer, and
