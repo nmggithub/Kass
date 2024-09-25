@@ -2,8 +2,6 @@ import Darwin.Mach
 @_exported import MachBase
 @_exported import MachPort
 
-typealias MachTask = Mach.Task
-
 /// A task.
 /// - Note: The actual ``MachBase/Mach/Task`` class can be found in the `MachPort` module. It lives there due to a circular
 /// dependency between it and `Mach.Port`. However, the vast majority of functionality for tasks is implemented here in the
