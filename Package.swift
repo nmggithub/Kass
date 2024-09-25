@@ -57,48 +57,43 @@ let modules: [Module] = [
     BasicModule.init(
         targetName: "MachBase", path: "Sources/Mach/Base", dependencies: ["CCompat", "Linking"]
     ),
-    MachSubModule.init(subModuleName: "Port", dependencies: ["CCompat", "Linking"]),
-    MachSubModule.init(
-        subModuleName: "Task",
-        dependencies: ["MachPort", "BSDBase", "BSDFS", "CCompat", "Linking"]
-    ),
     MachSubModule.init(
         subModuleName: "Thread",
-        dependencies: ["MachPort", "MachHost", "MachVoucher", "CCompat", "Linking"]
+        dependencies: ["MachHost", "MachVoucher", "CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Host", dependencies: ["MachPort", "CCompat", "Linking"]
+        subModuleName: "Host", dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Voucher", dependencies: ["MachPort", "MachHost", "CCompat", "Linking"]
+        subModuleName: "Voucher", dependencies: ["MachHost", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Sema", folderName: "Semaphore",
-        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+        dependencies: ["MachThread", "MachHost", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
-        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+        dependencies: ["MachThread", "MachHost", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Exception",
-        dependencies: ["MachPort", "MachThread", "MachTask", "CCompat", "Linking"]
+        dependencies: ["MachThread", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Msg", folderName: "Message",
-        dependencies: ["MachPort", "MachTask", "CCompat", "Linking"]
+        dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "MIG",
-        dependencies: ["MachPort", "MachTask", "MachMsg", "CCompat", "Linking"]
+        dependencies: ["MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Clock",
-        dependencies: ["MachPort", "MachHost", "MachMsg", "CCompat", "Linking"]
+        dependencies: ["MachHost", "MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Proc", folderName: "Processor",
-        dependencies: ["MachPort", "MachTask", "MachThread", "MachHost", "CCompat", "Linking"]
+        dependencies: ["MachThread", "MachHost", "CCompat", "Linking"]
     ),
 ]
 
