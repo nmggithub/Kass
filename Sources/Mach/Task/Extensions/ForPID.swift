@@ -11,12 +11,18 @@ extension Mach.TaskControl {
         self.init(named: controlPort)
     }
 }
-extension Mach.TaskName {
-    /// Gets the task name port for a process.
+
+private let task_read_for_pid:
+    @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_read_t>) -> kern_return_t =
+        libSystem()
+        .get(symbol: "task_read_for_pid")!.cast()
+
+extension Mach.TaskRead {
+    /// Gets the task read port for a process.
     public convenience init(for pid: pid_t) throws {
-        var namePort = task_name_t()
-        /// The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
-        try Mach.call(task_name_for_pid(Mach.Task.current.name, pid, &namePort))
+        var namePort = task_read_t()
+        /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
+        try BSD.syscall(task_read_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach call.
         self.init(named: namePort)
     }
 }
@@ -36,17 +42,12 @@ extension Mach.TaskInspect {
     }
 }
 
-private let task_read_for_pid:
-    @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_read_t>) -> kern_return_t =
-        libSystem()
-        .get(symbol: "task_read_for_pid")!.cast()
-
-extension Mach.TaskRead {
-    /// Gets the task read port for a process.
+extension Mach.TaskName {
+    /// Gets the task name port for a process.
     public convenience init(for pid: pid_t) throws {
-        var namePort = task_read_t()
-        /// The first parameter doesn't seem to be used anymore, but we pass in the current task name for historical reasons.
-        try BSD.syscall(task_read_for_pid(Mach.Task.current.name, pid, &namePort))  // This is weirdly a BSD syscall, not a Mach call.
+        var namePort = task_name_t()
+        /// The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
+        try Mach.call(task_name_for_pid(Mach.Task.current.name, pid, &namePort))
         self.init(named: namePort)
     }
 }
