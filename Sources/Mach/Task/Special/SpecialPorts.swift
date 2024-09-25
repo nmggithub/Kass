@@ -19,22 +19,22 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
             try task.setSpecialPort(self, to: port)
         }
 
-        /// The task control port.
+        /// The task's control port.
         case control = 1
 
         /// The host port for the host that the task is in.
         case host = 2
 
-        /// The task name port.
+        /// The task's name port.
         case name = 3
 
         /// The bootstrap port, used to get ports for Mach services.
         case bootstrap = 4
 
-        /// The task inspect port.
+        /// The task's inspect port.
         case inspect = 5
 
-        /// The task read port.
+        /// The task's read port.
         case read = 6
 
         @available(macOS, obsoleted: 12.0.1)
@@ -47,9 +47,8 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
         /// A port for determining access to the different flavored task ports for the task.
         case access = 9
 
-        case debugControl = 10
-
-        case resourceNotify = 11
+        /// The task's debug port.
+        case debug = 10
     }
 
     /// Gets a special port for the task.
@@ -68,5 +67,42 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
         try Mach.call(
             task_set_special_port(self.name, specialPort.rawValue, port.name)
         )
+    }
+}
+
+extension Mach.Task {
+    /// The task's control port.
+    public var controlPort: Mach.TaskControl {
+        get throws { try getSpecialPort(.control) }
+    }
+
+    /// The host port for the host that the task is in.
+    public var hostPort: Mach.Host {
+        get throws { try getSpecialPort(.host) }
+    }
+
+    /// The task name port.
+    public var namePort: Mach.TaskName {
+        get throws { try getSpecialPort(.name) }
+    }
+
+    /// The task's inspect port.
+    public var inspectPort: Mach.TaskInspect {
+        get throws { try getSpecialPort(.inspect) }
+    }
+
+    /// The task's read port.
+    public var readPort: Mach.TaskRead {
+        get throws { try getSpecialPort(.read) }
+    }
+
+    /// The access port for the task.
+    public var accessPort: Mach.Port {
+        get throws { try getSpecialPort(.access) }
+    }
+
+    /// The task's debug port.
+    public var debugPort: Mach.Port {
+        get throws { try getSpecialPort(.debug) }
     }
 }
