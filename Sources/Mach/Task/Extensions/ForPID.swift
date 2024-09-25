@@ -18,7 +18,7 @@ extension Mach.Task {
         var portName = mach_port_name_t()
         // The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
         switch Self.self {
-        case is Mach.TaskName.Type:
+        case is Mach.TaskRead.Type:
             try BSD.syscall(task_read_for_pid(Mach.Task.current.name, pid, &portName))  // This is weirdly a BSD syscall, not a Mach call.
         case is Mach.TaskInspect.Type:
             try BSD.syscall(task_inspect_for_pid(Mach.Task.current.name, pid, &portName))  // This is weirdly a BSD syscall, not a Mach call.
