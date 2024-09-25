@@ -12,21 +12,17 @@ Portions of the code for this module are covered under license. Please view the 
 
 ## Topics
 
-### A task
+### Getting task ports
 
+- <doc:Task-ports>
 - ``MachBase/Mach/Task``
-
-### Flavored task ports
-
+- ``MachBase/Mach/TaskIdentityToken``
 - ``MachBase/Mach/Task/Flavored``
 - ``MachBase/Mach/TaskControl``
 - ``MachBase/Mach/TaskInspect``
 - ``MachBase/Mach/TaskRead``
 - ``MachBase/Mach/TaskName``
-
-### Getting task ports
-
-- ``MachBase/Mach/TaskIdentityToken``
+- ``MachBase/Mach/Task/for(pid:)``
 
 ### Licenses
 

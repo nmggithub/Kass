@@ -7,7 +7,7 @@
 - ``Flavor``
 - ``identityToken``
 
-### Managing a tasks's lifecycle
+### Managing a task's lifecycle
 
 - ``suspend()``
 - ``resume()``
@@ -28,7 +28,19 @@
 - ``getInfo(_:as:)``
 - ``setInfo(_:to:)``
 
-### Getting specific info
+### Getting dyld info
+
+- ``dyldInfo``
+- ``DyldAllImageInfos``
+- ``DyldImageInfo``
+- ``AotImageInfo``
+- ``DyldUUIDInfo``
+- ``DyldPlatform``
+- ``DyldError``
+- ``DyldErrorKind``
+- ``DyldImageMode``
+
+### Getting other specific info
 
 - ``basicInfo32``
 - ``basicInfo32_2``
@@ -92,6 +104,12 @@
 
 - ``MachBase/Mach/BootstrapPort``
 - ``bootstrapPort``
+- ``hostPort``
+- ``debugPort``
+- ``controlPort``
+- ``namePort``
+- ``inspectPort``
+- ``readPort``
 
 ### Managing vouchers
 
@@ -107,11 +125,6 @@
 ### Setting the footprint limit
 
 - ``setPhysicalFootprintLimit(_:)``
-
-### Managing dyld info
-
-- ``Dyld``
-- ``dyld``
 
 ### Managing kernelcache objects
 
