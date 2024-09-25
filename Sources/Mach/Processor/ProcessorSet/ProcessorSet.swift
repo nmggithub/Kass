@@ -26,7 +26,7 @@ extension Mach {
         }
 
         /// The processor set's control port.
-        public var controlPort: ProcessorSetControl {
+        public var control: ProcessorSetControl {
             get throws {
                 var controlPortName = mach_port_name_t()
                 try Mach.call(
