@@ -54,11 +54,6 @@ extension Mach.Task {
         get throws { try self.getInfo(.affinityTag) }
     }
 
-    /// Information about dyld images in the task.
-    public var dyldInfo: task_dyld_info {
-        get throws { try self.getInfo(.dyld) }
-    }
-
     /// Basic information about the task (64-bit compatible, "newer" version).
     /// - Note: This appears to have been introduced in xnu-4570.1.46, which was released with
     /// OS X 10.13. However, it seems to have only been a compatibility patch and wasn't meant
