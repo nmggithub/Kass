@@ -30,22 +30,22 @@ extension Mach {
         }
 
         /// The control port for the task the identity token is for.
-        public var taskControlPort: Mach.TaskControl {
+        public var controlPort: Mach.TaskControl {
             get throws { try taskPort(.control) as! Mach.TaskControl }
         }
 
         /// The read port for the task the identity token is for.
-        public var taskReadPort: Mach.TaskRead {
+        public var readPort: Mach.TaskRead {
             get throws { try taskPort(.read) as! Mach.TaskRead }
         }
 
         /// The inspect port for the task the identity token is for.
-        public var taskInspectPort: Mach.TaskInspect {
+        public var inspectPort: Mach.TaskInspect {
             get throws { try taskPort(.inspect) as! Mach.TaskInspect }
         }
 
         /// The name port for the task the identity token is for.
-        public var taskNamePort: Mach.TaskName {
+        public var namePort: Mach.TaskName {
             get throws { try taskPort(.name) as! Mach.TaskName }
         }
     }
