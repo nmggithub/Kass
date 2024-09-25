@@ -1,6 +1,6 @@
 import Darwin.Mach
 
-extension Mach.Host.ProcessorSet {
+extension Mach.ProcessorSet {
     /// A collection of processor set statistics.
     public enum Statistics: processor_set_flavor_t {
         case basic = 5

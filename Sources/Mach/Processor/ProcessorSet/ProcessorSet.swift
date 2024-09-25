@@ -1,64 +1,54 @@
 import Darwin.Mach
-import MachTask
-import MachThread
 
-extension Mach.Host {
+extension Mach {
     /// A set of processors in a host.
     public class ProcessorSet: Mach.Port {
+        /// The host that the processor is in.
+        public let owningHost: Mach.Host
+
+        /// Represents an processor set existing in a host.
+        public init(named name: processor_set_t, in host: Mach.Host) {
+            self.owningHost = host
+            super.init(named: name)
+        }
+
+        @available(*, unavailable, message: "Use the host-based `init(named:in:)` instead.")
+        required init(named name: mach_port_name_t, in task: Mach.Task = .current) {
+            self.owningHost = Mach.Host.current
+            super.init(named: name, in: task)
+        }
+
         /// Gets the default processor set for a host.
-        /// - Parameter host: The host to get the default processor set for.
-        /// - Throws: If the default processor set cannot be retrieved.
-        /// - Returns: The default processor set for the host.
         public static func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
             var name = processor_set_name_t()
             try Mach.call(processor_set_default(host.name, &name))
-            return ProcessorSet(named: name)
+            return ProcessorSet(named: name, in: host)
         }
-        /// The tasks in the processor set.
-        public var tasks: [Mach.Task] {
+
+        /// The processor set's control port.
+        public var controlPort: ProcessorSetControl {
             get throws {
-                var taskList: task_array_t?
-                var taskCount = mach_msg_type_number_t.max
-                try Mach.call(processor_set_tasks(self.name, &taskList, &taskCount))
-                return (0..<Int(taskCount)).map {
-                    Mach.Task(named: taskList![$0])
-                }
+                var controlPortName = mach_port_name_t()
+                try Mach.call(
+                    host_processor_set_priv(self.owningHost.name, self.name, &controlPortName)
+                )
+                return ProcessorSetControl(named: controlPortName)
             }
         }
-        /// Gets the flavored tasks in the processor set.
-        /// - Parameter flavor: The flavor of the tasks.
-        /// - Throws: If the tasks cannot be retrieved.
-        /// - Returns: The flavored tasks.
-        public func flavoredTasks(_ flavor: Mach.Task.Flavor) throws -> [Mach.Task] {
-            var taskList: task_array_t?
-            var taskCount = mach_msg_type_number_t.max
-            try Mach.call(
-                processor_set_tasks_with_flavor(self.name, flavor.rawValue, &taskList, &taskCount)
-            )
-            return (0..<Int(taskCount)).map {
-                Mach.Task(named: taskList![$0])
-            }
-        }
-        /// The threads in the processor set.
-        public var threads: [Mach.Thread] {
-            get throws {
-                var threadList: thread_array_t?
-                var threadCount = mach_msg_type_number_t.max
-                try Mach.call(processor_set_threads(self.name, &threadList, &threadCount))
-                return (0..<Int(threadCount)).map {
-                    Mach.Thread(named: threadList![$0])
-                }
-            }
-        }
-        /// Whether the processor set is a processor set control port.
-        public var isControl: Bool {
-            get throws {
-                let kernelObject = try Mach.KernelObject(underlying: self)
-                switch kernelObject.type {
-                case .psetName: return false
-                case .pset: return true
-                default: fatalError("Processor set is somehow not a processor set")
-                }
+    }
+}
+
+extension Mach.Host {
+    /// The processor sets in the host.
+    /// - Warning: This returns the name ports for the processor sets. Use `.controlPort`
+    /// to get the control port for a processor set from its name port.
+    public var processorSets: [Mach.ProcessorSet] {
+        get throws {
+            var processorSetList: processor_set_name_array_t?
+            var processorSetCount = mach_msg_type_number_t.max
+            try Mach.call(host_processor_sets(self.name, &processorSetList, &processorSetCount))
+            return (0..<Int(processorSetCount)).map {
+                Mach.ProcessorSet(named: processorSetList![$0], in: self)
             }
         }
     }

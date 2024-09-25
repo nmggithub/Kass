@@ -1,16 +1,13 @@
 import Darwin.Mach
 @_exported import MachHost
 
-extension Mach.Host {
+extension Mach {
     /// A processor in a host.
     public class Processor: Mach.Port {
         /// The host that the processor is in.
-        public var owningHost: Mach.Host
+        public let owningHost: Mach.Host
 
         /// Represents an processor existing in a host.
-        /// - Parameters:
-        ///   - name: The port name for the processor.
-        ///   - host: The host that the processor is in.
         public init(named name: processor_t, in host: Mach.Host) {
             self.owningHost = host
             super.init(named: name)
@@ -23,20 +20,31 @@ extension Mach.Host {
         }
 
         /// Starts the processor.
-        /// - Throws: An error if the processor cannot be started.
         public func start() throws { try Mach.call(processor_start(self.name)) }
+
         /// Stops the processor.
-        /// - Throws: An error if the processor cannot be stopped.
         public func exit() throws { try Mach.call(processor_exit(self.name)) }
+
+        /// The processor set that the processor is in.
+        public var assignment: Mach.ProcessorSet {
+            get throws {
+                var processorSet = processor_set_name_t()
+                try Mach.call(processor_get_assignment(self.name, &processorSet))
+                return Mach.ProcessorSet(named: processorSet, in: owningHost)
+            }
+        }
     }
+}
+
+extension Mach.Host {
     /// The processors in the host.
-    public var processors: [Processor] {
+    public var processors: [Mach.Processor] {
         get throws {
             var processorList: processor_array_t?
             var processorCount = mach_msg_type_number_t.max
             try Mach.call(host_processors(self.name, &processorList, &processorCount))
             return (0..<Int(processorCount)).map {
-                Processor(named: processorList![$0], in: self)
+                Mach.Processor(named: processorList![$0], in: self)
             }
         }
     }

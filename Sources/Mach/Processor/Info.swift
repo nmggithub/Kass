@@ -1,6 +1,6 @@
 import Darwin.Mach
 
-extension Mach.Host.Processor {
+extension Mach.Processor {
     /// A type of processor info.
     public enum Info: processor_flavor_t {
         case basic = 1
