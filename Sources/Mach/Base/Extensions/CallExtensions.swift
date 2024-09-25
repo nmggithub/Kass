@@ -28,8 +28,7 @@ extension Mach {
     /// - Throws: An error if the operation fails.
     /// - Returns: The result of the kernel call loaded as the specified type.
     public static func callWithCountInOut<ArrayPointee: BitwiseCopyable, DataType: BitwiseCopyable>(
-        type: DataType.Type,
-        _ call: (UnsafeMutablePointer<ArrayPointee>, inout mach_msg_type_number_t) -> kern_return_t
+        type: DataType.Type, _ call: CountInOutCall<ArrayPointee>
     ) throws -> DataType {
         var count = mach_msg_type_number_t(
             MemoryLayout<DataType>.size / MemoryLayout<ArrayPointee>.size
