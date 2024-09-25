@@ -75,7 +75,7 @@ extension Mach.Task {
     }
 
     /// Basic information about the task.
-    public var basicInfo: task_basic_info {
+    public var basicInfo: mach_task_basic_info {
         get throws { try self.getInfo(.basic) }
     }
 
