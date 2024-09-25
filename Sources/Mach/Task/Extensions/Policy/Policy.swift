@@ -37,11 +37,11 @@ extension Mach.Task {
 extension Mach.Task.Policy {
     /// Gets the policy for a task.
     public func get<DataType: BitwiseCopyable>(
-        for task: Mach.Task = .current, as type: DataType.Type
+        as type: DataType.Type, for task: Mach.Task = .current
     ) throws -> DataType { try task.getPolicy(self, as: type) }
 
     /// Sets the policy for a task.
     public func set(
-        for task: Mach.Task = .current, to value: BitwiseCopyable
+        to value: BitwiseCopyable, for task: Mach.Task = .current
     ) throws { try task.setPolicy(self, to: value) }
 }

@@ -26,6 +26,29 @@
 - ``getInfo(_:as:)``
 - ``setInfo(_:to:)``
 
+### Getting specific info
+
+- ``basicInfo32``
+- ``basicInfo32_2``
+- ``basicInfo64``
+- ``eventCounts``
+- ``threadTimes``
+- ``absoluteTimes``
+- ``kernelMemoryInfo``
+- ``securityToken``
+- ``auditToken``
+- ``affinityTagInfo``
+- ``dyldInfo``
+- ``basicInfo64_2``
+- ``extmodInfo``
+- ``basicInfo``
+- ``powerInfo``
+- ``powerInfoV2``
+- ``vmInfo``
+- ``vmPurgeableInfo``
+- ``waitTimes``
+- ``flags``
+
 ### Managing policy
 
 - ``Policy``
