@@ -79,8 +79,8 @@
 
 ### Stashing ports
 
+- ``stashedPorts``
 - ``setStashedPorts(_:)``
-- ``getStashedPorts()``
 
 ### Managing special ports
 
