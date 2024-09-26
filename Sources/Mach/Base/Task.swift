@@ -9,6 +9,18 @@ extension Mach {
         /// If the task is the current task.
         public var isSelf: Bool { mach_task_is_self(self.name) != 0 ? true : false }
 
+        /// The threads in the task.
+        public var threads: [Mach.Thread] {
+            get throws {
+                var threadList: thread_act_array_t?
+                var threadCount = mach_msg_type_number_t.max
+                try Mach.call(task_threads(self.name, &threadList, &threadCount))
+                return (0..<Int(threadCount)).map {
+                    Mach.Thread(named: threadList![$0])
+                }
+            }
+        }
+
         /// The ports (really, port names) in the task's name space.
         public var ports: [Mach.Port] {
             get throws {
@@ -30,6 +42,7 @@ extension Mach {
                 }
             }
         }
+
         /// Sets the physical footprint limit for the task.
         /// - Returns: The old limit.
         public func setPhysicalFootprintLimit(_ limit: Int32) throws -> Int32 {
