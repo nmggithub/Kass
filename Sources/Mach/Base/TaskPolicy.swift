@@ -31,9 +31,9 @@
 
 import Darwin.Mach
 
-extension Mach.Task {
+extension Mach {
     /// A type of task policy.
-    public enum Policy: task_policy_flavor_t {
+    public enum TaskPolicy: task_policy_flavor_t {
         case category = 1
         case suppression = 3
         case state = 4
@@ -42,10 +42,12 @@ extension Mach.Task {
         case latencyQoS = 10
         case throughputQoS = 11
     }
+}
 
+extension Mach.Task {
     /// Gets the task's policy.
     public func getPolicy<DataType: BitwiseCopyable>(
-        _ policy: Policy, as type: DataType.Type = DataType.self
+        _ policy: Mach.TaskPolicy, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: task_policy_t, count) in
@@ -56,7 +58,7 @@ extension Mach.Task {
 
     /// Sets the task's policy.
     public func setPolicy<DataType: BitwiseCopyable>(
-        _ policy: Policy, to value: DataType
+        _ policy: Mach.TaskPolicy, to value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: task_policy_t, count) in
@@ -65,7 +67,7 @@ extension Mach.Task {
     }
 }
 
-extension Mach.Task.Policy {
+extension Mach.TaskPolicy {
     /// Gets the policy for a task.
     public func get<DataType: BitwiseCopyable>(
         as type: DataType.Type, for task: Mach.Task = .current

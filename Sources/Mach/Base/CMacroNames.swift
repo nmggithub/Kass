@@ -15,7 +15,7 @@ extension Mach.Task.SpecialPort: NameableByCMacro {
     }
 }
 
-extension Mach.Task.Policy {
+extension Mach.TaskPolicy {
     public var cMacroName: String {
         switch self {
         case .category: "TASK_CATEGORY_POLICY"
@@ -29,7 +29,7 @@ extension Mach.Task.Policy {
     }
 }
 
-extension Mach.Task.Info {
+extension Mach.TaskInfo {
     public var cMacroName: String {
         switch self {
         case .basic32: "TASK_BASIC_INFO_32"
@@ -56,7 +56,7 @@ extension Mach.Task.Info {
     }
 }
 
-extension Mach.Task.Role: NameableByCMacro {
+extension Mach.TaskRole: NameableByCMacro {
     public var cMacroName: String {
         switch self {
         case .reniced: "TASK_RENICED"
