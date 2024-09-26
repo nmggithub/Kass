@@ -1,5 +1,5 @@
 import Darwin.Mach
-@_exported import MachHost
+@_exported import MachBase
 
 extension Mach {
     /// A processor in a host.

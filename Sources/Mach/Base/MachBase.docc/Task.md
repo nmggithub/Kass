@@ -113,12 +113,6 @@ Every port, or rather port name, is contained in a single task.
 - ``inspectPort``
 - ``readPort``
 
-### Managing vouchers
-
-- ``voucher``
-- ``setVoucher(_:)``
-- ``swapVoucher(with:)``
-
 ### Managing corpses
 
 - ``Corpse``

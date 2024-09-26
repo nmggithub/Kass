@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachHost
 
 extension Mach.Thread {
     /// Wires a thread.

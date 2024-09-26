@@ -72,7 +72,7 @@ import Darwin.Mach
 
 extension Mach.Host: Mach.Port.WithSpecialPorts {
     /// A special port for a host.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachHost#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public enum SpecialPort: Int32, Mach.Port.SpecialPortType {
         /// The parent port type.
         public typealias ParentPort = Mach.Host

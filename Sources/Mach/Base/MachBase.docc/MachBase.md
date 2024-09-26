@@ -6,19 +6,16 @@
 
 ## Licenses
 
-> Important: Portions of the source code for this module are covered under license. Please view the source code and the below license(s) for additional information.
+> Warning: Portions of the source code for this module are covered under license. Please view the source code and the below license(s) for additional information.
 >
 > - <doc:APSL>
-
+> - <doc:MachLicense>
 
 ## Topics
 
 ### The Mach kernel
 
 - <doc:Architecture>
-- <doc:Using-ports>
-- <doc:User-references>
-- <doc:Task-ports>
 - ``Mach``
 
 ### Calling the kernel
@@ -28,12 +25,11 @@
 ### Working with ports
 - <doc:Using-ports>
 - <doc:User-references>
-- ``MachBase/Mach/KernelObject``
-
-### Basic ports
-
 - ``MachBase/Mach/Port``
 - ``MachBase/Mach/PortSet``
+- ``MachBase/Mach/KernelObject``
+
+
 
 ### Service-related ports
 
@@ -55,3 +51,4 @@
 ### Licenses
 
 - <doc:APSL>
+- <doc:MachLicense>

@@ -60,21 +60,18 @@ let modules: [Module] = [
     ),
     MachSubModule.init(
         subModuleName: "Thread",
-        dependencies: ["MachHost", "MachVoucher", "CCompat", "Linking"]
+        dependencies: ["MachVoucher", "CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Host", dependencies: ["CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Voucher", dependencies: ["MachHost", "CCompat", "Linking"]
+        subModuleName: "Voucher", dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Sema", folderName: "Semaphore",
-        dependencies: ["MachThread", "MachHost", "CCompat", "Linking"]
+        dependencies: ["MachThread", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
-        dependencies: ["MachThread", "MachHost", "CCompat", "Linking"]
+        dependencies: ["MachThread", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Exception",
@@ -90,11 +87,11 @@ let modules: [Module] = [
     ),
     MachSubModule.init(
         subModuleName: "Clock",
-        dependencies: ["MachHost", "MachMsg", "CCompat", "Linking"]
+        dependencies: ["MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Proc", folderName: "Processor",
-        dependencies: ["MachThread", "MachHost", "CCompat", "Linking"]
+        dependencies: ["MachThread", "CCompat", "Linking"]
     ),
 ]
 
