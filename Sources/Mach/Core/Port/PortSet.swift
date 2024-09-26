@@ -27,6 +27,13 @@ extension Mach {
                 mach_port_insert_member(self.owningTask.name, port.name, self.name)
             )
         }
+
+        /// Extracts a port from the port set.
+        public func extract(_ port: Mach.Port) throws {
+            try Mach.call(
+                mach_port_extract_member(self.owningTask.name, port.name, self.name)
+            )
+        }
     }
 }
 
