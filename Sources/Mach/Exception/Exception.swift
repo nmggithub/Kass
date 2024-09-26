@@ -1,5 +1,5 @@
 import Darwin.Mach
-import MachBase
+import MachCore
 
 extension Mach {
     /// An exception port.

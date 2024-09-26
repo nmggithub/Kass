@@ -29,7 +29,7 @@ struct MachSubModule: Module {
         let prefixedTargetName = "Mach\(subModuleName)"
         self.targetName = prefixedTargetName
         self.path = "Sources/Mach/\(folderName ?? subModuleName)"
-        self.dependencies = ["MachBase"] + dependencies
+        self.dependencies = ["MachCore"] + dependencies
     }
 }
 
@@ -55,7 +55,7 @@ let modules: [Module] = [
     ),
     BSDSubModule.init(subModuleName: "FS", dependencies: ["CCompat", "Linking"]),
     BasicModule.init(
-        targetName: "MachBase", path: "Sources/Mach/Base",
+        targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["BSDBase", "CCompat", "Linking"]
     ),
     MachSubModule.init(

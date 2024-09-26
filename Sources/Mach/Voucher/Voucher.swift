@@ -1,4 +1,4 @@
-@_exported import MachBase
+@_exported import MachCore
 
 extension Mach {
     /// A voucher.

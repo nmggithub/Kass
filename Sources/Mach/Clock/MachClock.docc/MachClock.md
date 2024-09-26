@@ -8,10 +8,10 @@
 
 ### Classes
 
-- ``MachBase/Mach/Clock``
-- ``MachBase/Mach/Clock/Alarm``
-- ``MachBase/Mach/ClockControl``
+- ``MachCore/Mach/Clock``
+- ``MachCore/Mach/Clock/Alarm``
+- ``MachCore/Mach/ClockControl``
 
 ### Extended classes
-- ``MachBase/Mach/Host``
+- ``MachCore/Mach/Host``
 - ``Darwin/mach_timespec``

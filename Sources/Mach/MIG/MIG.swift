@@ -1,4 +1,4 @@
-@_exported import MachBase
+@_exported import MachCore
 @_exported import MachMsg
 
 extension Mach.Message {

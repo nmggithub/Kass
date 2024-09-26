@@ -1,4 +1,4 @@
-# ``MachBase``
+# ``MachCore``
 
 @Metadata {
     @TitleHeading("Module")

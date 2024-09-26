@@ -1,5 +1,5 @@
 import Darwin.Mach
-@_exported import MachBase
+@_exported import MachCore
 
 extension Mach.Message {
     /// The size of the message body.

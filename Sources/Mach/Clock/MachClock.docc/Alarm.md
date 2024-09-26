@@ -1,4 +1,4 @@
-# ``MachBase/Mach/Clock/Alarm``
+# ``MachCore/Mach/Clock/Alarm``
 
 An alarm is just a port which the kernel will send a message to at the specified time.
 

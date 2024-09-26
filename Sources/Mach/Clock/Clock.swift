@@ -1,6 +1,6 @@
 import Darwin.Mach
 import Foundation
-@_exported import MachBase
+@_exported import MachCore
 
 extension Mach {
     /// A clock.
