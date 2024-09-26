@@ -38,23 +38,32 @@ extension Mach {
     }
 }
 
-extension Mach.Thread {
+extension Mach {
     /// A thread switching option.
-    public enum SwitchingOption: Int32 {
+    public enum ThreadSwitchOption: Int32 {
         case none = 0
         case depress = 1
         case wait = 2
-        case dispatchContention = 4
-        case oslockDepress = 8
-        case oslockWait = 16
+        case dispatchContention = 3
+        case oslockDepress = 4
+        case oslockWait = 5
     }
+}
 
+extension Mach.Thread {
     /// Switches to a thread.
     public static func `switch`(
-        to thread: Mach.Thread, option: SwitchingOption = .none,
+        to thread: Mach.Thread, option: Mach.ThreadSwitchOption = .none,
         timeout: mach_msg_timeout_t
     ) throws {
         try Mach.call(thread_switch(thread.name, option.rawValue, timeout))
+    }
+
+    /// Switches to the thread.
+    public func switchTo(
+        option: Mach.ThreadSwitchOption = .none, timeout: mach_msg_timeout_t
+    ) throws {
+        try Self.switch(to: self, option: option, timeout: timeout)
     }
 
     /// Aborts the depression of the thread.
