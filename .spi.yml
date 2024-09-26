@@ -2,5 +2,5 @@ version: 1
 builder:
   configs:
     - documentation_targets:
-        [Kass, MachCore, MachThread, MachMsg, MachMIG, Linking, CCompat]
+        [Kass, MachCore, MachMsg, MachMIG, Linking, CCompat]
       platform: macos
