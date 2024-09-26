@@ -1,5 +1,7 @@
 # ``MachBase/Mach/Task``
 
+Every port, or rather port name, is contained in a single task.
+
 ## Topics
 
 ### Getting flavored task ports

@@ -19,10 +19,10 @@ That was a lot of terms, and it was probably quite confusing, so here is a break
 
 Additionally:
 
-7. A task can hold multiple **user references** to a given right (see <doc:User-references>).
+7. A task can hold multiple **user references** to a given right.
 8. Port names are unique to each task's name space, and cannot be used across tasks.
 
 
 ## On "port names"
 
-In many cases, some rights to the same port will carry the same name in a task's name space. Traditionally, if a task held both a send right and a receive right to a port, both rights would have the same name. In fact, if the task held multiple [references](<doc:User-references>) to each, they all would have the same name. This behavior of sharing names appears to still be the current behavior to this day. While there are other rights (such as the **send one right**) which may be named differently, this name-sharing of the core rights makes the "port name" term make a bit more sense.
+In many cases, some rights to the same port will carry the same name in a task's name space. Traditionally, if a task held both a send right and a receive right to a port, both rights would have the same name. In fact, if the task held multiple references to each, they all would have the same name. This behavior of sharing names appears to still be the current behavior to this day. While there are other rights (such as the **send one right**) which may be named differently, this name-sharing of the core rights makes the "port name" term make a bit more sense.

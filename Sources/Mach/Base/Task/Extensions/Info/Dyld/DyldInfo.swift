@@ -35,7 +35,7 @@ import MachO.dyld
 
 extension Mach.Task {
     /// An operation that `dyld` is performing on a set of images.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public enum DyldImageMode: Int32 {
         case adding = 0
         case removing = 1
@@ -44,7 +44,7 @@ extension Mach.Task {
     }
 
     /// Information a `dyld` image.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public struct DyldImageInfo: Hashable {
         public let imageLoadAddress: UnsafePointer<mach_header>?
         internal let imageFilePathCString: UnsafePointer<CChar>?
@@ -56,14 +56,14 @@ extension Mach.Task {
     }
 
     /// A `dyld` image's load address and UUID.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public struct DyldUUIDInfo {
         public let imageLoadAddress: UnsafePointer<mach_header>?
         public let imageUUID: uuid_t
     }
 
     /// Information about an ahead-of-time (AoT) compiled image.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public struct AotImageInfo {
         public let x86LoadAddress: UnsafePointer<mach_header>?
         public let aotLoadAddress: UnsafePointer<mach_header>?
@@ -81,13 +81,13 @@ extension Mach.Task {
     }
 
     /// A function that is called when `dyld` images are loaded or unloaded.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     internal typealias DyldImageNotifier = @convention(c) (
         _ mode: DyldImageMode.RawValue, _ infoCount: Int32, _ infos: UnsafeRawPointer
     ) -> Void
 
     /// An error kind for `dyld``.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public enum DyldErrorKind: Int32 {
         case none = 0
         case dylibMissing = 1
@@ -96,7 +96,7 @@ extension Mach.Task {
     }
 
     /// An error that `dyld` encountered.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     /// - Note: While this structure doesn't map directly to any `dyld` structure, its contents do map
     /// directly to `dyld`'s error information, so it's marked as covered under the same license.
     public struct DyldError {
@@ -108,7 +108,7 @@ extension Mach.Task {
     }
 
     /// A platform identifier for `dyld`.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public enum DyldPlatform: Int32 {
         case unknown = 0
         case macOS = 1
@@ -126,7 +126,7 @@ extension Mach.Task {
     }
 
     /// Information about `dyld` images in the task.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachTask#Licenses> for more information.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachBase#Licenses> for more information.
     public struct DyldAllImageInfos: BitwiseCopyable {
         public let version: UInt32
         internal let infoArrayCount: UInt32

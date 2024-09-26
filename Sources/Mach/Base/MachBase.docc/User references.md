@@ -10,7 +10,7 @@ While perhaps not exactly the same thing in concept, the user reference count ca
 
 ## Getting and setting the user reference count
 
-The kernel can be called to either get the user reference count or to modify it by some delta. The count itself cannot be set atomically (although a ``MachBase/Mach/Port/setUserRefs(for:to:)`` function is provided). To otherwise limit functionality to atomic kernel calls, this library uses a ``MachBase/Mach/Port/UserRefs`` structure to represent the user reference count. The ``MachBase/Mach/Port/UserRefs/+=(_:_:)`` and ``MachBase/Mach/Port/UserRefs/-=(_:_:)`` operators can be used to modify the count. The ``MachBase/Mach/Port/UserRefs/==(_:_:)-9mbh4`` and ``MachBase/Mach/Port/UserRefs/==(_:_:)-9y9kh`` operators can be used to compare the count to a given value (or visa versa). Finally, the ``MachBase/Mach/Port/UserRefs/count`` itself is also accessible.
+The kernel can be called to either get the user reference count or to modify it by some delta. The count itself cannot be set atomically (although a ``MachBase/Mach/Port/setUserRefs(for:to:)`` function is provided). To otherwise limit functionality to atomic kernel calls, this library uses a ``MachBase/Mach/Port/UserRefs`` structure to represent the user reference count. The ``MachBase/Mach/Port/UserRefs/+=(_:_:)`` and ``MachBase/Mach/Port/UserRefs/-=(_:_:)`` operators can be used to modify the count. The ``MachBase/Mach/Port/UserRefs/==(_:_:)-90g6y`` and ``MachBase/Mach/Port/UserRefs/==(_:_:)-956a`` operators can be used to compare the count to a given value (or visa versa). Finally, the ``MachBase/Mach/Port/UserRefs/count`` itself is also accessible.
 
 Note that all of these operations may fail, so they all must be prefixed with the `try` keyword.
 
