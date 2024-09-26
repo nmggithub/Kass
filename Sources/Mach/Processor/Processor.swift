@@ -8,12 +8,12 @@ extension Mach {
         public let owningHost: Mach.Host
 
         /// Represents an processor existing in a host.
-        public init(named name: processor_t, inHost host: Mach.Host) {
+        public init(named name: processor_t, in host: Mach.Host) {
             self.owningHost = host
             super.init(named: name)
         }
 
-        @available(*, unavailable, message: "Use `init(named:inHost:)` instead.")
+        @available(*, unavailable, message: "Use `init(named:in:)` instead.")
         required init(named name: mach_port_name_t, inNameSpaceOf task: Mach.Task = .current) {
             self.owningHost = Mach.Host.current
             super.init(named: name, inNameSpaceOf: task)
@@ -30,7 +30,7 @@ extension Mach {
             get throws {
                 var processorSet = processor_set_name_t()
                 try Mach.call(processor_get_assignment(self.name, &processorSet))
-                return Mach.ProcessorSet(named: processorSet, inHost: owningHost)
+                return Mach.ProcessorSet(named: processorSet, in: owningHost)
             }
         }
     }
@@ -44,7 +44,7 @@ extension Mach.Host {
             var processorCount = mach_msg_type_number_t.max
             try Mach.call(host_processors(self.name, &processorList, &processorCount))
             return (0..<Int(processorCount)).map {
-                Mach.Processor(named: processorList![$0], inHost: self)
+                Mach.Processor(named: processorList![$0], in: self)
             }
         }
     }

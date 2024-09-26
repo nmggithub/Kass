@@ -7,22 +7,22 @@ extension Mach {
         public let owningHost: Mach.Host
 
         /// Represents an processor set existing in a host.
-        public init(named name: processor_set_t, inHost host: Mach.Host) {
+        public init(named name: processor_set_t, in host: Mach.Host) {
             self.owningHost = host
             super.init(named: name)
         }
 
-        @available(*, unavailable, message: "Use `init(named:inHost:)` instead.")
+        @available(*, unavailable, message: "Use `init(named:in:)` instead.")
         required init(named name: mach_port_name_t, inNameSpaceOf task: Mach.Task = .current) {
             self.owningHost = Mach.Host.current
             super.init(named: name, inNameSpaceOf: task)
         }
 
         /// Gets the default processor set for a host.
-        public static func `default`(inHost host: Mach.Host = .current) throws -> ProcessorSet {
+        public static func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
             var name = processor_set_name_t()
             try Mach.call(processor_set_default(host.name, &name))
-            return ProcessorSet(named: name, inHost: host)
+            return ProcessorSet(named: name, in: host)
         }
 
         /// The processor set's control port.
@@ -48,7 +48,7 @@ extension Mach.Host {
             var processorSetCount = mach_msg_type_number_t.max
             try Mach.call(host_processor_sets(self.name, &processorSetList, &processorSetCount))
             return (0..<Int(processorSetCount)).map {
-                Mach.ProcessorSet(named: processorSetList![$0], inHost: self)
+                Mach.ProcessorSet(named: processorSetList![$0], in: self)
             }
         }
     }
