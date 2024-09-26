@@ -4,7 +4,7 @@ extension Mach {
     /// A port set.
     public class PortSet: Mach.Port {
         /// The ports in the port set.
-        public var ports: [Mach.Port] {
+        public var ports: Set<Mach.Port> {
             get throws {
                 var namesCount = mach_msg_type_number_t.max
                 var names: mach_port_name_array_t? = mach_port_name_array_t.allocate(
@@ -13,10 +13,9 @@ extension Mach {
                 try Mach.call(
                     mach_port_get_set_status(self.name, self.owningTask.name, &names, &namesCount)
                 )
-                return (0..<Int(namesCount)).map {
-                    let port = Mach.Port(named: names![$0], in: self.owningTask)
-                    return port
-                }
+                return Set(
+                    (0..<Int(namesCount)).map { Mach.Port(named: names![$0], in: self.owningTask) }
+                )
             }
         }
 
