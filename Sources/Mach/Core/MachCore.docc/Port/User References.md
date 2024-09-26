@@ -1,4 +1,5 @@
-# User references
+# ``Mach/Port/UserRefs``
+
 
 When a port name names a specific port right, it also names a specific number of user references.
 
@@ -10,7 +11,7 @@ While perhaps not exactly the same thing in concept, the user reference count ca
 
 ## Getting and setting the user reference count
 
-The kernel can be called to either get the user reference count or to modify it by some delta. The count itself cannot be set atomically (although a ``Mach/Port/setUserRefs(for:to:)`` function is provided). To otherwise limit functionality to atomic kernel calls, this library uses a ``Mach/Port/UserRefs`` structure to represent the user reference count. The ``Mach/Port/UserRefs/+=(_:_:)`` and ``Mach/Port/UserRefs/-=(_:_:)`` operators can be used to modify the count. The ``Mach/Port/UserRefs/==(_:_:)-90g6y`` and ``Mach/Port/UserRefs/==(_:_:)-956a`` operators can be used to compare the count to a given value (or visa versa). Finally, the ``Mach/Port/UserRefs/count`` itself is also accessible.
+The kernel can be called to either get the user reference count or to modify it by some delta. The count itself cannot be set atomically (although a ``Mach/Port/setUserRefs(for:to:)`` function is provided). To otherwise limit functionality to atomic kernel calls, this library uses a ``Mach/Port/UserRefs`` structure to represent the user reference count. The ``+=(_:_:)`` and ``-=(_:_:)`` operators can be used to modify the count. The ``==(_:_:)-6pf43`` and ``==(_:_:)-6ekxh`` operators can be used to compare the count to a given value (or visa versa). Finally, the ``count`` itself is also accessible.
 
 Note that all of these operations may fail, so they all must be prefixed with the `try` keyword.
 
@@ -22,3 +23,16 @@ let isCountTwo = try urefs == 2 // compares the value to 2
 let isCountThree = try 3 == urefs // compares the value to 3
 let count = try urefs.count // gets the count
 ```
+
+## Topics
+
+### Operators
+
+- ``+=(_:_:)``
+- ``-=(_:_:)``
+- ``==(_:_:)-6pf43``
+- ``==(_:_:)-6ekxh``
+
+### Instance Properties
+
+- ``count``

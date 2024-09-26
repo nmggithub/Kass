@@ -180,9 +180,8 @@ extension Mach {
             /// The type of the kernel object is unknown.
             case unknown
         }
-
         /// The type of the kernel object.
-        public let type: Mach.KernelObject.ObjectType
+        public let type: ObjectType
 
         /// The address of the kernel object.
         /// - Warning: When using non-development kernel builds, this address may be zero.
@@ -203,7 +202,7 @@ extension Mach {
                     port.owningTask.name, port.name, &type, &objectAddress, descriptionPointer
                 )
             )
-            self.type = Self.ObjectType(rawValue: type) ?? .unknown
+            self.type = ObjectType(rawValue: type) ?? .unknown
             self.address = objectAddress
             self.description = String(cString: descriptionPointer)
         }

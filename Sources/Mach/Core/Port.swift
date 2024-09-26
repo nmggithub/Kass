@@ -3,28 +3,28 @@ import CCompat
 import Foundation
 
 extension Mach {
+    /// A right to a port.
+    public enum PortRight: mach_port_right_t, CaseIterable {
+        /// A right to send messages to a port.
+        case send = 0
+
+        /// A right to receive messages from a port.
+        case receive = 1
+
+        /// A right to send messages to a port once.
+        case sendOnce = 2
+
+        /// A special right to manage a collection of ports (a port set).
+        case portSet = 3
+
+        /// A special right that is named by a dead name.
+        case deadName = 4
+    }
+
     /// A port ``name`` in the ``owningTask``'s name space.
     open class Port {
         /// A nil-named port.
         open class var Nil: Port { Port(named: mach_port_name_t(MACH_PORT_NULL)) }
-
-        /// A right to a port.
-        public enum Right: mach_port_right_t, CaseIterable {
-            /// A right to send messages to a port.
-            case send = 0
-
-            /// A right to receive messages from a port.
-            case receive = 1
-
-            /// A right to send messages to a port once.
-            case sendOnce = 2
-
-            /// A special right to manage a collection of ports (a port set).
-            case portSet = 3
-
-            /// A special right that is named by a dead name.
-            case deadName = 4
-        }
 
         /// The name of the port in the ``owningTask``'s name space.
         public let name: mach_port_name_t
@@ -36,12 +36,12 @@ extension Mach {
         public var owningTask: Mach.Task { Task(named: self.rawOwningTask, in: mach_task_self_) }
 
         /// The port rights named by ``Port/name``.
-        public var rights: Set<Right> {
+        public var rights: Set<Mach.PortRight> {
             get throws {
                 var type = mach_port_type_t()
                 try Mach.call(mach_port_type(self.owningTask.name, self.name, &type))
-                var rights = Set<Right>()
-                for right in Right.allCases {
+                var rights = Set<Mach.PortRight>()
+                for right in Mach.PortRight.allCases {
                     // `mach_port_type_t` is a bitfield for the rights
                     if type & 1 << (right.rawValue + 16) != 0 {
                         rights.insert(right)
@@ -68,26 +68,25 @@ extension Mach {
             self.rawOwningTask = task.name
         }
 
+        /// Destroys the port.
+        /// - Warning: This is an inherently unsafe API.
         @available(
             macOS, deprecated: 12.0,
             // This message is copied from the deprecation message for `mach_port_destroy`
             // and modified to refer to this library's API.
             message: """
-                Inherently unsafe API: instead manage rights with \
+                Inherently unsafe API: instead manage rights with
                 destruct(guard:sendRightDelta:), deallocate() or userRefs(for:).
                 """
         )
-        /// Destroys the port.
-        /// - Warning: This is an inherently unsafe API.
         open func destroy() throws {
             try Mach.call(mach_port_destroy(self.owningTask.name, self.name))
         }
 
         /// Allocates a new port with a given right in the specified task with an optional name.
-        /// - Important: Only the ``Right/receive``, ``Right/portSet``, and ``Right/deadName`` rights
-        /// are valid for port allocation.
         public init(
-            right: Right, named name: mach_port_name_t? = nil, in task: Mach.Task = .current
+            right: Mach.PortRight, named name: mach_port_name_t? = nil,
+            in task: Mach.Task = .current
         ) throws {
             var generatedPortName = mach_port_name_t()
             try Mach.call(
@@ -213,61 +212,11 @@ extension Mach {
 }
 
 extension Mach.Port {
-    /// A user reference count for a port right.
-    public struct UserRefs {
-        /// The port the right is to.
-        public let port: Mach.Port
-
-        /// The port right the user reference count is for.
-        public let right: Right
-
-        /// The user reference count.
-        public var count: Int {
-            get throws {
-                var refs = mach_port_urefs_t()
-                try Mach.call(
-                    mach_port_get_refs(
-                        self.port.owningTask.name, self.port.name, self.right.rawValue, &refs
-                    )
-                )
-                return Int(refs)
-            }
+    /// The kernel object underlying the port.
+    public var kernelObject: Mach.KernelObject {
+        get throws {
+            try Mach.KernelObject(underlying: self)
         }
-
-        /// Increments the user reference count.
-        public static func += (refs: UserRefs, delta: mach_port_delta_t) throws {
-            try Mach.call(
-                mach_port_mod_refs(
-                    refs.port.owningTask.name, refs.port.name, refs.right.rawValue, delta
-                )
-            )
-        }
-
-        /// Decrements the user reference count.
-        public static func -= (refs: UserRefs, delta: mach_port_delta_t) throws {
-            try refs += -delta
-        }
-
-        /// Compares the user reference count to a given count.
-        public static func == (lhs: UserRefs, rhs: Int) throws -> Bool {
-            try lhs.count == mach_port_urefs_t(rhs)
-        }
-
-        /// Compares a given count to the user reference count.
-        public static func == (lhs: Int, rhs: UserRefs) throws -> Bool {
-            try mach_port_urefs_t(lhs) == rhs.count
-        }
-    }
-
-    /// Gets the user reference count for the port right.
-    public func userRefs(for right: Right) -> UserRefs { UserRefs(port: self, right: right) }
-
-    /// Sets the user reference count for the port right.
-    /// - Warning: This function is not atomic.
-    public func setUserRefs(for right: Right, to count: Int) throws {
-        let refs = userRefs(for: right)
-        let delta = mach_port_delta_t(count) - mach_port_delta_t(try refs.count)
-        if delta > 0 { try refs += delta } else if delta < 0 { try refs -= -delta }
     }
 }
 

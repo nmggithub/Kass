@@ -1,9 +1,16 @@
 import Darwin.Mach
 import Foundation
 
-extension Mach.Task {
-    /// A corpse task.
-    public class Corpse: Mach.Task {
+extension Mach {
+    /// A corpse for a task.
+    public class TaskCorpse: Mach.Task {
+        /// Generates a corpse for a task.
+        public convenience init(for task: Mach.Task) throws {
+            var corpseName: task_name_t = TASK_NAME_NULL
+            try Mach.call(task_generate_corpse(task.name, &corpseName))
+            self.init(named: corpseName)
+        }
+
         /// Information about the corpse.
         public var corpseInfo: Data {
             get throws {
@@ -22,11 +29,8 @@ extension Mach.Task {
             }
         }
     }
-
+}
+extension Mach.Task {
     /// Generates a corpse for the task.
-    public func generateCorpse() throws -> Corpse {
-        var corpseName: task_name_t = TASK_NAME_NULL
-        try Mach.call(task_generate_corpse(self.name, &corpseName))
-        return Corpse(named: corpseName)
-    }
+    public func generateCorpse() throws -> Mach.TaskCorpse { try Mach.TaskCorpse(for: self) }
 }

@@ -12,4 +12,4 @@ let port4 = try Mach.TaskInspect(forPID: somePid) // gets a task inspect port
 let port5 = try Mach.TaskName(forPID: somePid) // gets a task name port
 ```
 
-- Warning: The kernel calls to get **task read ports** and **task inspect ports** for a given PID are implemented in the BSD layer of the kernel. Thus, in those cases, this function will throw a [`POSIXError`](https://developer.apple.com/documentation/foundation/posixerror) instead of a [`MachError`](https://developer.apple.com/documentation/foundation/macherror) when encountering an non-success return code from those kernel calls.
+- Warning: The kernel calls to get task _read_ ports and task _inspect_ ports for given PIDs are implemented in the BSD layer of the kernel. Thus, in those cases, this function will throw a [`POSIXError`](https://developer.apple.com/documentation/foundation/posixerror) instead of a [`MachError`](https://developer.apple.com/documentation/foundation/macherror) when encountering an non-success return code from the kernel.

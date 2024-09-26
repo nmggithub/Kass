@@ -86,17 +86,6 @@ extension Mach.Task {
             task_info(self.name, info.rawValue, array, &count)
         }
     }
-
-    /// Sets the task's info.
-    /// - Warning: Currently no information can be set.
-    public func setInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.TaskInfo, to value: DataType
-    ) throws {
-        try Mach.callWithCountIn(value: value) {
-            (array: task_info_t, count) in
-            task_set_info(self.name, info.rawValue, array, count)
-        }
-    }
 }
 
 extension Mach.Task {
@@ -212,10 +201,4 @@ extension Mach.TaskInfo {
     public func get<DataType: BitwiseCopyable>(
         as type: DataType.Type = DataType.self, for task: Mach.Task
     ) throws -> DataType { try task.getInfo(self) }
-
-    /// Sets the information for a given task.
-    /// - Warning: Currently no information can be set.
-    public func set(
-        to value: BitwiseCopyable, for task: Mach.Task
-    ) throws { try task.setInfo(self, to: value) }
 }
