@@ -14,7 +14,7 @@ private let task_inspect_for_pid:
 
 extension Mach.Task {
     /// Gets the task port for a process.
-    public static func `for`(pid: pid_t) throws -> Self {
+    public convenience init(forPID pid: pid_t) throws {
         var portName = mach_port_name_t()
         // The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
         switch Self.self {
@@ -29,6 +29,6 @@ extension Mach.Task {
         default:
             try Mach.call(task_for_pid(Mach.Task.current.name, pid, &portName))
         }
-        return Self.init(named: portName)
+        self.init(named: portName)
     }
 }

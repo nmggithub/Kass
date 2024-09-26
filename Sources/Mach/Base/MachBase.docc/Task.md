@@ -1,27 +1,25 @@
-# ``MachBase/Mach/Task``
-
-Every port, or rather port name, is contained in a single task.
+# ``Mach/Task``
 
 ## Topics
 
 ### Getting task ports
 
+- ``current``
 - <doc:Task-ports>
-- ``Mach/Task``
 - ``Mach/TaskIdentityToken``
 - ``Mach/Task/Flavored``
 - ``Mach/TaskControl``
 - ``Mach/TaskInspect``
 - ``Mach/TaskRead``
 - ``Mach/TaskName``
-- ``Mach/Task/for(pid:)``
+- ``Mach/Task/init(forPID:)``
 
 ### Managing a task's lifecycle
 
 - ``suspend()``
 - ``resume()``
 - ``terminate()``
-- ``SuspensionToken``
+- ``Mach/TaskSuspensionToken``
 - ``suspend2()``
 - ``resume2(_:)``
 
@@ -111,7 +109,7 @@ Every port, or rather port name, is contained in a single task.
 
 ### Getting specific special ports
 
-- ``MachBase/Mach/BootstrapPort``
+- ``Mach/BootstrapPort``
 - ``bootstrapPort``
 - ``hostPort``
 - ``debugPort``

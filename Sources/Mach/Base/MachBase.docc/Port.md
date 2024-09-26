@@ -1,11 +1,10 @@
-# ``MachBase/Mach/Port``
+# ``Mach/Port``
 
 ## Topics
 
 ### Working with ports
 - <doc:Using-ports>
 - <doc:User-references>
-- ``Mach/Port``
 - ``Mach/PortSet``
 - ``Mach/KernelObject``
 
@@ -25,8 +24,8 @@
 
 - ``name``
 - ``owningTask``
-- ``rights``
 - ``Right``
+- ``rights``
 - ``description``
 - ``debugDescription``
 
@@ -36,7 +35,6 @@
 
 ### Representing existing ports
 
-- <doc:Using-ports>
 - ``init(named:in:)``
 
 ### Allocating new ports
@@ -45,7 +43,6 @@
 
 ### Constructing new ports
 
-- <doc:Using-ports>
 - ``init(options:context:in:)``
 - ``init(flags:limits:in:)``
 - ``ConstructFlag``
@@ -94,7 +91,7 @@
 
 ### Using port sets
 
-- ``MachBase/Mach/PortSet``
+- ``Mach/PortSet``
 - ``insert(into:)``
 - ``move(to:)``
 

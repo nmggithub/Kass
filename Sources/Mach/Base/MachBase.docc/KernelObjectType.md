@@ -1,4 +1,4 @@
-# ``MachBase/Mach/KernelObject/ObjectType``
+# ``Mach/KernelObject/ObjectType``
 
 Traditionally, Mach ports are just message queues. While this is still technically true in some sense, there may be a kernel object underlying the port which is handling these messages. These kernel objects allow for user space tasks to control certain kernel structures by sending messages to the ports that they underlie.
 
