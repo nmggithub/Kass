@@ -1,15 +1,17 @@
 import Darwin.Mach
 
-extension Mach.Task {
+extension Mach {
     /// A type of task inspect info.
-    public enum InspectInfo: task_inspect_flavor_t {
+    public enum TaskInspectInfo: task_inspect_flavor_t {
         /// Basic CPU instruction and cycle counts.
         case basicCounts = 1
     }
+}
 
+extension Mach.Task {
     /// Gets the task's inspect info.
     public func inspect<DataType: BitwiseCopyable>(
-        _ info: InspectInfo, as type: DataType.Type
+        _ info: Mach.TaskInspectInfo, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: task_inspect_info_t, count) in
@@ -25,7 +27,7 @@ extension Mach.Task {
     }
 }
 
-extension Mach.Task.InspectInfo {
+extension Mach.TaskInspectInfo {
     /// Gets the task's inspect info.
     public func inspect<DataType: BitwiseCopyable>(
         as type: DataType.Type = DataType.self, for task: Mach.Task = .current
