@@ -23,13 +23,13 @@
 
 ### Representing Existing Ports
 
-- ``init(named:in:)``
+- ``init(named:inNameSpaceOf:)``
 
 ### Creating Ports
 
-- ``init(right:named:in:)``
-- ``init(options:context:in:)``
-- ``init(flags:limits:in:)``
+- ``init(right:named:inNameSpaceOf:)``
+- ``init(options:context:inNameSpaceOf:)``
+- ``init(flags:limits:inNameSpaceOf:)``
 - ``ConstructFlag``
 
 ### Comparing Ports
