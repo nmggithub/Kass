@@ -33,7 +33,9 @@ extension Mach {
         private let rawOwningTask: task_t
 
         /// The task that the port ``name`` is in the name space of.
-        public var owningTask: Mach.Task { Task(named: self.rawOwningTask, in: mach_task_self_) }
+        public var owningTask: Mach.Task {
+            Task(named: self.rawOwningTask, inNameSpaceOf: mach_task_self_)
+        }
 
         /// The port rights named by ``Port/name``.
         public var rights: Set<Mach.PortRight> {
@@ -53,17 +55,17 @@ extension Mach {
 
         /// References an existing port in the current task's name space.
         internal convenience init(named name: mach_port_name_t) {
-            self.init(named: name, in: mach_task_self_)
+            self.init(named: name, inNameSpaceOf: mach_task_self_)
         }
 
-        /// References an existing port in a given task's name space.
-        internal init(named name: mach_port_name_t, in task: task_t) {
+        /// References an existing port.
+        internal init(named name: mach_port_name_t, inNameSpaceOf task: task_t) {
             self.name = name
             self.rawOwningTask = task
         }
 
-        /// References an existing port in a given task's name space.
-        public required init(named name: mach_port_name_t, in task: Task = .current) {
+        /// References an existing port.
+        public required init(named name: mach_port_name_t, inNameSpaceOf task: Task = .current) {
             self.name = name
             self.rawOwningTask = task.name
         }
@@ -86,7 +88,7 @@ extension Mach {
         /// Allocates a new port with a given right in the specified task with an optional name.
         public init(
             right: Mach.PortRight, named name: mach_port_name_t? = nil,
-            in task: Mach.Task = .current
+            inNameSpaceOf task: Mach.Task = .current
         ) throws {
             var generatedPortName = mach_port_name_t()
             try Mach.call(
@@ -164,7 +166,7 @@ extension Mach {
         public init(
             options: consuming mach_port_options_t,
             context: mach_port_context_t? = nil,
-            in task: Mach.Task = .current
+            inNameSpaceOf task: Mach.Task = .current
         ) throws {
             var generatedPortName = mach_port_name_t()
             if context != nil {
@@ -188,12 +190,12 @@ extension Mach {
         /// Constructs a new port with the given flags and limits.
         public convenience init(
             flags: Set<ConstructFlag>, limits: mach_port_limits = mach_port_limits(),
-            in task: Mach.Task = .current
+            inNameSpaceOf task: Mach.Task = .current
         ) throws {
             var options = mach_port_options_t()
             options.flags = flags.bitmap()
             options.mpl = limits
-            try self.init(options: options, context: nil, in: task)
+            try self.init(options: options, context: nil, inNameSpaceOf: task)
         }
 
         /// Destructs the port.

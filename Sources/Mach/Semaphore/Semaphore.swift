@@ -31,10 +31,10 @@ extension Mach {
             super.init(named: semaphore)
         }
         @available(*, unavailable, message: "Use `init(in:policy:value:)` instead")
-        required init(named name: mach_port_name_t, in task: Task = .current) {
+        required init(named name: mach_port_name_t, inNameSpaceOf task: Task = .current) {
             self.semaphoreOwningTask = Mach.Task.current
             self.policy = .unknown
-            super.init(named: name, in: task)
+            super.init(named: name, inNameSpaceOf: task)
         }
         /// Destroys the semaphore.
         /// - Throws: An error if the semaphore could not be destroyed.

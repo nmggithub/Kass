@@ -14,7 +14,9 @@ extension Mach {
                     mach_port_get_set_status(self.name, self.owningTask.name, &names, &namesCount)
                 )
                 return Set(
-                    (0..<Int(namesCount)).map { Mach.Port(named: names![$0], in: self.owningTask) }
+                    (0..<Int(namesCount)).map {
+                        Mach.Port(named: names![$0], inNameSpaceOf: self.owningTask)
+                    }
                 )
             }
         }

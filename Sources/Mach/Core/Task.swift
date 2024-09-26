@@ -64,8 +64,7 @@ extension Mach {
                     mach_port_names(self.name, &names, &namesCount, &types, &typesCount)
                 )
                 return (0..<Int(namesCount)).map {
-                    let port = Mach.Port(named: names![$0], in: self)
-                    return port
+                    Mach.Port(named: names![$0], inNameSpaceOf: self)
                 }
             }
         }
@@ -121,8 +120,7 @@ extension Mach.Task {
             )
             try Mach.call(mach_ports_lookup(self.name, &ports, &portsCount))
             return (0..<Int(portsCount)).map {
-                let port = Mach.Port(named: ports![$0], in: self)
-                return port
+                Mach.Port(named: ports![$0], inNameSpaceOf: self)
             }
         }
     }

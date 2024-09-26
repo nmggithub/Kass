@@ -24,7 +24,7 @@ extension Mach {
             options.service_port_info = servicePortInfoPointer
             options.mpl = limits
             options.flags = flags.bitmap()
-            try self.init(options: options, context: context, in: task)
+            try self.init(options: options, context: context, inNameSpaceOf: task)
         }
 
         /// If the service port is throttled.

@@ -16,7 +16,7 @@ extension Mach {
         public convenience init(
             for servicePort: Mach.ServicePort,
             context: mach_port_context_t? = nil,
-            in task: Mach.Task = .current,
+            inNameSpaceOf task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
             flags: consuming Set<ConstructFlag> = []
         ) throws {
@@ -25,7 +25,7 @@ extension Mach {
             options.service_port_name = servicePort.name
             options.mpl = limits
             options.flags = flags.bitmap()
-            try self.init(options: options, context: context, in: task)
+            try self.init(options: options, context: context, inNameSpaceOf: task)
         }
 
         /// Determines if the connection port is for a service and returns the filter policy ID.
