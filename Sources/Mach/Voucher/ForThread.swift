@@ -1,5 +1,5 @@
 import Darwin.Mach
-import MachVoucher
+import MachBase
 
 extension Mach.Thread {
     /// Sets the voucher for the thread.

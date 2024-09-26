@@ -1,7 +1,7 @@
 @preconcurrency import Darwin.Mach
-@_exported import MachBase
 
 extension Mach {
+    /// A thread.
     public class Thread: Mach.Port {
         /// The current thread.
         public static var current: Self { Self(named: mach_thread_self()) }

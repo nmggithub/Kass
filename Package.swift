@@ -59,23 +59,19 @@ let modules: [Module] = [
         dependencies: ["BSDBase", "CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Thread",
-        dependencies: ["MachVoucher", "CCompat", "Linking"]
-    ),
-    MachSubModule.init(
         subModuleName: "Voucher", dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Sema", folderName: "Semaphore",
-        dependencies: ["MachThread", "CCompat", "Linking"]
+        dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
-        dependencies: ["MachThread", "CCompat", "Linking"]
+        dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Exception",
-        dependencies: ["MachThread", "CCompat", "Linking"]
+        dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Msg", folderName: "Message",
@@ -91,7 +87,7 @@ let modules: [Module] = [
     ),
     MachSubModule.init(
         subModuleName: "Proc", folderName: "Processor",
-        dependencies: ["MachThread", "CCompat", "Linking"]
+        dependencies: ["CCompat", "Linking"]
     ),
 ]
 

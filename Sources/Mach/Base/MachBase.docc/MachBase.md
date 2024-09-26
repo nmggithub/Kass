@@ -19,6 +19,7 @@
 - ``Mach``
 - ``Mach/Port``
 - ``Mach/Task``
+- ``Mach/Thread``
 - ``Mach/Host``
 
 ### Licenses

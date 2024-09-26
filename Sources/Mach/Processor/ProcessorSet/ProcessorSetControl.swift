@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachThread
 
 extension Mach {
     public class ProcessorSetControl: Mach.Port {

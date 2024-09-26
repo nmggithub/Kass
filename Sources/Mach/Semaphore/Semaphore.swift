@@ -1,6 +1,5 @@
 import Darwin.Mach
 @_exported import MachBase
-@_exported import MachThread
 
 extension Mach {
     /// A semaphore.

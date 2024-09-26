@@ -1,6 +1,5 @@
 import Darwin.Mach
 import MachBase
-import MachThread
 
 extension Mach {
     /// An exception port.
