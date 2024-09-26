@@ -1,6 +1,5 @@
 import Darwin.Mach
 @_exported import MachBase
-@_exported import MachPort
 
 extension Mach {
     /// A host.
@@ -37,5 +36,12 @@ extension Mach {
                 return pageSize
             }
         }
+    }
+}
+
+extension Mach.Task {
+    /// The host port for the host that the task is in.
+    public var hostPort: Mach.Host {
+        get throws { try getSpecialPort(.host) }
     }
 }

@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachVoucher
 
 extension Mach.Task {
     /// The task's voucher.

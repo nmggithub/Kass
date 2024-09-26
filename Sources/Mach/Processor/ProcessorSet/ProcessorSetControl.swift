@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachTask
 import MachThread
 
 extension Mach {

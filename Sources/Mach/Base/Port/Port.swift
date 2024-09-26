@@ -1,7 +1,6 @@
 import CCompat
 @preconcurrency import Darwin.Mach
 import Foundation
-@_exported import MachBase
 
 extension Mach {
     /// A port ``name`` in the ``owningTask``'s name space.

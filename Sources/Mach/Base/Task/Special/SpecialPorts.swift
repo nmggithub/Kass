@@ -1,5 +1,4 @@
 import Darwin.Mach
-import MachHost
 
 extension Mach.Task: Mach.Port.WithSpecialPorts {
     /// A special port for a task.
@@ -74,11 +73,6 @@ extension Mach.Task {
     /// The task's control port.
     public var controlPort: Mach.TaskControl {
         get throws { try getSpecialPort(.control) }
-    }
-
-    /// The host port for the host that the task is in.
-    public var hostPort: Mach.Host {
-        get throws { try getSpecialPort(.host) }
     }
 
     /// The task name port.

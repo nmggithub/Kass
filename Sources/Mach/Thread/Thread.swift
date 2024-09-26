@@ -1,6 +1,5 @@
 @preconcurrency import Darwin.Mach
 @_exported import MachBase
-@_exported import MachPort
 
 extension Mach {
     public class Thread: Mach.Port {

@@ -1,7 +1,6 @@
 import Darwin.Mach
 @_exported import MachBase
 @_exported import MachHost
-@_exported import MachTask
 
 extension Mach {
     /// Virtual memory operations.

@@ -2,7 +2,6 @@ import Darwin.Mach
 import Foundation
 @_exported import MachBase
 @_exported import MachHost
-@_exported import MachPort
 
 extension Mach {
     /// A clock.
