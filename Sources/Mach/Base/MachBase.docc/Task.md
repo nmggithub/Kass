@@ -4,10 +4,17 @@ Every port, or rather port name, is contained in a single task.
 
 ## Topics
 
-### Getting flavored task ports
+### Getting task ports
 
-- ``Flavor``
-- ``identityToken``
+- <doc:Task-ports>
+- ``Mach/Task``
+- ``Mach/TaskIdentityToken``
+- ``Mach/Task/Flavored``
+- ``Mach/TaskControl``
+- ``Mach/TaskInspect``
+- ``Mach/TaskRead``
+- ``Mach/TaskName``
+- ``Mach/Task/for(pid:)``
 
 ### Managing a task's lifecycle
 

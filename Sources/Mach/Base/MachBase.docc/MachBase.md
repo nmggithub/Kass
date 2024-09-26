@@ -17,36 +17,9 @@
 
 - <doc:Architecture>
 - ``Mach``
-
-### Calling the kernel
-
-- ``Mach/call(_:)``
-
-### Working with ports
-- <doc:Using-ports>
-- <doc:User-references>
-- ``MachBase/Mach/Port``
-- ``MachBase/Mach/PortSet``
-- ``MachBase/Mach/KernelObject``
-
-
-
-### Service-related ports
-
-- ``MachBase/Mach/ServicePort``
-- ``MachBase/Mach/ConnectionPort``
-
-### Getting task ports
-
-- <doc:Task-ports>
-- ``MachBase/Mach/Task``
-- ``MachBase/Mach/TaskIdentityToken``
-- ``MachBase/Mach/Task/Flavored``
-- ``MachBase/Mach/TaskControl``
-- ``MachBase/Mach/TaskInspect``
-- ``MachBase/Mach/TaskRead``
-- ``MachBase/Mach/TaskName``
-- ``MachBase/Mach/Task/for(pid:)``
+- ``Mach/Port``
+- ``Mach/Task``
+- ``Mach/Host``
 
 ### Licenses
 

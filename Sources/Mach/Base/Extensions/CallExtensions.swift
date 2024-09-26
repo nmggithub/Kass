@@ -1,17 +1,12 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A function that executes a CountInOut kernel call, passing an array pointer and count.
+    /// A function that executes a kernel call that expects an array pointer and a desired count, passing an array pointer and count.
     public typealias CountInOutCall<ArrayPointee: BitwiseCopyable> = (
         UnsafeMutablePointer<ArrayPointee>, inout mach_msg_type_number_t
     ) -> kern_return_t
 
-    /// Executes a CountInOut kernel call and returns the result.
-    /// - Parameters:
-    ///   - count: The desired count of the array.
-    ///   - call: A function that executes the kernel call and passes the array pointer and count.
-    /// - Throws: An error if the operation fails.
-    /// - Returns: The array result of the kernel call.
+    /// Executes a kernel call that expects an array pointer and a desired count and returns the result.
     public static func callWithCountInOut<ArrayPointee: BitwiseCopyable>(
         count: inout mach_msg_type_number_t, _ call: CountInOutCall<ArrayPointee>
     ) throws -> [ArrayPointee] {
@@ -21,12 +16,7 @@ extension Mach {
         return Array(UnsafeBufferPointer(start: array, count: Int(count)))
     }
 
-    /// Executes a CountInOut kernel call and returns the result.
-    /// - Parameters:
-    ///   - type: The type to load the result as.
-    ///   - call: A function that executes the kernel call.
-    /// - Throws: An error if the operation fails.
-    /// - Returns: The result of the kernel call loaded as the specified type.
+    /// Executes a kernel call that expects an array pointer and a desired count and returns the result.
     public static func callWithCountInOut<ArrayPointee: BitwiseCopyable, DataType: BitwiseCopyable>(
         type: DataType.Type, _ call: CountInOutCall<ArrayPointee>
     ) throws -> DataType {
@@ -45,10 +35,6 @@ extension Mach {
     ) -> kern_return_t
 
     /// Executes a kernel call with an array of a specified type.
-    /// - Parameters:
-    ///   - array: The array to pass to the kernel call.
-    ///   - call: A function that executes the kernel call and passes the array pointer and count.
-    /// - Throws: An error if the operation fails.
     public static func callWithCountIn<ArrayPointee: BitwiseCopyable>(
         array: [ArrayPointee], _ call: CountInCall<ArrayPointee>
     ) throws {
@@ -59,11 +45,6 @@ extension Mach {
     }
 
     /// Executes a kernel call with a value expressed as an array of a specified type.
-    /// - Parameters:
-    ///   - value: The value to pass to the kernel call.
-    ///   - call: A function that executes the kernel call and passes the array pointer and count.
-    /// - Throws: An error if the operation fails.
-    /// - Note: This function will automatically convert the value to an array of the specified type.
     public static func callWithCountIn<ArrayPointee: BitwiseCopyable, DataType: BitwiseCopyable>(
         value: DataType, _ call: CountInCall<ArrayPointee>
     ) throws {
@@ -89,9 +70,6 @@ extension Mach {
     ) -> kern_return_t
 
     /// Executes a kernel call that returns an array of a specified type.
-    /// - Parameter call: A function that executes the kernel call and passes the array pointer and count.
-    /// - Throws: An error if the operation fails.
-    /// - Returns: The array result of the kernel call.
     public static func callWithCountOut<ArrayPointee: BitwiseCopyable>(
         _ call: CountOutCall<ArrayPointee>
     ) throws -> [ArrayPointee] {
@@ -104,9 +82,6 @@ extension Mach {
     }
 
     /// Executes a kernel call that returns an array of a specified type.
-    /// - Parameter call: A function that executes the kernel call and passes the array pointer and count.
-    /// - Throws: An error if the operation fails.
-    /// - Returns: The result of the kernel call loaded as the specified type.
     public static func callWithCountOut<ArrayPointee: BitwiseCopyable, DataType: BitwiseCopyable>(
         type: DataType.Type, _ call: CountOutCall<ArrayPointee>
     ) throws -> DataType {

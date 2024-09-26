@@ -2,9 +2,17 @@
 
 ## Topics
 
-### About ports
+### Working with ports
+- <doc:Using-ports>
+- <doc:User-references>
+- ``Mach/Port``
+- ``Mach/PortSet``
+- ``Mach/KernelObject``
 
-- <doc:Architecture>
+### Service-related ports
+
+- ``Mach/ServicePort``
+- ``Mach/ConnectionPort``
 
 ### Comparing ports
 
