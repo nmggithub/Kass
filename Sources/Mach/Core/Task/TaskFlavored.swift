@@ -1,8 +1,8 @@
 import Darwin.Mach
 
-extension Mach.Task {
+extension Mach {
     /// A flavor of task (port).
-    public enum Flavor: mach_task_flavor_t {
+    public enum TaskFlavor: mach_task_flavor_t {
         /// A task control port.
         case control = 0
 
@@ -16,17 +16,17 @@ extension Mach.Task {
         case name = 3
     }
     /// A task (port) with a flavor.
-    public protocol Flavored: Mach.Task {
+    public protocol TaskFlavored: Mach.Task {
         /// The flavor of the task port.
-        var flavor: Mach.Task.Flavor { get }
+        var flavor: Mach.TaskFlavor { get }
     }
 }
 
 extension Mach {
     /// A task's control port.
-    public class TaskControl: Mach.Task, Mach.Task.Flavored {
-        /// The ``Mach/Task/Flavor/control`` flavor.
-        public let flavor: Mach.Task.Flavor = .control
+    public class TaskControl: Mach.Task, Mach.TaskFlavored {
+        /// The ``Mach/TaskFlavor/control`` flavor.
+        public let flavor: Mach.TaskFlavor = .control
 
         /// A nil task control port.
         override public class var Nil: Self {
@@ -35,9 +35,9 @@ extension Mach {
     }
 
     /// A task's read port.
-    public class TaskRead: Mach.Task, Mach.Task.Flavored {
-        /// The ``Mach/Task/Flavor/read`` flavor.
-        public let flavor: Mach.Task.Flavor = .read
+    public class TaskRead: Mach.Task, Mach.TaskFlavored {
+        /// The ``Mach/TaskFlavor/read`` flavor.
+        public let flavor: Mach.TaskFlavor = .read
 
         /// A nil task read port.
         override public class var Nil: Self {
@@ -46,9 +46,9 @@ extension Mach {
     }
 
     /// A task's inspect port.
-    public class TaskInspect: Mach.Task, Mach.Task.Flavored {
-        /// The ``Mach/Task/Flavor/inspect`` flavor.
-        public let flavor: Mach.Task.Flavor = .inspect
+    public class TaskInspect: Mach.Task, Mach.TaskFlavored {
+        /// The ``Mach/TaskFlavor/inspect`` flavor.
+        public let flavor: Mach.TaskFlavor = .inspect
 
         /// A nil task inspect port.
         override public class var Nil: Self {
@@ -57,9 +57,9 @@ extension Mach {
     }
 
     /// A task's name port.
-    public class TaskName: Mach.Task, Mach.Task.Flavored {
-        /// The ``Mach/Task/Flavor/name`` flavor.
-        public let flavor: Mach.Task.Flavor = .name
+    public class TaskName: Mach.Task, Mach.TaskFlavored {
+        /// The ``Mach/TaskFlavor/name`` flavor.
+        public let flavor: Mach.TaskFlavor = .name
 
         /// A nil task name port.
         override public class var Nil: Self {

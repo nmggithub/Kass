@@ -25,8 +25,8 @@
 
 ### Flavored Thread Ports
 
-- ``Mach/Thread/Flavor``
-- ``Mach/Thread/Flavored``
+- ``Mach/ThreadFlavor``
+- ``Mach/ThreadFlavored``
 - ``Mach/ThreadControl``
 - ``Mach/ThreadRead``
 - ``Mach/ThreadInspect``
