@@ -26,7 +26,7 @@ extension Mach.Message.Body {
         /// The ports.
         public var ports: [Mach.Port]
         /// The disposition.
-        public var disposition: Mach.Port.Disposition?
+        public var disposition: Mach.PortDisposition?
         /// Whether to deallocate the ports on send.
         public var deallocateOnSend: Bool
         /// The copy method.
@@ -34,7 +34,7 @@ extension Mach.Message.Body {
         /// Represents an existing raw out-of-line ports descriptor.
         /// - Parameter rawValue: The raw out-of-line ports descriptor.
         public init(rawValue: mach_msg_ool_ports_descriptor_t) {
-            self.disposition = Mach.Port.Disposition(rawValue: rawValue.disposition)
+            self.disposition = Mach.PortDisposition(rawValue: rawValue.disposition)
             self.deallocateOnSend = rawValue.deallocate != 0
             self.copyMethod = OOLDescriptorCopyOption(rawValue: rawValue.copy) ?? .unknown
             let portsBuffer = UnsafeBufferPointer(
@@ -58,7 +58,7 @@ extension Mach.Message.Body {
         ///   - copyMethod: The copy method.
         ///   - deallocateOnSend: Whether to deallocate the ports on send.
         public init(
-            _ ports: [Mach.Port], disposition: Mach.Port.Disposition? = nil,
+            _ ports: [Mach.Port], disposition: Mach.PortDisposition? = nil,
             copyMethod: OOLDescriptorCopyOption = .physical, deallocateOnSend: Bool = false
         ) {
             self.ports = ports

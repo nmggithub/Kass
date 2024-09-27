@@ -21,12 +21,12 @@ extension Mach.Message.Body {
         /// The port.
         public var port: Mach.Port
         /// The disposition.
-        public var disposition: Mach.Port.Disposition?
+        public var disposition: Mach.PortDisposition?
         /// Represents an existing raw port descriptor.
         /// - Parameter rawValue: The raw port descriptor
         public init(rawValue: CStruct) {
             self.port = Mach.Port(named: rawValue.name)
-            self.disposition = Mach.Port.Disposition(rawValue: rawValue.disposition)
+            self.disposition = Mach.PortDisposition(rawValue: rawValue.disposition)
         }
         /// Creates a new port descriptor.
         public init() {
@@ -37,7 +37,7 @@ extension Mach.Message.Body {
         /// - Parameters:
         ///   - port: The port.
         ///   - disposition: The disposition.
-        public init(_ port: Mach.Port, disposition: Mach.Port.Disposition) {
+        public init(_ port: Mach.Port, disposition: Mach.PortDisposition) {
             self.port = port
             self.disposition = disposition
         }

@@ -4,7 +4,7 @@ extension Mach.Message {
         /// The port the right is for.
         public let port: Mach.Port
         /// The disposition to apply to the port to get the right.
-        public let disposition: Mach.Port.Disposition
+        public let disposition: Mach.PortDisposition
     }
     /// The port rights in a message.
     public struct PortRights {

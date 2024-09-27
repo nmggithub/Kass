@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-import MachMsg  // for Mach.Port.Disposition
 
 extension Mach.Clock {
     /// An alarm on a clock.
@@ -24,7 +23,7 @@ extension Mach.Clock {
                 clock_alarm_reply(
                     self.name,
                     // `clock_alarm_reply` passes this into a message header as the remote port disposition, so we copy the send right as to not lose it.
-                    Mach.Port.Disposition.copySend.rawValue,
+                    Mach.PortDisposition.copySend.rawValue,
                     returning.rawValue,
                     type.rawValue,
                     time

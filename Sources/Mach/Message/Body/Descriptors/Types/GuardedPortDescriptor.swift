@@ -23,7 +23,7 @@ extension Mach.Message.Body {
         /// The port.
         public var port: Mach.Port
         /// The disposition.
-        public var disposition: Mach.Port.Disposition?
+        public var disposition: Mach.PortDisposition?
         /// The context.
         public var context: mach_port_context_t
         /// A guard flag.
@@ -59,7 +59,7 @@ extension Mach.Message.Body {
         ///   - context: The context.
         ///   - guardFlags: The guard flags.
         public init(
-            _ port: Mach.Port, disposition: Mach.Port.Disposition? = nil,
+            _ port: Mach.Port, disposition: Mach.PortDisposition? = nil,
             context: mach_port_context_t = 0, guardFlags: GuardFlags = []
         ) {
             self.port = port

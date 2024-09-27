@@ -267,6 +267,68 @@ extension Mach.Port {
 }
 
 extension Mach.Port {
+    /// The number of send rights the receive right has.
+    /// - Important: This port name must name a receive right.
+    public var sendRightCount: Int {
+        get throws {
+            var count = mach_port_right_t()
+            try Mach.call(mach_port_get_srights(self.owningTask.name, self.name, &count))
+            return Int(count)
+        }
+    }
+}
+
+extension Mach {
+    /// A way to get a right from a port.
+    public enum PortDisposition: mach_msg_type_name_t {
+        case none = 0
+        case moveReceive = 16
+        case moveSend = 17
+        case moveSendOnce = 18
+        case copySend = 19
+        case makeSend = 20
+        case makeSendOnce = 21
+        case copyReceive = 22
+        case disposeReceive = 24
+        case disposeSend = 25
+        case disposeSendOnce = 26
+    }
+}
+
+extension Mach.Port {
+    /// Extracts a right from the port and brings it into the current task's name space.
+    public func extractRight(using disposition: Mach.PortDisposition) throws -> Mach.Port {
+        var extractedRight = mach_port_name_t()
+        // We have to pass this, but we ignore it. All it does it tell us what kind of right we got (which we should already know).
+        var typeName = mach_msg_type_name_t()
+        try Mach.call(
+            mach_port_extract_right(
+                self.owningTask.name, self.name, disposition.rawValue, &extractedRight, &typeName
+            )
+        )
+        return Mach.Port(named: extractedRight, inNameSpaceOf: self.owningTask)
+    }
+
+    /// Inserts a right from the port into the specified task's name space.
+    public func insertRight(
+        intoNameSpaceOf task: Mach.Task, using disposition: Mach.PortDisposition
+    ) throws {
+        try Mach.call(
+            mach_port_insert_right(task.name, self.name, self.name, disposition.rawValue)
+        )
+    }
+}
+
+extension Mach.Port {
+    /// Set the make-send count of the port.
+    public func setMakeSendCount(_ count: Int32) throws {
+        try Mach.call(
+            mach_port_set_mscount(self.owningTask.name, self.name, mach_port_mscount_t(count))
+        )
+    }
+}
+
+extension Mach.Port {
     /// A flag to guard a port with.
     public enum GuardFlag: UInt64 {
         case strict = 1
