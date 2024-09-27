@@ -89,9 +89,15 @@ extension Mach {
             try host.setSpecialPort(self, to: port)
         }
 
+        // A unprivileged host port.
         case host = 1
-        case priv = 2
+
+        // A privileged host port.
+        case hostPriv = 2
+
+        // A main device port.
         case ioMain = 3
+
         @available(*, unavailable)
         case max = 7
         // based on increments from the max
@@ -139,10 +145,6 @@ extension Mach.Host: Mach.Port.WithSpecialPorts {
     }
 
     /// Sets a special port for the host.
-    /// - Parameters:
-    ///   - specialPort: The special port to set.
-    ///   - port: The port to set as the special port.
-    /// - Throws: An error if the port cannot be set.
     public func setSpecialPort(_ specialPort: Mach.HostSpecialPort, to port: Mach.Port) throws {
         try Mach.call(
             host_set_special_port(self.name, specialPort.rawValue, port.name)
