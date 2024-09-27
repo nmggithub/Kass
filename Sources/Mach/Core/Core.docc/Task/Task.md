@@ -138,7 +138,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``stashedPorts``
 - ``setStashedPorts(_:)``
 
-### Special Ports
+### Getting Special Ports
 
 - ``Mach/TaskSpecialPort``
 - ``getSpecialPort(_:as:)``
