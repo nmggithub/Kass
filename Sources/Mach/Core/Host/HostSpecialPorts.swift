@@ -1,10 +1,7 @@
 /*
  * Portions Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
  *
- * The main difference between this file and the original file is that the original file is written in C, while this file is written in Swift.
- *
- * Specifically, the original file is a collection of C preprocessor macros, while this file is a Swift enum.
- * The original macros are written in ALL_CAPS_SNAKE_CASE, while the Swift enum cases are written in camelCase.
+ * The list of special ports (particularly those after the max) is taken from the XNU source code.
  *
  * Other code besides the Swift enum is unique to this file and is not sourced from the original file.
  *
@@ -79,7 +76,7 @@ extension Mach {
 
         /// Gets a special port for the host.
         public func get<PortType: Mach.Port>(
-            for host: Mach.Host = .current, as type: PortType.Type = Mach.Port.self
+            for host: Mach.Host = .current, as type: PortType.Type = PortType.self
         ) throws -> PortType {
             try host.getSpecialPort(self, as: type)
         }
@@ -89,52 +86,92 @@ extension Mach {
             try host.setSpecialPort(self, to: port)
         }
 
-        // A unprivileged host port.
+        /// A unprivileged host port.
         case host = 1
 
-        // A privileged host port.
+        /// A privileged host port.
         case hostPriv = 2
 
-        // A main device port.
+        /// A main device port.
         case ioMain = 3
 
         @available(*, unavailable)
         case max = 7
         // based on increments from the max
-        case dynamicPager
-        case auditControl
-        case userNotification
+
+        case dynamicPager  // unknown
+
+        case auditControl  // unknown
+
+        case userNotification  // `launchd`
+
+        /// A port to `automountd`.
         case automountd
-        case lockd
-        case ktraceBackground
+
+        case lockd  // `launchd`
+
+        case ktraceBackground  // `launchd`
+
+        /// A port to `sandboxd`.
         case seatbelt
+
+        /// A port to `kextd` (now `kernelmanagerd`).
         case kextd
-        case launchctl
-        case unfreed
+
+        case launchctl  // unknown
+
+        /// Another port to `fairplayd`.
+        case unfreed  // `fairplayd`
+
+        /// A port to `amfid`.
         case amfid
-        case gssd
+
+        case gssd  // `launchd`
+
+        /// A port to `UserEventAgent`.
         case telemetry
-        case atmNotification
-        case coaltion
-        case sysdiagnose
-        case xpcException
-        case containerd
-        case node
+
+        case atmNotification  // unknown
+
+        case coalition  // `launchd`
+
+        /// A port to `sysdiagnosed`.
+        case sysdiagnosed
+
+        case xpcException  // unknown
+
+        case containerd  // unknown
+
+        case node  // unknown
+
+        /// A port to `symptomsd`.
         case resourceNotify
-        case closured
+
+        case closured  // unknown
+
+        /// A port to `syspolicyd`.
         case syspolicyd
+
+        /// A port to `filecoordinationd`
         case filecoordinationd
+
+        /// A port to `fairplayd`.
         case fairplayd
-        case ioCompressionStats
+
+        case ioCompressionStats  // unknown
+
+        /// A port to `mmaintenanced`.
         case memoryError
-        case managedappdistd
+
+        /// (Probably) a port to `managedappdistributiond`.
+        case managedappdistd  // unknown
     }
 }
 
 extension Mach.Host: Mach.Port.WithSpecialPorts {
     /// Gets a special port for the host.
     public func getSpecialPort<PortType: Mach.Port>(
-        _ specialPort: Mach.HostSpecialPort, as type: PortType.Type = Mach.Port.self
+        _ specialPort: Mach.HostSpecialPort, as type: PortType.Type = PortType.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
         try Mach.call(
@@ -149,5 +186,18 @@ extension Mach.Host: Mach.Port.WithSpecialPorts {
         try Mach.call(
             host_set_special_port(self.name, specialPort.rawValue, port.name)
         )
+    }
+}
+
+extension Mach.Host {
+    /// The unprivileged host port.
+    public var hostPort: Mach.Host {
+        get throws { try getSpecialPort(.host) }
+    }
+
+    /// The privileged host port.
+    /// - Important: On unprivileged tasks, this will return the same as ``hostPort``.
+    public var hostPortPrivileged: Mach.Host {
+        get throws { try getSpecialPort(.hostPriv) }
     }
 }

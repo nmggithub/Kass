@@ -174,6 +174,7 @@ extension Mach.Host {
     }
 
     /// Sets the default memory manager for the host.
+    /// - Warning: Only the kernel task can set the default memory manager.
     public func setDefaultMemoryManager(_ manager: Mach.MemoryManager) throws {
         var name = manager.name
         try Mach.call(
