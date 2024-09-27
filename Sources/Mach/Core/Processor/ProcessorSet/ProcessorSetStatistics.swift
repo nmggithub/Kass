@@ -1,18 +1,16 @@
 import Darwin.Mach
 
-extension Mach.ProcessorSet {
+extension Mach {
     /// A collection of processor set statistics.
-    public enum Statistics: processor_set_flavor_t {
+    public enum ProcessorSetStatistics: processor_set_flavor_t {
         case basic = 5
     }
+}
 
+extension Mach.ProcessorSet {
     /// Gets the processor set's statistics.
-    /// - Parameters:
-    /// - collection: The collection of statistics to get.
-    /// - type: The type to load the statistics as.
-    /// - Throws: An error if the statistics cannot be retrieved.
     public func getStatistics<DataType: BitwiseCopyable>(
-        _ collection: Statistics, as type: DataType.Type
+        _ collection: Mach.ProcessorSetStatistics, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: processor_set_info_t, count) in

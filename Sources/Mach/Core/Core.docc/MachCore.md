@@ -27,7 +27,6 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Host``
 - ``Mach/Processor``
 - ``Mach/ProcessorSet``
-- ``Mach/ProcessorSetControl``
 
 ### Calling The Kernel
 
