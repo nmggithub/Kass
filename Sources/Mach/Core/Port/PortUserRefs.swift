@@ -10,7 +10,7 @@ extension Mach.Port {
         internal let right: Mach.PortRight
 
         /// The user reference count.
-        public var count: Int {
+        public var count: mach_port_urefs_t {
             get throws {
                 var refs = mach_port_urefs_t()
                 try Mach.call(
@@ -18,7 +18,7 @@ extension Mach.Port {
                         self.port.owningTask.name, self.port.name, self.right.rawValue, &refs
                     )
                 )
-                return Int(refs)
+                return refs
             }
         }
 
@@ -37,12 +37,12 @@ extension Mach.Port {
         }
 
         /// Compares the user reference count to a given count.
-        public static func == (lhs: UserRefs, rhs: Int) throws -> Bool {
+        public static func == (lhs: UserRefs, rhs: mach_port_urefs_t) throws -> Bool {
             try lhs.count == mach_port_urefs_t(rhs)
         }
 
         /// Compares a given count to the user reference count.
-        public static func == (lhs: Int, rhs: UserRefs) throws -> Bool {
+        public static func == (lhs: mach_port_urefs_t, rhs: UserRefs) throws -> Bool {
             try mach_port_urefs_t(lhs) == rhs.count
         }
     }
@@ -54,7 +54,7 @@ extension Mach.Port {
 
     /// Sets the user reference count for the port right.
     /// - Warning: This function is not atomic.
-    public func setUserRefs(for right: Mach.PortRight, to count: Int) throws {
+    public func setUserRefs(for right: Mach.PortRight, to count: mach_port_urefs_t) throws {
         let refs = userRefs(for: right)
         let delta = mach_port_delta_t(count) - mach_port_delta_t(try refs.count)
         if delta > 0 { try refs += delta } else if delta < 0 { try refs -= -delta }
