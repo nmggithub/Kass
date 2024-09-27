@@ -22,7 +22,6 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Task``
 - ``Mach/Thread``
 
-
 ### Additional Concepts
 - ``Mach/Host``
 - ``Mach/Processor``
