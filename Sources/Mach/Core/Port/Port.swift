@@ -229,7 +229,7 @@ extension Mach.Port {
 extension Mach.Port: Equatable {
     /// Compares two ports.
     public static func == (lhs: Mach.Port, rhs: Mach.Port) -> Bool {
-        return lhs.name == rhs.name && lhs.owningTask == rhs.owningTask
+        return lhs.name == rhs.name && lhs.rawOwningTask == rhs.rawOwningTask
     }
 
     /// Compares a port to a port name.
