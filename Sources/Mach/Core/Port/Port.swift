@@ -1,5 +1,5 @@
 import CCompat
-@preconcurrency import Darwin.Mach
+import Darwin.Mach
 import Foundation
 
 extension Mach {
@@ -34,7 +34,7 @@ extension Mach {
 
         /// The task that the port ``name`` is in the name space of.
         public var owningTask: Mach.Task {
-            Task(named: self.rawOwningTask, inNameSpaceOf: mach_task_self_)
+            Task(named: self.rawOwningTask, inNameSpaceOf: .current)
         }
 
         /// The port rights named by ``Port/name``.
@@ -53,21 +53,25 @@ extension Mach {
             }
         }
 
-        /// References an existing port in the current task's name space.
-        internal convenience init(named name: mach_port_name_t) {
-            self.init(named: name, inNameSpaceOf: mach_task_self_)
-        }
-
-        /// References an existing port.
-        internal init(named name: mach_port_name_t, inNameSpaceOf task: task_t) {
-            self.name = name
-            self.rawOwningTask = task
-        }
-
         /// References an existing port.
         public required init(named name: mach_port_name_t, inNameSpaceOf task: Task = .current) {
             self.name = name
             self.rawOwningTask = task.name
+        }
+
+        /// References an existing port.
+        /// - Note: This is really only here to give ``Mach/Task/current`` an
+        ///  initialization path that doesn't end in an infinite loop.
+        /// - Note: This is declared after the above initializer so that the one above will
+        /// hopefully take precedence in cases where `init(named:)` is used. If this didn't
+        /// happen and we used `init(named:)` in a public function or property accessor, it
+        /// would lead to a linking error in consumers of this library. It appears that the
+        /// Swift compiler isn't smart enough to realize this and won't warn us. Generally,
+        /// we should avoid uses of `init(named:)` internally and instead fully qualify our
+        /// usage of initializers for ``Mach/Port`` and its subclasses.
+        internal init(named name: mach_port_name_t, inNameSpaceOf task: task_t) {
+            self.name = name
+            self.rawOwningTask = task
         }
 
         /// Destroys the port.

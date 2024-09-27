@@ -10,7 +10,9 @@ extension Mach {
     /// A task (port).
     open class Task: Mach.Port {
         /// The current task.
-        public static var current: TaskControl { TaskControl(named: mach_task_self_) }
+        public static var current: TaskControl {
+            TaskControl(named: mach_task_self_, inNameSpaceOf: mach_task_self_)
+        }
 
         /// If the task is the current task.
         public var isSelf: Bool { mach_task_is_self(self.name) != 0 ? true : false }
