@@ -49,3 +49,9 @@
 - ``Mach/MemoryManager``
 - ``getDefaultMemoryManager()``
 - ``setDefaultMemoryManager(_:)``
+
+### Getting Special Ports
+
+- ``Mach/HostSpecialPort``
+- ``getSpecialPort(_:as:)``
+- ``setSpecialPort(_:to:)``
