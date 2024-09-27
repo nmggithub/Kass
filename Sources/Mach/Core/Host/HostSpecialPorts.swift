@@ -70,19 +70,14 @@
 
 import Darwin.Mach
 
-extension Mach.Host: Mach.Port.WithSpecialPorts {
+extension Mach {
     /// A special port for a host.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
-    public enum SpecialPort: Int32, Mach.Port.SpecialPortType {
+    public enum HostSpecialPort: Int32, Mach.Port.SpecialPortType {
         /// The parent port type.
-        public typealias ParentPort = Mach.Host
+        typealias ParentPort = Mach.Host
 
         /// Gets a special port for the host.
-        /// - Parameters:
-        ///   - host: The host to get the special port for.
-        ///   - type: The type to reference the port as.
-        /// - Throws: An error if the port cannot be retrieved.
-        /// - Returns: The special port.
         public func get<PortType: Mach.Port>(
             for host: Mach.Host = .current, as type: PortType.Type = Mach.Port.self
         ) throws -> PortType {
@@ -90,15 +85,10 @@ extension Mach.Host: Mach.Port.WithSpecialPorts {
         }
 
         /// Sets a special port for the host.
-        /// - Parameters:
-        ///   - host: The host to set the special port for.
-        ///   - port: The port to set as the special port.
-        /// - Throws: An error if the port cannot be set.
         public func set(for host: Mach.Host = .current, to port: Mach.Port) throws {
             try host.setSpecialPort(self, to: port)
         }
 
-        case security = 0
         case host = 1
         case priv = 2
         case ioMain = 3
@@ -133,15 +123,12 @@ extension Mach.Host: Mach.Port.WithSpecialPorts {
         case memoryError
         case managedappdistd
     }
+}
 
+extension Mach.Host: Mach.Port.WithSpecialPorts {
     /// Gets a special port for the host.
-    /// - Parameters:
-    ///   - specialPort: The special port to get.
-    ///   - type: The type to reference the port as.
-    /// - Throws: An error if the port cannot be retrieved.
-    /// - Returns: The special port.
     public func getSpecialPort<PortType: Mach.Port>(
-        _ specialPort: SpecialPort, as type: PortType.Type = Mach.Port.self
+        _ specialPort: Mach.HostSpecialPort, as type: PortType.Type = Mach.Port.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
         try Mach.call(
@@ -156,7 +143,7 @@ extension Mach.Host: Mach.Port.WithSpecialPorts {
     ///   - specialPort: The special port to set.
     ///   - port: The port to set as the special port.
     /// - Throws: An error if the port cannot be set.
-    public func setSpecialPort(_ specialPort: SpecialPort, to port: Mach.Port) throws {
+    public func setSpecialPort(_ specialPort: Mach.HostSpecialPort, to port: Mach.Port) throws {
         try Mach.call(
             host_set_special_port(self.name, specialPort.rawValue, port.name)
         )
