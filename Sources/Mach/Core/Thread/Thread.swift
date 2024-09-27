@@ -4,7 +4,9 @@ extension Mach {
     /// A thread.
     public class Thread: Mach.Port {
         /// The current thread.
-        public static var current: Self { Self(named: mach_thread_self()) }
+        public static var current: Mach.ThreadControl {
+            Mach.ThreadControl(named: mach_thread_self())
+        }
 
         /// Creates a new thread in a given task.
         /// - Warning: The initial execution state of the thread is undefined.
@@ -21,17 +23,16 @@ extension Mach {
         public func resume() throws { try Mach.call(thread_resume(self.name)) }
 
         /// Aborts the thread.
-        /// - Parameter safely: Whether to abort the thread safely.
-        public func abort(safely: Bool = false) throws {
+        public func abort(safely: Bool = true) throws {
             try Mach.call(safely ? thread_abort_safely(self.name) : thread_abort(self.name))
         }
 
         /// Wires a thread.
-        public func wire(host: Mach.Host = .current) throws {
+        public func wire(in host: Mach.Host = .current) throws {
             try Mach.call(thread_wire(host.name, self.name, 1))
         }
         /// Unwires a thread.
-        public func unwire(host: Mach.Host = .current) throws {
+        public func unwire(in host: Mach.Host = .current) throws {
             try Mach.call(thread_wire(host.name, self.name, 0))
         }
 
@@ -57,13 +58,6 @@ extension Mach.Thread {
         timeout: mach_msg_timeout_t
     ) throws {
         try Mach.call(thread_switch(thread.name, option.rawValue, timeout))
-    }
-
-    /// Switches to the thread.
-    public func switchTo(
-        option: Mach.ThreadSwitchOption = .none, timeout: mach_msg_timeout_t
-    ) throws {
-        try Self.switch(to: self, option: option, timeout: timeout)
     }
 
     /// Aborts the depression of the thread.

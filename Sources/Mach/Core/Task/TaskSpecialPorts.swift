@@ -1,10 +1,10 @@
 import Darwin.Mach
 
-extension Mach.Task: Mach.Port.WithSpecialPorts {
+extension Mach {
     /// A special port for a task.
-    public enum SpecialPort: task_special_port_t, Mach.Port.SpecialPortType {
+    public enum TaskSpecialPort: task_special_port_t, Mach.Port.SpecialPortType {
         /// The parent port type.
-        public typealias ParentPort = Mach.Task
+        internal typealias ParentPort = Mach.Task
 
         /// Gets the special port for a task.
         public func get<PortType: Mach.Port>(
@@ -50,9 +50,12 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
         case debug = 10
     }
 
+}
+
+extension Mach.Task: Mach.Port.WithSpecialPorts {
     /// Gets a special port for the task.
     public func getSpecialPort<PortType: Mach.Port>(
-        _ specialPort: SpecialPort, as type: PortType.Type = PortType.self
+        _ specialPort: Mach.TaskSpecialPort, as type: PortType.Type = PortType.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
         try Mach.call(
@@ -62,7 +65,7 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
     }
 
     /// Sets a special port for the task.
-    public func setSpecialPort(_ specialPort: SpecialPort, to port: Mach.Port) throws {
+    public func setSpecialPort(_ specialPort: Mach.TaskSpecialPort, to port: Mach.Port) throws {
         try Mach.call(
             task_set_special_port(self.name, specialPort.rawValue, port.name)
         )

@@ -85,10 +85,6 @@ let modules: [Module] = [
         subModuleName: "Clock",
         dependencies: ["MachMsg", "CCompat", "Linking"]
     ),
-    MachSubModule.init(
-        subModuleName: "Proc", folderName: "Processor",
-        dependencies: ["CCompat", "Linking"]
-    ),
 ]
 
 /// The name of the package.

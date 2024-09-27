@@ -99,11 +99,6 @@
 - ``Mach/ServicePort``
 - ``Mach/ConnectionPort``
 
-### Special Ports
-
-- ``WithSpecialPorts``
-- ``SpecialPortType``
-
 ### Additional Helpers
 
 - ``hash(into:)``

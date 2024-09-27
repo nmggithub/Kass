@@ -9,7 +9,6 @@ extension Namespace {
     @available(*, unavailable, message: "This is a namespace and cannot be instantiated.")
     public init() { fatalError() }
 }
-
 /// The Mach kernel.
 public struct Mach: Namespace {
     /// Calls the kernel and throws an error if the call fails.

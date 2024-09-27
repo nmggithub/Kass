@@ -147,21 +147,22 @@ extension Mach.Host {
     }
 }
 
-extension Mach.Host {
+extension Mach {
     /// A memory manager.
     public class MemoryManager: Mach.Port {}
-
+}
+extension Mach.Host {
     /// Gets the default memory manager for the host.
-    public func getDefaultMemoryManager() throws -> MemoryManager {
+    public func getDefaultMemoryManager() throws -> Mach.MemoryManager {
         var name = mach_port_name_t()
         try Mach.call(
             host_default_memory_manager(self.name, &name, 0)
         )
-        return MemoryManager(named: name)
+        return Mach.MemoryManager(named: name)
     }
 
     /// Sets the default memory manager for the host.
-    public func setDefaultMemoryManager(to manager: MemoryManager) throws {
+    public func setDefaultMemoryManager(_ manager: Mach.MemoryManager) throws {
         var name = manager.name
         try Mach.call(
             host_default_memory_manager(self.name, &name, 0)

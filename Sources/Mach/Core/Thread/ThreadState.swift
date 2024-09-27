@@ -1,32 +1,27 @@
 import Darwin.Mach
 
-extension Mach.Thread {
+extension Mach {
     /// A type of thread state.
     /// - Warning: Some of these cases are [conditionally-compiled](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/statements/#Compiler-Control-Statements)
-    /// based on the architecture being targeted. Swift documentation is specifically generated from a compiled version of the code, so any
+    /// based on the architecture being targeted. Swift documentation is necessarily generated from a compiled version of the code, so any
     /// cases listed here are only those that were available on the machine that generated the documentation and may not accurately reflect
     /// those available in *your* environment. For the most accurate list of cases, see the source code for this module.
-    public enum State: thread_state_flavor_t {
-        case list = 0
+    public enum ThreadState: thread_state_flavor_t {
         #if arch(arm) || arch(arm64)
             case arm = 1
-            case armVFP = 2
-            case armException = 3
-            case armDebug = 4
+            case vfp = 2
+            case exception = 3
+            case debug = 4
             case none = 5
             case arm64 = 6
             case armException64 = 7
             case arm32 = 8
             case x86None = 13
-            case armDebug32 = 14
-            case armDebug64 = 15
+            case debug32 = 14
+            case debug64 = 15
             case armNeon = 16
             case armNeon64 = 17
             case armCPMU64 = 18
-            case armSavedState32 = 20
-            case armSavedState64 = 21
-            case armNeonSavedState32 = 22
-            case armNeonSavedState64 = 23
             case armPageIn = 27
         #elseif arch(i386) || arch(x86_64)
             case x86_32 = 1
@@ -58,20 +53,13 @@ extension Mach.Thread {
             case x86Instruction = 24
             case x86LastBranch = 25
         #endif
-        case listNew = 128
-        case list10_9 = 129
-        case list10_13 = 130
-        case list10_15 = 131
     }
+}
 
+extension Mach.Thread {
     /// Gets the thread's state.
-    /// - Parameters:
-    ///   - state: The state to get.
-    ///   - type: The type to load the state as.
-    /// - Throws: An error if the state cannot be retrieved.
-    /// - Returns: The state.
     public func getState<StateDataType: BitwiseCopyable>(
-        _ state: State, as type: StateDataType.Type
+        _ state: Mach.ThreadState, as type: StateDataType.Type
     ) throws -> StateDataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_state_t, count) in
@@ -80,16 +68,24 @@ extension Mach.Thread {
     }
 
     /// Sets the thread's state.
-    /// - Parameters:
-    ///   - state: The state to set.
-    ///   - value: The value to set the state to.
-    /// - Throws: An error if the state cannot be set.
-    public func setState<StateDataType: BitwiseCopyable>(
-        _ state: State, to value: StateDataType
+    public func setState(
+        _ state: Mach.ThreadState, to value: BitwiseCopyable
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: thread_state_t, count) in
             thread_set_state(self.name, state.rawValue, array, count)
         }
     }
+}
+
+extension Mach.ThreadState {
+    /// Gets the state for a thread.
+    public func get<StateDataType: BitwiseCopyable>(
+        as type: StateDataType.Type, for thread: Mach.Thread = .current
+    ) throws -> StateDataType { try thread.getState(self, as: type) }
+
+    /// Sets the state for a thread.
+    public func set(
+        to value: BitwiseCopyable, for thread: Mach.Thread = .current
+    ) throws { try thread.setState(self, to: value) }
 }

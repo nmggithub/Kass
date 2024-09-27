@@ -1,8 +1,9 @@
 # ``MachCore``
 
+The core module for interacting with the Mach kernel.
+
 @Metadata {
     @TitleHeading("Module")
-    @DisplayName("Mach Core")
 }
 
 ## Licenses
@@ -16,16 +17,21 @@
 
 ### Core Concepts
 
-- <doc:Architecture>
+- ``Mach``
 - ``Mach/Port``
 - ``Mach/Task``
 - ``Mach/Thread``
+
+
+### Additional Concepts
 - ``Mach/Host``
+- ``Mach/Processor``
+- ``Mach/ProcessorSet``
+- ``Mach/ProcessorSetControl``
 
 ### Calling The Kernel
 
 - ``Mach/call(_:)``
-
 
 ### Licenses
 

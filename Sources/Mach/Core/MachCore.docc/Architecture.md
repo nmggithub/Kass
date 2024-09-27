@@ -1,6 +1,4 @@
-# Architecture
-
-The Mach kernel architecture introduces a lot of unique concepts.
+# ``Mach``
 
 ## A Brief Summary
 

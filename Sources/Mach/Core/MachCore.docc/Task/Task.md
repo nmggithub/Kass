@@ -76,6 +76,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``current``
 - ``identityToken``
+- ``Mach/TaskIdentityToken``
 - ``Mach/Task/init(forPID:)``
 
 ### Flavored Task Ports
@@ -83,11 +84,11 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``Mach/Task/Flavor``
 - ``Mach/Task/Flavored``
 - ``Mach/TaskControl``
-- ``Mach/TaskInspect``
 - ``Mach/TaskRead``
+- ``Mach/TaskInspect``
 - ``Mach/TaskName``
 
-### Managing Task Lifecycles
+### Lifecycle Management
 
 - ``suspend()``
 - ``resume()``
@@ -168,7 +169,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Special Ports
 
-- ``SpecialPort``
+- ``Mach/TaskSpecialPort``
 - ``getSpecialPort(_:as:)``
 - ``setSpecialPort(_:to:)``
 - ``Mach/BootstrapPort``

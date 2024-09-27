@@ -1,6 +1,6 @@
 import CCompat
 
-extension Mach.Task.SpecialPort: NameableByCMacro {
+extension Mach.TaskSpecialPort: NameableByCMacro {
     public var cMacroName: String {
         switch self {
         case .control: "TASK_CONTROL_PORT"
