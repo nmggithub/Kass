@@ -2,6 +2,10 @@
 
 ## Topics
 
+### Getting Basic Info
+
+- ``owningHost``
+
 ### Getting Processor Sets
 
 - ``init(named:inHost:)``

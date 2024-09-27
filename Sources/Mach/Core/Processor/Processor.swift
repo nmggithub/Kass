@@ -48,3 +48,14 @@ extension Mach.Host {
         }
     }
 }
+
+extension Mach.Processor {
+    /// Controls the processor.
+    /// - Warning: It seems this is not implemented in the kernel for any architecture.
+    public func control<DataType: BitwiseCopyable>(_ data: DataType) throws {
+        try Mach.callWithCountIn(value: data) {
+            array, count in
+            processor_control(self.name, array, count)
+        }
+    }
+}

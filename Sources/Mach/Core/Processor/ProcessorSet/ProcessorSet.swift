@@ -19,7 +19,7 @@ extension Mach {
         }
 
         /// Gets the default processor set for a host.
-        public static func `default`(in host: Mach.Host = .current) throws -> ProcessorSet {
+        public static func `default`(inHost host: Mach.Host = .current) throws -> ProcessorSet {
             var name = processor_set_name_t()
             try Mach.call(processor_set_default(host.name, &name))
             return ProcessorSet(named: name, inHost: host)
@@ -32,7 +32,7 @@ extension Mach {
                 try Mach.call(
                     host_processor_set_priv(self.owningHost.name, self.name, &controlPortName)
                 )
-                return ProcessorSetControl(named: controlPortName)
+                return ProcessorSetControl(named: controlPortName, inNameSpaceOf: .current)
             }
         }
     }

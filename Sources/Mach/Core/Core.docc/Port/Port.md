@@ -4,7 +4,7 @@
 ## Topics
 
 
-### Getting Basic Information
+### Getting Basic Info
 
 - ``name``
 - ``owningTask``

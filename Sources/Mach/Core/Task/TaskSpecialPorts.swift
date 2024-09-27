@@ -73,6 +73,11 @@ extension Mach.Task: Mach.Port.WithSpecialPorts {
 }
 
 extension Mach.Task {
+    /// The port for the host that the task is in.
+    public var hostPort: Mach.Host {
+        get throws { try getSpecialPort(.host) }
+    }
+
     /// The task's control port.
     public var controlPort: Mach.TaskControl {
         get throws { try getSpecialPort(.control) }
