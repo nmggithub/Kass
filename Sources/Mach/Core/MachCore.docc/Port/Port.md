@@ -16,6 +16,9 @@
 - ``UserRefs``
 - ``userRefs(for:)``
 - ``setUserRefs(for:to:)``
+- ``Mach/PortDisposition``
+- ``extractRight(using:)``
+- ``insertRight(intoNameSpaceOf:using:)``
 
 ### Representing a Nil-Named Port
 
