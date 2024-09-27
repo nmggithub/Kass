@@ -1,7 +1,8 @@
 /*
  * Portions Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
  *
- * The list of special ports (particularly those after the max) is taken from the XNU source code.
+ * The list of special ports (particularly those after the max
+ * kernel-provided port) is taken from the XNU source code.
  *
  * Other code besides the Swift enum is unique to this file and is not sourced from the original file.
  *
