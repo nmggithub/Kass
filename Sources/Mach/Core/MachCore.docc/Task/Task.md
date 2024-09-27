@@ -105,45 +105,16 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Getting Info
 
-- ``Mach/TaskInfo``
 - ``getInfo(_:as:)``
-- ``basicInfo32``
-- ``basicInfo32_2``
-- ``basicInfo64``
-- ``eventCounts``
-- ``threadTimes``
-- ``absoluteTimes``
-- ``kernelMemoryInfo``
-- ``securityToken``
-- ``auditToken``
-- ``affinityTagInfo``
-- ``basicInfo64_2``
-- ``extmodInfo``
-- ``basicInfo``
-- ``powerInfo``
-- ``powerInfoV2``
-- ``vmInfo``
-- ``vmPurgeableInfo``
-- ``waitTimes``
-- ``flags``
-
-### Getting dyld Info
-
-- ``dyldInfo``
-- ``DyldAllImageInfos``
-- ``DyldImageInfo``
-- ``AotImageInfo``
-- ``DyldUUIDInfo``
-- ``DyldPlatform``
-- ``DyldError``
-- ``DyldErrorKind``
-- ``DyldImageMode``
 
 ### Managing Policy
 
 - ``Mach/TaskPolicy``
 - ``getPolicy(_:as:)``
 - ``setPolicy(_:to:)``
+
+### Managing Specific Policy
+
 - ``categoryPolicy``
 - ``setCategoryPolicy(_:)``
 - ``SuppressionPolicy``
