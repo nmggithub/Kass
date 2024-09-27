@@ -19,6 +19,8 @@
 - ``Mach/PortDisposition``
 - ``extractRight(using:)``
 - ``insertRight(intoNameSpaceOf:using:)``
+- ``sendRightCount``
+- ``setMakeSendCount(_:)``
 
 ### Representing a Nil-Named Port
 
