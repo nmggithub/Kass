@@ -49,7 +49,7 @@
 
 ### Getting Lock Groups
 
-- ``Mach/LockGroupInfo``
+- ``Darwin/lockgroup_info``
 - ``lockGroupInfos``
 
 ### Managing Memory
