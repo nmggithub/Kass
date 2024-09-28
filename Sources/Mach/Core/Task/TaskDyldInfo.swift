@@ -2,6 +2,11 @@ import Darwin.Mach
 import Foundation
 import MachC.DyldExtra
 
+/// Adds properties to make the `dyld_image_info` struct more Swift-friendly.
+extension dyld_image_info {
+    public var imageFilePathString: String { String(cString: self.imageFilePath) }
+}
+
 /// Adds properties to make the `dyld_aot_image_info` struct more Swift-friendly.
 extension dyld_aot_image_info {
     public var aotImageKeyData: Data { withUnsafeBytes(of: self.aotImageKey) { Data($0) } }

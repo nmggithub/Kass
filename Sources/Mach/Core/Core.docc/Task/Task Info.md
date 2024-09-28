@@ -28,5 +28,6 @@
 ### Getting dyld Info
 
 - ``Mach/Task/dyldInfo``
+- ``MachC/dyld_image_info``
 - ``MachC/dyld_aot_image_info``
 - ``MachC/dyld_all_image_infos``
