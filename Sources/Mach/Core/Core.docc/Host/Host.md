@@ -1,6 +1,6 @@
 # ``Mach/Host``
 
-- Important: The vast majority of functionality for hosts requires a privileged host port.
+- Warning: The vast majority of functionality for hosts requires a privileged host port.
 
 ## Topics
 
