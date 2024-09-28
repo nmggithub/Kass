@@ -43,9 +43,9 @@ Each helper function expects a block as a final parameter in which the actual ke
 
 ### On Count-In-Out Calls
 
-The main difference between a count-in-out call and a count-out call is that a count-in-out call may return an error if the input count is less than what the array or data to be returned actually needs. The data-based helper for count-in-out calls takes this into account and will calculate the appropriate count for the passed data type.
+The main difference between a count-in-out call and a count-out call is that a count-in-out call may return an error based on the count passed to it. This usually happens if the passed count is less than what is required for the requested array or data, but may sometimes happen if the passed count is not *exactly* the value the kernel expects.
 
-This can be done as long as the array parameter is also typed correctly within the block parameter. This typing is usually inferred automatically through the usage of the parameter, but sometimes it may need to be declared explicitly. 
+The data-based helper function for count-in-out calls takes this into account and will calculate the appropriate count for the passed data type by dividing its size by the size of the array element type. This type is usually inferred by usage in the block. In some cases, though, it may need to be declared explicitly in the block parameters.
 
 ### Examples
 
