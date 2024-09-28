@@ -80,6 +80,8 @@
 
 - ``armPageInState``
 - ``armVFPState``
+- ``floatState``
+- ``pageInState``
 
 ### Getting ARM NEON State (macOS 15+, Experimental)
 
