@@ -1,27 +1,70 @@
+/*
+ * Portions Copyright (c) 2007 Apple Inc. All rights reserved.
+ *
+ * The list of state types is taken from the XNU source code.
+ *
+ * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
+ *
+ * This file contains Original Code and/or Modifications of Original Code
+ * as defined in and that are subject to the Apple Public Source License
+ * Version 2.0 (the 'License'). You may not use this file except in
+ * compliance with the License. The rights granted to you under the License
+ * may not be used to create, or enable the creation or redistribution of,
+ * unlawful or unlicensed copies of an Apple operating system, or to
+ * circumvent, violate, or enable the circumvention or violation of, any
+ * terms of an Apple operating system software license agreement.
+ *
+ * Please obtain a copy of the License at
+ * http://www.opensource.apple.com/apsl/ and read it before using this file.
+ *
+ * The Original Code and all software distributed under the License are
+ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
+ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
+ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
+ * Please see the License for the specific language governing rights and
+ * limitations under the License.
+ *
+ * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
+ */
+/*
+ * FILE_ID: thread_status.h
+ */
+
 import Darwin.Mach
 
 extension Mach {
     /// A type of thread state.
-    /// - Warning: Some of these cases are [conditionally-compiled](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/statements/#Compiler-Control-Statements)
-    /// based on the architecture being targeted. Swift documentation is necessarily generated from a compiled version of the code, so any
-    /// cases listed here are only those that were available on the machine that generated the documentation and may not accurately reflect
-    /// those available in *your* environment. For the most accurate list of cases, see the source code for this module.
+    /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
     public enum ThreadState: thread_state_flavor_t {
         #if arch(arm) || arch(arm64)
-            case arm = 1
-            case vfp = 2
-            case exception = 3
-            case debug = 4
-            case none = 5
+            /// ARM VFP state.
+            case armVFP = 2
+
+            /// 32-bit ARM exception state.
+            case armException32 = 3
+
+            /// Legacy (pre-Armv8) 32-bit ARM debug state.
+            case armDebugLegacy = 4
+
+            case none = 5  // a special case
+
+            /// 64-bit ARM state.
             case arm64 = 6
+
+            /// 64-bit ARM exception state.
             case armException64 = 7
+
+            /// 32-bit ARM state.
             case arm32 = 8
-            case x86None = 13
+
+            /// 32-bit ARM debug state.
             case debug32 = 14
+
+            /// 64-bit ARM debug state.
             case debug64 = 15
-            case armNeon = 16
-            case armNeon64 = 17
-            case armCPMU64 = 18
+
+            /// ARM page-in state.
             case armPageIn = 27
         #elseif arch(i386) || arch(x86_64)
             case x86_32 = 1
@@ -59,7 +102,7 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's state.
     public func getState<StateDataType: BitwiseCopyable>(
-        _ state: Mach.ThreadState, as type: StateDataType.Type
+        _ state: Mach.ThreadState, as type: StateDataType.Type = StateDataType.self
     ) throws -> StateDataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_state_t, count) in
@@ -89,3 +132,54 @@ extension Mach.ThreadState {
         to value: BitwiseCopyable, for thread: Mach.Thread = .current
     ) throws { try thread.setState(self, to: value) }
 }
+
+#if arch(arm) || arch(arm64)
+    extension Mach.Thread {
+        /// The 32-bit ARM state of the thread.
+        public var arm32BitState: arm_thread_state32_t {
+            get throws { try self.getState(.arm32) }
+        }
+
+        /// The 64-bit ARM state of the thread.
+        public var arm64BitState: arm_thread_state64_t {
+            get throws { try self.getState(.arm64) }
+        }
+
+        /// The ARM VFP state of the thread.
+        public var armVFPState: arm_vfp_state_t {
+            get throws { try self.getState(.armVFP) }
+        }
+
+        /// The 32-bit ARM exception state of the thread.
+        public var arm32BitExceptionState: arm_exception_state32_t {
+            get throws { try self.getState(.armException32) }
+        }
+
+        /// The 64-bit ARM exception state of the thread.
+        public var arm64BitExceptionState: arm_exception_state64_t {
+            get throws { try self.getState(.armException64) }
+        }
+
+        /// The legacy (pre-Armv8) 32-bit ARM debug state of the thread.
+        public var arm32BitLegacyDebugState: arm_debug_state_t {
+            get throws { try self.getState(.armDebugLegacy) }
+        }
+
+        /// The 32-bit debug state of the thread.
+        public var arm32BitDebugState: arm_debug_state32_t {
+            get throws { try self.getState(.debug32) }
+        }
+
+        /// The 64-bit debug state of the thread.
+        public var arm64BitDebugState: arm_debug_state64_t {
+            get throws { try self.getState(.debug64) }
+        }
+
+        /// The ARM page-in state of the thread.
+        public var armPageInState: arm_pagein_state_t {
+            get throws { try self.getState(.armPageIn) }
+        }
+    }
+#elseif arch(i386) || arch(x86_64)
+
+#endif

@@ -17,7 +17,7 @@
 
 ### Creating Threads
 
-- ``init(in:)``
+- ``init(inTask:)``
 
 ### Getting Thread Ports
 

@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A thread.
+    /// A thread in a task.
     public class Thread: Mach.Port {
         /// The current thread.
         public static var current: Mach.ThreadControl {
@@ -10,7 +10,7 @@ extension Mach {
 
         /// Creates a new thread in a given task.
         /// - Warning: The initial execution state of the thread is undefined.
-        public convenience init(in task: Task) throws {
+        public convenience init(inTask task: Task) throws {
             var thread = thread_act_t()
             try Mach.call(thread_create(task.name, &thread))
             self.init(named: thread)
@@ -26,6 +26,9 @@ extension Mach {
         public func abort(safely: Bool = true) throws {
             try Mach.call(safely ? thread_abort_safely(self.name) : thread_abort(self.name))
         }
+
+        /// Terminates the thread.
+        public func terminate() throws { try Mach.call(thread_terminate(self.name)) }
 
         /// Wires a thread.
         public func wire(in host: Mach.Host = .current) throws {
@@ -61,6 +64,7 @@ extension Mach.Thread {
     }
 
     /// Aborts the depression of the thread.
+    /// - Note: A thread may be in a depressed state due to a thread switching call.
     public func abortDepression() throws {
         try Mach.call(thread_depress_abort(self.name))
     }
