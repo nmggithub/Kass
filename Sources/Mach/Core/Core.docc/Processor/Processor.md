@@ -14,8 +14,11 @@
 ### Lifecycle Management
 
 - ``start()``
-- ``control(_:)``
 - ``exit()``
+
+### Controlling a Processor
+
+- ``control(_:)``
 
 ### Getting Info
 
