@@ -69,68 +69,68 @@ extension Mach {
             /// ARM VFP state.
             case armVFP = 2
 
-            /// 32-bit ARM exception state.
+            /// ARM exception state (32-bit).
             case armException32 = 3
 
-            /// Legacy (pre-Armv8) 32-bit ARM debug state.
+            /// ARM debug state (32-bit, pre-Armv8).
             case armDebugLegacy = 4
 
             case none = 5  // a special case
 
-            /// 64-bit ARM state.
+            /// ARM state (64-bit).
             case arm64 = 6
 
-            /// 64-bit ARM exception state.
+            /// ARM exception state (64-bit).
             case armException64 = 7
 
-            /// 32-bit ARM state.
+            /// ARM state (32-bit).
             case arm32 = 8
 
-            /// 32-bit ARM debug state.
+            /// ARM debug state (32-bit).
             case armDebug32 = 14
 
-            /// 64-bit ARM debug state.
+            /// ARM debug state (64-bit).
             case armDebug64 = 15
 
             /// ARM page-in state.
             case armPageIn = 27
         #elseif arch(i386) || arch(x86_64)
-            /// 32-bit x86 state.
+            /// x86 state (32-bit).
             case x86_32 = 1
 
-            /// 32-bit x86 floating-point state.
+            /// x86 floating-point state (32-bit).
             case x86Float32 = 2
 
-            /// 32-bit x86 exception state.
+            /// x86 exception state (32-bit).
             case x86Exception32 = 3
 
-            /// 64-bit x86 state.
+            /// x86 state (64-bit).
             case x86_64 = 4
 
-            /// 64-bit x86 floating-point state.
+            /// x86 floating-point state (64-bit).
             case x86Float64 = 5
 
-            /// 64-bit x86 exception state.
+            /// x86 exception state (64-bit).
             case x86Exception64 = 6
 
-            /// 32-bit x86 debug state.
+            /// x86 debug state (32-bit).
             case x86Debug32 = 10
 
-            /// 64-bit x86 debug state.
+            /// x86 debug state (64-bit).
             case x86Debug64 = 11
 
             case none = 13  // a special case
 
-            /// 32-bit x86 AVX state.
+            /// x86 AVX state (32-bit).
             case x86AVX32 = 16
 
-            /// 64-bit x86 AVX state.
+            /// x86 AVX state (64-bit).
             case x86AVX64  // +1
 
             /// x86 page-in state.
             case x86PageIn = 22
 
-            /// The full 64-bit x86 state.
+            /// x86 state (64-bit, full).
             case x86Full64 = 23
 
             /// x86 instruction state.
