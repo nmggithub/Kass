@@ -22,6 +22,14 @@ extension String {
     }
 }
 
+/// Adds a failible initializer to convert a potentially-nil data pointer to a Swift `Data` object.
+extension Data {
+    internal init?(bytes: UnsafeRawPointer?, count: Int) {
+        guard let actualBytes = bytes else { return nil }
+        self.init(bytes: actualBytes, count: count)
+    }
+}
+
 /// Adds properties to make the `dyld_all_image_infos` struct more Swift-friendly.
 extension dyld_all_image_infos {  // Note: The availability constraints are based on comments in the original header file.
     public var infos: [dyld_image_info] {
@@ -42,11 +50,8 @@ extension dyld_all_image_infos {  // Note: The availability constraints are base
     }
     @available(macOS, introduced: 10.13)
     public var compactDyldImageInfo: Data? {
-        guard let addr = UnsafeRawPointer(bitPattern: self.compact_dyld_image_info_addr) else {
-            return nil
-        }
-        return Data(
-            bytes: addr,
+        Data(
+            bytes: UnsafeRawPointer(bitPattern: self.compact_dyld_image_info_addr),
             count: Int(self.compact_dyld_image_info_size)
         )
     }
