@@ -90,7 +90,7 @@ extension Mach {
 }
 extension Mach.Host {
     /// Information about the lock groups on the host.
-    public var lockGroups: [Mach.LockGroupInfo] {
+    public var lockGroupInfos: [Mach.LockGroupInfo] {
         get throws {
             var lockGroupInfo: lockgroup_info_array_t?
             var lockGroupCount = mach_msg_type_number_t.max
