@@ -32,14 +32,37 @@ import Darwin.Mach
 
 // The C structs `arm_neon_state32_t` and `arm_neon_state64_t` should be available Swift. However, they make use of
 // `__uint128_t`, which was only recently added to Swift. They also don't appear to be bridged properly, so they're
-// currently un-usable for the purposes of this library. As a temporary solution, we'll define our own types here.
+// currently unusable for the purposes of this library. As a temporary solution, we'll define our own types here.
 //
 // Issue: https://github.com/swiftlang/swift/issues/76758
+
+/// Helpers for getting and setting the thread's state for cases not covered by the `ThreadState` enum.
+extension Mach.Thread {
+    /// Gets the thread's state using a raw state flavor.
+    fileprivate func getState<DataType: BitwiseCopyable>(
+        _ state: thread_state_flavor_t, as type: DataType.Type = DataType.self
+    ) throws -> DataType {
+        try Mach.callWithCountInOut(type: type) {
+            (array: thread_state_t, count) in
+            thread_get_state(self.name, state, array, &count)
+        }
+    }
+
+    /// Sets the thread's state using a raw state flavor.
+    fileprivate func setState<DataType: BitwiseCopyable>(
+        _ state: thread_state_flavor_t, to value: DataType
+    ) throws {
+        try Mach.callWithCountIn(value: value) {
+            (array: thread_state_t, count) in
+            thread_set_state(self.name, state, array, count)
+        }
+    }
+}
 
 #if arch(arm64)  // XNU makes the original structs opaque for `arm`, so we'll just ignore implementing this for `arm`.
     @available(macOS 15, *)  // UInt128 is only available on macOS 15.0 and later.
     extension Mach.Thread {
-        /// A 32-bit ARM NEON state of a thread.
+        /// An ARM NEON state of a thread (32-bit).
         /// - Important: This is a temporary substitute for `arm_neon_state32_t`. Please see
         ///  the source code for more information.
         /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
@@ -64,7 +87,7 @@ import Darwin.Mach
                 public let fpcr: UInt32
             #endif
         }
-        /// A 64-bit ARM NEON state of a thread.
+        /// An ARM NEON state of a thread (64-bit).
         /// - Important: This is a temporary substitute for `arm_neon_state64_t`. Please see
         /// the source code for more information.
         /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
@@ -95,39 +118,16 @@ import Darwin.Mach
         }
     }
 
-    /// Helpers for getting and setting the thread's state for cases not covered by the `ThreadState` enum.
-    extension Mach.Thread {
-        /// Gets the thread's state using a raw state flavor.
-        fileprivate func getState<DataType: BitwiseCopyable>(
-            _ state: thread_state_flavor_t, as type: DataType.Type = DataType.self
-        ) throws -> DataType {
-            try Mach.callWithCountInOut(type: type) {
-                (array: thread_state_t, count) in
-                thread_get_state(self.name, state, array, &count)
-            }
-        }
-
-        /// Sets the thread's state using a raw state flavor.
-        fileprivate func setState<DataType: BitwiseCopyable>(
-            _ state: thread_state_flavor_t, to value: DataType
-        ) throws {
-            try Mach.callWithCountIn(value: value) {
-                (array: thread_state_t, count) in
-                thread_set_state(self.name, state, array, count)
-            }
-        }
-    }
-
     @available(macOS 15, *)  // UInt128 is only available on macOS 15.0 and later.
     extension Mach.Thread {
-        /// The 32-bit ARM NEON state of the thread.
+        /// The ARM NEON state of the thread (32-bit).
         /// - Important: This return type a temporary substitute for `arm_neon_state32_t`. Please see
         ///  the source code for more information.
         public var armNEONState32: Mach.Thread.ARMNEONState32 {
             get throws { try self.getState(ARM_NEON_STATE) }
         }
 
-        /// The 64-bit ARM NEON state of the thread.
+        /// The ARM NEON state of the thread (64-bit).
         /// - Important: This return type a temporary substitute for `arm_neon_state64_t`. Please see
         /// the source code for more information.
         public var armNEONState64: Mach.Thread.ARMNEONState64 {

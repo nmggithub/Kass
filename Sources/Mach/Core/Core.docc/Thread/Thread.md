@@ -1,5 +1,7 @@
 # ``Mach/Thread``
 
+- Warning: Functionality listed here only reflects what was available on the machine that generated this documentation and may not reflect what is available in *your* environment. Please visit the source code for more accurate information.
+
 ## Topics
 
 ## Getting Info
@@ -57,19 +59,19 @@
 
 ### Getting General State
 
-- ``armState``
+- ``generalState``
 - ``armState32``
 - ``armState64``
 
 ### Getting Exception State
 
-- ``armExceptionState``
+- ``exceptionState``
 - ``armExceptionState32``
 - ``armExceptionState64``
 
 ### Getting Debug State
 
-- ``armDebugState``
+- ``debugState``
 - ``armDebugState32``
 - ``armDebugState32Legacy``
 - ``armDebugState64``
