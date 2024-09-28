@@ -101,7 +101,7 @@ extension Mach.Task {
 
     /// Like ``basicInfo32``, but with the maximum resident size instead of the current size.
     @available(macOS, deprecated: 10.8, message: "Use `basicInfo` instead.")
-    public var basicInfo32_2: task_basic_info_32 {
+    public var basic2Info32: task_basic_info_32 {
         get throws { try self.getInfo(.basic2_32) }
     }
 

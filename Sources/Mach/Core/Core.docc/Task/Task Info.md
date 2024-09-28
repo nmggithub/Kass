@@ -6,7 +6,7 @@
 
 - ``Mach/TaskInfo``
 - ``Mach/Task/basicInfo32``
-- ``Mach/Task/basicInfo32_2``
+- ``Mach/Task/basic2Info32``
 - ``Mach/Task/basicInfo64``
 - ``Mach/Task/eventCounts``
 - ``Mach/Task/threadTimes``

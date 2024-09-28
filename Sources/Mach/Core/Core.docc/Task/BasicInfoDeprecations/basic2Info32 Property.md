@@ -1,4 +1,4 @@
-# ``Mach/Task/basicInfo32_2``
+# ``Mach/Task/basic2Info32``
 
 @DeprecationSummary {
     Use ``basicInfo`` instead.
