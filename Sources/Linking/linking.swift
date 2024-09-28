@@ -1,7 +1,7 @@
 import Foundation
 
 /// A handle.
-public class Handle {
+public class Handle: @unchecked Sendable {
     /// A type of handle.
     public enum HandleType {
         case library
@@ -26,7 +26,7 @@ public class Handle {
 }
 
 /// A library handle.
-public class Library: Handle {
+public class Library: Handle, @unchecked Sendable {
     /// The path to the library.
     let pathURL: URL
     /// Creates a new library handle.
@@ -105,7 +105,7 @@ public class Library: Handle {
 }
 
 /// A symbol handle.
-public class Symbol: Handle {
+public class Symbol: Handle, @unchecked Sendable {
     /// Casts the symbol to a specific type.
     /// - Parameter to: The type to cast the symbol to.
     /// - Returns: The symbol cast to the specified type.
@@ -130,7 +130,7 @@ public class Symbol: Handle {
 }
 
 /// A framework handle.
-public class Framework: Library {
+public class Framework: Library, @unchecked Sendable {
     /// The path to the public frameworks.
     private static let publicFrameworksPath = URL(string: "/System/Library/Frameworks")!
     /// The path to the private frameworks.
