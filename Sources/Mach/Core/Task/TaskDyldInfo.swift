@@ -9,7 +9,9 @@ extension dyld_image_info {
 
 /// Adds properties to make the `dyld_aot_image_info` struct more Swift-friendly.
 extension dyld_aot_image_info {
-    public var aotImageKeyData: Data { withUnsafeBytes(of: self.aotImageKey) { Data($0) } }
+    public var aotImageKeyData: Data {
+        withUnsafeBytes(of: self.aotImageKey) { bytes in Data(bytes) }
+    }
 }
 
 /// Adds a failible initializer to convert a potentially-nil C string to a Swift string.
