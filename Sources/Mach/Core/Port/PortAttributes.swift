@@ -117,7 +117,7 @@ extension Mach.Port {
 
     /// Indicates that the receive right is a De-Nap receiver.
     /// - Important: Setting this attribute does the same as setting the importance receiver attribute.
-    @available(macOS, deprecated, message: "Use `setIsImportanceReceiver()` instead.")
+    @available(macOS, deprecated, message: "Set the importance receiver attribute instead.")
     public func setIsDeNapReceiver() throws { try self.setAttribute(.deNapReceiver, to: ()) }
 
     /// Information about the port.
