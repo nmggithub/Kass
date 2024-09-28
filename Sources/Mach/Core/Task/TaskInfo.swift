@@ -149,6 +149,7 @@ extension Mach.Task {
         /// OS X 10.13. However, it seems to have only been a compatibility patch and wasn't meant
         /// for general use. It also appears to be related to iOS (but since macOS and iOS use the
         /// same kernel, it's available on macOS as well).
+        /// - Important: This is only available on the ARM architecture.
         @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basicInfo` instead.")
         public var basicInfo64_2: task_basic_info_64_2 {
             get throws { try self.getInfo(.basic64_2) }
