@@ -36,6 +36,7 @@
 - ``suspend()``
 - ``resume()``
 - ``abort(safely:)``
+- ``terminate()``
 
 ### Switching Threads
 
@@ -53,6 +54,37 @@
 - ``Mach/ThreadState``
 - ``getState(_:as:)``
 - ``setState(_:to:)``
+
+### Getting General State
+
+- ``armState``
+- ``armState32``
+- ``armState64``
+
+### Getting Exception State
+
+- ``armExceptionState``
+- ``armExceptionState32``
+- ``armExceptionState64``
+
+### Getting Debug State
+
+- ``armDebugState``
+- ``armDebugState32``
+- ``armDebugState32Legacy``
+- ``armDebugState64``
+
+### Getting Other State
+
+- ``armPageInState``
+- ``armVFPState``
+
+### Getting ARM NEON State (macOS 15+, Experimental)
+
+- ``ARMNEONState32``
+- ``ARMNEONState64``
+- ``armNEONState64``
+- ``armNEONState32``
 
 ### Managing Policy
 

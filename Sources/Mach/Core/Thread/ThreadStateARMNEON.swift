@@ -42,6 +42,7 @@ import Darwin.Mach
         /// A 32-bit ARM NEON state of a thread.
         /// - Important: This is a temporary substitute for `arm_neon_state32_t`. Please see
         ///  the source code for more information.
+        /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
         public struct ARMNEONState32: BitwiseCopyable {
             #if __DARWIN_UNIX03
                 public let __v:
@@ -66,6 +67,7 @@ import Darwin.Mach
         /// A 64-bit ARM NEON state of a thread.
         /// - Important: This is a temporary substitute for `arm_neon_state64_t`. Please see
         /// the source code for more information.
+        /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
         public struct ARMNEONState64: BitwiseCopyable {
             #if __DARWIN_UNIX03
                 public let __v:
@@ -121,14 +123,14 @@ import Darwin.Mach
         /// The 32-bit ARM NEON state of the thread.
         /// - Important: This return type a temporary substitute for `arm_neon_state32_t`. Please see
         ///  the source code for more information.
-        public var arm32BitNEONState: Mach.Thread.ARMNEONState32 {
+        public var armNEONState32: Mach.Thread.ARMNEONState32 {
             get throws { try self.getState(ARM_NEON_STATE) }
         }
 
         /// The 64-bit ARM NEON state of the thread.
         /// - Important: This return type a temporary substitute for `arm_neon_state64_t`. Please see
         /// the source code for more information.
-        public var arm64BitNEONState: Mach.Thread.ARMNEONState64 {
+        public var armNEONState64: Mach.Thread.ARMNEONState64 {
             get throws { try self.getState(ARM_NEON_STATE64) }
         }
     }

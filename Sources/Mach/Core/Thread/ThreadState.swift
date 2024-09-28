@@ -59,10 +59,10 @@ extension Mach {
             case arm32 = 8
 
             /// 32-bit ARM debug state.
-            case debug32 = 14
+            case armDebug32 = 14
 
             /// 64-bit ARM debug state.
-            case debug64 = 15
+            case armDebug64 = 15
 
             /// ARM page-in state.
             case armPageIn = 27
@@ -135,44 +135,106 @@ extension Mach.ThreadState {
 
 #if arch(arm) || arch(arm64)
     extension Mach.Thread {
+        // General states
+
         /// The 32-bit ARM state of the thread.
-        public var arm32BitState: arm_thread_state32_t {
+        public var armState32: arm_thread_state32_t {
             get throws { try self.getState(.arm32) }
         }
 
         /// The 64-bit ARM state of the thread.
-        public var arm64BitState: arm_thread_state64_t {
+        public var armState64: arm_thread_state64_t {
             get throws { try self.getState(.arm64) }
         }
 
-        /// The ARM VFP state of the thread.
-        public var armVFPState: arm_vfp_state_t {
-            get throws { try self.getState(.armVFP) }
-        }
+        #if arch(arm)
+            /// The 32-bit ARM state of the thread.
+            /// - Warning: The actual type of this property depends on the architecture that the
+            /// code is running on. Please see the source code for more information, or use
+            /// one of the more explicit properties to ensure the type of state returned.
+            public var armState: arm_thread_state32_t {
+                get throws { try self.armState32 }
+            }
+        #elseif arch(arm64)
+            /// The 64-bit ARM state of the thread.
+            /// - Warning: The actual type of this property depends on the architecture that the
+            /// code is running on. Please see the source code for more information, or use
+            /// one of the more explicit properties to ensure the type of state returned.
+            public var armState: arm_thread_state64_t {
+                get throws { try self.armState64 }
+            }
+        #endif
+
+        // Exception states
 
         /// The 32-bit ARM exception state of the thread.
-        public var arm32BitExceptionState: arm_exception_state32_t {
+        public var armExceptionState32: arm_exception_state32_t {
             get throws { try self.getState(.armException32) }
         }
 
         /// The 64-bit ARM exception state of the thread.
-        public var arm64BitExceptionState: arm_exception_state64_t {
+        public var armExceptionState64: arm_exception_state64_t {
             get throws { try self.getState(.armException64) }
         }
 
+        #if arch(arm)
+            /// The 32-bit ARM exception state of the thread.
+            /// - Warning: The actual type of this property depends on the architecture that the
+            /// code is running on. Please see the source code for more information, or use
+            /// one of the more explicit properties to ensure the type of state returned.
+            public var armExceptionState: arm_exception_state32_t {
+                get throws { try self.armExceptionState32 }
+            }
+        #elseif arch(arm64)
+            /// The 64-bit ARM exception state of the thread.
+            /// - Warning: The actual type of this property depends on the architecture that the
+            /// code is running on. Please see the source code for more information, or use
+            /// one of the more explicit properties to ensure the type of state returned.
+            public var armExceptionState: arm_exception_state64_t {
+                get throws { try self.armExceptionState64 }
+            }
+        #endif
+
+        // Debug states
+
+        /// The 32-bit debug state of the thread.
+        public var armDebugState32: arm_debug_state32_t {
+            get throws { try self.getState(.armDebug32) }
+        }
+
         /// The legacy (pre-Armv8) 32-bit ARM debug state of the thread.
-        public var arm32BitLegacyDebugState: arm_debug_state_t {
+        public var armDebugState32Legacy: arm_debug_state_t {
             get throws { try self.getState(.armDebugLegacy) }
         }
 
-        /// The 32-bit debug state of the thread.
-        public var arm32BitDebugState: arm_debug_state32_t {
-            get throws { try self.getState(.debug32) }
+        /// The 64-bit debug state of the thread.
+        public var armDebugState64: arm_debug_state64_t {
+            get throws { try self.getState(.armDebug64) }
         }
 
-        /// The 64-bit debug state of the thread.
-        public var arm64BitDebugState: arm_debug_state64_t {
-            get throws { try self.getState(.debug64) }
+        #if arch(arm)
+            /// The 32-bit ARM debug state of the thread.
+            /// - Warning: The actual type of this property depends on the architecture the
+            /// code is running on. Please see the source code for more information, or use
+            /// one of the more explicit properties to ensure the type of state returned.
+            public var armDebugState: arm_debug_state32_t {
+                get throws { try self.armDebugState32 }
+            }
+        #elseif arch(arm64)
+            /// The 64-bit ARM debug state of the thread.
+            /// - Warning: The actual type of this property depends on the architecture that the
+            /// code is running on. Please see the source code for more information, or use
+            /// one of the more explicit properties to ensure the type of state returned.
+            public var armDebugState: arm_debug_state64_t {
+                get throws { try self.armDebugState64 }
+            }
+        #endif
+
+        /// Non-architecture-specific states
+
+        /// The ARM VFP state of the thread.
+        public var armVFPState: arm_vfp_state_t {
+            get throws { try self.getState(.armVFP) }
         }
 
         /// The ARM page-in state of the thread.
