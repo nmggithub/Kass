@@ -39,13 +39,17 @@ extension Mach {
         /// Information about dyld images in the task.
         case dyld = 17
 
-        /// Basic information about the task (64-bit compatible, "newer" version).
-        /// - Note: This appears to have been introduced in xnu-4570.1.46, which was released with
-        /// OS X 10.13. However, it seems to have only been a compatibility patch and wasn't meant
-        /// for general use. It also appears to be related to iOS (but since macOS and iOS use the
-        /// same kernel, it's available on macOS as well).
-        @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basic` instead.")
-        case basic64_2 = 18
+        #if arch(arm) || arch(arm64)
+
+            /// Basic information about the task (64-bit compatible, "newer" version).
+            /// - Note: This appears to have been introduced in xnu-4570.1.46, which was released with
+            /// OS X 10.13. However, it seems to have only been a compatibility patch and wasn't meant
+            /// for general use. It also appears to be related to iOS (but since macOS and iOS use the
+            /// same kernel, it's available on macOS as well).
+            /// - Important: This is only available on the ARM architecture.
+            @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basic` instead.")
+            case basic64_2 = 18
+        #endif
 
         /// Information about external modifications to the task.
         case extmod = 19
