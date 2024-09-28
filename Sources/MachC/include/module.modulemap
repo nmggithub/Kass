@@ -1,0 +1,6 @@
+module MachC {
+    module DyldExtra {
+        header "dyld_extra.h"
+        export *
+    }
+}

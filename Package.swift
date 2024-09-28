@@ -54,9 +54,10 @@ let modules: [Module] = [
         targetName: "BSDBase", path: "Sources/BSD/Base", dependencies: ["CCompat", "Linking"]
     ),
     BSDSubModule.init(subModuleName: "FS", dependencies: ["CCompat", "Linking"]),
+    BasicModule.init(targetName: "MachC", path: "Sources/MachC", dependencies: []),
     BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
-        dependencies: ["BSDBase", "CCompat", "Linking"]
+        dependencies: ["MachC", "BSDBase", "CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Voucher", dependencies: ["CCompat", "Linking"]

@@ -28,11 +28,5 @@
 ### Getting dyld Info
 
 - ``Mach/Task/dyldInfo``
-- ``Mach/Task/DyldAllImageInfos``
-- ``Mach/Task/DyldImageInfo``
-- ``Mach/Task/AotImageInfo``
-- ``Mach/Task/DyldUUIDInfo``
-- ``Mach/Task/DyldPlatform``
-- ``Mach/Task/DyldError``
-- ``Mach/Task/DyldErrorKind``
-- ``Mach/Task/DyldImageMode``
+- ``MachC/dyld_aot_image_info``
+- ``MachC/dyld_all_image_infos``
