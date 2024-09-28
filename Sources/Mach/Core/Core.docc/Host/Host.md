@@ -49,8 +49,8 @@
 
 ### Getting Lock Groups
 
-- ``Mach/LockGroup``
-- ``lockGroups``
+- ``Mach/LockGroupInfo``
+- ``lockGroupInfos``
 
 ### Managing Memory
 
