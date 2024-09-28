@@ -142,15 +142,19 @@ extension Mach.Task {
         get throws { try self.getInfo(.affinityTag) }
     }
 
-    /// Basic information about the task (64-bit compatible, "newer" version).
-    /// - Note: This appears to have been introduced in xnu-4570.1.46, which was released with
-    /// OS X 10.13. However, it seems to have only been a compatibility patch and wasn't meant
-    /// for general use. It also appears to be related to iOS (but since macOS and iOS use the
-    /// same kernel, it's available on macOS as well).
-    @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basicInfo` instead.")
-    public var basicInfo64_2: task_basic_info_64_2 {
-        get throws { try self.getInfo(.basic64_2) }
-    }
+    #if arch(arm) || arch(arm64)
+
+        /// Basic information about the task (64-bit compatible, "newer" version).
+        /// - Note: This appears to have been introduced in xnu-4570.1.46, which was released with
+        /// OS X 10.13. However, it seems to have only been a compatibility patch and wasn't meant
+        /// for general use. It also appears to be related to iOS (but since macOS and iOS use the
+        /// same kernel, it's available on macOS as well).
+        @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basicInfo` instead.")
+        public var basicInfo64_2: task_basic_info_64_2 {
+            get throws { try self.getInfo(.basic64_2) }
+        }
+
+    #endif
 
     /// Information about external modifications to the task.
     public var extmodInfo: task_extmod_info {
