@@ -48,9 +48,9 @@ Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Plea
 | Getting Info      |||||
 | ``Mach/Task/getInfo(_:as:)``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | ``Mach/Task/dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
-| ``Mach/Task/inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | Other Functionality      |||||
 | ``Mach/Task/stashedPorts`` / ``Mach/Task/setStashedPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``Mach/Task/inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | ``Mach/Task/identityToken`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``Mach/Task/threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
 | ``Mach/Task/ports`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
