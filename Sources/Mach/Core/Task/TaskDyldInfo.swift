@@ -2,6 +2,19 @@ import Darwin.Mach
 import Foundation
 import MachC.DyldExtra
 
+/// Adds properties to make the `dyld_image_mode` enum more Swift-friendly.
+extension dyld_image_mode {
+    // While users could (and still can) use these constants directly (since we instruct them
+    // to import our helper module), we expose them as static properties as well. This allows
+    // users to use them with the dot syntax shorthand (e.g. `.adding`). This is particularly
+    // useful when they call our `notify(_:infos:)` method extension (see below).
+
+    public static let adding = dyld_image_adding
+    public static let removing = dyld_image_removing
+    public static let infoChange = dyld_image_info_change
+    public static let dyldMoved = dyld_image_dyld_moved
+}
+
 /// Adds properties to make the `dyld_image_info` struct more Swift-friendly.
 extension dyld_image_info {
     public var imageFilePathString: String { String(cString: self.imageFilePath) }
