@@ -15,6 +15,7 @@
 - ``Mach/Task/securityToken``
 - ``Mach/Task/auditToken``
 - ``Mach/Task/affinityTagInfo``
+- ``Mach/Task/dyldInfo``
 - ``Mach/Task/basicInfo64_2``
 - ``Mach/Task/extmodInfo``
 - ``Mach/Task/basicInfo``
@@ -24,10 +25,3 @@
 - ``Mach/Task/vmPurgeableInfo``
 - ``Mach/Task/waitTimes``
 - ``Mach/Task/flags``
-
-### Getting dyld Info
-
-- ``Mach/Task/dyldInfo``
-- ``MachC/dyld_image_info``
-- ``MachC/dyld_aot_image_info``
-- ``MachC/dyld_all_image_infos``
