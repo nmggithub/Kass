@@ -37,9 +37,9 @@ import Darwin.Mach
 import Foundation
 
 extension Mach {
-    /// A lock group.
+    /// Information about a lock group.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
-    public struct LockGroup {
+    public struct LockGroupInfo {
         internal let lockgroup_name:
             (
                 CChar, CChar, CChar, CChar, CChar, CChar, CChar, CChar,
@@ -89,8 +89,8 @@ extension Mach {
     }
 }
 extension Mach.Host {
-    /// The lock groups in the host.
-    public var lockGroups: [Mach.LockGroup] {
+    /// Information about the lock groups on the host.
+    public var lockGroups: [Mach.LockGroupInfo] {
         get throws {
             var lockGroupInfo: lockgroup_info_array_t?
             var lockGroupCount = mach_msg_type_number_t.max
@@ -98,7 +98,7 @@ extension Mach.Host {
             return (0..<Int(lockGroupCount)).map {
                 index in
                 withUnsafePointer(to: &lockGroupInfo![index]) {
-                    $0.withMemoryRebound(to: Mach.LockGroup.self, capacity: 1) { $0.pointee }
+                    $0.withMemoryRebound(to: Mach.LockGroupInfo.self, capacity: 1) { $0.pointee }
                 }
             }
         }
