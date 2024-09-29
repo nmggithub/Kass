@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread policy.
-    public struct ThreadPolicyFlavor: RawRepresentable, Hashable, Sendable {
+    public struct ThreadPolicyFlavor: OptionEnum {
         public let rawValue: thread_policy_flavor_t
         public init(rawValue: thread_policy_flavor_t) { self.rawValue = rawValue }
 

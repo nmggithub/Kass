@@ -3,7 +3,7 @@ import Darwin.Mach
 extension Mach {
     /// A port attribute.
     /// - Important: Attributes are only supported on receive rights.
-    public struct PortAttributeFlavor: RawRepresentable, Hashable, Sendable {
+    public struct PortAttributeFlavor: OptionEnum {
 
         public let rawValue: mach_port_flavor_t
         public init(rawValue: mach_port_flavor_t) { self.rawValue = rawValue }

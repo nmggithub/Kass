@@ -2,8 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A special port for a thread.
-    public struct ThreadSpecialPort: RawRepresentable, Hashable, Sendable, Mach.Port.SpecialPortType
-    {
+    public struct ThreadSpecialPort: Mach.Port.SpecialPortType {
         /// The parent port type.
         public typealias ParentPort = Mach.Thread
 

@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A flavor of thread (port).
-    public struct ThreadFlavor: RawRepresentable, Hashable, Sendable {
+    public struct ThreadFlavor: OptionEnum {
         public let rawValue: mach_thread_flavor_t
         public init(rawValue: mach_thread_flavor_t) { self.rawValue = rawValue }
 

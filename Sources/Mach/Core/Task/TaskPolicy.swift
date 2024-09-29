@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of task policy.
-    public struct TaskPolicyFlavor: RawRepresentable, Hashable, Sendable {
+    public struct TaskPolicyFlavor: OptionEnum {
         public let rawValue: task_policy_flavor_t
         public init(rawValue: task_policy_flavor_t) { self.rawValue = rawValue }
 

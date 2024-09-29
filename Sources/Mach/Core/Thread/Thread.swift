@@ -44,7 +44,7 @@ extension Mach {
 
 extension Mach {
     /// A thread switching option.
-    public struct ThreadSwitchOption: RawRepresentable, Hashable, Sendable {
+    public struct ThreadSwitchOption: OptionEnum {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
         public static let none = Self(rawValue: SWITCH_OPTION_NONE)

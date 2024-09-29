@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// Processing to perform on a port.
-    public struct PortDisposition: RawRepresentable, Hashable, Sendable {
+    public struct PortDisposition: OptionEnum {
 
         public let rawValue: mach_msg_type_name_t
         public init(rawValue: mach_msg_type_name_t) { self.rawValue = rawValue }

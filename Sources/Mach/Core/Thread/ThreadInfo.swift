@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread info.
-    public struct ThreadInfoFlavor: RawRepresentable, Hashable, Sendable {
+    public struct ThreadInfoFlavor: OptionEnum {
         public let rawValue: thread_flavor_t
         public init(rawValue: thread_flavor_t) { self.rawValue = rawValue }
 

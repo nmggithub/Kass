@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A special port for a task.
-    public struct TaskSpecialPort: RawRepresentable, Hashable, Sendable, Mach.Port.SpecialPortType {
+    public struct TaskSpecialPort: Mach.Port.SpecialPortType {
         /// The parent port type.
         internal typealias ParentPort = Mach.Task
 

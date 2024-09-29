@@ -11,7 +11,7 @@ extension Mach.Port {
         func setSpecialPort(_ specialPort: SpecialPort, to port: Mach.Port) throws
     }
     /// A special port for a port.
-    internal protocol SpecialPortType: RawRepresentable
+    internal protocol SpecialPortType: Mach.OptionEnum
     where RawValue == Int32, ParentPort.SpecialPort == Self {
         /// The parent port type.
         associatedtype ParentPort: Mach.Port.WithSpecialPorts

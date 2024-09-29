@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A special port for a host.
-    public struct HostSpecialPort: RawRepresentable, Sendable, Mach.Port.SpecialPortType {
+    public struct HostSpecialPort: Mach.Port.SpecialPortType {
         /// The parent port type.
         typealias ParentPort = Mach.Host
 

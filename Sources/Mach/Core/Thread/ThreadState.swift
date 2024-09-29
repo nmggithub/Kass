@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread state.
-    public struct ThreadStateFlavor: RawRepresentable, Hashable, Sendable {
+    public struct ThreadStateFlavor: OptionEnum {
         public let rawValue: thread_state_flavor_t
         public init(rawValue: thread_state_flavor_t) { self.rawValue = rawValue }
 

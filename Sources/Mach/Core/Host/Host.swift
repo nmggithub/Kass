@@ -58,7 +58,7 @@ extension Mach {
 
 extension Mach {
     /// A reboot option.
-    public struct HostRebootOption: RawRepresentable, Hashable, Sendable {
+    public struct HostRebootOption: FlagEnum {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
 
@@ -110,7 +110,7 @@ extension Mach.Host {
 
 extension Mach {
     /// A type of host info.
-    public struct HostInfoFlavor: RawRepresentable, Hashable, Sendable {
+    public struct HostInfoFlavor: OptionEnum {
         public let rawValue: host_flavor_t
         public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
 
@@ -127,8 +127,8 @@ extension Mach {
         public static let preferredUserspaceArchitecture = Self(rawValue: HOST_PREFERRED_USER_ARCH)
     }
 
-    /// A collection of host statistics.
-    public struct HostStatisticsFlavor: RawRepresentable, Hashable, Sendable {
+    /// A type of host statistics.
+    public struct HostStatisticsFlavor: OptionEnum {
         public let rawValue: host_flavor_t
         public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
         public static let load = Self(rawValue: HOST_LOAD_INFO)
@@ -153,15 +153,15 @@ extension Mach.Host {
 
     /// Gets the host's statistics.
     public func getStatistics<DataType: BitwiseCopyable>(
-        _ collection: Mach.HostStatisticsFlavor, as type: DataType.Type
+        _ statistics: Mach.HostStatisticsFlavor, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             array, count in
-            switch collection {
+            switch statistics {
             case .load, .vm, .cpuLoad, .expiredTasks:
-                host_statistics(self.name, collection.rawValue, array, &count)
+                host_statistics(self.name, statistics.rawValue, array, &count)
             case .vm64, .extMod:
-                host_statistics64(self.name, collection.rawValue, array, &count)
+                host_statistics64(self.name, statistics.rawValue, array, &count)
             default: fatalError("Unsupported host statistics flavor.")
             }
         }

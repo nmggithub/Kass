@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of processor info.
-    public struct ProcessorInfoFlavor: RawRepresentable, Hashable, Sendable {
+    public struct ProcessorInfoFlavor: OptionEnum {
         public let rawValue: processor_flavor_t
         public init(rawValue: processor_flavor_t) { self.rawValue = rawValue }
 

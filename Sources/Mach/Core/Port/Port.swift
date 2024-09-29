@@ -4,7 +4,13 @@ import Foundation
 
 extension Mach {
     /// A right to a port.
-    public struct PortRight: RawRepresentable, Hashable, Sendable, CaseIterable {
+    public struct PortRight: OptionEnum,
+        // `PortRight` isn't a flag, so we don't conform to `FlagEnum`. However, we put it in a set
+        // in `Port/rights`, so we still want it to be hashable. We could use an array instead, but
+        // we want to keep the set semantics, as `Port/rights` should only ever contain one of each
+        // right (as it iterates over `PortRight.allCases`).
+        Hashable
+    {
         public let rawValue: mach_port_right_t
         public init(rawValue: mach_port_right_t) { self.rawValue = rawValue }
 
@@ -117,7 +123,7 @@ extension Mach {
         }
 
         /// A flag to use when constructing a port.
-        public struct ConstructFlag: RawRepresentable, Hashable, Sendable {
+        public struct ConstructFlag: FlagEnum {
             public let rawValue: Int32
             public init(rawValue: Int32) { self.rawValue = rawValue }
 
@@ -306,19 +312,22 @@ extension Mach.Port {
     }
 }
 
-extension Mach.Port {
+extension Mach {
     /// A flag to guard a port with.
-    public struct GuardFlag: RawRepresentable, Hashable, Sendable {
+    public struct PortGuardFlag: FlagEnum {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
 
         public static let strict = Self(rawValue: MPG_STRICT)
         public static let immovableReceive = Self(rawValue: MPG_IMMOVABLE_RECEIVE)
     }
+}
+
+extension Mach.Port {
 
     /// Guards the port with the specified context and flags.
     public func `guard`(
-        _ context: mach_port_context_t, flags: Set<Mach.Port.GuardFlag> = []
+        _ context: mach_port_context_t, flags: Set<Mach.PortGuardFlag> = []
     ) throws {
         try Mach.call(
             mach_port_guard_with_flags(
