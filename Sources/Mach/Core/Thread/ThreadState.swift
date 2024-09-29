@@ -125,9 +125,19 @@ extension Mach.ThreadStateFlavor {
             get throws { try self.getState(.arm32) }
         }
 
+        /// Sets the ARM state of the thread (32-bit).
+        public func setARMState32(to value: arm_thread_state32_t) throws {
+            try self.setState(.arm32, to: value)
+        }
+
         /// The ARM state of the thread (64-bit).
         public var armState64: arm_thread_state64_t {
             get throws { try self.getState(.arm64) }
+        }
+
+        /// Sets the ARM state of the thread (64-bit).
+        public func setARMState64(to value: arm_thread_state64_t) throws {
+            try self.setState(.arm64, to: value)
         }
 
         // Exception states
@@ -137,9 +147,19 @@ extension Mach.ThreadStateFlavor {
             get throws { try self.getState(.armException32) }
         }
 
+        /// Sets the ARM exception state of the thread (32-bit).
+        public func setARMExceptionState32(to value: arm_exception_state32_t) throws {
+            try self.setState(.armException32, to: value)
+        }
+
         /// The ARM exception state of the thread (64-bit).
         public var armExceptionState64: arm_exception_state64_t {
             get throws { try self.getState(.armException64) }
+        }
+
+        /// Sets the ARM exception state of the thread (64-bit).
+        public func setARMExceptionState64(to value: arm_exception_state64_t) throws {
+            try self.setState(.armException64, to: value)
         }
 
         // Debug states
@@ -149,9 +169,19 @@ extension Mach.ThreadStateFlavor {
             get throws { try self.getState(.armDebug32) }
         }
 
+        /// Sets the ARM debug state of the thread (32-bit).
+        public func setARMDebugState32(to value: arm_debug_state32_t) throws {
+            try self.setState(.armDebug32, to: value)
+        }
+
         /// The legacy (pre-Armv8) ARM debug state of the thread (32-bit).
         public var armDebugState32Legacy: arm_debug_state_t {
             get throws { try self.getState(.armDebugLegacy) }
+        }
+
+        /// Sets the legacy (pre-Armv8) ARM debug state of the thread (32-bit).
+        public func setARMDebugState32Legacy(to value: arm_debug_state_t) throws {
+            try self.setState(.armDebugLegacy, to: value)
         }
 
         /// The ARM debug state of the thread (64-bit).
@@ -159,18 +189,27 @@ extension Mach.ThreadStateFlavor {
             get throws { try self.getState(.armDebug64) }
         }
 
-        /// Non-bit-width-specific states
-
-        /// The ARM page-in state of the thread.
-        public var armPageInState: arm_pagein_state_t {
-            get throws { try self.getState(.armPageIn) }
+        /// Sets the ARM debug state of the thread (64-bit).
+        public func setARMDebugState64(to value: arm_debug_state64_t) throws {
+            try self.setState(.armDebug64, to: value)
         }
+
+        /// Non-bit-width-specific states
 
         /// The ARM VFP state of the thread.
         public var armVFPState: arm_vfp_state_t {
             get throws { try self.getState(.armVFP) }
         }
 
+        /// Sets the ARM VFP state of the thread.
+        public func setARMVFPState(to value: arm_vfp_state_t) throws {
+            try self.setState(.armVFP, to: value)
+        }
+
+        /// The ARM page-in state of the thread.
+        public var armPageInState: arm_pagein_state_t {
+            get throws { try self.getState(.armPageIn) }
+        }
     }
 #elseif arch(i386) || arch(x86_64)
     extension Mach.Thread {
@@ -181,14 +220,29 @@ extension Mach.ThreadStateFlavor {
             get throws { try self.getState(.x86_32) }
         }
 
+        /// Sets the x86 state of the thread (32-bit).
+        public func setX86State32(to value: x86_thread_state32_t) throws {
+            try self.setState(.x86_32, to: value)
+        }
+
         /// The x86 state of the thread (64-bit).
         public var x86State64: x86_thread_state64_t {
             get throws { try self.getState(.x86_64) }
         }
 
+        /// Sets the x86 state of the thread (64-bit).
+        public func setX86State64(to value: x86_thread_state64_t) throws {
+            try self.setState(.x86_64, to: value)
+        }
+
         /// The full 64-bit x86 state of the thread.
         public var x86FullState64: x86_thread_full_state64_t {
             get throws { try self.getState(.x86Full64) }
+        }
+
+        /// Sets the full 64-bit x86 state of the thread.
+        public func setX86FullState64(to value: x86_thread_full_state64_t) throws {
+            try self.setState(.x86Full64, to: value)
         }
 
         // Exception states
@@ -210,9 +264,19 @@ extension Mach.ThreadStateFlavor {
             get throws { try self.getState(.x86Debug32) }
         }
 
+        /// Sets the x86 debug state of the thread (32-bit).
+        public func setX86DebugState32(to value: x86_debug_state32_t) throws {
+            try self.setState(.x86Debug32, to: value)
+        }
+
         /// The x86 debug state of the thread (64-bit).
         public var x86DebugState64: x86_debug_state64_t {
             get throws { try self.getState(.x86Debug64) }
+        }
+
+        /// Sets the x86 debug state of the thread (64-bit).
+        public func setX86DebugState64(to value: x86_debug_state64_t) throws {
+            try self.setState(.x86Debug64, to: value)
         }
 
         // FIXME: Floating-point state structs are not properly bridged for x86 (or rather, they
