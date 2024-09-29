@@ -18,9 +18,9 @@ Each of these classes inherit from ``Mach/Task``.
 
 ## Getting Flavored Task Ports
 
-A task control port can be used to create a ``Mach/TaskIdentityToken`` (using the ``Mach/Task/identityToken`` property, or the ``Mach/TaskIdentityToken/init(for:)`` initializer). This identity token can then be used to get task ports of the other flavors. Please see the documentation page for the task identity token for more information.
+A task control port can be used to create a ``Mach/TaskIdentityToken`` (using the ``identityToken`` property, or the ``Mach/TaskIdentityToken/init(for:)`` initializer). This identity token can then be used to get task ports of the other flavors. Please see the documentation page for the task identity token for more information.
 
-Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Please the documentation page for that function for more information on special ports.
+Alternatively, for the ``getSpecialPort(_:as:)`` API can be used. Please the documentation page for that function for more information on special ports.
 
 
 ## Flavor-Functionality Support Table
@@ -29,42 +29,42 @@ Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Plea
 | Functionality | ``Mach/TaskControl`` | ``Mach/TaskRead`` | ``Mach/TaskInspect`` | ``Mach/TaskName``|
 | --- | --- | --- | --- | --- |
 | Lifecycle Management     |||||
-|  ``Mach/Task/suspend()`` / ``Mach/Task/resume()`` / ``Mach/Task/terminate()`` / ``Mach/Task/suspend2()`` / ``Mach/Task/resume2(token:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+|  ``suspend()`` / ``resume()`` / ``terminate()`` / ``suspend2()`` / ``resume2(token:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Thread Management      |||||
-| ``Mach/Task/threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
-| ``Mach/Task/getDefaultThreadState(_:as:)`` | ✅ Yes | ✅ Yes  | ❌ No  | ❌ No |
-| ``Mach/Task/setDefaultThreadState(_:to:)`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
-| ``Mach/Task/clearDefaultThreadState()`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
+| ``threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
+| ``getDefaultThreadState(_:as:)`` | ✅ Yes | ✅ Yes  | ❌ No  | ❌ No |
+| ``setDefaultThreadState(_:to:)`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
+| ``clearDefaultThreadState()`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
 | Managing Special Ports       |||||
-| ``Mach/Task/bootstrapPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/accessPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/hostPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/debugPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/controlPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/readPort`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
-| ``Mach/Task/inspectPort`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
-| ``Mach/Task/namePort`` | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| ``Mach/Task/setSpecialPort(_:to:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``bootstrapPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``accessPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``hostPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``debugPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``controlPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``readPort`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+| ``inspectPort`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``namePort`` | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| ``setSpecialPort(_:to:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | Managing Policy      |||||
-| ``Mach/Task/getPolicy(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
-| ``Mach/Task/role`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
-| ``Mach/Task/setPolicy(_:to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/setRole(to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
+| ``getPolicy(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``role`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``setPolicy(_:to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
+| ``setRole(to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
 | Getting Info      |||||
-| ``Mach/Task/getInfo(_:as:)``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| ``Mach/Task/dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+| ``getInfo(_:as:)``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| ``dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Other Functionality      |||||
-| ``Mach/Task/stashedPorts`` / ``Mach/Task/stashPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
-| ``Mach/Task/identityToken`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/ports`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``stashedPorts`` / ``stashPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``identityToken`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``ports`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 
 
 ## How Tasks Relate to Processes
 
 Tasks are essentially analogous to processes, as [processes on macOS are implemented on top of Mach tasks.](https://developer.apple.com/library/archive/documentation/Darwin/Conceptual/KernelProgramming/Mach/Mach.html#:~:text=OS%20X%20processes%20and%20POSIX%20threads%20(pthreads)%20are%20implemented%20on%20top%20of%20Mach%20tasks%20and%20threads,%20respectively.)
 
-It is possible to get a task port of a given flavor for a process with a given PID with the ``Mach/Task/init(forPID:)`` initializer.
+It is possible to get a task port of a given flavor for a process with a given PID with the ``init(forPID:)`` initializer.
 
 - Note: Retrieval of task _control_ ports are severely restricted in more recent versions of macOS is generally only possible under very limited circumstances (such as getting the task control port for the calling process). Task read ports and task inspect ports are similarly restricted. However, task _name_ ports are generally unrestricted as they don't indicate any level of privilege over the task itself.
 
@@ -80,7 +80,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``current``
 - ``identityToken``
 - ``Mach/TaskIdentityToken``
-- ``Mach/Task/init(forPID:)``
+- ``init(forPID:)``
 
 ### Flavored Task Ports
 
