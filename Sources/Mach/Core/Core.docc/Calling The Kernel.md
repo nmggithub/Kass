@@ -16,9 +16,11 @@ The ``Mach/call(_:)`` function does not handle error return codes and will inste
 
 #### Inside Mach Kernel Calls
 
-The vast majority of kernel calls in Mach are **not** system calls. More specifically, they do not directly interface with the CPU to enter "kernel mode". Instead, they send **Mach messages** to the kernel. When the kernel receives such a message, it will execute the requested call and return the result in a reply message.
+The reason this function is called "call" and not "syscall" is that the vast majority of kernel calls in Mach are **not** system calls. More specifically, they do not interface with the CPU to enter "kernel mode", at least not directly. Instead, they send **Mach messages** to the kernel. When the kernel receives such a message, it will execute the requested call and return the result in a reply message.
 
-Due to this additional factor, these kernel calls can sometimes return an error code from an extended set of messaging return codes. This can happen if something goes wrong in the messaging layer. These codes are not representable with [MachError](https://developer.apple.com/documentation/foundation/macherror), so this is a case where an [NSError](https://developer.apple.com/documentation/foundation/nserror) will be thrown instead.
+Technically, the functions these calls use to send the messages do eventually make a system call through what is called a **Mach trap**. However, the specific underlying messaging trap is conceptually different enough from the kernel calls that utilize it that they latter are better described as "kernel calls" instead of "system calls".
+
+Anyway, due to this additional factor, these kernel calls can sometimes return an error code from an extended set of messaging return codes. This can happen if something goes wrong in the messaging layer. These codes are not representable with [MachError](https://developer.apple.com/documentation/foundation/macherror), so this is a case where an [NSError](https://developer.apple.com/documentation/foundation/nserror) will be thrown instead.
 
 ## Advanced Kernel Calls
 
