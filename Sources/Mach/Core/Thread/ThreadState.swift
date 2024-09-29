@@ -1,5 +1,9 @@
 import Darwin.Mach
 
+// Technically, there's nothing stopping an ARM thread from getting and setting state on an x86 thread (and visa versa), but the
+// headers containing the state structs are only available on the correct architecture, so we can't provide a cross-architecture
+// API without duplicating the structs (which we won't do). Maybe later, but no promises.
+
 // MARK: - Thread State Flavors
 extension Mach {
     /// A flavor of thread state.
