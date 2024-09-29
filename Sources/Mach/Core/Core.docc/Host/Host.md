@@ -23,7 +23,7 @@
 ### Rebooting the Host
 
 - ``Mach/HostRebootOption``
-- ``reboot(options:)``
+- ``reboot(option:)``
 
 ### Getting Info
 
