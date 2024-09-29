@@ -1,7 +1,8 @@
 /*
  * Portions Copyright (c) 2000-2020 Apple Inc. All rights reserved.
  *
- * The list of x86 state types is taken from the XNU source code.
+ * The structures and flavor values for these states are not included in
+ * the public header files. They are taken from the XNU source code.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
  *
