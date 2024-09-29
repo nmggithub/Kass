@@ -7,7 +7,8 @@ extension Mach {
         public let rawValue: thread_state_flavor_t
         public init(rawValue: thread_state_flavor_t) { self.rawValue = rawValue }
 
-        public static let none = Self(rawValue: THREAD_STATE_NONE)  // a special case
+        /// Clears the default state when used with ``Mach.Task.setDefaultThreadState(_:to:)``.
+        public static let none = Self(rawValue: THREAD_STATE_NONE)
 
         #if arch(arm) || arch(arm64)
             /// ARM state (32-bit).
@@ -507,6 +508,144 @@ extension Mach.Thread {
         /// The page-in state of the thread.
         public var pageInState: x86_pagein_state_t {
             get throws { try self.x86PageInState }
+        }
+    #endif
+}
+
+// MARK: - Task Default Thread State Getters and Setters (General)
+extension Mach.Task {
+    /// Gets the default state inherited by new threads created in the task.
+    public func getDefaultThreadState<DataType: BitwiseCopyable>(
+        flavor: Mach.ThreadStateFlavor, as type: DataType.Type = DataType.self
+    ) throws -> DataType {
+        try Mach.callWithCountInOut(type: type) {
+            (array: thread_state_t, count) in
+            task_get_state(self.name, flavor.rawValue, array, &count)
+        }
+    }
+
+    /// Sets the default state to be inherited by new threads created in the task.
+    public func setDefaultThreadState<DataType: BitwiseCopyable>(
+        flavor: Mach.ThreadStateFlavor, to value: DataType
+    ) throws {
+        try Mach.callWithCountIn(value: value) {
+            array, count in
+            task_set_state(self.name, flavor.rawValue, array, count)
+        }
+    }
+
+    /// Clears the default state to be inherited by new threads created in the task.
+    public func clearDefaultThreadState() throws {
+        try setDefaultThreadState(flavor: .none, to: ())
+    }
+}
+
+// MARK: - Task Default Thread State Getters and Setters (Specific)
+extension Mach.Task {
+    #if arch(arm) || arch(arm64)
+        /// The default state inherited by new 32-bit ARM threads created in the task.
+        public var defaultARMThreadDebugState32: arm_debug_state32_t {
+            get throws { try getDefaultThreadState(flavor: .armDebug32) }
+        }
+
+        /// Sets the default debug state to be inherited by new 32-bit ARM threads created in the task.
+        public func setDefaultARMThreadDebugState32(to value: arm_debug_state32_t) throws {
+            try setDefaultThreadState(flavor: .armDebug32, to: value)
+        }
+
+        /// The default legacy (pre-Armv8) debug state inherited by new 32-bit ARM threads created in the task.
+        public var defaultARMThreadLegacyDebugState: arm_debug_state_t {
+            get throws { try getDefaultThreadState(flavor: .armDebugLegacy) }
+        }
+
+        /// Sets the default legacy (pre-Armv8) debug state to be inherited by new 32-bit ARM threads created in the task.
+        public func setDefaultARMThreadLegacyDebugState(to value: arm_debug_state_t) throws {
+            try setDefaultThreadState(flavor: .armDebugLegacy, to: value)
+        }
+
+        /// The default state inherited by new 64-bit ARM threads created in the task.
+        public var defaultARMThreadDebugState64: arm_debug_state64_t {
+            get throws { try getDefaultThreadState(flavor: .armDebug64) }
+        }
+
+        /// Sets the default debug state to be inherited by new 64-bit ARM threads created in the task.
+        public func setDefaultARMThreadDebugState64(to value: arm_debug_state64_t) throws {
+            try setDefaultThreadState(flavor: .armDebug64, to: value)
+        }
+    #elseif arch(i386) || arch(x86_64)
+        /// The default debug state inherited by new 32-bit x86 threads created in the task.
+        public var defaultX86ThreadDebugState32: x86_debug_state32_t {
+            get throws { try getDefaultThreadState(flavor: .x86Debug32) }
+        }
+
+        /// Sets the default debug state to be inherited by new 32-bit x86 threads created in the task.
+        public func setDefaultX86ThreadDebugState32(to value: x86_debug_state32_t) throws {
+            try setDefaultThreadState(flavor: .x86Debug32, to: value)
+        }
+
+        /// The default debug state inherited by new 64-bit x86 threads created in the task.
+        public var defaultX86ThreadDebugState64: x86_debug_state64_t {
+            get throws { try getDefaultThreadState(flavor: .x86Debug64) }
+        }
+
+        /// Sets the default debug state to be inherited by new 64-bit x86 threads created in the task.
+        public func setDefaultX86ThreadDebugState64(to value: x86_debug_state64_t) throws {
+            try setDefaultThreadState(flavor: .x86Debug64, to: value)
+        }
+    #endif
+}
+
+// MARK: - Task Default Thread State Getters and Setters (Convenience)
+extension Mach.Task {
+    #if arch(arm)
+        /// The default debug state inherited by new threads created in the task.
+        public var defaultDebugState: arm_debug_state32_t {
+            get throws { try self.defaultARMThreadDebugState32 }
+        }
+
+        /// Sets the default debug state to be inherited by new threads created in the task.
+        public func setDefaultDebugState(to value: arm_debug_state32_t) throws {
+            try setDefaultARMThreadDebugState32(to: value)
+        }
+
+        /// The default legacy (pre-Armv8) debug state inherited by new 32-bit ARM threads created in the task.
+        public var defaultLegacyDebugState: arm_debug_state_t {
+            get throws { try self.defaultARMThreadLegacyDebugState }
+        }
+
+        /// Sets the default legacy (pre-Armv8) debug state to be inherited by new 32-bit ARM threads created in the task.
+        public func setDefaultLegacyDebugState(to value: arm_debug_state_t) throws {
+            try setDefaultARMThreadDebugStateLegacy(to: value)
+        }
+    #elseif arch(arm64)
+        /// The default debug state inherited by new threads created in the task.
+        public var defaultDebugState: arm_debug_state64_t {
+            get throws { try self.defaultARMThreadDebugState64 }
+        }
+
+        /// Sets the default debug state to be inherited by new threads created in the task.
+        public func setDefaultDebugState(to value: arm_debug_state64_t) throws {
+            try setDefaultARMThreadDebugState64(to: value)
+        }
+    #elseif arch(i386)
+        /// The default debug state inherited by new threads created in the task.
+        public var defaultDebugState: x86_debug_state32_t {
+            get throws { try self.defaultX86ThreadDebugState32 }
+        }
+
+        /// Sets the default debug state to be inherited by new threads created in the task.
+        public func setDefaultDebugState(to value: x86_debug_state32_t) throws {
+            try setDefaultX86ThreadDebugState32(to: value)
+        }
+    #elseif arch(x86_64)
+        /// The default debug state inherited by new threads created in the task.
+        public var defaultDebugState: x86_debug_state64_t {
+            get throws { try self.defaultX86ThreadDebugState64 }
+        }
+
+        /// Sets the default debug state to be inherited by new threads created in the task.
+        public func setDefaultDebugState(to value: x86_debug_state64_t) throws {
+            try setDefaultX86ThreadDebugState64(to: value)
         }
     #endif
 }
