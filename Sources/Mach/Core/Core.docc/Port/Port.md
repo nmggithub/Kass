@@ -20,7 +20,7 @@
 - ``extractRight(using:)``
 - ``insertRight(intoNameSpaceOf:using:)``
 - ``sendRightCount``
-- ``setMakeSendCount(_:)``
+- ``setMakeSendCount(to:)``
 
 ### Representing a Nil-Named Port
 
@@ -57,7 +57,7 @@
 ### Managing Context
 
 - ``getContext()``
-- ``setContext(_:)``
+- ``setContext(to:)``
 - ``context``
 
 ### Managing Attributes
@@ -79,8 +79,8 @@
 
 ### Guarding Ports
 
-- ``guard(_:flags:)``
-- ``unguard(_:)``
+- ``guard(with:flags:)``
+- ``unguard(with:)``
 - ``Mach/PortGuardFlag``
 - ``guarded``
 

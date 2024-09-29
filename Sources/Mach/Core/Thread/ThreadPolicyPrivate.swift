@@ -122,7 +122,7 @@ extension Mach.Thread {
     /// Sets the thread's QoS policy.
     /// - Warning: This uses a private policy flavor. Use at your own risk.
     public func setQoSPolicy(
-        _ qosPolicy: Mach.ThreadQoSPolicy
+        to qosPolicy: Mach.ThreadQoSPolicy
     ) throws { try self.setPolicy(THREAD_QOS_POLICY, to: qosPolicy) }
 
     /// The thread's time constraint policy (with a priority field).
@@ -134,7 +134,7 @@ extension Mach.Thread {
     /// Sets the thread's time constraint policy (with a priority field).
     /// - Warning: This uses a private policy flavor. Use at your own risk.
     public func setTimeConstraintWithPriorityPolicy(
-        _ timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy
+        to timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy
     ) throws {
         try self.setPolicy(
             THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY, to: timeConstraintWithPriorityPolicy)

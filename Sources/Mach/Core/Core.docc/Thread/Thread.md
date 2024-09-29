@@ -96,17 +96,17 @@
 - ``getPolicy(_:as:)``
 - ``setPolicy(_:to:)``
 - ``extendedPolicy``
-- ``setExtendedPolicy(_:)``
+- ``setExtendedPolicy(to:)``
 - ``timeConstraintPolicy``
-- ``setTimeConstraintPolicy(_:)``
+- ``setTimeConstraintPolicy(to:)``
 - ``precedencePolicy``
-- ``setPrecedencePolicy(_:)``
+- ``setPrecedencePolicy(to:)``
 - ``affinityPolicy``
-- ``setAffinityPolicy(_:)``
+- ``setAffinityPolicy(to:)``
 - ``latencyQoSPolicy``
-- ``setLatencyQoSPolicy(_:)``
+- ``setLatencyQoSPolicy(to:)``
 - ``throughputQoSPolicy``
-- ``setThroughputQoSPolicy(_:)``
+- ``setThroughputQoSPolicy(to:)``
 
 ### Managing Policy (Private API)
 
@@ -114,10 +114,10 @@
 - ``policyState``
 - ``Mach/ThreadQoSPolicy``
 - ``qosPolicy``
-- ``setQoSPolicy(_:)``
+- ``setQoSPolicy(to:)``
 - ``Mach/ThreadTimeConstraintWithPriorityPolicy``
 - ``timeConstraintWithPriorityPolicy``
-- ``setTimeConstraintWithPriorityPolicy(_:)``
+- ``setTimeConstraintWithPriorityPolicy(to:)``
 - ``Mach/ThreadRequestedQoSPolicy``
 - ``requestedQoSPolicy``
 

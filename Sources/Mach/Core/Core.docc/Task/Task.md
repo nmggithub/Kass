@@ -29,7 +29,7 @@ Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Plea
 | Functionality | ``Mach/TaskControl`` | ``Mach/TaskRead`` | ``Mach/TaskInspect`` | ``Mach/TaskName``|
 | --- | --- | --- | --- | --- |
 | Lifecycle Management     |||||
-|  ``Mach/Task/suspend()`` / ``Mach/Task/resume()`` / ``Mach/Task/terminate()`` / ``Mach/Task/suspend2()`` / ``Mach/Task/resume2(_:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+|  ``Mach/Task/suspend()`` / ``Mach/Task/resume()`` / ``Mach/Task/terminate()`` / ``Mach/Task/suspend2()`` / ``Mach/Task/resume2(token:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Managing Special Ports       |||||
 | ``Mach/Task/bootstrapPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``Mach/Task/accessPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
@@ -44,12 +44,12 @@ Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Plea
 | ``Mach/Task/getPolicy(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | ``Mach/Task/role`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | ``Mach/Task/setPolicy(_:to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/setRole(_:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
+| ``Mach/Task/setRole(to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
 | Getting Info      |||||
 | ``Mach/Task/getInfo(_:as:)``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | ``Mach/Task/dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Other Functionality      |||||
-| ``Mach/Task/stashedPorts`` / ``Mach/Task/setStashedPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| ``Mach/Task/stashedPorts`` / ``Mach/Task/stashPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``Mach/Task/inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | ``Mach/Task/identityToken`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``Mach/Task/threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
@@ -95,7 +95,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``terminate()``
 - ``Mach/TaskSuspensionToken``
 - ``suspend2()``
-- ``resume2(_:)``
+- ``resume2(token:)``
 
 ### Inspecting Ports
 
@@ -116,27 +116,27 @@ It is possible to get a task port of a given flavor for a process with a given P
 ### Managing Specific Policy
 
 - ``categoryPolicy``
-- ``setCategoryPolicy(_:)``
+- ``setCategoryPolicy(to:)``
 - ``Mach/TaskSuppressionPolicy``
 - ``suppressionPolicy``
-- ``setSuppressionPolicy(_:)``
+- ``setSuppressionPolicy(to:)``
 - ``Mach/TaskPolicyState``
 - ``policyState``
 - ``qosPolicy``
-- ``setQoSPolicy(_:)``
-- ``setLatencyQoSPolicy(_:)``
-- ``setThroughputQoSPolicy(_:)``
+- ``setQoSPolicy(to:)``
+- ``setLatencyQoSPolicy(to:)``
+- ``setThroughputQoSPolicy(to:)``
 
 ### Managing Task Roles
 
 - ``Darwin/task_role``
 - ``role``
-- ``setRole(_:)``
+- ``setRole(to:)``
 
 ### Stashing Ports
 
 - ``stashedPorts``
-- ``setStashedPorts(_:)``
+- ``stashPorts(_:)``
 
 ### Getting Special Ports
 

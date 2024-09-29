@@ -73,7 +73,7 @@ extension Mach.Task {
     }
 
     /// Set's the task's suppression policy.
-    public func setSuppressionPolicy(_ suppressionPolicy: Mach.TaskSuppressionPolicy) throws {
+    public func setSuppressionPolicy(to suppressionPolicy: Mach.TaskSuppressionPolicy) throws {
         try self.setPolicy(.suppression, to: suppressionPolicy)
     }
 

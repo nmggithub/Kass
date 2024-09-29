@@ -34,7 +34,7 @@ extension Mach {
         }
 
         /// Resumes the task with a suspension token.
-        public func resume2(_ token: Mach.TaskSuspensionToken) throws {
+        public func resume2(token: Mach.TaskSuspensionToken) throws {
             try Mach.call(task_resume2(token.name))
         }
 
@@ -105,7 +105,7 @@ extension Mach.Task {
 
     /// Sets the task's role.
     /// - Note: This is a wrapper around setting the ``categoryPolicy``.
-    public func setRole(_ role: task_role) throws {
+    public func setRole(to role: task_role) throws {
         try self.setPolicy(.category, to: task_category_policy(role: role))
     }
 }
@@ -125,8 +125,8 @@ extension Mach.Task {
         }
     }
 
-    /// Sets the task's stashed ports.
-    public func setStashedPorts(_ ports: [Mach.Port]) throws {
+    /// Stashes the given ports in the task.
+    public func stashPorts(_ ports: [Mach.Port]) throws {
         let portsCount = mach_msg_type_number_t(ports.count)
         var portNames = ports.map(\.name)
         try Mach.call(mach_ports_register(self.name, &portNames, portsCount))

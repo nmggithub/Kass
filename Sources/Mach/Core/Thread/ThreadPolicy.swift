@@ -78,7 +78,7 @@ extension Mach.Thread {
 
     /// Sets the thread's extended policy.
     public func setExtendedPolicy(
-        _ extendedPolicy: thread_extended_policy
+        to extendedPolicy: thread_extended_policy
     ) throws { try self.setPolicy(.extended, to: extendedPolicy) }
 
     /// The thread's time constraint policy.
@@ -88,7 +88,7 @@ extension Mach.Thread {
 
     /// Sets the thread's time constraint policy.
     public func setTimeConstraintPolicy(
-        _ timeConstraintPolicy: thread_time_constraint_policy
+        to timeConstraintPolicy: thread_time_constraint_policy
     ) throws { try self.setPolicy(.timeConstraint, to: timeConstraintPolicy) }
 
     /// The thread's precedence policy.
@@ -98,7 +98,7 @@ extension Mach.Thread {
 
     /// Sets the thread's precedence policy.
     public func setPrecedencePolicy(
-        _ precedencePolicy: thread_precedence_policy
+        to precedencePolicy: thread_precedence_policy
     ) throws { try self.setPolicy(.precedence, to: precedencePolicy) }
 
     /// The thread's affinity policy.
@@ -108,7 +108,7 @@ extension Mach.Thread {
 
     /// Sets the thread's affinity policy.
     public func setAffinityPolicy(
-        _ affinityPolicy: thread_affinity_policy
+        to affinityPolicy: thread_affinity_policy
     ) throws { try self.setPolicy(.affinity, to: affinityPolicy) }
 
     /// The thread's latency QoS policy.
@@ -118,7 +118,7 @@ extension Mach.Thread {
 
     /// Sets the thread's latency QoS policy.
     public func setLatencyQoSPolicy(
-        _ latencyQoSPolicy: thread_latency_qos_policy
+        to latencyQoSPolicy: thread_latency_qos_policy
     ) throws { try self.setPolicy(.latencyQoS, to: latencyQoSPolicy) }
 
     /// The thread's throughput QoS policy.
@@ -128,6 +128,6 @@ extension Mach.Thread {
 
     /// Sets the thread's throughput QoS policy.
     public func setThroughputQoSPolicy(
-        _ throughputQoSPolicy: thread_throughput_qos_policy
+        to throughputQoSPolicy: thread_throughput_qos_policy
     ) throws { try self.setPolicy(.throughputQoS, to: throughputQoSPolicy) }
 }

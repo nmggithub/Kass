@@ -66,7 +66,7 @@ extension Mach.Task {
     }
 
     /// Sets the task's category policy.
-    public func setCategoryPolicy(_ categoryPolicy: task_category_policy) throws {
+    public func setCategoryPolicy(to categoryPolicy: task_category_policy) throws {
         try self.setPolicy(.category, to: categoryPolicy)
     }
 
@@ -76,17 +76,17 @@ extension Mach.Task {
     }
 
     /// Sets the task's QoS policy.
-    public func setQoSPolicy(_ qosPolicy: task_qos_policy) throws {
+    public func setQoSPolicy(to qosPolicy: task_qos_policy) throws {
         try self.setPolicy(.baseQoS, to: qosPolicy)
     }
 
     /// Set's the task's latency QoS policy.
-    public func setLatencyQoSPolicy(_ qosPolicy: task_qos_policy) throws {
+    public func setLatencyQoSPolicy(to qosPolicy: task_qos_policy) throws {
         try self.setPolicy(.latencyQoS, to: qosPolicy)
     }
 
     /// Set's the task's throughput QoS policy.
-    public func setThroughputQoSPolicy(_ qosPolicy: task_qos_policy) throws {
+    public func setThroughputQoSPolicy(to qosPolicy: task_qos_policy) throws {
         try self.setPolicy(.throughputQoS, to: qosPolicy)
     }
 }

@@ -273,12 +273,12 @@ extension Mach.Port {
     }
 
     /// Sets the context of the port.
-    public func setContext(_ context: mach_port_context_t) throws {
+    public func setContext(to context: mach_port_context_t) throws {
         try Mach.call(mach_port_set_context(self.owningTask.name, self.name, context))
     }
 
     /// The context of the port.
-    /// - Note: This is an alternative to the ``Port/setContext(_:)`` function.
+    /// - Note: This is an alternative to the ``Port/setContext(to:)`` function.
     public var context: mach_port_context_t {
         get throws {
             return try self.getContext()
@@ -300,7 +300,7 @@ extension Mach.Port {
 
 extension Mach.Port {
     /// Set the make-send count of the port.
-    public func setMakeSendCount(_ count: Int32) throws {
+    public func setMakeSendCount(to count: Int32) throws {
         try Mach.call(
             mach_port_set_mscount(self.owningTask.name, self.name, mach_port_mscount_t(count))
         )
@@ -320,9 +320,9 @@ extension Mach {
 
 extension Mach.Port {
 
-    /// Guards the port with the specified context and flags.
+    /// Guards the port using the specified context and flags.
     public func `guard`(
-        _ context: mach_port_context_t, flags: Set<Mach.PortGuardFlag> = []
+        with context: mach_port_context_t, flags: Set<Mach.PortGuardFlag> = []
     ) throws {
         try Mach.call(
             mach_port_guard_with_flags(
@@ -331,8 +331,8 @@ extension Mach.Port {
         )
     }
 
-    /// Unguards the port with the specified context.
-    public func unguard(_ context: mach_port_context_t) throws {
+    /// Unguards the port using the specified context.
+    public func unguard(with context: mach_port_context_t) throws {
         try Mach.call(mach_port_unguard(self.owningTask.name, self.name, context))
     }
 
@@ -346,7 +346,7 @@ extension Mach.Port {
     public var guarded: Bool {
         // There is no way to check if a port is guarded without attempting to guard it.
         let testGuard = mach_port_context_t(arc4random())
-        do { try self.guard(testGuard, flags: []) }  // Attempting to guard the port is the only way to see if it's guarded.
+        do { try self.guard(with: testGuard, flags: []) }  // Attempting to guard the port is the only way to see if it's guarded.
         // Since the `guard` function only calls `mach_port_guard_with_flags`, we assume any caught errors are from
         // that call. We can use the XNU source code to determine what each return code means in this context.
         catch MachError.invalidArgument { return true }  // The port is already guarded.
@@ -354,7 +354,7 @@ extension Mach.Port {
         catch MachError.invalidTask { return false }  // The port's owning task doesn't exist.
         catch MachError.invalidRight { return false }  // The port doesn't have the correct rights to be guarded.
         catch { fatalError("Unexpected error when guarding the port: \(error)") }  // There was some other error.
-        do { try self.unguard(testGuard) }  // The guarding worked, so we need to unguard it.
+        do { try self.unguard(with: testGuard) }  // The guarding worked, so we need to unguard it.
         catch { fatalError("Failed to unguard the port: \(error)") }  // If we can't unguard it, we have a problem.
         return false  // We successfully unguarded the port, so now we know it isn't guarded.
     }

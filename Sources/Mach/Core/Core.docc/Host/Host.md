@@ -23,7 +23,7 @@
 ### Rebooting the Host
 
 - ``Mach/HostRebootOption``
-- ``reboot(_:)``
+- ``reboot(options:)``
 
 ### Getting Info
 
@@ -56,4 +56,4 @@
 
 - ``Mach/MemoryManager``
 - ``getDefaultMemoryManager()``
-- ``setDefaultMemoryManager(_:)``
+- ``setDefaultMemoryManager(to:)``

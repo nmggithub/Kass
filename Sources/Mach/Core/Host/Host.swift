@@ -69,7 +69,7 @@ extension Mach {
 }
 extension Mach.Host {
     /// Reboots the host.
-    public func reboot(_ options: Set<Mach.HostRebootOption> = []) throws {
+    public func reboot(options: Set<Mach.HostRebootOption> = []) throws {
         try Mach.call(host_reboot(self.name, options.bitmap()))
     }
 }
@@ -184,7 +184,7 @@ extension Mach.Host {
 
     /// Sets the default memory manager for the host.
     /// - Warning: Only the kernel task can set the default memory manager.
-    public func setDefaultMemoryManager(_ manager: Mach.MemoryManager) throws {
+    public func setDefaultMemoryManager(to manager: Mach.MemoryManager) throws {
         var name = manager.name
         try Mach.call(
             host_default_memory_manager(self.name, &name, 0)
