@@ -43,7 +43,9 @@ extension Mach.TaskInfoFlavor: NameableByCMacro {
         case .auditToken: "TASK_AUDIT_TOKEN"
         case .affinityTag: "TASK_AFFINITY_TAG_INFO"
         case .dyld: "TASK_DYLD_INFO"
-        case .basic64_2: "TASK_BASIC_INFO_64"
+        #if arch(arm) || arch(arm64)
+            case .basic64_2: "TASK_BASIC_INFO_64"
+        #endif
         case .extmod: "TASK_EXTMOD_INFO"
         case .basic: "MACH_TASK_BASIC_INFO"
         case .power: "TASK_POWER_INFO"
