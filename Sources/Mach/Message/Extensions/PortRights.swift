@@ -1,3 +1,5 @@
+extension Mach.PortDisposition: Hashable {}
+
 extension Mach.Message {
     /// A port right contained in a message.
     public struct PortRight: Equatable, Hashable {
