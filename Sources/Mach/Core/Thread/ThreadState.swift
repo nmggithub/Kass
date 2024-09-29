@@ -1,5 +1,6 @@
 import Darwin.Mach
 
+// MARK: - Thread State Flavors
 extension Mach {
     /// A flavor of thread state.
     public struct ThreadStateFlavor: OptionEnum {
@@ -82,6 +83,7 @@ extension Mach {
     }
 }
 
+// MARK: - Thread State Getters and Setters (General)
 extension Mach.Thread {
     /// Gets the thread's state.
     public func getState<StateDataType: BitwiseCopyable>(
@@ -116,6 +118,7 @@ extension Mach.ThreadStateFlavor {
     ) throws { try thread.setState(self, to: value) }
 }
 
+// MARK: - Thread State Getters and Setters (Specific)
 #if arch(arm) || arch(arm64)
     extension Mach.Thread {
         // General states
@@ -330,7 +333,7 @@ extension Mach.ThreadStateFlavor {
     }
 #endif
 
-/// Helper state properties
+// MARK: - Thread State Getters and Setters (Convenience)
 extension Mach.Thread {
 
     #if arch(arm)
