@@ -1,8 +1,8 @@
 /*
  * Portions Copyright (c) 2000-2005 Apple Computer, Inc. All rights reserved.
  *
- * The `SuppressionPolicy` and `PolicyState` structs are copied from the `task_suppression_policy` and
- * `task_policy_state` structs (respectively) from the XNU source code.
+ * The structures for these policies are not included in the public
+ * header files. They are taken from the XNU source code.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
  *
