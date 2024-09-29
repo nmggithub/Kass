@@ -22,5 +22,5 @@
 
 ### Getting Info
 
-- ``Mach/ProcessorInfo``
+- ``Mach/ProcessorInfoFlavor``
 - ``getInfo(_:as:)``

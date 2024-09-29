@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of processor info.
-    public enum ProcessorInfo: processor_flavor_t {
+    public enum ProcessorInfoFlavor: processor_flavor_t {
         case basic = 1
         case cpuLoad = 2
         case pmRegisters = 0x1000_0001
@@ -13,7 +13,7 @@ extension Mach {
 extension Mach.Processor {
     /// Gets the processor's info.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.ProcessorInfo, as type: DataType.Type
+        _ info: Mach.ProcessorInfoFlavor, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: processor_info_t, count) in
