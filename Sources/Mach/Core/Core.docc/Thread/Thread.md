@@ -51,37 +51,48 @@
 - ``wire(in:)``
 - ``unwire(in:)``
 
-### Getting State
+### Managing State
 
 - ``Mach/ThreadStateFlavor``
 - ``getState(_:as:)``
 - ``setState(_:to:)``
 
-### Getting General State
+### Managing General State
 
 - ``generalState``
+- ``setGeneralState(to:)``
 - ``armState32``
+- ``setARMState32(to:)``
 - ``armState64``
+- ``setARMState64(to:)``
 
-### Getting Exception State
+### Managing Exception State
 
 - ``exceptionState``
+- ``setExceptionState(to:)``
 - ``armExceptionState32``
+- ``setARMExceptionState32(to:)``
 - ``armExceptionState64``
+- ``setARMExceptionState64(to:)``
 
-### Getting Debug State
+### Managing Debug State
 
 - ``debugState``
+- ``setDebugState(to:)``
 - ``armDebugState32``
+- ``setARMDebugState32(to:)``
 - ``armDebugState32Legacy``
+- ``setARMDebugState32Legacy(to:)``
 - ``armDebugState64``
+- ``setARMDebugState64(to:)``
 
-### Getting Other State
+### Managing Other State
 
-- ``armPageInState``
 - ``armVFPState``
+- ``setARMVFPState(to:)``
 - ``floatState``
 - ``pageInState``
+- ``armPageInState``
 
 ### Getting ARM NEON State (macOS 15+, Experimental)
 

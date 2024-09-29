@@ -30,6 +30,11 @@ Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Plea
 | --- | --- | --- | --- | --- |
 | Lifecycle Management     |||||
 |  ``Mach/Task/suspend()`` / ``Mach/Task/resume()`` / ``Mach/Task/terminate()`` / ``Mach/Task/suspend2()`` / ``Mach/Task/resume2(token:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+| Thread Management      |||||
+| ``Mach/Task/threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
+| ``Mach/Task/getDefaultThreadState(_:as:)`` | ✅ Yes | ✅ Yes  | ❌ No  | ❌ No |
+| ``Mach/Task/setDefaultThreadState(_:to:)`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
+| ``Mach/Task/clearDefaultThreadState()`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
 | Managing Special Ports       |||||
 | ``Mach/Task/bootstrapPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``Mach/Task/accessPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
@@ -52,7 +57,6 @@ Alternatively, for the ``Mach/Task/getSpecialPort(_:as:)`` API can be used. Plea
 | ``Mach/Task/stashedPorts`` / ``Mach/Task/stashPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``Mach/Task/inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | ``Mach/Task/identityToken`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``Mach/Task/threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
 | ``Mach/Task/ports`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 
 
@@ -70,7 +74,6 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``isSelf``
 - ``ports``
-- ``threads``
 
 ### Getting Task Ports
 
@@ -96,6 +99,13 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``Mach/TaskSuspensionToken``
 - ``suspend2()``
 - ``resume2(token:)``
+
+### Thread Management
+
+- ``threads``
+- ``getDefaultThreadState(_:as:)``
+- ``setDefaultThreadState(_:to:)``
+- ``clearDefaultThreadState()``
 
 ### Inspecting Ports
 
