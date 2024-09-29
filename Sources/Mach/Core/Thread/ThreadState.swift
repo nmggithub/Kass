@@ -474,8 +474,8 @@ extension Mach.Thread {
         }
 
         /// Sets the debug state of the thread.
-        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
-        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// - Warning: This function is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When setting the state of a thread running on a different architecture, use the
         /// more explicitly named properties. Please see the source code for more information.
         public func setDebugState(to value: arm_debug_state32_t) throws {
             try self.setARMDebugState32(to: value)
@@ -490,8 +490,8 @@ extension Mach.Thread {
         }
 
         /// Sets the debug state of the thread.
-        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
-        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// - Warning: This function is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When setting the state of a thread running on a different architecture, use the
         /// more explicitly named properties. Please see the source code for more information.
         public func setDebugState(to value: arm_debug_state64_t) throws {
             try self.setARMDebugState64(to: value)
