@@ -26,6 +26,8 @@ extension Mach {
                 return Mach.TaskInspect(named: taskPortName)
             case .name:
                 return Mach.TaskName(named: taskPortName)
+            default:
+                fatalError("Unknown task flavor: \(flavor.rawValue)")
             }
         }
 

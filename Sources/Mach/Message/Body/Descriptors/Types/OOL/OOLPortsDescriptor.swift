@@ -18,7 +18,7 @@ extension Mach.Message.Body {
                 address: portsPointer,
                 deallocate: deallocateOnSend ? 1 : 0,
                 copy: copyMethod.rawValue,
-                disposition: disposition?.rawValue ?? 0,
+                disposition: disposition.rawValue,
                 type: DescriptorType.oolPorts.rawValue,
                 count: mach_msg_size_t(ports.count)
             )
@@ -26,7 +26,7 @@ extension Mach.Message.Body {
         /// The ports.
         public var ports: [Mach.Port]
         /// The disposition.
-        public var disposition: Mach.PortDisposition?
+        public var disposition: Mach.PortDisposition
         /// Whether to deallocate the ports on send.
         public var deallocateOnSend: Bool
         /// The copy method.
@@ -47,7 +47,7 @@ extension Mach.Message.Body {
         /// Creates a new out-of-line ports descriptor.
         public init() {
             self.ports = []
-            self.disposition = nil
+            self.disposition = .init(rawValue: 0)
             self.deallocateOnSend = false
             self.copyMethod = .physical
         }
@@ -58,7 +58,7 @@ extension Mach.Message.Body {
         ///   - copyMethod: The copy method.
         ///   - deallocateOnSend: Whether to deallocate the ports on send.
         public init(
-            _ ports: [Mach.Port], disposition: Mach.PortDisposition? = nil,
+            _ ports: [Mach.Port], disposition: Mach.PortDisposition = .init(rawValue: 0),
             copyMethod: OOLDescriptorCopyOption = .physical, deallocateOnSend: Bool = false
         ) {
             self.ports = ports

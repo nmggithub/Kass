@@ -2,31 +2,46 @@ import Darwin.Mach
 
 extension Mach {
     /// Processing to perform on a port.
-    public enum PortDisposition: mach_msg_type_name_t {
-        /// No processing.
-        case none = 0
+    public struct PortDisposition: RawRepresentable, Hashable, Sendable {
+
+        public let rawValue: mach_msg_type_name_t
+        public init(rawValue: mach_msg_type_name_t) { self.rawValue = rawValue }
 
         /// Move the receive right.
-        case moveReceive = 16
+        public static let moveReceive = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_RECEIVE)
+        )
 
         /// Move the send right.
-        case moveSend = 17
+        public static let moveSend = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_SEND)
+        )
 
         /// Move the send-once right.
-        case moveSendOnce = 18
+        public static let moveSendOnce = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_SEND_ONCE)
+        )
 
         /// Copy the send right.
-        case copySend = 19
+        public static let copySend = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_COPY_SEND)
+        )
 
         /// Make a send right.
-        case makeSend = 20
+        public static let makeSend = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MAKE_SEND)
+        )
 
         /// Make a send-once right.
-        case makeSendOnce = 21
+        public static let makeSendOnce = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MAKE_SEND_ONCE)
+        )
 
         /// Copy the receive right.
         /// - Warning: A receive right can actually never be copied. This is just here for completeness.
-        case copyReceive = 22
+        public static let copyReceive = Self(
+            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_COPY_RECEIVE)
+        )
     }
 }
 

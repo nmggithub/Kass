@@ -15,7 +15,7 @@ extension Mach.Message.Body {
             mach_msg_guarded_port_descriptor_t(
                 context: self.context,
                 flags: self.guardFlags.bitmap(),
-                disposition: disposition?.rawValue ?? 0,
+                disposition: disposition.rawValue,
                 type: DescriptorType.guardedPort.rawValue,
                 name: self.port.name
             )
@@ -23,7 +23,7 @@ extension Mach.Message.Body {
         /// The port.
         public var port: Mach.Port
         /// The disposition.
-        public var disposition: Mach.PortDisposition?
+        public var disposition: Mach.PortDisposition
         /// The context.
         public var context: mach_port_context_t
         /// A guard flag.
@@ -48,7 +48,7 @@ extension Mach.Message.Body {
         /// Creates a new guarded port descriptor.
         public init() {
             self.port = .init(named: mach_port_t(MACH_PORT_NULL))
-            self.disposition = nil
+            self.disposition = .init(rawValue: 0)
             self.context = 0
             self.guardFlags = []
         }
@@ -59,7 +59,7 @@ extension Mach.Message.Body {
         ///   - context: The context.
         ///   - guardFlags: The guard flags.
         public init(
-            _ port: Mach.Port, disposition: Mach.PortDisposition? = nil,
+            _ port: Mach.Port, disposition: Mach.PortDisposition = .init(rawValue: 0),
             context: mach_port_context_t = 0, guardFlags: GuardFlags = []
         ) {
             self.port = port

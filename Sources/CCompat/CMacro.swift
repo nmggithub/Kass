@@ -1,13 +1,13 @@
 /// A protocol that represents any value that can be represented by a C macro.
 public protocol NameableByCMacro {
     /// The name of the C macro that represents the value.
-    var cMacroName: String { get }
+    var cMacroName: String? { get }
 }
 
 /// A protocol that represents any value that can be represented by multiple C macro (i.e. an option set).
 public protocol NameableByCMacros {
     /// The names of the C macros that represent the value.
-    var cMacroNames: Set<String> { get }
+    var cMacroNames: Set<String?> { get }
 }
 
 /// A protocol that represents any binary integer value that can be represented by a C macro.
@@ -32,7 +32,7 @@ public struct COptionMacroSet<CMacroEnum: COptionMacroEnum>: NameableByCMacros,
     /// The set of options.
     private var options: Set<CMacroEnum> = []
     /// The set of C macro names that represent the options.
-    public var cMacroNames: Set<String> { Set(options.map { $0.cMacroName }) }
+    public var cMacroNames: Set<String?> { Set(options.map { $0.cMacroName }) }
     /// Creates a new set of options from an array of options.
     /// - Parameter optionsIn: The options.
     public init(arrayLiteral optionsIn: CMacroEnum...) {

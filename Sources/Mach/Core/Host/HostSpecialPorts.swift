@@ -1,79 +1,13 @@
-/*
- * Portions Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
- *
- * The list of special ports (particularly those after the max
- * kernel-provided port) is taken from the XNU source code.
- *
- * Other code besides the Swift enum is unique to this file and is not sourced from the original file.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
- *
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apple Public Source License
- * Version 2.0 (the 'License'). You may not use this file except in
- * compliance with the License. The rights granted to you under the License
- * may not be used to create, or enable the creation or redistribution of,
- * unlawful or unlicensed copies of an Apple operating system, or to
- * circumvent, violate, or enable the circumvention or violation of, any
- * terms of an Apple operating system software license agreement.
- *
- * Please obtain a copy of the License at
- * http://www.opensource.apple.com/apsl/ and read it before using this file.
- *
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
- */
-/*
- * @OSF_COPYRIGHT@
- */
-/*
- * Mach Operating System
- * Copyright (c) 1991 Carnegie Mellon University
- * All Rights Reserved.
- *
- * Permission to use, copy, modify and distribute this software and its
- * documentation is hereby granted, provided that both the copyright
- * notice and this permission notice appear in all copies of the
- * software, derivative works or modified versions, and any portions
- * thereof, and that both notices appear in supporting documentation.
- *
- * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
- * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
- * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
- *
- * Carnegie Mellon requests users of this software to return to
- *
- *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
- *  School of Computer Science
- *  Carnegie Mellon University
- *  Pittsburgh PA 15213-3890
- *
- * any improvements or extensions that they make and grant Carnegie Mellon
- * the rights to redistribute these changes.
- */
-/*
- */
-/*
- *	File:	mach/host_special_ports.h
- *
- *	Defines codes for access to host-wide special ports.
- */
-
 import Darwin.Mach
 
 extension Mach {
     /// A special port for a host.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
-    public enum HostSpecialPort: Int32, Mach.Port.SpecialPortType {
+    public struct HostSpecialPort: RawRepresentable, Sendable, Mach.Port.SpecialPortType {
         /// The parent port type.
         typealias ParentPort = Mach.Host
+
+        public let rawValue: Int32
+        public init(rawValue: Int32) { self.rawValue = rawValue }
 
         /// Gets a special port for the host.
         public func get<PortType: Mach.Port>(
@@ -88,84 +22,80 @@ extension Mach {
         }
 
         /// A unprivileged host port.
-        case host = 1
+        public static let host = Self(rawValue: HOST_PORT)
 
         /// A privileged host port.
-        case hostPriv = 2
+        public static let hostPriv = Self(rawValue: HOST_PRIV_PORT)
 
         /// A main device port.
-        case ioMain = 3
+        public static let ioMain = Self(rawValue: HOST_IO_MAIN_PORT)
 
-        @available(*, unavailable)
-        case max = 7
-        // based on increments from the max
+        public static let dynamicPager = Self(rawValue: HOST_DYNAMIC_PAGER_PORT)  // unknown
 
-        case dynamicPager  // unknown
+        public static let auditControl = Self(rawValue: HOST_AUDIT_CONTROL_PORT)  // unknown
 
-        case auditControl  // unknown
-
-        case userNotification  // `launchd`
+        public static let userNotification = Self(rawValue: HOST_USER_NOTIFICATION_PORT)  // `launchd`
 
         /// A port to `automountd`.
-        case automountd
+        public static let automountd = Self(rawValue: HOST_AUTOMOUNTD_PORT)
 
-        case lockd  // `launchd`
+        public static let lockd = Self(rawValue: HOST_LOCKD_PORT)  // `launchd`
 
-        case ktraceBackground  // `launchd`
+        public static let ktraceBackground = Self(rawValue: HOST_KTRACE_BACKGROUND_PORT)  // `launchd`
 
         /// A port to `sandboxd`.
-        case seatbelt
+        public static let seatbelt = Self(rawValue: HOST_SEATBELT_PORT)
 
         /// A port to `kextd` (now `kernelmanagerd`).
-        case kextd
+        public static let kextd = Self(rawValue: HOST_KEXTD_PORT)
 
-        case launchctl  // unknown
+        public static let launchctl = Self(rawValue: HOST_LAUNCHCTL_PORT)  // unknown
 
         /// Another port to `fairplayd`.
-        case unfreed  // `fairplayd`
+        public static let unfreed = Self(rawValue: HOST_UNFREED_PORT)
 
         /// A port to `amfid`.
-        case amfid
+        public static let amfid = Self(rawValue: HOST_AMFID_PORT)
 
-        case gssd  // `launchd`
+        public static let gssd = Self(rawValue: HOST_GSSD_PORT)  // `launchd`
 
         /// A port to `UserEventAgent`.
-        case telemetry
+        public static let telemetry = Self(rawValue: HOST_TELEMETRY_PORT)
 
-        case atmNotification  // unknown
+        public static let atmNotification = Self(rawValue: HOST_ATM_NOTIFICATION_PORT)  // unknown
 
-        case coalition  // `launchd`
+        public static let coalition = Self(rawValue: HOST_COALITION_PORT)  // unknown
 
         /// A port to `sysdiagnosed`.
-        case sysdiagnosed
+        public static let sysdiagnosed = Self(rawValue: HOST_SYSDIAGNOSE_PORT)
 
-        case xpcException  // unknown
+        public static let xpcException = Self(rawValue: HOST_XPC_EXCEPTION_PORT)  // unknown
 
-        case containerd  // unknown
+        public static let containerd = Self(rawValue: HOST_CONTAINERD_PORT)  // unknown
 
-        case node  // unknown
+        public static let node = Self(rawValue: HOST_NODE_PORT)  // unknown
 
         /// A port to `symptomsd`.
-        case resourceNotify
+        public static let resourceNotify = Self(rawValue: HOST_RESOURCE_NOTIFY_PORT)
 
-        case closured  // unknown
+        public static let closured = Self(rawValue: HOST_CLOSURED_PORT)  // unknown
 
         /// A port to `syspolicyd`.
-        case syspolicyd
+        public static let syspolicyd = Self(rawValue: HOST_SYSPOLICYD_PORT)
 
         /// A port to `filecoordinationd`
-        case filecoordinationd
+        public static let filecoordinationd = Self(rawValue: HOST_FILECOORDINATIOND_PORT)
 
         /// A port to `fairplayd`.
-        case fairplayd
+        public static let fairplayd = Self(rawValue: HOST_FAIRPLAYD_PORT)
 
-        case ioCompressionStats  // unknown
+        public static let ioCompressionStats = Self(rawValue: HOST_IOCOMPRESSIONSTATS_PORT)  // unknown
 
         /// A port to `mmaintenanced`.
-        case memoryError
+        public static let memoryError = Self(rawValue: HOST_MEMORY_ERROR_PORT)
 
         /// (Probably) a port to `managedappdistributiond`.
-        case managedappdistd  // unknown
+        public static let managedappdistd = Self(rawValue: HOST_MANAGEDAPPDISTD_PORT)  // unknown
     }
 }
 

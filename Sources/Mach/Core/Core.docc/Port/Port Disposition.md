@@ -17,7 +17,3 @@
 - ``moveSend``
 - ``moveReceive``
 - ``moveSendOnce``
-
-### Taking No Action
-
-- ``none``

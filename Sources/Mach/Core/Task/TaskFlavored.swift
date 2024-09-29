@@ -2,18 +2,21 @@ import Darwin.Mach
 
 extension Mach {
     /// A flavor of task (port).
-    public enum TaskFlavor: mach_task_flavor_t {
+    public struct TaskFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: mach_task_flavor_t
+        public init(rawValue: mach_task_flavor_t) { self.rawValue = rawValue }
+
         /// A task control port.
-        case control = 0
+        public static let control = Self(rawValue: mach_task_flavor_t(TASK_FLAVOR_CONTROL))
 
         /// A task read port.
-        case read = 1
+        public static let read = Self(rawValue: mach_task_flavor_t(TASK_FLAVOR_READ))
 
         /// A task inspect port.
-        case inspect = 2
+        public static let inspect = Self(rawValue: mach_task_flavor_t(TASK_FLAVOR_INSPECT))
 
         /// A task name port.
-        case name = 3
+        public static let name = Self(rawValue: mach_task_flavor_t(TASK_FLAVOR_NAME))
     }
     /// A task (port) with a flavor.
     public protocol TaskFlavored: Mach.Task {

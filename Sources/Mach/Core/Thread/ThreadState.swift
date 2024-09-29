@@ -1,143 +1,83 @@
-/*
- * Portions Copyright (c) 2007 Apple Inc. All rights reserved.
- * Original file: osfmk/mach/arm/thread_status.h
- *
- * The list of ARM state types is taken from the XNU source code.
- *
- * Portions Copyright (c) 2000-2020 Apple Inc. All rights reserved.
- * Original file: osfmk/mach/i386/thread_status.h
- *
- * The list of x86 state types is taken from the XNU source code.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
- *
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apple Public Source License
- * Version 2.0 (the 'License'). You may not use this file except in
- * compliance with the License. The rights granted to you under the License
- * may not be used to create, or enable the creation or redistribution of,
- * unlawful or unlicensed copies of an Apple operating system, or to
- * circumvent, violate, or enable the circumvention or violation of, any
- * terms of an Apple operating system software license agreement.
- *
- * Please obtain a copy of the License at
- * http://www.opensource.apple.com/apsl/ and read it before using this file.
- *
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
- */
-/*
- * Mach Operating System
- * Copyright (c) 1991,1990,1989 Carnegie Mellon University
- * All Rights Reserved.
- *
- * Permission to use, copy, modify and distribute this software and its
- * documentation is hereby granted, provided that both the copyright
- * notice and this permission notice appear in all copies of the
- * software, derivative works or modified versions, and any portions
- * thereof, and that both notices appear in supporting documentation.
- *
- * CARNEGIE MELLON ALLOWS FREE USE OF THIS SOFTWARE IN ITS "AS IS"
- * CONDITION.  CARNEGIE MELLON DISCLAIMS ANY LIABILITY OF ANY KIND FOR
- * ANY DAMAGES WHATSOEVER RESULTING FROM THE USE OF THIS SOFTWARE.
- *
- * Carnegie Mellon requests users of this software to return to
- *
- *  Software Distribution Coordinator  or  Software.Distribution@CS.CMU.EDU
- *  School of Computer Science
- *  Carnegie Mellon University
- *  Pittsburgh PA 15213-3890
- *
- * any improvements or extensions that they make and grant Carnegie Mellon
- * the rights to redistribute these changes.
- */
-
 import Darwin.Mach
 
 extension Mach {
     /// A type of thread state.
-    /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
-    public enum ThreadStateFlavor: thread_state_flavor_t {
+    public struct ThreadStateFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: thread_state_flavor_t
+        public init(rawValue: thread_state_flavor_t) { self.rawValue = rawValue }
+
+        public static let none = Self(rawValue: THREAD_STATE_NONE)  // a special case
+
         #if arch(arm) || arch(arm64)
-            /// ARM VFP state.
-            case armVFP = 2
-
-            /// ARM exception state (32-bit).
-            case armException32 = 3
-
-            /// ARM debug state (32-bit, pre-Armv8).
-            case armDebugLegacy = 4
-
-            case none = 5  // a special case
+            /// ARM state (32-bit).
+            public static let arm32 = Self(rawValue: ARM_THREAD_STATE)
 
             /// ARM state (64-bit).
-            case arm64 = 6
+            public static let arm64 = Self(rawValue: ARM_THREAD_STATE64)
+
+            /// ARM exception state (32-bit).
+            public static let armException32 = Self(rawValue: ARM_EXCEPTION_STATE)
 
             /// ARM exception state (64-bit).
-            case armException64 = 7
+            public static let armException64 = Self(rawValue: ARM_EXCEPTION_STATE64)
 
-            /// ARM state (32-bit).
-            case arm32 = 8
+            /// ARM debug state (32-bit, pre-Armv8).
+            public static let armDebugLegacy = Self(rawValue: ARM_DEBUG_STATE)
 
             /// ARM debug state (32-bit).
-            case armDebug32 = 14
+            public static let armDebug32 = Self(rawValue: ARM_DEBUG_STATE32)
 
             /// ARM debug state (64-bit).
-            case armDebug64 = 15
+            public static let armDebug64 = Self(rawValue: ARM_DEBUG_STATE64)
 
             /// ARM page-in state.
-            case armPageIn = 27
+            public static let armPageIn = Self(rawValue: ARM_PAGEIN_STATE)
+
+            /// ARM VFP state.
+            public static let armVFP = Self(rawValue: ARM_VFP_STATE)
+
         #elseif arch(i386) || arch(x86_64)
             /// x86 state (32-bit).
-            case x86_32 = 1
-
-            /// x86 floating-point state (32-bit).
-            case x86Float32 = 2
-
-            /// x86 exception state (32-bit).
-            case x86Exception32 = 3
+            public static let x86_32 = Self(rawValue: x86_THREAD_STATE32)
 
             /// x86 state (64-bit).
-            case x86_64 = 4
-
-            /// x86 floating-point state (64-bit).
-            case x86Float64 = 5
-
-            /// x86 exception state (64-bit).
-            case x86Exception64 = 6
-
-            /// x86 debug state (32-bit).
-            case x86Debug32 = 10
-
-            /// x86 debug state (64-bit).
-            case x86Debug64 = 11
-
-            case none = 13  // a special case
-
-            /// x86 AVX state (32-bit).
-            case x86AVX32 = 16
-
-            /// x86 AVX state (64-bit).
-            case x86AVX64  // +1
-
-            /// x86 page-in state.
-            case x86PageIn = 22
+            public static let x86_64 = Self(rawValue: x86_THREAD_STATE64)
 
             /// x86 state (64-bit, full).
-            case x86Full64 = 23
+            public static let x86Full64 = Self(rawValue: x86_THREAD_FULL_STATE64)
+
+            /// x86 exception state (32-bit).
+            public static let x86Exception32 = Self(rawValue: x86_EXCEPTION_STATE32)
+
+            /// x86 exception state (64-bit).
+            public static let x86Exception64 = Self(rawValue: x86_EXCEPTION_STATE64)
+
+            /// x86 floating-point state (32-bit).
+            public static let x86Float32 = Self(rawValue: x86_FLOAT_STATE32)
+
+            /// x86 floating-point state (64-bit).
+            public static let x86Float64 = Self(rawValue: x86_FLOAT_STATE64)
+
+            /// x86 debug state (32-bit).
+            public static let x86Debug32 = Self(rawValue: x86_DEBUG_STATE32)
+
+            /// x86 debug state (64-bit).
+            public static let x86Debug64 = Self(rawValue: x86_DEBUG_STATE64)
+
+            /// x86 AVX state (32-bit).
+            public static let x86AVX32 = Self(rawValue: x86_AVX_STATE32)
+
+            /// x86 AVX state (64-bit).
+            public static let x86AVX64 = Self(rawValue: x86_AVX_STATE64)
+
+            /// x86 page-in state.
+            public static let x86PageIn = Self(rawValue: x86_PAGEIN_STATE)
 
             /// x86 instruction state.
-            case x86Instruction = 24
+            public static let x86Instruction = Self(rawValue: x86_INSTRUCTION_STATE)
 
             /// x86 last branch record state.
-            case x86LastBranch = 25
+            public static let x86LastBranch = Self(rawValue: x86_LAST_BRANCH_STATE)
         #endif
     }
 }

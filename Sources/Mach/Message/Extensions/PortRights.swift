@@ -21,7 +21,7 @@ extension Mach.Message {
             get {
                 PortRight(
                     port: self.message.header.localPort,
-                    disposition: self.message.header.bits.localPortDisposition ?? .none
+                    disposition: self.message.header.bits.localPortDisposition
                 )
             }
             set {
@@ -35,7 +35,7 @@ extension Mach.Message {
             get {
                 PortRight(
                     port: self.message.header.remotePort,
-                    disposition: self.message.header.bits.remotePortDisposition ?? .none
+                    disposition: self.message.header.bits.remotePortDisposition
                 )
             }
             set {
@@ -53,7 +53,7 @@ extension Mach.Message {
                     portRights.insert(
                         PortRight(
                             port: portDescriptor.port,
-                            disposition: portDescriptor.disposition ?? .none
+                            disposition: portDescriptor.disposition
                         ))
                 }
                 if descriptor is Mach.Message.Body.GuardedPortDescriptor {
@@ -61,7 +61,7 @@ extension Mach.Message {
                     portRights.insert(
                         PortRight(
                             port: portDescriptor.port,
-                            disposition: portDescriptor.disposition ?? .none
+                            disposition: portDescriptor.disposition
                         ))
                 }
                 if descriptor is Mach.Message.Body.OOLPortsDescriptor {
@@ -70,7 +70,7 @@ extension Mach.Message {
                         portDescriptor.ports.map {
                             PortRight(
                                 port: $0,
-                                disposition: portDescriptor.disposition ?? .none
+                                disposition: portDescriptor.disposition
                             )
                         }
                     )

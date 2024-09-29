@@ -2,15 +2,18 @@ import Darwin.Mach
 
 extension Mach {
     /// A flavor of thread (port).
-    public enum ThreadFlavor: mach_thread_flavor_t {
+    public struct ThreadFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: mach_thread_flavor_t
+        public init(rawValue: mach_thread_flavor_t) { self.rawValue = rawValue }
+
         /// A thread control port.
-        case control = 0
+        public static let control = Self(rawValue: mach_thread_flavor_t(THREAD_FLAVOR_CONTROL))
 
         /// A thread read port.
-        case read = 1
+        public static let read = Self(rawValue: mach_thread_flavor_t(THREAD_FLAVOR_READ))
 
         /// A thread name port.
-        case inspect = 2
+        public static let inspect = Self(rawValue: mach_thread_flavor_t(THREAD_FLAVOR_INSPECT))
     }
     /// A thread (port) with a flavor.
     public protocol ThreadFlavored: Mach.Thread {

@@ -2,11 +2,14 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of processor info.
-    public enum ProcessorInfoFlavor: processor_flavor_t {
-        case basic = 1
-        case cpuLoad = 2
-        case pmRegisters = 0x1000_0001
-        case temperature = 0x1000_0002
+    public struct ProcessorInfoFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: processor_flavor_t
+        public init(rawValue: processor_flavor_t) { self.rawValue = rawValue }
+
+        public static let basic = Self(rawValue: PROCESSOR_BASIC_INFO)
+        public static let cpuLoad = Self(rawValue: PROCESSOR_CPU_LOAD_INFO)
+        public static let pmRegisters = Self(rawValue: PROCESSOR_PM_REGS_INFO)
+        public static let temperature = Self(rawValue: PROCESSOR_TEMPERATURE)
     }
 }
 

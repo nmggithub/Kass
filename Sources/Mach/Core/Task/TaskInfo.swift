@@ -2,42 +2,45 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of task info.
-    public enum TaskInfoFlavor: task_flavor_t {
+    public struct TaskInfoFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: task_flavor_t
+        public init(rawValue: task_flavor_t) { self.rawValue = rawValue }
+
         /// Basic information about the task.
         @available(macOS, deprecated: 10.8, message: "Use `basic` instead.")
-        case basic32 = 4
+        public static let basic32 = Self(rawValue: task_flavor_t(TASK_BASIC_INFO_32))
 
         /// Like ``basic32``, but with the maximum resident size instead of the current size.
         @available(macOS, deprecated: 10.8, message: "Use `basic` instead.")
-        case basic2_32 = 6
+        public static let basic2_32 = Self(rawValue: task_flavor_t(TASK_BASIC2_INFO_32))
 
         /// Basic information about the task (64-bit compatible, older version).
         @available(macOS, deprecated: 10.8, message: "Use `basic` instead.")
-        case basic64 = 5
+        public static let basic64 = Self(rawValue: task_flavor_t(TASK_BASIC_INFO_64))
 
         /// Counts of specific events on the task.
-        case events = 2
+        public static let events = Self(rawValue: task_flavor_t(TASK_EVENTS_INFO))
 
         /// Total thread run times for the task.
-        case threadTimes = 3
+        public static let threadTimes = Self(rawValue: task_flavor_t(TASK_THREAD_TIMES_INFO))
 
         /// Absolute times for the task.
-        case absoluteTimes = 1
+        public static let absoluteTimes = Self(rawValue: task_flavor_t(TASK_ABSOLUTETIME_INFO))
 
         /// Kernel memory information for the task.
-        case kernelMemory = 7
+        public static let kernelMemory = Self(rawValue: task_flavor_t(TASK_KERNELMEMORY_INFO))
 
         /// The task's security token.
-        case securityToken = 13
+        public static let securityToken = Self(rawValue: task_flavor_t(TASK_SECURITY_TOKEN))
 
         /// The task's audit token.
-        case auditToken = 15
+        public static let auditToken = Self(rawValue: task_flavor_t(TASK_AUDIT_TOKEN))
 
         /// The task's affinity tag information.
-        case affinityTag = 16
+        public static let affinityTag = Self(rawValue: task_flavor_t(TASK_AFFINITY_TAG_INFO))
 
         /// Information about dyld images in the task.
-        case dyld = 17
+        public static let dyld = Self(rawValue: task_flavor_t(TASK_DYLD_INFO))
 
         #if arch(arm) || arch(arm64)
 
@@ -48,35 +51,35 @@ extension Mach {
             /// same kernel, it's available on macOS as well).
             /// - Important: This is only available on the ARM architecture.
             @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basic` instead.")
-            case basic64_2 = 18
+            public static let basic64_2 = Self(rawValue: task_flavor_t(TASK_BASIC_INFO_64_2))
         #endif
 
         /// Information about external modifications to the task.
-        case extmod = 19
+        public static let extmod = Self(rawValue: task_flavor_t(TASK_EXTMOD_INFO))
 
         /// Basic information about the task.
-        case basic = 20
+        public static let basic = Self(rawValue: task_flavor_t(TASK_BASIC_INFO))
 
         /// Information about the task's power usage.
-        case power = 21
+        public static let power = Self(rawValue: task_flavor_t(TASK_POWER_INFO))
 
         /// Information about the task's power usage (newer version).
-        case powerV2 = 26
+        public static let powerV2 = Self(rawValue: task_flavor_t(TASK_POWER_INFO_V2))
 
         /// Information about the task's virtual memory usage.
-        case vm = 22
+        public static let vm = Self(rawValue: task_flavor_t(TASK_VM_INFO))
 
         /// Information about the task's virtual memory usage, including purgeable memory.
-        case vmPurgeable = 23
+        public static let vmPurgeable = Self(rawValue: task_flavor_t(TASK_VM_INFO_PURGEABLE))
 
         /// Time values for how long threads in the task have been in wait states.
         /// - Note: This was introduced in OS X 10.10, but with a code comment saying it was
         /// deprecated and may not be accurate. However, it's still available to this day.
         @available(macOS, introduced: 10.10, deprecated: 10.10, message: "May not be accurate.")
-        case waitTimes = 25
+        public static let waitTimes = Self(rawValue: task_flavor_t(TASK_WAIT_STATE_INFO))
 
         /// The task's flags.
-        case flags = 28
+        public static let flags = Self(rawValue: task_flavor_t(TASK_FLAGS_INFO))
     }
 }
 

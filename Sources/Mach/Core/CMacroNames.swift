@@ -1,7 +1,8 @@
 import CCompat
+import Darwin.Mach
 
 extension Mach.TaskSpecialPort: NameableByCMacro {
-    public var cMacroName: String {
+    public var cMacroName: String? {
         switch self {
         case .control: "TASK_CONTROL_PORT"
         case .host: "TASK_HOST_PORT"
@@ -11,12 +12,13 @@ extension Mach.TaskSpecialPort: NameableByCMacro {
         case .access: "TASK_ACCESS_PORT"
         case .debug: "TASK_DEBUG_PORT"
         case .bootstrap: "TASK_BOOTSTRAP_PORT"
+        default: nil
         }
     }
 }
 
-extension Mach.TaskPolicyFlavor: NameableByCMacro {
-    public var cMacroName: String {
+extension Mach.TaskPolicyFlavor {
+    public var cMacroName: String? {
         switch self {
         case .category: "TASK_CATEGORY_POLICY"
         case .suppression: "TASK_SUPPRESSION_POLICY"
@@ -25,12 +27,13 @@ extension Mach.TaskPolicyFlavor: NameableByCMacro {
         case .overrideQoS: "TASK_OVERRIDE_QOS_POLICY"
         case .latencyQoS: "TASK_BASE_LATENCY_QOS_POLICY"
         case .throughputQoS: "TASK_BASE_THROUGHPUT_QOS_POLICY"
+        default: nil
         }
     }
 }
 
 extension Mach.TaskInfoFlavor: NameableByCMacro {
-    public var cMacroName: String {
+    public var cMacroName: String? {
         switch self {
         case .basic32: "TASK_BASIC_INFO_32"
         case .basic2_32: "TASK_BASIC2_INFO_32"
@@ -54,12 +57,13 @@ extension Mach.TaskInfoFlavor: NameableByCMacro {
         case .vmPurgeable: "TASK_VM_PURGEABLE_INFO"
         case .waitTimes: "TASK_WAIT_STATE_INFO"
         case .flags: "TASK_FLAGS_INFO"
+        default: nil
         }
     }
 }
 
-extension Mach.TaskRole: NameableByCMacro {
-    public var cMacroName: String {
+extension task_role: NameableByCMacro {
+    public var cMacroName: String? {
         switch self {
         case .reniced: "TASK_RENICED"
         case .unspecified: "TASK_UNSPECIFIED"
@@ -71,6 +75,7 @@ extension Mach.TaskRole: NameableByCMacro {
         case .nonUI: "TASK_NONUI_APPLICATION"
         case .default: "TASK_DEFAULT_APPLICATION"
         case .darwinBackground: "TASK_DARWINBG_APPLICATION"
+        default: nil
         }
     }
 }

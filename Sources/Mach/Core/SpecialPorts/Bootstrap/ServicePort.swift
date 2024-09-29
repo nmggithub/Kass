@@ -23,7 +23,7 @@ extension Mach {
             var options = mach_port_options_t()
             options.service_port_info = servicePortInfoPointer
             options.mpl = limits
-            options.flags = flags.bitmap()
+            options.flags = UInt32(flags.bitmap())
             try self.init(options: options, context: context, inNameSpaceOf: task)
         }
 

@@ -58,10 +58,13 @@ extension Mach {
 
 extension Mach {
     /// A reboot option.
-    public enum HostRebootOption: Int32 {
-        case halt = 0x8
-        case upsDelay = 0x100
-        case debugger = 0x1000
+    public struct HostRebootOption: RawRepresentable, Hashable, Sendable {
+        public let rawValue: Int32
+        public init(rawValue: Int32) { self.rawValue = rawValue }
+
+        public static let halt = Self(rawValue: HOST_REBOOT_HALT)
+        public static let upsDelay = Self(rawValue: HOST_REBOOT_UPSDELAY)
+        public static let debugger = Self(rawValue: HOST_REBOOT_DEBUGGER)
     }
 }
 extension Mach.Host {
@@ -107,28 +110,33 @@ extension Mach.Host {
 
 extension Mach {
     /// A type of host info.
-    public enum HostInfoFlavor: host_flavor_t {
-        case basic = 1
-        case scheduling = 3
-        case resourceSizes = 4
-        case priority = 5
-        case semaphoreTraps = 7
-        case machMsgTraps = 8
-        case vmPurgeable = 9
-        case debugInfo = 10
+    public struct HostInfoFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: host_flavor_t
+        public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
+
+        public static let basic = Self(rawValue: host_flavor_t(HOST_BASIC_INFO))
+        public static let scheduling = Self(rawValue: host_flavor_t(HOST_SCHED_INFO))
+        public static let resourceSizes = Self(rawValue: HOST_RESOURCE_SIZES)
+        public static let priority = Self(rawValue: HOST_PRIORITY_INFO)
+        public static let semaphoreTraps = Self(rawValue: HOST_SEMAPHORE_TRAPS)
+        public static let machMsgTrap = Self(rawValue: HOST_MACH_MSG_TRAP)
+        public static let vmPurgeable = Self(rawValue: HOST_VM_PURGABLE)
+        public static let debugInfo = Self(rawValue: HOST_DEBUG_INFO_INTERNAL)
         /// - Note: Yes, this is what it's actually called.
-        case canHasDebugger = 11
-        case preferredUserspaceArchitecture = 12
+        public static let canHasDebugger = Self(rawValue: HOST_CAN_HAS_DEBUGGER)
+        public static let preferredUserspaceArchitecture = Self(rawValue: HOST_PREFERRED_USER_ARCH)
     }
 
     /// A collection of host statistics.
-    public enum HostStatisticsFlavor: host_flavor_t {
-        case load = 1
-        case vm = 2
-        case cpuLoad = 3
-        case vm64 = 4
-        case extMod = 5
-        case expiredTasks = 6
+    public struct HostStatisticsFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: host_flavor_t
+        public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
+        public static let load = Self(rawValue: HOST_LOAD_INFO)
+        public static let vm = Self(rawValue: HOST_VM_INFO)
+        public static let cpuLoad = Self(rawValue: HOST_CPU_LOAD_INFO)
+        public static let vm64 = Self(rawValue: HOST_VM_INFO64)
+        public static let extMod = Self(rawValue: HOST_EXTMOD_INFO64)
+        public static let expiredTasks = Self(rawValue: HOST_EXPIRED_TASK_INFO)
     }
 }
 
@@ -154,6 +162,7 @@ extension Mach.Host {
                 host_statistics(self.name, collection.rawValue, array, &count)
             case .vm64, .extMod:
                 host_statistics64(self.name, collection.rawValue, array, &count)
+            default: fatalError("Unsupported host statistics flavor.")
             }
         }
     }

@@ -2,25 +2,36 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread policy.
-    public enum ThreadPolicyFlavor: thread_policy_flavor_t {
+    public struct ThreadPolicyFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: thread_policy_flavor_t
+        public init(rawValue: thread_policy_flavor_t) { self.rawValue = rawValue }
+
         /// A thread's extended policy.
         /// - Note: This is called an "extended" policy, but what it's extending is an empty structure. So it's really just a policy.
-        case extended = 1
+        public static let extended = Self(rawValue: thread_policy_flavor_t(THREAD_EXTENDED_POLICY))
 
         /// A thread's time constraint policy.
-        case timeConstraint = 2
+        public static let timeConstraint = Self(
+            rawValue: thread_policy_flavor_t(THREAD_TIME_CONSTRAINT_POLICY)
+        )
 
         /// A thread's precedence policy.
-        case precedence = 3
+        public static let precedence = Self(
+            rawValue: thread_policy_flavor_t(THREAD_PRECEDENCE_POLICY)
+        )
 
         /// A thread's affinity policy.
-        case affinity = 4
+        public static let affinity = Self(rawValue: thread_policy_flavor_t(THREAD_AFFINITY_POLICY))
 
         /// A thread's latency QoS policy.
-        case latencyQoS = 7
+        public static let latencyQoS = Self(
+            rawValue: thread_policy_flavor_t(THREAD_LATENCY_QOS_POLICY)
+        )
 
         /// A thread's throughput QoS policy.
-        case throughputQoS = 8
+        public static let throughputQoS = Self(
+            rawValue: thread_policy_flavor_t(THREAD_THROUGHPUT_QOS_POLICY)
+        )
     }
 }
 

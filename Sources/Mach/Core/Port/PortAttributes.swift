@@ -3,42 +3,46 @@ import Darwin.Mach
 extension Mach {
     /// A port attribute.
     /// - Important: Attributes are only supported on receive rights.
-    public enum PortAttributeFlavor: mach_port_flavor_t {
+    public struct PortAttributeFlavor: RawRepresentable, Hashable, Sendable {
+
+        public let rawValue: mach_port_flavor_t
+        public init(rawValue: mach_port_flavor_t) { self.rawValue = rawValue }
+
         /// The limits of the port.
-        case limits = 1
+        public static let limits = Self(rawValue: MACH_PORT_LIMITS_INFO)
 
         /// The status of the port.
         /// - Important: This attribute cannot be set.
-        case status = 2
+        public static let status = Self(rawValue: MACH_PORT_RECEIVE_STATUS)
 
         /// The count of requests in the port's request table.
         /// - Important: As of macOS 13.0, setting this attribute has no effect (but doesn't return an error).
-        case requestTableCount = 3
+        public static let requestTableCount = Self(rawValue: MACH_PORT_DNREQUESTS_SIZE)
 
         /// Indicates that the receive right will be given to another task.
         /// - Important: This attribute can only be set.
-        case tempOwner = 4
+        public static let tempOwner = Self(rawValue: MACH_PORT_TEMPOWNER)
 
         /// Indicates that the receive right is an importance receiver.
         /// - Important: This attribute can only be set.
-        case importanceReceiver = 5
+        public static let importanceReceiver = Self(rawValue: MACH_PORT_IMPORTANCE_RECEIVER)
 
         /// Indicates that the receive right is a De-Nap receiver.
         /// - Important: This attribute can only be set.
         @available(macOS, deprecated, message: "Use the importance receiver attribute instead.")
-        case deNapReceiver = 6
+        public static let deNapReceiver = Self(rawValue: MACH_PORT_DENAP_RECEIVER)
 
         /// Information about the port.
         /// - Important: This attribute cannot be set.
-        case info = 7
+        public static let info = Self(rawValue: MACH_PORT_INFO_EXT)
 
         /// The guard value.
         /// - Important: This attribute can only be asserted, not gotten or set.
-        case `guard` = 8
+        public static let `guard` = Self(rawValue: MACH_PORT_GUARD_INFO)
 
         /// Whether the service is throttled.
         /// - Important: This attribute is only supported on service ports.
-        case throttled = 9
+        public static let throttled = Self(rawValue: MACH_PORT_SERVICE_THROTTLED)
     }
 }
 

@@ -115,3 +115,8 @@ extension Mach {
         }
     }
 }
+
+extension Mach {
+    public protocol FlavoredEnum: RawRepresentable, CaseIterable, Hashable where RawValue == Int32 {
+    }
+}

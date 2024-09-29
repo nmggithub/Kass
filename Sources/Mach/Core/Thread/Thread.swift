@@ -44,13 +44,12 @@ extension Mach {
 
 extension Mach {
     /// A thread switching option.
-    public enum ThreadSwitchOption: Int32 {
-        case none = 0
-        case depress = 1
-        case wait = 2
-        case dispatchContention = 3
-        case oslockDepress = 4
-        case oslockWait = 5
+    public struct ThreadSwitchOption: RawRepresentable, Hashable, Sendable {
+        public let rawValue: Int32
+        public init(rawValue: Int32) { self.rawValue = rawValue }
+        public static let none = Self(rawValue: SWITCH_OPTION_NONE)
+        public static let depress = Self(rawValue: SWITCH_OPTION_DEPRESS)
+        public static let wait = Self(rawValue: SWITCH_OPTION_WAIT)
     }
 }
 

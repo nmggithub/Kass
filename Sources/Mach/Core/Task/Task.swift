@@ -81,34 +81,32 @@ extension Mach {
     }
 }
 
-extension Mach {
-    /// A task's role.
-    public enum TaskRole: Int32 {
-        case reniced = -1
-        case unspecified = 0
-        case foreground = 1
-        case background = 2
-        case control = 3
-        case graphicsServer = 4
-        case throttle = 5
-        case nonUI = 6
-        case `default` = 7
-        case darwinBackground = 8
-    }
+/// Adds properties to make the `task_role` enum more Swift-friendly.
+extension task_role {
+    public static let reniced = TASK_RENICED
+    public static let unspecified = TASK_UNSPECIFIED
+    public static let foreground = TASK_FOREGROUND_APPLICATION
+    public static let background = TASK_BACKGROUND_APPLICATION
+    public static let control = TASK_CONTROL_APPLICATION
+    public static let graphicsServer = TASK_GRAPHICS_SERVER
+    public static let throttle = TASK_THROTTLE_APPLICATION
+    public static let nonUI = TASK_NONUI_APPLICATION
+    public static let `default` = TASK_DEFAULT_APPLICATION
+    public static let darwinBackground = TASK_DARWINBG_APPLICATION
 }
 
 extension Mach.Task {
     /// The task's role.
     /// - Important: This property is `nil` if the task's role is not recognized.
     /// - Note: This is a wrapper around getting the ``categoryPolicy``.
-    public var role: Mach.TaskRole? {
-        get throws { try Mach.TaskRole(rawValue: self.categoryPolicy.role.rawValue) }
+    public var role: task_role {
+        get throws { try task_role(rawValue: self.categoryPolicy.role.rawValue) }
     }
 
     /// Sets the task's role.
     /// - Note: This is a wrapper around setting the ``categoryPolicy``.
-    public func setRole(_ role: Mach.TaskRole) throws {
-        try self.setPolicy(.category, to: task_category_policy(role: task_role(role.rawValue)))
+    public func setRole(_ role: task_role) throws {
+        try self.setPolicy(.category, to: task_category_policy(role: role))
     }
 }
 

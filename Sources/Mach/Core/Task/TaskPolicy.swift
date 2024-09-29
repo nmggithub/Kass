@@ -33,14 +33,25 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of task policy.
-    public enum TaskPolicyFlavor: task_policy_flavor_t {
-        case category = 1
-        case suppression = 3
-        case state = 4
-        case baseQoS = 8
-        case overrideQoS = 9
-        case latencyQoS = 10
-        case throughputQoS = 11
+    public struct TaskPolicyFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: task_policy_flavor_t
+        public init(rawValue: task_policy_flavor_t) { self.rawValue = rawValue }
+
+        public static let category = Self(rawValue: task_policy_flavor_t(TASK_CATEGORY_POLICY))
+        public static let suppression = Self(
+            rawValue: task_policy_flavor_t(TASK_SUPPRESSION_POLICY)
+        )
+        public static let state = Self(rawValue: task_policy_flavor_t(TASK_POLICY_STATE))
+        public static let baseQoS = Self(rawValue: task_policy_flavor_t(TASK_BASE_QOS_POLICY))
+        public static let overrideQoS = Self(
+            rawValue: task_policy_flavor_t(TASK_OVERRIDE_QOS_POLICY)
+        )
+        public static let latencyQoS = Self(
+            rawValue: task_policy_flavor_t(TASK_BASE_LATENCY_QOS_POLICY)
+        )
+        public static let throughputQoS = Self(
+            rawValue: task_policy_flavor_t(TASK_BASE_THROUGHPUT_QOS_POLICY)
+        )
     }
 }
 

@@ -4,21 +4,28 @@ import Foundation
 
 extension Mach {
     /// A right to a port.
-    public enum PortRight: mach_port_right_t, CaseIterable {
+    public struct PortRight: RawRepresentable, Hashable, Sendable, CaseIterable {
+        public let rawValue: mach_port_right_t
+        public init(rawValue: mach_port_right_t) { self.rawValue = rawValue }
+
+        public static var allCases: [Mach.PortRight] {
+            [.send, .receive, .sendOnce, .portSet, .deadName]
+        }
+
         /// A right to send messages to a port.
-        case send = 0
+        public static let send = Self(rawValue: MACH_PORT_RIGHT_SEND)
 
         /// A right to receive messages from a port.
-        case receive = 1
+        public static let receive = Self(rawValue: MACH_PORT_RIGHT_RECEIVE)
 
         /// A right to send messages to a port once.
-        case sendOnce = 2
+        public static let sendOnce = Self(rawValue: MACH_PORT_RIGHT_SEND_ONCE)
 
         /// A special right to manage a collection of ports (a port set).
-        case portSet = 3
+        public static let portSet = Self(rawValue: MACH_PORT_RIGHT_PORT_SET)
 
         /// A special right that is named by a dead name.
-        case deadName = 4
+        public static let deadName = Self(rawValue: MACH_PORT_RIGHT_DEAD_NAME)
     }
 
     /// A port ``name`` in the ``owningTask``'s name space.
@@ -110,60 +117,68 @@ extension Mach {
         }
 
         /// A flag to use when constructing a port.
-        public enum ConstructFlag: UInt32 {
+        public struct ConstructFlag: RawRepresentable, Hashable, Sendable {
+            public let rawValue: Int32
+            public init(rawValue: Int32) { self.rawValue = rawValue }
+
             /// Use the passed context as a guard.
-            case contextAsGuard = 0x01
+            public static let contextAsGuard = Self(rawValue: MPO_CONTEXT_AS_GUARD)
 
             /// Use the passed queue limit.
-            case queueLimit = 0x02
+            public static let queueLimit = Self(rawValue: MPO_QLIMIT)
 
             /// Set the tempower bit on the port.
-            case tempOwner = 0x04
+            public static let tempOwner = Self(rawValue: MPO_TEMPOWNER)
 
             /// Mark the port as an importance receiver.
-            case importanceReceiver = 0x08
+            public static let importanceReceiver = Self(rawValue: MPO_IMPORTANCE_RECEIVER)
 
             /// Insert a send right in addition to the allocated receive right.
-            case insertSendRight = 0x10
+            public static let insertSendRight = Self(rawValue: MPO_INSERT_SEND_RIGHT)
 
             /// Use strict guarding.
             /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-            case strict = 0x20
+            public static let strict = Self(rawValue: MPO_STRICT)
 
             /// Mark the port as a De-Nap receiver.
-            case denapReceiver = 0x40
+            public static let denapReceiver = Self(rawValue: MPO_DENAP_RECEIVER)
 
             /// Mark the receive right as immovable, protected by the guard.
             /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-            case immovableReceive = 0x80
+            public static let immovableReceive = Self(rawValue: MPO_IMMOVABLE_RECEIVE)
 
             /// Enable message filtering.
-            case filterMsg = 0x100
+            public static let filterMsg = Self(rawValue: MPO_FILTER_MSG)
 
             /// Enable tracking of thread group blocking.
-            case trackThreadGroupBlocking = 0x200
+            public static let trackThreadGroupBlocking = Self(rawValue: MPO_TG_BLOCK_TRACKING)
 
             /// Construct a service port.
             /// - Important: This is only allowed for the init system.
-            case servicePort = 0x400
+            public static let servicePort = Self(rawValue: MPO_SERVICE_PORT)
 
             /// Construct a connection port.
-            case connectionPort = 0x800
+            public static let connectionPort = Self(rawValue: MPO_CONNECTION_PORT)
 
             /// Mark the port as a reply port.
-            case replyPort = 0x1000
+            public static let replyPort = Self(rawValue: MPO_REPLY_PORT)
 
             /// Enforce reply port semantics.
             ///
             /// When reply port semantics are enforced, messages that are sent to the port
             ///  must indicate a reply port as the local port in the message header.
-            case enforceReplyPortSemantics = 0x2000
+            public static let enforceReplyPortSemantics = Self(
+                rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS)
 
             /// Mark the port as a provisional reply port.
-            case provisionalReplyPort = 0x4000
+            public static let provisionalReplyPort = Self(rawValue: MPO_PROVISIONAL_REPLY_PORT)
+
+            private static let MPO_PROVISIONAL_ID_PROT_OPTOUT: Int32 = 0x8000  // This is missing from the macOS SDK headers.
 
             /// Opt out of identity protection for the port.
-            case provisionalIdProtOutput = 0x8000
+            public static let provisionalIdProtectionOptOut = Self(
+                rawValue: MPO_PROVISIONAL_ID_PROT_OPTOUT
+            )
         }
 
         /// Constructs a new port with the given options.
@@ -176,12 +191,12 @@ extension Mach {
             if context != nil {
                 // We enforce adding this flag if a context is passed, even if the user didn't
                 // specify it. The context is ignored otherwise.
-                options.flags |= ConstructFlag.contextAsGuard.rawValue
+                options.flags |= UInt32(ConstructFlag.contextAsGuard.rawValue)
             }
             if options.mpl.mpl_qlimit != 0 {
                 // We enforce adding this flag is a limit is passed, even if the user didn't
                 // specify it. The limit is ignored otherwise.
-                options.flags |= ConstructFlag.queueLimit.rawValue
+                options.flags |= UInt32(ConstructFlag.queueLimit.rawValue)
             }
             let actualContext = context ?? mach_port_context_t()
             try Mach.call(
@@ -197,7 +212,7 @@ extension Mach {
             inNameSpaceOf task: Mach.Task = .current
         ) throws {
             var options = mach_port_options_t()
-            options.flags = flags.bitmap()
+            options.flags = UInt32(flags.bitmap())
             options.mpl = limits
             try self.init(options: options, context: nil, inNameSpaceOf: task)
         }
@@ -293,9 +308,12 @@ extension Mach.Port {
 
 extension Mach.Port {
     /// A flag to guard a port with.
-    public enum GuardFlag: UInt64 {
-        case strict = 1
-        case immovableReceive = 2
+    public struct GuardFlag: RawRepresentable, Hashable, Sendable {
+        public let rawValue: Int32
+        public init(rawValue: Int32) { self.rawValue = rawValue }
+
+        public static let strict = Self(rawValue: MPG_STRICT)
+        public static let immovableReceive = Self(rawValue: MPG_IMMOVABLE_RECEIVE)
     }
 
     /// Guards the port with the specified context and flags.
@@ -304,7 +322,7 @@ extension Mach.Port {
     ) throws {
         try Mach.call(
             mach_port_guard_with_flags(
-                self.owningTask.name, self.name, context, flags.bitmap()
+                self.owningTask.name, self.name, context, UInt64(flags.bitmap())
             )
         )
     }

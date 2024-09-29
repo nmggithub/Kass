@@ -27,6 +27,7 @@ extension Mach {
                 case .read: Mach.TaskRead(named: taskList![$0])
                 case .inspect: Mach.TaskInspect(named: taskList![$0])
                 case .name: Mach.TaskName(named: taskList![$0])
+                default: fatalError("Unknown task flavor: \(flavor.rawValue)")
                 }
             }
         }

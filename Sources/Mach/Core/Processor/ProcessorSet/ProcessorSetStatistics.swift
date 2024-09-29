@@ -2,8 +2,12 @@ import Darwin.Mach
 
 extension Mach {
     /// A collection of processor set statistics.
-    public enum ProcessorSetStatistics: processor_set_flavor_t {
-        case basic = 5
+    public struct ProcessorSetStatistics: RawRepresentable, Hashable, Sendable {
+        public let rawValue: processor_set_flavor_t
+        public init(rawValue: processor_set_flavor_t) { self.rawValue = rawValue }
+
+        /// Basic information about the processor set.
+        public static let basic = Self(rawValue: PROCESSOR_SET_BASIC_INFO)
     }
 }
 

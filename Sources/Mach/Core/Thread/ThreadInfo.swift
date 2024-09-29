@@ -2,15 +2,18 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread info.
-    public enum ThreadInfoFlavor: thread_flavor_t {
+    public struct ThreadInfoFlavor: RawRepresentable, Hashable, Sendable {
+        public let rawValue: thread_flavor_t
+        public init(rawValue: thread_flavor_t) { self.rawValue = rawValue }
+
         /// Basic information about the thread.
-        case basic = 3
+        public static let basic = Self(rawValue: thread_flavor_t(THREAD_BASIC_INFO))
 
         /// Identifying information about the thread.
-        case identifier = 4
+        public static let identifier = Self(rawValue: thread_flavor_t(THREAD_IDENTIFIER_INFO))
 
         /// Extended information about the thread.
-        case extended = 5
+        public static let extended = Self(rawValue: thread_flavor_t(THREAD_EXTENDED_INFO))
 
         /// The thread's timesharing policy info.
         @available(
@@ -18,7 +21,7 @@ extension Mach {
             message:
                 "This was marked as obsolete in xnu-3248.20.55, but the info is still retrievable."
         )
-        case timeshare = 10
+        public static let timeshare = Self(rawValue: thread_flavor_t(THREAD_SCHED_TIMESHARE_INFO))
 
         /// The thread's round robin policy info.
         @available(
@@ -26,7 +29,7 @@ extension Mach {
             message:
                 "This was marked as obsolete in xnu-3248.20.55, but the info is still retrievable."
         )
-        case roundRobin = 11
+        public static let roundRobin = Self(rawValue: thread_flavor_t(THREAD_SCHED_RR_INFO))
     }
 }
 
