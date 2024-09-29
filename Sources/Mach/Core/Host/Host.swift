@@ -18,7 +18,7 @@ extension Mach {
                 switch try self.kernelObject.type {
                 case .hostPriv: true
                 case .host: false
-                default: fatalError("Not a host port at all!")
+                default: fatalError("Not actually a host port!")
                 }
             }
         }
