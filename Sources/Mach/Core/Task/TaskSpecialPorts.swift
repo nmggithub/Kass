@@ -46,8 +46,7 @@ extension Mach {
 
         private static let TASK_GSSD_PORT: Int32 = 8  // This is commented out in the header file.
 
-        @available(macOS, obsoleted: 10.8)
-        /// - Note: If you can even get Swift code to compile for Max OS X Lion or earlier, more power to you.
+        @available(macOS, obsoleted: 10.8)  // If someone could get Swift code to compile for Max OS X Lion or earlier, more power to them.
         public static let gssd = Self(rawValue: TASK_GSSD_PORT)
 
         /// A port for determining access to the different flavored task ports for the task.
