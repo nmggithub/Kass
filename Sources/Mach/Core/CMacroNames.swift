@@ -15,7 +15,7 @@ extension Mach.TaskSpecialPort: NameableByCMacro {
     }
 }
 
-extension Mach.TaskPolicyFlavor {
+extension Mach.TaskPolicyFlavor: NameableByCMacro {
     public var cMacroName: String {
         switch self {
         case .category: "TASK_CATEGORY_POLICY"
@@ -29,7 +29,7 @@ extension Mach.TaskPolicyFlavor {
     }
 }
 
-extension Mach.TaskInfoFlavor {
+extension Mach.TaskInfoFlavor: NameableByCMacro {
     public var cMacroName: String {
         switch self {
         case .basic32: "TASK_BASIC_INFO_32"
