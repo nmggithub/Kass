@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A port attribute.
+    /// A flavor of port attribute.
     /// - Important: Attributes are only supported on receive rights.
     public struct PortAttributeFlavor: OptionEnum {
 
@@ -50,38 +50,37 @@ extension Mach.Port {
 
     /// Gets the value of a port attribute.
     public func getAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.PortAttributeFlavor, as type: DataType.Type = DataType.self
+        _ flavor: Mach.PortAttributeFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: mach_port_info_t, count) in
             mach_port_get_attributes(
-                self.owningTask.name, self.name, attribute.rawValue, array, &count
+                self.owningTask.name, self.name, flavor.rawValue, array, &count
             )
         }
     }
 
     /// Sets the value of a port attribute.
     public func setAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.PortAttributeFlavor, to value: DataType
+        _ flavor: Mach.PortAttributeFlavor, to value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: mach_port_info_t, count) in
             mach_port_set_attributes(
-                self.owningTask.name, self.name, attribute.rawValue, array, count
+                self.owningTask.name, self.name, flavor.rawValue, array, count
             )
         }
     }
 
     /// Asserts the value of a port attribute.
-    /// - Important: Only the guard attribute can be asserted.
     @available(macOS, introduced: 12.0.1)
     public func assertAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.PortAttributeFlavor, is value: DataType
+        _ flavor: Mach.PortAttributeFlavor, is value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: mach_port_info_t, count) in
             mach_port_assert_attributes(
-                self.owningTask.name, self.name, attribute.rawValue, array, count
+                self.owningTask.name, self.name, flavor.rawValue, array, count
             )
         }
     }

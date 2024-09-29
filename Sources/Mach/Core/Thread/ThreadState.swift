@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A type of thread state.
+    /// A flavor of thread state.
     public struct ThreadStateFlavor: OptionEnum {
         public let rawValue: thread_state_flavor_t
         public init(rawValue: thread_state_flavor_t) { self.rawValue = rawValue }
@@ -85,21 +85,21 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's state.
     public func getState<StateDataType: BitwiseCopyable>(
-        _ state: Mach.ThreadStateFlavor, as type: StateDataType.Type = StateDataType.self
+        _ flavor: Mach.ThreadStateFlavor, as type: StateDataType.Type = StateDataType.self
     ) throws -> StateDataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_state_t, count) in
-            thread_get_state(self.name, state.rawValue, array, &count)
+            thread_get_state(self.name, flavor.rawValue, array, &count)
         }
     }
 
     /// Sets the thread's state.
     public func setState(
-        _ state: Mach.ThreadStateFlavor, to value: BitwiseCopyable
+        _ flavor: Mach.ThreadStateFlavor, to value: BitwiseCopyable
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: thread_state_t, count) in
-            thread_set_state(self.name, state.rawValue, array, count)
+            thread_set_state(self.name, flavor.rawValue, array, count)
         }
     }
 }

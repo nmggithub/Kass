@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A type of task info.
+    /// A flavor of task info.
     public struct TaskInfoFlavor: OptionEnum {
         public let rawValue: task_flavor_t
         public init(rawValue: task_flavor_t) { self.rawValue = rawValue }
@@ -86,11 +86,11 @@ extension Mach {
 extension Mach.Task {
     /// Gets the task's info.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.TaskInfoFlavor, as type: DataType.Type = DataType.self
+        _ flavor: Mach.TaskInfoFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: task_info_t, count) in
-            task_info(self.name, info.rawValue, array, &count)
+            task_info(self.name, flavor.rawValue, array, &count)
         }
     }
 }

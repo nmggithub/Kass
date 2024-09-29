@@ -109,7 +109,7 @@ extension Mach.Host {
 }
 
 extension Mach {
-    /// A type of host info.
+    /// A flavor of host info.
     public struct HostInfoFlavor: OptionEnum {
         public let rawValue: host_flavor_t
         public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
@@ -127,7 +127,7 @@ extension Mach {
         public static let preferredUserspaceArchitecture = Self(rawValue: HOST_PREFERRED_USER_ARCH)
     }
 
-    /// A type of host statistics.
+    /// A flavor of host statistics.
     public struct HostStatisticsFlavor: OptionEnum {
         public let rawValue: host_flavor_t
         public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
@@ -141,27 +141,27 @@ extension Mach {
 }
 
 extension Mach.Host {
-    /// Gets the value of host info.
+    /// Gets the host's information.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.HostInfoFlavor, as type: DataType.Type
+        _ flavor: Mach.HostInfoFlavor, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             array, count in
-            host_info(self.name, info.rawValue, array, &count)
+            host_info(self.name, flavor.rawValue, array, &count)
         }
     }
 
     /// Gets the host's statistics.
     public func getStatistics<DataType: BitwiseCopyable>(
-        _ statistics: Mach.HostStatisticsFlavor, as type: DataType.Type
+        _ flavor: Mach.HostStatisticsFlavor, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             array, count in
-            switch statistics {
+            switch flavor {
             case .load, .vm, .cpuLoad, .expiredTasks:
-                host_statistics(self.name, statistics.rawValue, array, &count)
+                host_statistics(self.name, flavor.rawValue, array, &count)
             case .vm64, .extMod:
-                host_statistics64(self.name, statistics.rawValue, array, &count)
+                host_statistics64(self.name, flavor.rawValue, array, &count)
             default: fatalError("Unsupported host statistics flavor.")
             }
         }

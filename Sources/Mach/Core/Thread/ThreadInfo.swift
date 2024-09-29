@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A type of thread info.
+    /// A flavor of thread info.
     public struct ThreadInfoFlavor: OptionEnum {
         public let rawValue: thread_flavor_t
         public init(rawValue: thread_flavor_t) { self.rawValue = rawValue }
@@ -36,11 +36,11 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's info.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.ThreadInfoFlavor, as type: DataType.Type = DataType.self
+        _ flavor: Mach.ThreadInfoFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_info_t, count) in
-            thread_info(self.name, info.rawValue, array, &count)
+            thread_info(self.name, flavor.rawValue, array, &count)
         }
     }
 }

@@ -1,7 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
-    /// A type of thread policy.
+    /// A flavor of thread policy.
     public struct ThreadPolicyFlavor: OptionEnum {
         public let rawValue: thread_policy_flavor_t
         public init(rawValue: thread_policy_flavor_t) { self.rawValue = rawValue }
@@ -38,22 +38,22 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's policy.
     public func getPolicy<DataType: BitwiseCopyable>(
-        _ policy: Mach.ThreadPolicyFlavor, as type: DataType.Type = DataType.self
+        _ flavor: Mach.ThreadPolicyFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_policy_t, count) in
             var dontGetDefault = boolean_t(0)
-            return thread_policy_get(self.name, policy.rawValue, array, &count, &dontGetDefault)
+            return thread_policy_get(self.name, flavor.rawValue, array, &count, &dontGetDefault)
         }
     }
 
     /// Sets the thread's policy.
     public func setPolicy<DataType: BitwiseCopyable>(
-        _ policy: Mach.ThreadPolicyFlavor, to value: DataType
+        _ flavor: Mach.ThreadPolicyFlavor, to value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: thread_policy_t, count) in
-            thread_policy_set(self.name, policy.rawValue, array, count)
+            thread_policy_set(self.name, flavor.rawValue, array, count)
         }
     }
 }
