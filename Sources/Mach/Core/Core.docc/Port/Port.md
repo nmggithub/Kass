@@ -53,6 +53,7 @@
 
 - ``Mach/KernelObject``
 - ``kernelObject``
+- ``Mach/KernelObjectType``
 
 ### Managing Context
 
