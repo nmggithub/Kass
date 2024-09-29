@@ -335,29 +335,34 @@ extension Mach.Thread {
 
     #if arch(arm)
         /// The general state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var generalState: arm_thread_state32_t {
             get throws { try self.armState32 }
         }
     #elseif arch(arm64)
         /// The general state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
+
         public var generalState: arm_thread_state64_t {
             get throws { try self.armState64 }
         }
     #elseif arch(i386)
         /// The general state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var generalState: x86_thread_state32_t {
             get throws { try self.x86State32 }
         }
     #elseif arch(x86_64)
         /// The general state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var generalState: x86_thread_state64_t {
             get throws { try self.x86State64 }
         }
@@ -365,29 +370,33 @@ extension Mach.Thread {
 
     #if arch(arm)
         /// The exception state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var exceptionState: arm_exception_state32_t {
             get throws { try self.armExceptionState32 }
         }
     #elseif arch(arm64)
         /// The exception state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var exceptionState: arm_exception_state64_t {
             get throws { try self.armExceptionState64 }
         }
     #elseif arch(i386)
         /// The exception state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var exceptionState: x86_exception_state32_t {
             get throws { try self.x86ExceptionState32 }
         }
     #elseif arch(x86_64)
         /// The exception state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var exceptionState: x86_exception_state64_t {
             get throws { try self.x86ExceptionState64 }
         }
@@ -395,29 +404,33 @@ extension Mach.Thread {
 
     #if arch(arm)
         /// The debug state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var debugState: arm_debug_state32_t {
             get throws { try self.armDebugState32 }
         }
     #elseif arch(arm64)
         /// The debug state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var debugState: arm_debug_state64_t {
             get throws { try self.armDebugState64 }
         }
     #elseif arch(i386)
         /// The debug state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var debugState: x86_debug_state32_t {
             get throws { try self.x86DebugState32 }
         }
     #elseif arch(x86_64)
         /// The debug state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var debugState: x86_debug_state64_t {
             get throws { try self.x86DebugState64 }
         }
@@ -425,8 +438,9 @@ extension Mach.Thread {
 
     #if arch(arm) || arch(arm64)
         /// The floating-point state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var floatState: arm_vfp_state_t {
             get throws { try self.armVFPState }
         }
@@ -435,15 +449,17 @@ extension Mach.Thread {
     // bridged).
     // #elseif arch(i386)
     //     /// The floating-point state of the thread.
-    //     /// - Warning: The type of this property depends on the targeted architecture. Please see the
-    //     /// source code for more information, or use one of the more explicitly named properties.
+    //     /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+    //     /// the calling code. When getting the state of a thread running on a different architecture, use the
+    //     /// more explicitly named properties. Please see the source code for more information.
     //     public var floatState: x86_float_state32_t {
     //         get throws { try self.x86FloatState32 }
     //     }
     // #elseif arch(x86_64)
     //     /// The floating-point state of the thread.
-    //     /// - Warning: The type of this property depends on the targeted architecture. Please see the
-    //     /// source code for more information, or use one of the more explicitly named properties.
+    //     /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+    //     /// the calling code. When getting the state of a thread running on a different architecture, use the
+    //     /// more explicitly named properties. Please see the source code for more information.
     //     public var floatState: x86_float_state64_t {
     //         get throws { try self.x86FloatState64 }
     //     }
@@ -453,15 +469,17 @@ extension Mach.Thread {
     // to `BitwiseCopyable`, which is an indication that they are not properly bridged).
     // #if arch(i386)
     //     /// The AVX state of the thread.
-    //     /// - Warning: The type of this property depends on the targeted architecture. Please see the
-    //     /// source code for more information, or use one of the more explicitly named properties.
+    //     /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+    //     /// the calling code. When getting the state of a thread running on a different architecture, use the
+    //     /// more explicitly named properties. Please see the source code for more information.
     //     public var avxState: x86_avx_state32_t {
     //         get throws { try self.x86AVXState32 }
     //     }
     // #elseif arch(x86_64)
     //     /// The AVX state of the thread.
-    //     /// - Warning: The type of this property depends on the targeted architecture. Please see the
-    //     /// source code for more information, or use one of the more explicitly named properties.
+    //     /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+    //     /// the calling code. When getting the state of a thread running on a different architecture, use the
+    //     /// more explicitly named properties. Please see the source code for more information.
     //     public var avxState: x86_avx_state64_t {
     //         get throws { try self.x86AVXState64 }
     //     }
@@ -469,15 +487,17 @@ extension Mach.Thread {
 
     #if arch(arm) || arch(arm64)
         /// The page-in state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var pageInState: arm_pagein_state_t {
             get throws { try self.armPageInState }
         }
     #elseif arch(i386) || arch(x86_64)
         /// The page-in state of the thread.
-        /// - Warning: The type of this property depends on the targeted architecture. Please see the
-        /// source code for more information, or use one of the more explicitly named properties.
+        /// - Warning: This property is meant *only* for use with threads running on the same architecture as
+        /// the calling code. When getting the state of a thread running on a different architecture, use the
+        /// more explicitly named properties. Please see the source code for more information.
         public var pageInState: x86_pagein_state_t {
             get throws { try self.x86PageInState }
         }
