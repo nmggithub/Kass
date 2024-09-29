@@ -6,7 +6,7 @@ Kass is a collection of modules for reverse-engineering and security research on
 
 ## License
 
-Most of this code is MIT-licensed. However, it is developed largely in reference to source files and header files that are licensed under [Apple's Public Source License](https://opensource.apple.com/apsl/) and other licenses. Where deemed appropriate (i.e. where significant portions of the aforementioned files (or their substance) are borrowed), copyright notices for the relevant licenses are included. Please see the source code for more information.
+Most of this code is MIT-licensed. However, there are some cases where substance is copied from header files licensed under [Apple's Public Source License](https://opensource.apple.com/apsl/) and other licenses. Where deemed appropriate, copyright notices for the relevant licenses are included. Please see the source code for more information.
 
 ## Notice
 
