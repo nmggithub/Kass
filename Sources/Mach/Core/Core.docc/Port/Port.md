@@ -81,7 +81,7 @@
 
 - ``guard(_:flags:)``
 - ``unguard(_:)``
-- ``GuardFlag``
+- ``Mach/PortGuardFlag``
 - ``guarded``
 
 ### Using Port Sets

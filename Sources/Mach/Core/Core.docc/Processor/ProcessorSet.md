@@ -18,5 +18,5 @@
 
 ### Getting Statistics
 
-- ``Mach/ProcessorSetStatistics``
+- ``Mach/ProcessorSetStatisticsFlavor``
 - ``getStatistics(_:as:)``
