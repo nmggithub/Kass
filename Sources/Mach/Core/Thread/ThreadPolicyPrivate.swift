@@ -108,31 +108,31 @@ extension Mach.Thread {
 
 extension Mach.Thread {
     /// The thread's policy state.
-    /// - Warning: This uses a private policy flavor. Use at your own risk.
+    /// - Warning: This uses a private policy flavor. Use with caution.
     public var policyState: Mach.ThreadPolicyState {
         get throws { try self.getPolicy(THREAD_POLICY_STATE) }
     }
 
     /// The thread's QoS policy.
-    /// - Warning: This uses a private policy flavor. Use at your own risk.
+    /// - Warning: This uses a private policy flavor. Use with caution.
     public var qosPolicy: Mach.ThreadQoSPolicy {
         get throws { try self.getPolicy(THREAD_QOS_POLICY) }
     }
 
     /// Sets the thread's QoS policy.
-    /// - Warning: This uses a private policy flavor. Use at your own risk.
+    /// - Warning: This uses a private policy flavor. Use with caution.
     public func setQoSPolicy(
         to qosPolicy: Mach.ThreadQoSPolicy
     ) throws { try self.setPolicy(THREAD_QOS_POLICY, to: qosPolicy) }
 
     /// The thread's time constraint policy (with a priority field).
-    /// - Warning: This uses a private policy flavor. Use at your own risk.
+    /// - Warning: This uses a private policy flavor. Use with caution.
     public var timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy {
         get throws { try self.getPolicy(THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY) }
     }
 
     /// Sets the thread's time constraint policy (with a priority field).
-    /// - Warning: This uses a private policy flavor. Use at your own risk.
+    /// - Warning: This uses a private policy flavor. Use with caution.
     public func setTimeConstraintWithPriorityPolicy(
         to timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy
     ) throws {
@@ -141,7 +141,7 @@ extension Mach.Thread {
     }
 
     /// The thread's requested QoS policy.
-    /// - Warning: This uses a private policy flavor. Use at your own risk.
+    /// - Warning: This uses a private policy flavor. Use with caution.
     public var requestedQoSPolicy: Mach.ThreadRequestedQoSPolicy {
         get throws { try self.getPolicy(THREAD_REQUESTED_STATE_POLICY) }
     }
