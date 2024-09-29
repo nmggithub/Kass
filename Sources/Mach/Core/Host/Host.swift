@@ -58,19 +58,30 @@ extension Mach {
 
 extension Mach {
     /// A reboot option.
-    public struct HostRebootOption: FlagEnum {
+    public struct HostRebootOption:
+        // The way the `host_reboot` function is defined, it seems it could take more than one option. However,
+        // it functionally only ever *uses* one option. So, we'll just define it as a single-option enum.
+        OptionEnum
+    {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
 
+        /// Don't reboot, just halt.
         public static let halt = Self(rawValue: HOST_REBOOT_HALT)
+
+        /// Reboot after a delay.
+        /// - Note: This technically tells the kernel there was a UPS power failure.
         public static let upsDelay = Self(rawValue: HOST_REBOOT_UPSDELAY)
+
+        /// Don't actually reboot, just drop into debugger.
+        /// - Note: This is only available on debug kernel builds.
         public static let debugger = Self(rawValue: HOST_REBOOT_DEBUGGER)
     }
 }
 extension Mach.Host {
     /// Reboots the host.
-    public func reboot(options: Set<Mach.HostRebootOption> = []) throws {
-        try Mach.call(host_reboot(self.name, options.bitmap()))
+    public func reboot(option: Mach.HostRebootOption = .init(rawValue: 0)) throws {
+        try Mach.call(host_reboot(self.name, option.rawValue))
     }
 }
 
