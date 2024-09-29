@@ -24,3 +24,6 @@
 
 - ``Mach/ProcessorInfoFlavor``
 - ``getInfo(_:as:)``
+- ``Mach/ProcessorBasicInfo``
+- ``basicInfo``
+- ``cpuLoadInfo``
