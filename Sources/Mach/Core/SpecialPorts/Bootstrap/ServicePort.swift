@@ -10,7 +10,7 @@ extension Mach {
             context: mach_port_context_t? = nil,
             in task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
-            flags: consuming Set<ConstructFlag> = []
+            flags: consuming Set<Mach.PortConstructFlag> = []
         ) throws {
             guard serviceName.count <= MACH_SERVICE_PORT_INFO_STRING_NAME_MAX_BUF_LEN else {
                 fatalError("Service name is too long.")

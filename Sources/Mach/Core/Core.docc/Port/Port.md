@@ -35,7 +35,7 @@
 - ``init(right:named:inNameSpaceOf:)``
 - ``init(options:context:inNameSpaceOf:)``
 - ``init(flags:limits:inNameSpaceOf:)``
-- ``ConstructFlag``
+- ``Mach/PortConstructFlag``
 
 ### Comparing Ports
 

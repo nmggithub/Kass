@@ -3,6 +3,66 @@ import Darwin.Mach
 import Foundation
 
 extension Mach {
+    /// A flag to use when constructing a port.
+    public struct PortConstructFlag: FlagEnum {
+        public let rawValue: Int32
+        public init(rawValue: Int32) { self.rawValue = rawValue }
+
+        /// Use the passed context as a guard.
+        public static let contextAsGuard = Self(rawValue: MPO_CONTEXT_AS_GUARD)
+
+        /// Use the passed queue limit.
+        public static let queueLimit = Self(rawValue: MPO_QLIMIT)
+
+        /// Set the tempower bit on the port.
+        public static let tempOwner = Self(rawValue: MPO_TEMPOWNER)
+
+        /// Mark the port as an importance receiver.
+        public static let importanceReceiver = Self(rawValue: MPO_IMPORTANCE_RECEIVER)
+
+        /// Insert a send right in addition to the allocated receive right.
+        public static let insertSendRight = Self(rawValue: MPO_INSERT_SEND_RIGHT)
+
+        /// Use strict guarding.
+        /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
+        public static let strict = Self(rawValue: MPO_STRICT)
+
+        /// Mark the port as a De-Nap receiver.
+        public static let denapReceiver = Self(rawValue: MPO_DENAP_RECEIVER)
+
+        /// Mark the receive right as immovable, protected by the guard.
+        /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
+        public static let immovableReceive = Self(rawValue: MPO_IMMOVABLE_RECEIVE)
+
+        /// Enable message filtering.
+        public static let filterMsg = Self(rawValue: MPO_FILTER_MSG)
+
+        /// Enable tracking of thread group blocking.
+        public static let trackThreadGroupBlocking = Self(rawValue: MPO_TG_BLOCK_TRACKING)
+
+        /// Construct a service port.
+        /// - Important: This is only allowed for the init system.
+        public static let servicePort = Self(rawValue: MPO_SERVICE_PORT)
+
+        /// Construct a connection port.
+        public static let connectionPort = Self(rawValue: MPO_CONNECTION_PORT)
+
+        /// Mark the port as a reply port.
+        public static let replyPort = Self(rawValue: MPO_REPLY_PORT)
+
+        /// Enforce reply port semantics.
+        ///
+        /// When reply port semantics are enforced, messages that are sent to the port
+        ///  must indicate a reply port as the local port in the message header.
+        public static let enforceReplyPortSemantics = Self(
+            rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS)
+
+        /// Mark the port as a provisional reply port.
+        public static let provisionalReplyPort = Self(rawValue: MPO_PROVISIONAL_REPLY_PORT)
+    }
+}
+
+extension Mach {
     /// A right to a port.
     public struct PortRight: OptionEnum,
         // `PortRight` isn't a flag, so we don't conform to `FlagEnum`. However, we put it in a set
@@ -122,64 +182,6 @@ extension Mach {
             try Mach.call(mach_port_deallocate(self.owningTask.name, self.name))
         }
 
-        /// A flag to use when constructing a port.
-        public struct ConstructFlag: FlagEnum {
-            public let rawValue: Int32
-            public init(rawValue: Int32) { self.rawValue = rawValue }
-
-            /// Use the passed context as a guard.
-            public static let contextAsGuard = Self(rawValue: MPO_CONTEXT_AS_GUARD)
-
-            /// Use the passed queue limit.
-            public static let queueLimit = Self(rawValue: MPO_QLIMIT)
-
-            /// Set the tempower bit on the port.
-            public static let tempOwner = Self(rawValue: MPO_TEMPOWNER)
-
-            /// Mark the port as an importance receiver.
-            public static let importanceReceiver = Self(rawValue: MPO_IMPORTANCE_RECEIVER)
-
-            /// Insert a send right in addition to the allocated receive right.
-            public static let insertSendRight = Self(rawValue: MPO_INSERT_SEND_RIGHT)
-
-            /// Use strict guarding.
-            /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-            public static let strict = Self(rawValue: MPO_STRICT)
-
-            /// Mark the port as a De-Nap receiver.
-            public static let denapReceiver = Self(rawValue: MPO_DENAP_RECEIVER)
-
-            /// Mark the receive right as immovable, protected by the guard.
-            /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-            public static let immovableReceive = Self(rawValue: MPO_IMMOVABLE_RECEIVE)
-
-            /// Enable message filtering.
-            public static let filterMsg = Self(rawValue: MPO_FILTER_MSG)
-
-            /// Enable tracking of thread group blocking.
-            public static let trackThreadGroupBlocking = Self(rawValue: MPO_TG_BLOCK_TRACKING)
-
-            /// Construct a service port.
-            /// - Important: This is only allowed for the init system.
-            public static let servicePort = Self(rawValue: MPO_SERVICE_PORT)
-
-            /// Construct a connection port.
-            public static let connectionPort = Self(rawValue: MPO_CONNECTION_PORT)
-
-            /// Mark the port as a reply port.
-            public static let replyPort = Self(rawValue: MPO_REPLY_PORT)
-
-            /// Enforce reply port semantics.
-            ///
-            /// When reply port semantics are enforced, messages that are sent to the port
-            ///  must indicate a reply port as the local port in the message header.
-            public static let enforceReplyPortSemantics = Self(
-                rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS)
-
-            /// Mark the port as a provisional reply port.
-            public static let provisionalReplyPort = Self(rawValue: MPO_PROVISIONAL_REPLY_PORT)
-        }
-
         /// Constructs a new port with the given options.
         public init(
             options: consuming mach_port_options_t,
@@ -190,12 +192,12 @@ extension Mach {
             if context != nil {
                 // We enforce adding this flag if a context is passed, even if the user didn't
                 // specify it. The context is ignored otherwise.
-                options.flags |= UInt32(ConstructFlag.contextAsGuard.rawValue)
+                options.flags |= UInt32(Mach.PortConstructFlag.contextAsGuard.rawValue)
             }
             if options.mpl.mpl_qlimit != 0 {
                 // We enforce adding this flag is a limit is passed, even if the user didn't
                 // specify it. The limit is ignored otherwise.
-                options.flags |= UInt32(ConstructFlag.queueLimit.rawValue)
+                options.flags |= UInt32(Mach.PortConstructFlag.queueLimit.rawValue)
             }
             let actualContext = context ?? mach_port_context_t()
             try Mach.call(
@@ -207,7 +209,7 @@ extension Mach {
 
         /// Constructs a new port with the given flags and limits.
         public convenience init(
-            flags: Set<ConstructFlag>, limits: mach_port_limits = mach_port_limits(),
+            flags: Set<Mach.PortConstructFlag>, limits: mach_port_limits = mach_port_limits(),
             inNameSpaceOf task: Mach.Task = .current
         ) throws {
             var options = mach_port_options_t()

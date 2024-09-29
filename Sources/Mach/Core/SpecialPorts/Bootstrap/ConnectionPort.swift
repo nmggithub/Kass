@@ -18,7 +18,7 @@ extension Mach {
             context: mach_port_context_t? = nil,
             inNameSpaceOf task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
-            flags: consuming Set<ConstructFlag> = []
+            flags: consuming Set<Mach.PortConstructFlag> = []
         ) throws {
             flags.insert(.connectionPort)
             var options = mach_port_options_t()
