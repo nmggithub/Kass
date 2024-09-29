@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of task info.
-    public enum TaskInfo: task_flavor_t {
+    public enum TaskInfoFlavor: task_flavor_t {
         /// Basic information about the task.
         @available(macOS, deprecated: 10.8, message: "Use `basic` instead.")
         case basic32 = 4
@@ -83,7 +83,7 @@ extension Mach {
 extension Mach.Task {
     /// Gets the task's info.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.TaskInfo, as type: DataType.Type = DataType.self
+        _ info: Mach.TaskInfoFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: task_info_t, count) in
@@ -205,7 +205,7 @@ extension Mach.Task {
     }
 }
 
-extension Mach.TaskInfo {
+extension Mach.TaskInfoFlavor {
     /// Gets the information for a given task.
     public func get<DataType: BitwiseCopyable>(
         as type: DataType.Type = DataType.self, for task: Mach.Task

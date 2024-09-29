@@ -8,7 +8,7 @@
 
 ### Getting Info
 
-- ``Mach/ThreadInfo``
+- ``Mach/ThreadInfoFlavor``
 - ``getInfo(_:as:)``
 - ``basicInfo``
 - ``identifyingInfo``
@@ -53,7 +53,7 @@
 
 ### Getting State
 
-- ``Mach/ThreadState``
+- ``Mach/ThreadStateFlavor``
 - ``getState(_:as:)``
 - ``setState(_:to:)``
 
@@ -92,7 +92,7 @@
 
 ### Managing Policy
 
-- ``Mach/ThreadPolicy``
+- ``Mach/ThreadPolicyFlavor``
 - ``getPolicy(_:as:)``
 - ``setPolicy(_:to:)``
 - ``extendedPolicy``

@@ -4,7 +4,7 @@
 
 ### Getting Specific Info
 
-- ``Mach/TaskInfo``
+- ``Mach/TaskInfoFlavor``
 - ``Mach/Task/basicInfo32``
 - ``Mach/Task/basic2Info32``
 - ``Mach/Task/basicInfo64``

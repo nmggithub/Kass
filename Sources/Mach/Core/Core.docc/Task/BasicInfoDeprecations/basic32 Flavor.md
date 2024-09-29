@@ -1,4 +1,4 @@
-# ``Mach/TaskInfo/basic32``
+# ``Mach/TaskInfoFlavor/basic32``
 
 @DeprecationSummary {
     Use ``basic`` instead.

@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread policy.
-    public enum ThreadPolicy: thread_policy_flavor_t {
+    public enum ThreadPolicyFlavor: thread_policy_flavor_t {
         /// A thread's extended policy.
         /// - Note: This is called an "extended" policy, but what it's extending is an empty structure. So it's really just a policy.
         case extended = 1
@@ -27,7 +27,7 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's policy.
     public func getPolicy<DataType: BitwiseCopyable>(
-        _ policy: Mach.ThreadPolicy, as type: DataType.Type = DataType.self
+        _ policy: Mach.ThreadPolicyFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_policy_t, count) in
@@ -38,7 +38,7 @@ extension Mach.Thread {
 
     /// Sets the thread's policy.
     public func setPolicy<DataType: BitwiseCopyable>(
-        _ policy: Mach.ThreadPolicy, to value: DataType
+        _ policy: Mach.ThreadPolicyFlavor, to value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: thread_policy_t, count) in
@@ -47,7 +47,7 @@ extension Mach.Thread {
     }
 }
 
-extension Mach.ThreadPolicy {
+extension Mach.ThreadPolicyFlavor {
     /// Gets the policy for a thread.
     public func get<DataType: BitwiseCopyable>(
         as type: DataType.Type, for thread: Mach.Thread = .current

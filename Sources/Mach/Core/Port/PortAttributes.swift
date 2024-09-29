@@ -3,7 +3,7 @@ import Darwin.Mach
 extension Mach {
     /// A port attribute.
     /// - Important: Attributes are only supported on receive rights.
-    public enum PortAttribute: mach_port_flavor_t {
+    public enum PortAttributeFlavor: mach_port_flavor_t {
         /// The limits of the port.
         case limits = 1
 
@@ -46,7 +46,7 @@ extension Mach.Port {
 
     /// Gets the value of a port attribute.
     public func getAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.PortAttribute, as type: DataType.Type = DataType.self
+        _ attribute: Mach.PortAttributeFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: mach_port_info_t, count) in
@@ -58,7 +58,7 @@ extension Mach.Port {
 
     /// Sets the value of a port attribute.
     public func setAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.PortAttribute, to value: DataType
+        _ attribute: Mach.PortAttributeFlavor, to value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: mach_port_info_t, count) in
@@ -72,7 +72,7 @@ extension Mach.Port {
     /// - Important: Only the guard attribute can be asserted.
     @available(macOS, introduced: 12.0.1)
     public func assertAttribute<DataType: BitwiseCopyable>(
-        _ attribute: Mach.PortAttribute, is value: DataType
+        _ attribute: Mach.PortAttributeFlavor, is value: DataType
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: mach_port_info_t, count) in
@@ -131,7 +131,7 @@ extension Mach.Port {
     }
 }
 
-extension Mach.PortAttribute {
+extension Mach.PortAttributeFlavor {
     /// Gets the value of the attribute.
     public func get<DataType: BitwiseCopyable>(
         as type: DataType.Type = DataType.self, for port: Mach.Port

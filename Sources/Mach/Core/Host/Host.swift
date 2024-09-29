@@ -107,7 +107,7 @@ extension Mach.Host {
 
 extension Mach {
     /// A type of host info.
-    public enum HostInfo: host_flavor_t {
+    public enum HostInfoFlavor: host_flavor_t {
         case basic = 1
         case scheduling = 3
         case resourceSizes = 4
@@ -122,7 +122,7 @@ extension Mach {
     }
 
     /// A collection of host statistics.
-    public enum HostStatistics: host_flavor_t {
+    public enum HostStatisticsFlavor: host_flavor_t {
         case load = 1
         case vm = 2
         case cpuLoad = 3
@@ -135,7 +135,7 @@ extension Mach {
 extension Mach.Host {
     /// Gets the value of host info.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.HostInfo, as type: DataType.Type
+        _ info: Mach.HostInfoFlavor, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             array, count in
@@ -145,7 +145,7 @@ extension Mach.Host {
 
     /// Gets the host's statistics.
     public func getStatistics<DataType: BitwiseCopyable>(
-        _ collection: Mach.HostStatistics, as type: DataType.Type
+        _ collection: Mach.HostStatisticsFlavor, as type: DataType.Type
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             array, count in

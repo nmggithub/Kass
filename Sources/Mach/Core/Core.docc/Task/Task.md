@@ -99,7 +99,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Inspecting Ports
 
-- ``Mach/TaskInspectInfo``
+- ``Mach/TaskInspectInfoFlavor``
 - ``inspect(_:as:)``
 - ``basicCounts``
 
@@ -109,7 +109,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Managing Policy
 
-- ``Mach/TaskPolicy``
+- ``Mach/TaskPolicyFlavor``
 - ``getPolicy(_:as:)``
 - ``setPolicy(_:to:)``
 

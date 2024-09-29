@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A type of thread info.
-    public enum ThreadInfo: thread_flavor_t {
+    public enum ThreadInfoFlavor: thread_flavor_t {
         /// Basic information about the thread.
         case basic = 3
 
@@ -33,7 +33,7 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's info.
     public func getInfo<DataType: BitwiseCopyable>(
-        _ info: Mach.ThreadInfo, as type: DataType.Type = DataType.self
+        _ info: Mach.ThreadInfoFlavor, as type: DataType.Type = DataType.self
     ) throws -> DataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_info_t, count) in

@@ -62,7 +62,7 @@
 
 ### Managing Attributes
 
-- ``Mach/PortAttribute``
+- ``Mach/PortAttributeFlavor``
 - ``getAttribute(_:as:)``
 - ``setAttribute(_:to:)``
 - ``assertAttribute(_:is:)``

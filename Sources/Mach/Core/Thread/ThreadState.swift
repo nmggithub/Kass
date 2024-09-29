@@ -64,7 +64,7 @@ import Darwin.Mach
 extension Mach {
     /// A type of thread state.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
-    public enum ThreadState: thread_state_flavor_t {
+    public enum ThreadStateFlavor: thread_state_flavor_t {
         #if arch(arm) || arch(arm64)
             /// ARM VFP state.
             case armVFP = 2
@@ -145,7 +145,7 @@ extension Mach {
 extension Mach.Thread {
     /// Gets the thread's state.
     public func getState<StateDataType: BitwiseCopyable>(
-        _ state: Mach.ThreadState, as type: StateDataType.Type = StateDataType.self
+        _ state: Mach.ThreadStateFlavor, as type: StateDataType.Type = StateDataType.self
     ) throws -> StateDataType {
         try Mach.callWithCountInOut(type: type) {
             (array: thread_state_t, count) in
@@ -155,7 +155,7 @@ extension Mach.Thread {
 
     /// Sets the thread's state.
     public func setState(
-        _ state: Mach.ThreadState, to value: BitwiseCopyable
+        _ state: Mach.ThreadStateFlavor, to value: BitwiseCopyable
     ) throws {
         try Mach.callWithCountIn(value: value) {
             (array: thread_state_t, count) in
@@ -164,7 +164,7 @@ extension Mach.Thread {
     }
 }
 
-extension Mach.ThreadState {
+extension Mach.ThreadStateFlavor {
     /// Gets the state for a thread.
     public func get<StateDataType: BitwiseCopyable>(
         as type: StateDataType.Type, for thread: Mach.Thread = .current
