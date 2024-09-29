@@ -178,13 +178,6 @@ extension Mach {
 
             /// Mark the port as a provisional reply port.
             public static let provisionalReplyPort = Self(rawValue: MPO_PROVISIONAL_REPLY_PORT)
-
-            private static let MPO_PROVISIONAL_ID_PROT_OPTOUT: Int32 = 0x8000  // This is missing from the macOS SDK headers.
-
-            /// Opt out of identity protection for the port.
-            public static let provisionalIdProtectionOptOut = Self(
-                rawValue: MPO_PROVISIONAL_ID_PROT_OPTOUT
-            )
         }
 
         /// Constructs a new port with the given options.
