@@ -16,8 +16,14 @@
 - ``Mach/ProcessorSetControl``
 - ``controlPort``
 
+### Getting Info
+
+- ``Mach/ProcessorSetInfoManager``
+- ``Mach/ProcessorSetInfoFlavor``
+- ``info``
+
 ### Getting Statistics
 
+- ``Mach/ProcessorSetStatisticsManager``
 - ``Mach/ProcessorSetStatisticsFlavor``
-- ``getStatistics(withFlavor:as:)``
-- ``loadStatistics``
+- ``statistics``

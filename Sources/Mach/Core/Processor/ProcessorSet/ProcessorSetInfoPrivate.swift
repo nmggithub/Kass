@@ -67,49 +67,61 @@ private let PROCESSOR_SET_FIFO_DEFAULT: Int32 = 30
 private let PROCESSOR_SET_FIFO_LIMITS: Int32 = 31
 
 extension Mach.ProcessorSetInfoFlavor {
-    /// The processor set's basic information.
+    /// The enabled policies for a processor set.
     public static let enabledPolicies = Self(rawValue: PROCESSOR_SET_ENABLED_POLICIES)
+
+    /// The default timeshare policy for a processor set.
     public static let timeshareDefault = Self(rawValue: PROCESSOR_SET_TIMESHARE_DEFAULT)
+
+    /// The limits for the timeshare policy in a processor set.
     public static let timeshareLimits = Self(rawValue: PROCESSOR_SET_TIMESHARE_LIMITS)
+
+    /// The default round robin policy for a processor set.
     public static let roundRobinDefault = Self(rawValue: PROCESSOR_SET_RR_DEFAULT)
+
+    /// The limits for the round robin policy in a processor set.
     public static let roundRobinLimits = Self(rawValue: PROCESSOR_SET_RR_LIMITS)
+
+    /// The default FIFO policy for a processor set.
     public static let fifoDefault = Self(rawValue: PROCESSOR_SET_FIFO_DEFAULT)
+
+    /// The limits for the FIFO policy in a processor set.
     public static let fifoLimits = Self(rawValue: PROCESSOR_SET_FIFO_LIMITS)
 }
 
-extension Mach.ProcessorSet {
+extension Mach.ProcessorSetInfoManager {
     /// The enabled policies for the processor set.
     public var enabledPolicies: policy_t {
-        get throws { try self.getInfo(.enabledPolicies) }
+        get throws { try self.get(.enabledPolicies) }
     }
 
     /// The default timeshare policy for the processor set.
     public var defaultTimesharePolicy: policy_timeshare_base {
-        get throws { try self.getInfo(.timeshareDefault) }
+        get throws { try self.get(.timeshareDefault) }
     }
 
     /// The limits for the timeshare policy in the processor set.
     public var timesharePolicyLimits: policy_timeshare_limit {
-        get throws { try self.getInfo(.timeshareLimits) }
+        get throws { try self.get(.timeshareLimits) }
     }
 
     /// The default round robin policy for the processor set.
     public var defaultRoundRobinPolicy: policy_rr_base {
-        get throws { try self.getInfo(.roundRobinDefault) }
+        get throws { try self.get(.roundRobinDefault) }
     }
 
     /// The limits for the round robin policy in the processor set.
     public var roundRobinPolicyLimits: policy_rr_limit {
-        get throws { try self.getInfo(.roundRobinLimits) }
+        get throws { try self.get(.roundRobinLimits) }
     }
 
     /// The default FIFO policy for the processor set.
-    public var defaultFifoPolicy: policy_fifo_base {
-        get throws { try self.getInfo(.fifoDefault) }
+    public var defaultFIFOPolicy: policy_fifo_base {
+        get throws { try self.get(.fifoDefault) }
     }
 
     /// The limits for the FIFO policy in the processor set.
     public var fifoPolicyLimits: policy_fifo_limit {
-        get throws { try self.getInfo(.fifoLimits) }
+        get throws { try self.get(.fifoLimits) }
     }
 }

@@ -3,29 +3,48 @@ import Darwin.Mach
 extension Mach {
     /// A flavor of processor set statistics.
     public struct ProcessorSetStatisticsFlavor: OptionEnum {
+        /// The raw value of the flavor.
         public let rawValue: processor_set_flavor_t
+
+        /// Represents a raw processor set statistics flavor.
         public init(rawValue: processor_set_flavor_t) { self.rawValue = rawValue }
 
         /// Load statistics about a processor set.
-        public static let loadInfo = Self(rawValue: PROCESSOR_SET_LOAD_INFO)
+        public static let load = Self(rawValue: PROCESSOR_SET_LOAD_INFO)
     }
-}
 
-extension Mach.ProcessorSet {
-    /// Gets the processor set's statistics.
-    public func getStatistics<DataType: BitwiseCopyable>(
-        withFlavor flavor: Mach.ProcessorSetStatisticsFlavor, as type: DataType.Type = DataType.self
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: processor_set_info_t, count) in
-            processor_set_statistics(self.name, flavor.rawValue, array, &count)
+    /// A processor set statistics manager.
+    public struct ProcessorSetStatisticsManager: FlavoredDataGetter {
+        /// The processor set port.
+        internal let port: Mach.ProcessorSet
+
+        /// The processor set.
+        internal var processorSet: Mach.ProcessorSet { self.port }
+
+        /// Creates a processor set statistics manager.
+        public init(processorSet: Mach.ProcessorSet) { self.port = processorSet }
+
+        /// Gets the processor set's statistics.
+        public func get<DataType>(
+            _ flavor: Mach.ProcessorSetStatisticsFlavor,
+            as type: DataType.Type = DataType.self
+        ) throws -> DataType where DataType: BitwiseCopyable {
+            try Mach.callWithCountInOut(type: type) {
+                (array: processor_set_info_t, count) in
+                processor_set_statistics(self.processorSet.name, flavor.rawValue, array, &count)
+            }
         }
     }
 }
 
 extension Mach.ProcessorSet {
+    /// The statistics of the processor set.
+    public var statistics: Mach.ProcessorSetStatisticsManager { .init(processorSet: self) }
+}
+
+extension Mach.ProcessorSetStatisticsManager {
     /// The processor set's load statistics.
-    public var loadStatistics: processor_set_load_info {
-        get throws { try getStatistics(withFlavor: .loadInfo) }
+    public var load: processor_set_load_info {
+        get throws { try self.get(.load) }
     }
 }
