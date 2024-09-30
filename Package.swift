@@ -83,7 +83,7 @@ let modules: [Module] = [
         dependencies: ["MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Clock",
+        subModuleName: "Clock", folderName: "Timing/Clock",
         dependencies: ["MachMsg", "CCompat", "Linking"]
     ),
 ]
