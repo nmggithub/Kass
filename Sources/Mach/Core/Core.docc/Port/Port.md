@@ -9,18 +9,10 @@
 - ``name``
 - ``owningTask``
 
-### Managing Port Rights
+### Getting Port Rights
 
 - ``Mach/PortRight``
 - ``rights``
-- ``UserRefs``
-- ``userRefs(for:)``
-- ``setUserRefs(for:to:)``
-- ``Mach/PortDisposition``
-- ``extractRight(using:)``
-- ``insertRight(intoNameSpaceOf:using:)``
-- ``sendRightCount``
-- ``setMakeSendCount(to:)``
 
 ### Representing a Nil-Named Port
 
@@ -37,17 +29,16 @@
 - ``construct(flags:limits:inNameSpaceOf:)``
 - ``Mach/PortConstructFlag``
 
-### Comparing Ports
+### Managing Port Rights
 
-- ``==(_:_:)-kka2``
-- ``!=(_:_:)-3hq0e``
-- ``==(_:_:)-725gz``
-- ``==(_:_:)-20pfq``
-
-### Logging Ports
-
-- ``description``
-- ``debugDescription``
+- ``UserRefs``
+- ``userRefs(for:)``
+- ``setUserRefs(for:to:)``
+- ``Mach/PortDisposition``
+- ``extractRight(using:)``
+- ``insertRight(intoNameSpaceOf:using:)``
+- ``sendRightCount``
+- ``setMakeSendCount(to:)``
 
 ### Managing Attributes
 
@@ -90,6 +81,18 @@
 
 - ``Mach/ServicePort``
 - ``Mach/ConnectionPort``
+
+### Comparing Ports
+
+- ``==(_:_:)-kka2``
+- ``!=(_:_:)-3hq0e``
+- ``==(_:_:)-725gz``
+- ``==(_:_:)-20pfq``
+
+### Logging Ports
+
+- ``description``
+- ``debugDescription``
 
 ### Additional Helpers
 
