@@ -9,9 +9,16 @@ extension task_inspect_flavor: Mach.OptionEnum, @unchecked @retroactive Sendable
 extension Mach {
     /// A task inspect info manager.
     public struct TaskInspectInfoManager: FlavoredDataGetter {
+        /// The task port.
         internal let port: Task
+
+        /// The task.
         internal var task: Task { self.port }
+
+        /// Creates a task inspect info manager.
         public init(task: Task) { self.port = task }
+
+        /// Gets the task's inspect info.
         public func get<DataType>(
             _ flavor: task_inspect_flavor, as type: DataType.Type = DataType.self
         ) throws
@@ -19,7 +26,7 @@ extension Mach {
         {
             try Mach.callWithCountInOut(type: type) {
                 (array: task_inspect_info_t, count) in
-                task_inspect(self.port.name, flavor.rawValue, array, &count)
+                task_inspect(self.task.name, flavor.rawValue, array, &count)
             }
         }
     }

@@ -58,7 +58,7 @@ extension Mach {
                 (array: task_policy_t, count) in
                 var dontGetDefault = boolean_t(0)
                 return task_policy_get(
-                    self.port.name, flavor.rawValue, array, &count, &dontGetDefault
+                    self.task.name, flavor.rawValue, array, &count, &dontGetDefault
                 )
             }
         }

@@ -88,7 +88,7 @@ extension Mach {
     /// A task info manager.
     public struct TaskInfoManager: FlavoredDataGetter {
         /// The task port.
-        let port: Mach.Task
+        internal let port: Mach.Task
 
         /// The task.
         internal var task: Mach.Task { self.port }
@@ -102,7 +102,7 @@ extension Mach {
         ) throws -> DataType {
             try Mach.callWithCountInOut(type: type) {
                 (array: task_info_t, count) in
-                task_info(self.port.name, flavor.rawValue, array, &count)
+                task_info(self.task.name, flavor.rawValue, array, &count)
             }
         }
     }
