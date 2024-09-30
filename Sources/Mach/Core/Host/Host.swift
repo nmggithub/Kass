@@ -120,66 +120,6 @@ extension Mach.Host {
 }
 
 extension Mach {
-    /// A flavor of host info.
-    public struct HostInfoFlavor: OptionEnum {
-        public let rawValue: host_flavor_t
-        public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
-
-        public static let basic = Self(rawValue: host_flavor_t(HOST_BASIC_INFO))
-        public static let scheduling = Self(rawValue: host_flavor_t(HOST_SCHED_INFO))
-        public static let resourceSizes = Self(rawValue: HOST_RESOURCE_SIZES)
-        public static let priority = Self(rawValue: HOST_PRIORITY_INFO)
-        public static let semaphoreTraps = Self(rawValue: HOST_SEMAPHORE_TRAPS)
-        public static let machMsgTrap = Self(rawValue: HOST_MACH_MSG_TRAP)
-        public static let vmPurgeable = Self(rawValue: HOST_VM_PURGABLE)
-        public static let debugInfo = Self(rawValue: HOST_DEBUG_INFO_INTERNAL)
-        /// - Note: Yes, this is what it's actually called.
-        public static let canHasDebugger = Self(rawValue: HOST_CAN_HAS_DEBUGGER)
-        public static let preferredUserspaceArchitecture = Self(rawValue: HOST_PREFERRED_USER_ARCH)
-    }
-
-    /// A flavor of host statistics.
-    public struct HostStatisticsFlavor: OptionEnum {
-        public let rawValue: host_flavor_t
-        public init(rawValue: host_flavor_t) { self.rawValue = rawValue }
-        public static let load = Self(rawValue: HOST_LOAD_INFO)
-        public static let vm = Self(rawValue: HOST_VM_INFO)
-        public static let cpuLoad = Self(rawValue: HOST_CPU_LOAD_INFO)
-        public static let vm64 = Self(rawValue: HOST_VM_INFO64)
-        public static let extMod = Self(rawValue: HOST_EXTMOD_INFO64)
-        public static let expiredTasks = Self(rawValue: HOST_EXPIRED_TASK_INFO)
-    }
-}
-
-extension Mach.Host {
-    /// Gets the host's information.
-    public func getInfo<DataType: BitwiseCopyable>(
-        _ flavor: Mach.HostInfoFlavor, as type: DataType.Type
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            array, count in
-            host_info(self.name, flavor.rawValue, array, &count)
-        }
-    }
-
-    /// Gets the host's statistics.
-    public func getStatistics<DataType: BitwiseCopyable>(
-        _ flavor: Mach.HostStatisticsFlavor, as type: DataType.Type
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            array, count in
-            switch flavor {
-            case .load, .vm, .cpuLoad, .expiredTasks:
-                host_statistics(self.name, flavor.rawValue, array, &count)
-            case .vm64, .extMod:
-                host_statistics64(self.name, flavor.rawValue, array, &count)
-            default: fatalError("Unsupported host statistics flavor.")
-            }
-        }
-    }
-}
-
-extension Mach {
     /// A memory manager.
     public class MemoryManager: Mach.Port {}
 }
