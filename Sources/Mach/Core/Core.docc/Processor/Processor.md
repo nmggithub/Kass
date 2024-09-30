@@ -22,8 +22,6 @@
 
 ### Getting Info
 
+- ``Mach/ProcessorInfoManager``
 - ``Mach/ProcessorInfoFlavor``
-- ``getInfo(_:as:)``
-- ``Mach/ProcessorBasicInfo``
-- ``basicInfo``
-- ``cpuLoadInfo``
+- ``info``

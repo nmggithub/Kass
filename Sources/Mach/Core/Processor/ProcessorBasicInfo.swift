@@ -67,9 +67,9 @@ extension Mach {
     }
 }
 
-extension Mach.Processor {
+extension Mach.ProcessorInfoManager {
     /// The processor's basic information.
-    public var basicInfo: Mach.ProcessorBasicInfo {
-        get throws { try getInfo(.basic, as: Mach.ProcessorBasicInfo.self) }
+    public var basic: Mach.ProcessorBasicInfo {
+        get throws { try self.get(.basic, as: Mach.ProcessorBasicInfo.self) }
     }
 }
