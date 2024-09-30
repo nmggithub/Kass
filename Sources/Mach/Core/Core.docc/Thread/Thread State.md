@@ -51,3 +51,10 @@
 - ``ARMNEONState64``
 - ``armNEONState64``
 - ``armNEONState32``
+
+### Converting State
+
+- ``Mach/ThreadStateConvertDirection``
+- ``convert(_:withFlavor:thread:direction:)``
+- ``convert(_:withFlavor:toThread:)``
+- ``convert(_:withFlavor:fromThread:)``
