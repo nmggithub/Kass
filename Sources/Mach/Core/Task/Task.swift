@@ -15,7 +15,8 @@ extension Mach {
         }
 
         /// If the task is the current task.
-        public var isSelf: Bool { mach_task_is_self(self.name) != 0 ? true : false }
+        @available(macOS 11.3, *)
+        public var isCurrentTask: Bool { mach_task_is_self(self.name) != 0 ? true : false }
 
         /// Suspends the task.
         public func suspend() throws { try Mach.call(task_suspend(self.name)) }

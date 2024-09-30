@@ -73,7 +73,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Getting Basic Info
 
-- ``isSelf``
+- ``isCurrentTask``
 - ``ports``
 
 ### Getting Task Ports
