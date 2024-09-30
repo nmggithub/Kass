@@ -1,35 +1,38 @@
 import Darwin.Mach
 
-/// Adds properties to make the `task_role` enum more Swift-friendly.
-extension task_inspect_flavor {
+/// Adds properties to make the `task_inspect_flavor` enum more Swift-friendly.
+extension task_inspect_flavor: Mach.OptionEnum, @unchecked @retroactive Sendable {
     /// The basic CPU instruction and cycle counts.
     public static let basicCounts = TASK_INSPECT_BASIC_COUNTS
 }
 
-extension Mach.Task {
-    /// Gets the task's inspect info.
-    public func inspect<DataType: BitwiseCopyable>(
-        _ info: task_inspect_flavor, as type: DataType.Type
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: task_inspect_info_t, count) in
-            task_inspect(self.name, info.rawValue, array, &count)
+extension Mach {
+    /// A task inspect info manager.
+    public struct TaskInspectInfoManager: FlavoredDataGetter {
+        internal let port: Task
+        internal var task: Task { self.port }
+        public init(task: Task) { self.port = task }
+        public func get<DataType>(
+            _ flavor: task_inspect_flavor, as type: DataType.Type = DataType.self
+        ) throws
+            -> DataType where DataType: BitwiseCopyable
+        {
+            try Mach.callWithCountInOut(type: type) {
+                (array: task_inspect_info_t, count) in
+                task_inspect(self.port.name, flavor.rawValue, array, &count)
+            }
         }
     }
 }
 
 extension Mach.Task {
-    /// Basic CPU instruction and cycle counts.
-    public var basicCounts: task_inspect_basic_counts {
-        get throws { try inspect(.basicCounts, as: task_inspect_basic_counts.self) }
-    }
+    /// A task inspect info manager.
+    public var inspectInfo: Mach.TaskInspectInfoManager { .init(task: self) }
 }
 
-extension task_inspect_flavor {
-    /// Gets the task's inspect info.
-    public func inspect<DataType: BitwiseCopyable>(
-        as type: DataType.Type = DataType.self, for task: Mach.Task = .current
-    ) throws -> DataType {
-        try task.inspect(self, as: type)
+extension Mach.TaskInspectInfoManager {
+    /// Basic CPU instruction and cycle counts.
+    public var basicCounts: task_inspect_basic_counts {
+        get throws { try self.get(.basicCounts) }
     }
 }

@@ -55,7 +55,7 @@ Alternatively, for the ``getSpecialPort(_:as:)`` API can be used. Please the doc
 | ``Mach/TaskInfoManager/dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Other Functionality      |||||
 | ``stashedPorts`` / ``stashPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
-| ``inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``inspectInfo`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
 | ``identityToken`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``ports`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 
@@ -109,9 +109,9 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Inspecting Ports
 
+- ``Mach/TaskInspectInfoManager``
 - ``Darwin/task_inspect_flavor``
-- ``inspect(_:as:)``
-- ``basicCounts``
+- ``inspectInfo``
 
 ### Getting Info
 
