@@ -49,6 +49,12 @@
 - ``description``
 - ``debugDescription``
 
+### Managing Attributes
+
+- ``Mach/PortAttributeManager``
+- ``Mach/PortAttributeFlavor``
+- ``attributes``
+
 ### Working with Kernel Objects
 
 - ``Mach/KernelObject``
@@ -60,22 +66,6 @@
 - ``getContext()``
 - ``setContext(to:)``
 - ``context``
-
-### Managing Attributes
-
-- ``Mach/PortAttributeFlavor``
-- ``Mach/PortAttributeManager``
-- ``attributes``
-<!-- - ``limits``
-- ``setLimits(to:)``
-- ``status``
-- ``requestTableCount``
-- ``setRequestTableCount(to:)``
-- ``setWillChangeOwner()``
-- ``setIsImportanceReceiver()``
-- ``setIsDeNapReceiver()``
-- ``info``
-- ``assertGuard(is:)`` -->
 
 ### Guarding Ports
 

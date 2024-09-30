@@ -4,10 +4,10 @@ extension Mach {
     /// A flavor of port attribute.
     /// - Important: Attributes are only supported on receive rights.
     public struct PortAttributeFlavor: OptionEnum {
-        /// The raw port attribute flavor value.
+        /// The raw value of the flavor.
         public let rawValue: mach_port_flavor_t
 
-        /// Represents a raw port attribute flavor value.
+        /// Represents a raw port attribute flavor.
         public init(rawValue: mach_port_flavor_t) { self.rawValue = rawValue }
 
         /// The limits of the port.
