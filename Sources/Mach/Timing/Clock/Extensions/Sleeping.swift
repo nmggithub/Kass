@@ -8,7 +8,7 @@ extension Mach.Clock {
     @discardableResult  // The result is not always needed.
     public func sleep(until time: mach_timespec_t) throws -> mach_timespec_t {
         var returnedTime = mach_timespec_t()
-        try Mach.call(clock_sleep(self.name, Self.TimeType.absolute.rawValue, time, &returnedTime))
+        try Mach.call(clock_sleep(self.name, Mach.TimeType.absolute.rawValue, time, &returnedTime))
         return returnedTime
     }
 
@@ -19,7 +19,7 @@ extension Mach.Clock {
     @discardableResult  // The result is not always needed.
     public func sleep(for time: mach_timespec_t) throws -> mach_timespec_t {
         var returnedTime = mach_timespec_t()
-        try Mach.call(clock_sleep(self.name, Self.TimeType.relative.rawValue, time, &returnedTime))
+        try Mach.call(clock_sleep(self.name, Mach.TimeType.relative.rawValue, time, &returnedTime))
         return returnedTime
     }
 }

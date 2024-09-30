@@ -1,6 +1,6 @@
 import Darwin.Mach
 
-/// Mathematical helpers for `mach_timespec`.
+/// Adds mathematical helpers for `mach_timespec`.
 extension mach_timespec:
     @retroactive Equatable,
     @retroactive AdditiveArithmetic
@@ -136,7 +136,7 @@ extension Mach.Clock: Clock, @unchecked Sendable {
     /// - Warning: This property will crash the program if the kernel call fails.
     /// - Important: This actually returns the current resolution of the clock, as the minimum resolution
     /// attribute is basically deprecated. Given that the resolution cannot change, this should be fine.
-    public var minimumResolution: Duration { try! .init(self.getAttribute(.resolution)) }
+    public var minimumResolution: Duration { try! .init(self.clockAttributes.get(.resolution)) }
 
     /// ***Unsafe.*** Sleeps until a given time.
     /// - Warning: This function will crash the program if the kernel call fails.
@@ -146,20 +146,20 @@ extension Mach.Clock: Clock, @unchecked Sendable {
     }
 }
 
-extension Mach.Clock.Alarm {
+extension Mach.Alarm {
     /// Sets an alarm to ring at a given time.
     public static func allocate(
-        named name: mach_port_name_t? = nil,
-        on clock: Mach.Clock, at time: Mach.Clock.Instant
+        name: mach_port_name_t? = nil,
+        onClock clock: Mach.Clock, at time: Mach.Clock.Instant
     ) throws -> Self {
-        try Self.allocate(named: name, on: clock, time: time.value, type: .absolute)
+        try Self.allocate(name: name, onClock: clock, time: time.value, type: .absolute)
     }
 
     /// Sets an alarm to ring after a given duration.
     public static func allocate(
-        named name: mach_port_name_t? = nil,
-        on clock: Mach.Clock, after duration: Mach.Clock.Duration
+        name: mach_port_name_t? = nil,
+        onClock clock: Mach.Clock, after duration: Mach.Clock.Duration
     ) throws -> Self {
-        try Self.allocate(named: name, on: clock, time: duration.value, type: .relative)
+        try Self.allocate(name: name, onClock: clock, time: duration.value, type: .relative)
     }
 }

@@ -6,12 +6,11 @@
 
 ## Topics
 
-### Classes
+### Core Concepts
 
 - ``MachCore/Mach/Clock``
-- ``MachCore/Mach/Clock/Alarm``
-- ``MachCore/Mach/ClockControl``
+- ``MachCore/Mach/Alarm``
 
-### Extended classes
+### Extensions
 - ``MachCore/Mach/Host``
 - ``Darwin/mach_timespec``
