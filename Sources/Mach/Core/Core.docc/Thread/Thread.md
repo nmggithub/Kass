@@ -4,17 +4,11 @@
 
 ## Topics
 
-## Getting Info
-
 ### Getting Info
 
+- ``Mach/ThreadInfoManager``
 - ``Mach/ThreadInfoFlavor``
-- ``getInfo(_:as:)``
-- ``basicInfo``
-- ``identifyingInfo``
-- ``extendedInfo``
-- ``timesharingInfo``
-- ``roundRobinInfo``
+- ``info``
 
 
 ### Creating Threads
