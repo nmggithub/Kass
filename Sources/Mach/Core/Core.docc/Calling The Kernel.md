@@ -20,7 +20,7 @@ The reason this function is called "call" and not "syscall" is that the vast maj
 
 Due to this additional factor, these kernel calls can sometimes return an error code from an extended set of messaging return codes. This usually happens if something goes wrong in the messaging layer. These codes are not representable with [MachError](https://developer.apple.com/documentation/foundation/macherror), so this is a case where the library will throw an [NSError](https://developer.apple.com/documentation/foundation/nserror) instead. Again, both of these cases should be accounted for to ensure safe usage of these kernel calls.
 
-Technically, the functions these calls use to send the messages *do* eventually make a system call through what is called a **Mach trap**. However, the underlying Mach trap is conceptually different enough from the kernel calls that utilize it that the latter are better described as "kernel calls" instead of "system calls". The execution only drops into kernel mode to send the message, not to directly execute the code of the requested kernel call.
+Technically, the functions these calls use to send the messages *do* eventually make a system call through what is called a **Mach trap**. However, the underlying Mach trap is conceptually different enough from the kernel calls that utilize it that the latter are better described as "kernel calls" instead of "system calls". The execution only drops into kernel mode to send the message, and the execution of the requested kernel call happens separately.
 
 
 ## Advanced Kernel Calls
