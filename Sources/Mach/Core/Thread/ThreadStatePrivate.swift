@@ -56,34 +56,17 @@
 
 import Darwin.Mach
 
-private let x86_SAVED_STATE32: thread_state_flavor_t = THREAD_STATE_NONE + 1
-private let x86_SAVED_STATE64: thread_state_flavor_t = THREAD_STATE_NONE + 2
-
-/// Helpers for getting and setting the thread's state for cases not covered by the `ThreadState` enum.
-extension Mach.Thread {
-    /// Gets the thread's state using a raw state flavor.
-    fileprivate func getState<DataType: BitwiseCopyable>(
-        _ state: thread_state_flavor_t, as type: DataType.Type = DataType.self
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: thread_state_t, count) in
-            thread_get_state(self.name, state, array, &count)
-        }
-    }
-
-    /// Sets the thread's state using a raw state flavor.
-    fileprivate func setState<DataType: BitwiseCopyable>(
-        _ state: thread_state_flavor_t, to value: DataType
-    ) throws {
-        try Mach.callWithCountIn(value: value) {
-            (array: thread_state_t, count) in
-            thread_set_state(self.name, state, array, count)
-        }
-    }
-}
-
 #if arch(i386) || arch(x86_64)
-    extension Mach.Thread {
+    private let x86_SAVED_STATE32: thread_state_flavor_t = THREAD_STATE_NONE + 1
+    private let x86_SAVED_STATE64: thread_state_flavor_t = THREAD_STATE_NONE + 2
+    extension Mach.ThreadStateFlavor {
+        /// x86 saved state (32-bit).
+        public static let x86SavedState32 = Mach.ThreadStateFlavor(rawValue: x86_SAVED_STATE32)
+
+        /// x86 saved state (64-bit).
+        public static let x86SavedState64 = Mach.ThreadStateFlavor(rawValue: x86_SAVED_STATE64)
+    }
+    extension Mach.ThreadStateManager {
         /// A 32-bit x86 saved state.
         /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
         public struct X86SavedState32: BitwiseCopyable {
@@ -151,19 +134,19 @@ extension Mach.Thread {
         }
     }
 
-    extension Mach.Thread {
+    extension Mach.ThreadStateManager {
         /// The 32-bit x86 saved state of the thread.
         public var x86SavedState32: X86SavedState32 {
-            get throws { try self.getState(x86_SAVED_STATE32) }
+            get throws { try self.get(.x86SavedState32) }
         }
 
         /// The 64-bit x86 saved state of the thread.
         public var x86SavedState64: X86SavedState64 {
-            get throws { try self.getState(x86_SAVED_STATE64) }
+            get throws { try self.get(.x86SavedState64) }
         }
     }
 
-    extension Mach.Thread {
+    extension Mach.ThreadStateManager {
         #if arch(i386)
             /// The saved state of the thread (32-bit).
             public var savedState: X86SavedState32 {

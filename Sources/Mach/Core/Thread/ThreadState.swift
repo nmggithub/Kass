@@ -4,8 +4,9 @@ import Darwin.Mach
 // headers containing the state structs are only available on the correct architecture, so we can't provide a cross-architecture
 // API without duplicating the structs (which we won't do). Maybe later, but no promises.
 
-// MARK: - Thread State Flavors
 extension Mach {
+    // MARK: - Thread State Flavors
+
     /// A flavor of thread state.
     public struct ThreadStateFlavor: OptionEnum {
         public let rawValue: thread_state_flavor_t
@@ -86,205 +87,209 @@ extension Mach {
             public static let x86LastBranch = Self(rawValue: x86_LAST_BRANCH_STATE)
         #endif
     }
+
+    // MARK: - Thread State Manager
+
+    /// A thread state manager.
+    public struct ThreadStateManager: FlavoredDataManager {
+        /// The thread port.
+        internal let port: Mach.Thread
+
+        /// The thread.
+        internal var thread: Mach.Thread { self.port }
+
+        /// Creates a thread state manager.
+        public init(thread: Mach.Thread) { self.port = thread }
+
+        /// Gets the state of the thread.
+        func get<DataType>(_ flavor: Mach.ThreadStateFlavor, as type: DataType.Type = DataType.self)
+            throws
+            -> DataType where DataType: BitwiseCopyable
+        {
+            try Mach.callWithCountInOut(type: type) {
+                (array: thread_state_t, count) in
+                thread_get_state(self.thread.name, flavor.rawValue, array, &count)
+            }
+        }
+
+        /// Sets the state of the thread.
+        func set<DataType>(_ flavor: Mach.ThreadStateFlavor, to value: DataType) throws
+        where DataType: BitwiseCopyable {
+            try Mach.callWithCountIn(value: value) {
+                (array: thread_state_t, count) in
+                thread_set_state(self.thread.name, flavor.rawValue, array, count)
+            }
+        }
+    }
 }
 
-// MARK: - Thread State Getters and Setters (General)
 extension Mach.Thread {
-    /// Gets the thread's state.
-    public func getState<StateDataType: BitwiseCopyable>(
-        _ flavor: Mach.ThreadStateFlavor, as type: StateDataType.Type = StateDataType.self
-    ) throws -> StateDataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: thread_state_t, count) in
-            thread_get_state(self.name, flavor.rawValue, array, &count)
-        }
-    }
-
-    /// Sets the thread's state.
-    public func setState(
-        _ flavor: Mach.ThreadStateFlavor, to value: BitwiseCopyable
-    ) throws {
-        try Mach.callWithCountIn(value: value) {
-            (array: thread_state_t, count) in
-            thread_set_state(self.name, flavor.rawValue, array, count)
-        }
-    }
-}
-
-extension Mach.ThreadStateFlavor {
-    /// Gets the state for a thread.
-    public func get<StateDataType: BitwiseCopyable>(
-        as type: StateDataType.Type, for thread: Mach.Thread = .current
-    ) throws -> StateDataType { try thread.getState(self, as: type) }
-
-    /// Sets the state for a thread.
-    public func set(
-        to value: BitwiseCopyable, for thread: Mach.Thread = .current
-    ) throws { try thread.setState(self, to: value) }
+    /// The thread's state.
+    public var state: Mach.ThreadStateManager { Mach.ThreadStateManager(thread: self) }
 }
 
 // MARK: - Thread State Getters and Setters (Specific)
 #if arch(arm) || arch(arm64)
-    extension Mach.Thread {
+    extension Mach.ThreadStateManager {
         // General states
 
         /// The ARM state of the thread (32-bit).
         public var armState32: arm_thread_state32_t {
-            get throws { try self.getState(.arm32) }
+            get throws { try self.get(.arm32) }
         }
 
         /// Sets the ARM state of the thread (32-bit).
         public func setARMState32(to value: arm_thread_state32_t) throws {
-            try self.setState(.arm32, to: value)
+            try self.set(.arm32, to: value)
         }
 
         /// The ARM state of the thread (64-bit).
         public var armState64: arm_thread_state64_t {
-            get throws { try self.getState(.arm64) }
+            get throws { try self.get(.arm64) }
         }
 
         /// Sets the ARM state of the thread (64-bit).
         public func setARMState64(to value: arm_thread_state64_t) throws {
-            try self.setState(.arm64, to: value)
+            try self.set(.arm64, to: value)
         }
 
         // Exception states
 
         /// The ARM exception state of the thread (32-bit).
         public var armExceptionState32: arm_exception_state32_t {
-            get throws { try self.getState(.armException32) }
+            get throws { try self.get(.armException32) }
         }
 
         /// Sets the ARM exception state of the thread (32-bit).
         public func setARMExceptionState32(to value: arm_exception_state32_t) throws {
-            try self.setState(.armException32, to: value)
+            try self.set(.armException32, to: value)
         }
 
         /// The ARM exception state of the thread (64-bit).
         public var armExceptionState64: arm_exception_state64_t {
-            get throws { try self.getState(.armException64) }
+            get throws { try self.get(.armException64) }
         }
 
         /// Sets the ARM exception state of the thread (64-bit).
         public func setARMExceptionState64(to value: arm_exception_state64_t) throws {
-            try self.setState(.armException64, to: value)
+            try self.set(.armException64, to: value)
         }
 
         // Debug states
 
         /// The ARM debug state of the thread (32-bit).
         public var armDebugState32: arm_debug_state32_t {
-            get throws { try self.getState(.armDebug32) }
+            get throws { try self.get(.armDebug32) }
         }
 
         /// Sets the ARM debug state of the thread (32-bit).
         public func setARMDebugState32(to value: arm_debug_state32_t) throws {
-            try self.setState(.armDebug32, to: value)
+            try self.set(.armDebug32, to: value)
         }
 
         /// The legacy (pre-Armv8) ARM debug state of the thread (32-bit).
         public var armDebugState32Legacy: arm_debug_state_t {
-            get throws { try self.getState(.armDebugLegacy) }
+            get throws { try self.get(.armDebugLegacy) }
         }
 
         /// Sets the legacy (pre-Armv8) ARM debug state of the thread (32-bit).
         public func setARMDebugState32Legacy(to value: arm_debug_state_t) throws {
-            try self.setState(.armDebugLegacy, to: value)
+            try self.set(.armDebugLegacy, to: value)
         }
 
         /// The ARM debug state of the thread (64-bit).
         public var armDebugState64: arm_debug_state64_t {
-            get throws { try self.getState(.armDebug64) }
+            get throws { try self.get(.armDebug64) }
         }
 
         /// Sets the ARM debug state of the thread (64-bit).
         public func setARMDebugState64(to value: arm_debug_state64_t) throws {
-            try self.setState(.armDebug64, to: value)
+            try self.set(.armDebug64, to: value)
         }
 
         /// Non-bit-width-specific states
 
         /// The ARM VFP state of the thread.
         public var armVFPState: arm_vfp_state_t {
-            get throws { try self.getState(.armVFP) }
+            get throws { try self.get(.armVFP) }
         }
 
         /// Sets the ARM VFP state of the thread.
         public func setARMVFPState(to value: arm_vfp_state_t) throws {
-            try self.setState(.armVFP, to: value)
+            try self.set(.armVFP, to: value)
         }
 
         /// The ARM page-in state of the thread.
         public var armPageInState: arm_pagein_state_t {
-            get throws { try self.getState(.armPageIn) }
+            get throws { try self.get(.armPageIn) }
         }
     }
 #elseif arch(i386) || arch(x86_64)
-    extension Mach.Thread {
+    extension Mach.ThreadStateManager {
         // General states
 
         /// The x86 state of the thread (32-bit).
         public var x86State32: x86_thread_state32_t {
-            get throws { try self.getState(.x86_32) }
+            get throws { try self.get(.x86_32) }
         }
 
         /// Sets the x86 state of the thread (32-bit).
         public func setX86State32(to value: x86_thread_state32_t) throws {
-            try self.setState(.x86_32, to: value)
+            try self.set(.x86_32, to: value)
         }
 
         /// The x86 state of the thread (64-bit).
         public var x86State64: x86_thread_state64_t {
-            get throws { try self.getState(.x86_64) }
+            get throws { try self.get(.x86_64) }
         }
 
         /// Sets the x86 state of the thread (64-bit).
         public func setX86State64(to value: x86_thread_state64_t) throws {
-            try self.setState(.x86_64, to: value)
+            try self.set(.x86_64, to: value)
         }
 
         /// The full 64-bit x86 state of the thread.
         public var x86FullState64: x86_thread_full_state64_t {
-            get throws { try self.getState(.x86Full64) }
+            get throws { try self.get(.x86Full64) }
         }
 
         /// Sets the full 64-bit x86 state of the thread.
         public func setX86FullState64(to value: x86_thread_full_state64_t) throws {
-            try self.setState(.x86Full64, to: value)
+            try self.set(.x86Full64, to: value)
         }
 
         // Exception states
 
         /// The x86 exception state of the thread (32-bit).
         public var x86ExceptionState32: x86_exception_state32_t {
-            get throws { try self.getState(.x86Exception32) }
+            get throws { try self.get(.x86Exception32) }
         }
 
         /// The x86 exception state of the thread (64-bit).
         public var x86ExceptionState64: x86_exception_state64_t {
-            get throws { try self.getState(.x86Exception64) }
+            get throws { try self.get(.x86Exception64) }
         }
 
         // Debug states
 
         /// The x86 debug state of the thread (32-bit).
         public var x86DebugState32: x86_debug_state32_t {
-            get throws { try self.getState(.x86Debug32) }
+            get throws { try self.get(.x86Debug32) }
         }
 
         /// Sets the x86 debug state of the thread (32-bit).
         public func setX86DebugState32(to value: x86_debug_state32_t) throws {
-            try self.setState(.x86Debug32, to: value)
+            try self.set(.x86Debug32, to: value)
         }
 
         /// The x86 debug state of the thread (64-bit).
         public var x86DebugState64: x86_debug_state64_t {
-            get throws { try self.getState(.x86Debug64) }
+            get throws { try self.get(.x86Debug64) }
         }
 
         /// Sets the x86 debug state of the thread (64-bit).
         public func setX86DebugState64(to value: x86_debug_state64_t) throws {
-            try self.setState(.x86Debug64, to: value)
+            try self.set(.x86Debug64, to: value)
         }
 
         // FIXME: Floating-point state structs are not properly bridged for x86 (or rather, they
@@ -294,12 +299,12 @@ extension Mach.ThreadStateFlavor {
 
         // /// The 32-bit x86 floating-point state of the thread.
         // public var x86FloatState32: x86_float_state32_t {
-        //     get throws { try self.getState(.x86Float32) }
+        //     get throws { try self.get(.x86Float32) }
         // }
 
         // /// The 64-bit x86 floating-point state of the thread.
         // public var x86FloatState64: x86_float_state64_t {
-        //     get throws { try self.getState(.x86Float64) }
+        //     get throws { try self.get(.x86Float64) }
         // }
 
         // FIXME: x86 AVX state structs are not properly bridged (or rather, they don't conform
@@ -308,24 +313,24 @@ extension Mach.ThreadStateFlavor {
 
         // /// The x86 debug AVX of the thread (32-bit).
         // public var x86AVXState32: x86_avx_state32_t {
-        //     get throws { try self.getState(.x86AVX32) }
+        //     get throws { try self.get(.x86AVX32) }
         // }
 
         // /// The x86 debug AVX of the thread (64-bit).
         // public var x86AVXState64: x86_avx_state64_t {
-        //     get throws { try self.getState(.x86AVX64) }
+        //     get throws { try self.get(.x86AVX64) }
         // }
 
         // Non-bit-width-specific states
 
         /// The x86 page-in state of the thread.
         public var x86PageInState: x86_pagein_state_t {
-            get throws { try self.getState(.x86PageIn) }
+            get throws { try self.get(.x86PageIn) }
         }
 
         /// The x86 instruction state of the thread.
         public var x86InstructionState: x86_instruction_state_t {
-            get throws { try self.getState(.x86Instruction) }
+            get throws { try self.get(.x86Instruction) }
         }
 
         // FIXME: The `x86_last_branch_state_t` type cannot be found when building
@@ -333,13 +338,13 @@ extension Mach.ThreadStateFlavor {
         // bridged properly (or rather, it doesn't conform to `BitwiseCopyable`).
         // /// The x86 last branch record state of the thread.
         // public var x86LastBranchState: x86_last_branch_state_t {
-        //     get throws { try self.getState(.x86LastBranch) }
+        //     get throws { try self.get(.x86LastBranch) }
         // }
     }
 #endif
 
 // MARK: - Thread State Getters and Setters (Convenience)
-extension Mach.Thread {
+extension Mach.ThreadStateManager {
 
     #if arch(arm)
         /// The general state of the thread.
@@ -412,7 +417,7 @@ extension Mach.Thread {
         /// Sets the exception state of the thread.
         /// - Warning: This does nothing on x86. It is only here for API consistency.
         public func setExceptionState(to value: x86_exception_state32_t) throws {
-            try self.setState(.x86Exception32, to: value)
+            try self.set(.x86Exception32, to: value)
         }
     #elseif arch(x86_64)
         /// The exception state of the thread.
@@ -423,7 +428,7 @@ extension Mach.Thread {
         /// Sets the exception state of the thread.
         /// - Warning: This does nothing on x86_64. It is only here for API consistency.
         public func setExceptionState(to value: x86_exception_state64_t) throws {
-            try self.setState(.x86Exception64, to: value)
+            try self.set(.x86Exception64, to: value)
         }
     #endif
 

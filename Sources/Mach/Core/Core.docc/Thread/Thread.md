@@ -53,53 +53,9 @@
 
 ### Managing State
 
+- ``Mach/ThreadStateManager``
 - ``Mach/ThreadStateFlavor``
-- ``getState(_:as:)``
-- ``setState(_:to:)``
-
-### Managing General State
-
-- ``generalState``
-- ``setGeneralState(to:)``
-- ``armState32``
-- ``setARMState32(to:)``
-- ``armState64``
-- ``setARMState64(to:)``
-
-### Managing Exception State
-
-- ``exceptionState``
-- ``setExceptionState(to:)``
-- ``armExceptionState32``
-- ``setARMExceptionState32(to:)``
-- ``armExceptionState64``
-- ``setARMExceptionState64(to:)``
-
-### Managing Debug State
-
-- ``debugState``
-- ``setDebugState(to:)``
-- ``armDebugState32``
-- ``setARMDebugState32(to:)``
-- ``armDebugState32Legacy``
-- ``setARMDebugState32Legacy(to:)``
-- ``armDebugState64``
-- ``setARMDebugState64(to:)``
-
-### Managing Other State
-
-- ``armVFPState``
-- ``setARMVFPState(to:)``
-- ``floatState``
-- ``pageInState``
-- ``armPageInState``
-
-### Getting ARM NEON State (macOS 15+, Experimental)
-
-- ``ARMNEONState32``
-- ``ARMNEONState64``
-- ``armNEONState64``
-- ``armNEONState32``
+- ``state``
 
 ### Managing Policy
 
