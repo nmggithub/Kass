@@ -46,9 +46,10 @@ Alternatively, for the ``getSpecialPort(_:as:)`` API can be used. Please the doc
 | ``namePort`` | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | ``setSpecialPort(_:to:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | Managing Policy      |||||
-| ``getPolicy(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``Mach/TaskPolicyManager/get(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
+| ``Mach/TaskPolicyManager/set(_:to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
+| Managing Roles      |||||
 | ``role`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
-| ``setPolicy(_:to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
 | ``setRole(to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
 | Getting Info      |||||
 | ``info``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
@@ -114,23 +115,9 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Managing Policy
 
+- ``Mach/TaskPolicyManager``
 - ``Mach/TaskPolicyFlavor``
-- ``getPolicy(_:as:)``
-- ``setPolicy(_:to:)``
-
-### Managing Specific Policy
-
-- ``categoryPolicy``
-- ``setCategoryPolicy(to:)``
-- ``Mach/TaskSuppressionPolicy``
-- ``suppressionPolicy``
-- ``setSuppressionPolicy(to:)``
-- ``Mach/TaskPolicyState``
-- ``policyState``
-- ``qosPolicy``
-- ``setQoSPolicy(to:)``
-- ``setLatencyQoSPolicy(to:)``
-- ``setThroughputQoSPolicy(to:)``
+- ``policy``
 
 ### Managing Task Roles
 

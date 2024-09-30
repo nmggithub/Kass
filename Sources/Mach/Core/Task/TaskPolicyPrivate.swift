@@ -66,20 +66,20 @@ extension Mach {
     }
 }
 
-extension Mach.Task {
+extension Mach.TaskPolicyManager {
     /// The task's suppression policy.
-    public var suppressionPolicy: Mach.TaskSuppressionPolicy {
-        get throws { try self.getPolicy(.suppression) }
+    public var suppression: Mach.TaskSuppressionPolicy {
+        get throws { try self.get(.suppression) }
     }
 
     /// Set's the task's suppression policy.
-    public func setSuppressionPolicy(to suppressionPolicy: Mach.TaskSuppressionPolicy) throws {
-        try self.setPolicy(.suppression, to: suppressionPolicy)
+    public func setSuppression(to suppressionPolicy: Mach.TaskSuppressionPolicy) throws {
+        try self.set(.suppression, to: suppressionPolicy)
     }
 
     /// The task's policy state.
     /// - Important: Only privileged tasks can get this.
-    public var policyState: Mach.TaskPolicyState {
-        get throws { try self.getPolicy(.state) }
+    public var state: Mach.TaskPolicyState {
+        get throws { try self.get(.state) }
     }
 }

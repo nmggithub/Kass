@@ -98,15 +98,15 @@ extension task_role {
 extension Mach.Task {
     /// The task's role.
     /// - Important: This property is `nil` if the task's role is not recognized.
-    /// - Note: This is a wrapper around getting the ``categoryPolicy``.
+    /// - Note: This is a wrapper around getting the ``Mach/TaskPolicyManager/category`` policy.
     public var role: task_role {
-        get throws { try task_role(rawValue: self.categoryPolicy.role.rawValue) }
+        get throws { try task_role(rawValue: self.policy.category.role.rawValue) }
     }
 
     /// Sets the task's role.
-    /// - Note: This is a wrapper around setting the ``categoryPolicy``.
+    /// - Note: This is a wrapper around setting the ``Mach/TaskPolicyManager/category`` policy.
     public func setRole(to role: task_role) throws {
-        try self.setPolicy(.category, to: task_category_policy(role: role))
+        try self.policy.setCategory(to: task_category_policy(role: role))
     }
 }
 
