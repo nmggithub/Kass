@@ -33,10 +33,10 @@ extension Mach {
     /// A host statistics manager.
     public struct HostStatisticsManager: FlavoredDataGetter {
         /// The host port.
-        internal let port: Mach.Host
+        public let port: Mach.Host
 
         /// The host.
-        private var host: Mach.Host { self.port }
+        internal var host: Mach.Host { self.port }
 
         /// Creates a host statistics manager.
         public init(host: Mach.Host) { self.port = host }

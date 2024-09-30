@@ -93,7 +93,7 @@ extension Mach {
     /// A thread state manager.
     public struct ThreadStateManager: FlavoredDataManager {
         /// The thread port.
-        internal let port: Mach.Thread
+        public let port: Mach.Thread
 
         /// The thread.
         internal var thread: Mach.Thread { self.port }
@@ -102,10 +102,9 @@ extension Mach {
         public init(thread: Mach.Thread) { self.port = thread }
 
         /// Gets the state of the thread.
-        func get<DataType>(_ flavor: Mach.ThreadStateFlavor, as type: DataType.Type = DataType.self)
-            throws
-            -> DataType where DataType: BitwiseCopyable
-        {
+        public func get<DataType>(
+            _ flavor: Mach.ThreadStateFlavor, as type: DataType.Type = DataType.self
+        ) throws -> DataType where DataType: BitwiseCopyable {
             try Mach.callWithCountInOut(type: type) {
                 (array: thread_state_t, count) in
                 thread_get_state(self.thread.name, flavor.rawValue, array, &count)
@@ -113,7 +112,7 @@ extension Mach {
         }
 
         /// Sets the state of the thread.
-        func set<DataType>(_ flavor: Mach.ThreadStateFlavor, to value: DataType) throws
+        public func set<DataType>(_ flavor: Mach.ThreadStateFlavor, to value: DataType) throws
         where DataType: BitwiseCopyable {
             try Mach.callWithCountIn(value: value) {
                 (array: thread_state_t, count) in

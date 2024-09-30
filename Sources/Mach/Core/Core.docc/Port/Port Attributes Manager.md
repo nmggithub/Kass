@@ -34,6 +34,7 @@ The name of the ``Mach/PortAttributeFlavor/deNapReceiver`` attribute seems to in
 ### Creating a Port Attribute Manager
 
 - ``init(port:)``
+- ``port``
 
 ### General Operations
 

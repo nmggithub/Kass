@@ -40,7 +40,7 @@ extension Mach {
     /// A thread policy manager.
     public struct ThreadPolicyManager: FlavoredDataManager {
         /// The thread port.
-        internal let port: Mach.Thread
+        public let port: Mach.Thread
 
         /// The thread.
         internal var thread: Mach.Thread { self.port }

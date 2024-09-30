@@ -88,7 +88,7 @@ extension Mach {
     /// A task info manager.
     public struct TaskInfoManager: FlavoredDataGetter {
         /// The task port.
-        internal let port: Mach.Task
+        public let port: Mach.Task
 
         /// The task.
         internal var task: Mach.Task { self.port }

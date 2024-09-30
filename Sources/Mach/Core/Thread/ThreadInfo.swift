@@ -38,7 +38,7 @@ extension Mach {
     /// A thread info manager.
     public struct ThreadInfoManager: FlavoredDataGetter {
         /// The thread port.
-        internal let port: Mach.Thread
+        public let port: Mach.Thread
 
         /// The thread.
         internal var thread: Mach.Thread { self.port }
@@ -47,10 +47,9 @@ extension Mach {
         public init(thread: Mach.Thread) { self.port = thread }
 
         /// Gets the thread's info.
-        func get<DataType>(_ flavor: Mach.ThreadInfoFlavor, as type: DataType.Type = DataType.self)
-            throws
-            -> DataType
-        where DataType: BitwiseCopyable {
+        public func get<DataType>(
+            _ flavor: Mach.ThreadInfoFlavor, as type: DataType.Type = DataType.self
+        ) throws -> DataType where DataType: BitwiseCopyable {
             try Mach.callWithCountInOut(type: type) {
                 (array: thread_info_t, count) in
                 thread_info(self.thread.name, flavor.rawValue, array, &count)

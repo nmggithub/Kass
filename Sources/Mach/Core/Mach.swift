@@ -118,9 +118,9 @@ extension Mach {
 
 extension Mach {
     /// A structure representing an enumeration of options.
-    internal protocol OptionEnum: RawRepresentable, Equatable, Sendable
+    public protocol OptionEnum: RawRepresentable, Equatable, Sendable
     where RawValue: BinaryInteger {}
     /// A structure representing an enumeration of flags.
-    internal protocol FlagEnum: RawRepresentable, Hashable, Sendable
+    public protocol FlagEnum: RawRepresentable, Hashable, Sendable
     where RawValue: BinaryInteger {}
 }

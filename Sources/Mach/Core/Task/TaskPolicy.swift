@@ -42,7 +42,7 @@ extension Mach {
     /// A task policy manager.
     public struct TaskPolicyManager: FlavoredDataManager {
         /// The task port.
-        let port: Mach.Task
+        public let port: Mach.Task
 
         /// The task.
         internal var task: Mach.Task { self.port }

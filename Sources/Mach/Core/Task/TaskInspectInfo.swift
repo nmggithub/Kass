@@ -10,7 +10,7 @@ extension Mach {
     /// A task inspect info manager.
     public struct TaskInspectInfoManager: FlavoredDataGetter {
         /// The task port.
-        internal let port: Task
+        public let port: Task
 
         /// The task.
         internal var task: Task { self.port }

@@ -27,9 +27,13 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Processor``
 - ``Mach/ProcessorSet``
 
-### Calling The Kernel
+### Calling the Kernel
 
 - ``Mach/call(_:)``
+
+### Submodules
+
+- <doc:Protocols>
 
 ### Licenses
 

@@ -1,17 +1,17 @@
 extension Mach {
     /// A data operator that operates on flavored data for a port.
-    internal protocol PortDataOperator {
-        associatedtype ParentPort: Mach.Port
-        var port: ParentPort { get }
+    public protocol PortDataOperator {
+        /// The target port type.
+        associatedtype TargetPort: Mach.Port
+
+        /// The port.
+        var port: TargetPort { get }
     }
 
     /// A data operator that can get flavored data for a port.
-    internal protocol FlavoredDataGetter: PortDataOperator {
+    public protocol FlavoredDataGetter: PortDataOperator {
         /// The flavor type.
         associatedtype Flavor: OptionEnum
-
-        /// The port.
-        var port: ParentPort { get }
 
         /// Gets flavored data for the port.
         func get<DataType: BitwiseCopyable>(_ flavor: Flavor, as type: DataType.Type)
@@ -19,12 +19,9 @@ extension Mach {
     }
 
     /// A data operator that can set flavored data for a port.
-    internal protocol FlavoredDataSetter: PortDataOperator {
+    public protocol FlavoredDataSetter: PortDataOperator {
         /// The flavor type.
         associatedtype Flavor: OptionEnum
-
-        /// The port.
-        var port: ParentPort { get }
 
         /// Sets flavored data for the port.
         func set<DataType: BitwiseCopyable>(_ flavor: Flavor, to value: DataType)
@@ -32,5 +29,5 @@ extension Mach {
     }
 
     /// A data operator that can get and set flavored data for a port.
-    internal protocol FlavoredDataManager: FlavoredDataGetter, FlavoredDataSetter {}
+    public protocol FlavoredDataManager: FlavoredDataGetter, FlavoredDataSetter {}
 }

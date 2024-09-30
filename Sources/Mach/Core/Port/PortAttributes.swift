@@ -50,9 +50,11 @@ extension Mach {
     /// A port attribute manager.
     public struct PortAttributeManager: FlavoredDataManager {
         /// The port.
-        internal let port: Mach.Port
+        public let port: Mach.Port
+
         /// Creates a port attribute manager.
         public init(port: Mach.Port) { self.port = port }
+
         /// Gets the value of a port attribute.
         public func get<DataType>(
             _ flavor: PortAttributeFlavor, as type: DataType.Type = DataType.self
