@@ -18,14 +18,16 @@ extension Mach {
         /// CPU load statistics for a host.
         public static let cpuLoad = Self(rawValue: HOST_CPU_LOAD_INFO)
 
-        /// virtual memory statistics for a host (64-bit).
-        public static let vm64 = Self(rawValue: HOST_VM_INFO64)
+        #if arch(arm64) || arch(x86_64)
+            /// virtual memory statistics for a host (64-bit).
+            public static let vm64 = Self(rawValue: HOST_VM_INFO64)
 
-        /// External modification statistics for a host.
-        public static let extMod = Self(rawValue: HOST_EXTMOD_INFO64)
+            /// External modification statistics for a host.
+            public static let extMod = Self(rawValue: HOST_EXTMOD_INFO64)
 
-        /// Power usage statistics for expired tasks on a host.
-        public static let expiredTasks = Self(rawValue: HOST_EXPIRED_TASK_INFO)
+            /// Power usage statistics for expired tasks on a host.
+            public static let expiredTasks = Self(rawValue: HOST_EXPIRED_TASK_INFO)
+        #endif
     }
 
     /// A host statistics manager.
@@ -48,9 +50,16 @@ extension Mach {
                 switch flavor {
                 case .load, .vm, .cpuLoad, .expiredTasks:
                     host_statistics(self.host.name, flavor.rawValue, array, &count)
-                case .vm64, .extMod:
-                    host_statistics64(self.host.name, flavor.rawValue, array, &count)
-                default: fatalError("Unsupported host statistics flavor.")
+                #if arch(arm64) || arch(x86_64)
+                    case .vm64, .extMod:
+                        host_statistics64(self.host.name, flavor.rawValue, array, &count)
+                #endif
+                default:
+                    #if arch(arm64) || arch(x86_64)
+                        host_statistics64(self.host.name, flavor.rawValue, array, &count)
+                    #else
+                        host_statistics(self.host.name, flavor.rawValue, array, &count)
+                    #endif
                 }
             }
         }
