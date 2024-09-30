@@ -18,9 +18,10 @@ The ``Mach/call(_:)`` function does not handle error return codes and will inste
 
 The reason this function is called "call" and not "syscall" is that the vast majority of kernel calls in Mach are **not** system calls. More specifically, they do not interface with the CPU to enter "kernel mode", at least not directly. Instead, they send **Mach messages** to the kernel. When the kernel receives such a message, it will execute the requested call and return the result in a reply message.
 
-Technically, the functions these calls use to send the messages do eventually make a system call through what is called a **Mach trap**. However, the underlying Mach trap is conceptually different enough from the kernel calls that utilize it that the latter are better described as "kernel calls" instead of "system calls".
+Due to this additional factor, these kernel calls can sometimes return an error code from an extended set of messaging return codes. This usually happens if something goes wrong in the messaging layer. These codes are not representable with [MachError](https://developer.apple.com/documentation/foundation/macherror), so this is a case where the library will throw an [NSError](https://developer.apple.com/documentation/foundation/nserror) instead. Again, both of these cases should be accounted for to ensure safe usage of these kernel calls.
 
-Anyway, due to this additional factor, these kernel calls can sometimes return an error code from an extended set of messaging return codes. This can happen if something goes wrong in the messaging layer. These codes are not representable with [MachError](https://developer.apple.com/documentation/foundation/macherror), so this is a case where an [NSError](https://developer.apple.com/documentation/foundation/nserror) will be thrown instead.
+Technically, the functions these calls use to send the messages *do* eventually make a system call through what is called a **Mach trap**. However, the underlying Mach trap is conceptually different enough from the kernel calls that utilize it that the latter are better described as "kernel calls" instead of "system calls". The execution only drops into kernel mode to send the message, not to directly execute the code of the requested kernel call.
+
 
 ## Advanced Kernel Calls
 
