@@ -100,24 +100,17 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``suspend2()``
 - ``resume2(token:)``
 
-### Thread Management
+### Getting Info
 
-- ``threads``
-- ``getDefaultThreadState(_:as:)``
-- ``setDefaultThreadState(_:to:)``
-- ``clearDefaultThreadState()``
+- ``Mach/TaskInfoManager``
+- ``Mach/TaskInfoFlavor``
+- ``info``
 
 ### Inspecting Ports
 
 - ``Mach/TaskInspectInfoManager``
 - ``Darwin/task_inspect_flavor``
 - ``inspectInfo``
-
-### Getting Info
-
-- ``Mach/TaskInfoManager``
-- ``Mach/TaskInfoFlavor``
-- ``info``
 
 ### Managing Policy
 
@@ -169,6 +162,13 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``Mach/TaskCorpse``
 - ``generateCorpse()``
+
+### Thread Management
+
+- ``threads``
+- ``getDefaultThreadState(_:as:)``
+- ``setDefaultThreadState(_:to:)``
+- ``clearDefaultThreadState()``
 
 ### Managing Memory Limits
 
