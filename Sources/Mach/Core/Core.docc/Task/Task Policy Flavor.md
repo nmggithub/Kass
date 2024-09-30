@@ -8,10 +8,10 @@
 
 ### Flavors
 
--- ``baseQoS``
--- ``category``
--- ``latencyQoS``
--- ``overrideQoS``
--- ``state``
--- ``suppression``
--- ``throughputQoS``
+- ``category``
+- ``suppression``
+- ``state``
+- ``baseQoS``
+- ``overrideQoS``
+- ``latencyQoS``
+- ``throughputQoS``
