@@ -1,20 +1,4 @@
 extension Mach {
-    /// An option enumeration of data flavors.
-    internal protocol FlavorOptionEnum: OptionEnum {
-        /// The data operator type for the flavor enumeration.
-        associatedtype ParentDataOperator: PortDataOperator
-
-        /// Gets flavored data for a port.
-        func get<DataType: BitwiseCopyable>(
-            as type: DataType.Type, for port: ParentDataOperator.ParentPort
-        ) throws -> DataType
-
-        /// Sets flavored data for a port.
-        func set<DataType: BitwiseCopyable>(
-            to value: DataType, for port: ParentDataOperator.ParentPort
-        ) throws
-    }
-
     /// A data operator that operates on flavored data for a port.
     internal protocol PortDataOperator {
         associatedtype ParentPort: Mach.Port

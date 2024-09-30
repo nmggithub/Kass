@@ -143,23 +143,3 @@ extension Mach.PortAttributeManager {
         try self.assert(.guardInfo, is: guardInfo)
     }
 }
-
-extension Mach.PortAttributeFlavor: Mach.FlavorOptionEnum {
-    internal typealias ParentDataOperator = Mach.PortAttributeManager
-
-    /// Gets the value of the attribute.
-    public func get<DataType: BitwiseCopyable>(
-        as type: DataType.Type = DataType.self, for port: Mach.Port
-    ) throws -> DataType { try port.attributes.get(self, as: type) }
-
-    /// Sets the value of the attribute.
-    public func set<DataType: BitwiseCopyable>(
-        to value: DataType, for port: Mach.Port
-    ) throws { try port.attributes.set(self, to: value) }
-
-    /// Asserts the value of the attribute.
-    @available(macOS, introduced: 12.0.1)
-    public func assert<DataType: BitwiseCopyable>(
-        is value: DataType, for port: Mach.Port
-    ) throws { try port.attributes.assert(self, is: value) }
-}

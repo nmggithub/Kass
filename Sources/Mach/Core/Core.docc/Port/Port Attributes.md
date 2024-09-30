@@ -2,11 +2,11 @@
 
 There are three operations that can be performed on port attributes: **get**, **set**, and **assert***.
 
-These operations can be performed either from a ``Mach/PortAttributeManager`` (such as the ``Mach/Port/attributes`` property on a given port), or from a ``Mach/PortAttributeFlavor``. However, not every attribute supports every operation.
+However, not every attribute supports every operation.
 
 ## Attribute-Operation Support Table
 
-| Attribute | ``get(as:for:)``/ ``Mach/PortAttributeManager/get(_:as:)`` | ``set(to:for:)`` /  ``Mach/PortAttributeManager/set(_:to:)`` | ``assert(is:for:)``* / ``Mach/PortAttributeManager/assert(_:is:)``* |
+| Attribute | ``Mach/PortAttributeManager/get(_:as:)`` | ``Mach/PortAttributeManager/set(_:to:)`` | ``Mach/PortAttributeManager/assert(_:is:)``* |
 | --- | --- | --- | --- | 
 ``limits`` | ✅ Yes (``Mach/PortAttributeManager/limits``) | ✅ Yes (``Mach/PortAttributeManager/setLimits(to:)``) | ❌ No |
 ``status`` | ✅ Yes (``Mach/PortAttributeManager/status``) | ❌ No | ❌ No |
@@ -47,9 +47,3 @@ The name of the ``deNapReceiver`` attribute seems to indicate that it is related
 - ``deNapReceiver``
 - ``throttled``
 - ``guardInfo``
-
-### Operations
-
-- ``get(as:for:)``
-- ``set(to:for:)``
-- ``assert(is:for:)``
