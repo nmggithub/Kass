@@ -4,8 +4,10 @@ extension Mach {
     /// A flavor of port attribute.
     /// - Important: Attributes are only supported on receive rights.
     public struct PortAttributeFlavor: OptionEnum {
-
+        /// The raw port attribute flavor value.
         public let rawValue: mach_port_flavor_t
+
+        /// Represents a raw port attribute flavor value.
         public init(rawValue: mach_port_flavor_t) { self.rawValue = rawValue }
 
         /// The limits of the port.
@@ -38,116 +40,126 @@ extension Mach {
 
         /// The guard value.
         /// - Important: This attribute can only be asserted, not gotten or set.
-        public static let `guard` = Self(rawValue: MACH_PORT_GUARD_INFO)
+        public static let guardInfo = Self(rawValue: MACH_PORT_GUARD_INFO)
 
         /// Whether the service is throttled.
         /// - Important: This attribute is only supported on service ports.
         public static let throttled = Self(rawValue: MACH_PORT_SERVICE_THROTTLED)
     }
+
+    /// A port attribute manager.
+    public struct PortAttributeManager: FlavoredDataManager {
+        /// The port.
+        internal let port: Mach.Port
+        /// Creates a port attribute manager.
+        public init(port: Mach.Port) { self.port = port }
+        /// Gets the value of a port attribute.
+        public func get<DataType>(
+            _ flavor: PortAttributeFlavor, as type: DataType.Type = DataType.self
+        ) throws -> DataType where DataType: BitwiseCopyable {
+            try Mach.callWithCountInOut(type: type) {
+                (array: mach_port_info_t, count) in
+                mach_port_get_attributes(
+                    port.owningTask.name, port.name, flavor.rawValue, array, &count
+                )
+            }
+        }
+
+        /// Sets the value of a port attribute.
+        public func set<DataType>(_ flavor: PortAttributeFlavor, to value: DataType) throws
+        where DataType: BitwiseCopyable {
+            try Mach.callWithCountIn(value: value) {
+                (array: mach_port_info_t, count) in
+                mach_port_set_attributes(
+                    port.owningTask.name, port.name, flavor.rawValue, array, count
+                )
+            }
+        }
+
+        /// Asserts the value of a port attribute.
+        @available(macOS, introduced: 12.0.1)
+        public func assert<DataType: BitwiseCopyable>(
+            _ flavor: Mach.PortAttributeFlavor, is value: DataType
+        ) throws {
+            try Mach.callWithCountIn(value: value) {
+                (array: mach_port_info_t, count) in
+                mach_port_assert_attributes(
+                    self.port.owningTask.name, self.port.name, flavor.rawValue, array, count
+                )
+            }
+        }
+    }
 }
 
 extension Mach.Port {
-
-    /// Gets the value of a port attribute.
-    public func getAttribute<DataType: BitwiseCopyable>(
-        _ flavor: Mach.PortAttributeFlavor, as type: DataType.Type = DataType.self
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: mach_port_info_t, count) in
-            mach_port_get_attributes(
-                self.owningTask.name, self.name, flavor.rawValue, array, &count
-            )
-        }
-    }
-
-    /// Sets the value of a port attribute.
-    public func setAttribute<DataType: BitwiseCopyable>(
-        _ flavor: Mach.PortAttributeFlavor, to value: DataType
-    ) throws {
-        try Mach.callWithCountIn(value: value) {
-            (array: mach_port_info_t, count) in
-            mach_port_set_attributes(
-                self.owningTask.name, self.name, flavor.rawValue, array, count
-            )
-        }
-    }
-
-    /// Asserts the value of a port attribute.
-    @available(macOS, introduced: 12.0.1)
-    public func assertAttribute<DataType: BitwiseCopyable>(
-        _ flavor: Mach.PortAttributeFlavor, is value: DataType
-    ) throws {
-        try Mach.callWithCountIn(value: value) {
-            (array: mach_port_info_t, count) in
-            mach_port_assert_attributes(
-                self.owningTask.name, self.name, flavor.rawValue, array, count
-            )
-        }
-    }
+    /// The attributes of the port.
+    public var attributes: Mach.PortAttributeManager { .init(port: self) }
 }
 
-extension Mach.Port {
+extension Mach.PortAttributeManager {
     /// The limits of the port.
-    public var limits: mach_port_limits_t { get throws { try self.getAttribute(.limits) } }
+    public var limits: mach_port_limits_t { get throws { try self.get(.limits) } }
 
     /// Sets the limits of the port.
     public func setLimits(to value: mach_port_limits_t) throws {
-        try self.setAttribute(.limits, to: value)
+        try self.set(.limits, to: value)
     }
 
     /// The status of the port.
-    public var status: mach_port_status_t { get throws { try self.getAttribute(.status) } }
+    public var status: mach_port_status_t { get throws { try self.get(.status) } }
 
     /// The count of requests in the port's request table.
     public var requestTableCount: UInt32 {
-        get throws { try self.getAttribute(.requestTableCount) }
+        get throws { try self.get(.requestTableCount) }
     }
 
     /// Sets the count of requests in the port's request table.
     @available(macOS, deprecated: 13.0, message: "Setting this attribute has no effect.")
     public func setRequestTableCount(to value: UInt32) throws {
-        try self.setAttribute(.requestTableCount, to: value)
+        try self.set(.requestTableCount, to: value)
     }
 
     /// Indicates that the receive right will be given to another task.
-    public func setWillChangeOwner() throws { try self.setAttribute(.tempOwner, to: ()) }
+    public func setWillChangeOwner() throws { try self.set(.tempOwner, to: ()) }
 
     /// Indicates that the receive right is an importance receiver.
     /// - Important: Setting this attribute does the same as setting the De-Nap receiver attribute.
     public func setIsImportanceReceiver() throws {
-        try self.setAttribute(.importanceReceiver, to: ())
+        try self.set(.importanceReceiver, to: ())
     }
 
     /// Indicates that the receive right is a De-Nap receiver.
     /// - Important: Setting this attribute does the same as setting the importance receiver attribute.
     @available(macOS, deprecated, message: "Set the importance receiver attribute instead.")
-    public func setIsDeNapReceiver() throws { try self.setAttribute(.deNapReceiver, to: ()) }
+    public func setIsDeNapReceiver() throws { try self.set(.deNapReceiver, to: ()) }
 
     /// Information about the port.
-    public var info: mach_port_info_ext_t { get throws { try self.getAttribute(.info) } }
+    public var info: mach_port_info_ext_t { get throws { try self.get(.info) } }
 
     /// Asserts the port's guard value.
     /// - Warning: This will kill the task if the guard value is not as expected.
     @available(macOS, introduced: 12.0.1)
-    public func assertGuard(is guard: UInt64) throws {
-        try self.assertAttribute(.guard, is: mach_port_guard_info_t(mpgi_guard: `guard`))
+    public func assertGuard(is guardInfo: mach_port_guard_info_t) throws {
+        try self.assert(.guardInfo, is: guardInfo)
     }
 }
 
-extension Mach.PortAttributeFlavor {
+extension Mach.PortAttributeFlavor: Mach.FlavorOptionEnum {
+    internal typealias ParentDataOperator = Mach.PortAttributeManager
+
     /// Gets the value of the attribute.
     public func get<DataType: BitwiseCopyable>(
         as type: DataType.Type = DataType.self, for port: Mach.Port
-    ) throws -> DataType { try port.getAttribute(self, as: type) }
+    ) throws -> DataType { try port.attributes.get(self, as: type) }
 
     /// Sets the value of the attribute.
     public func set<DataType: BitwiseCopyable>(
         to value: DataType, for port: Mach.Port
-    ) throws { try port.setAttribute(self, to: value) }
+    ) throws { try port.attributes.set(self, to: value) }
 
     /// Asserts the value of the attribute.
     @available(macOS, introduced: 12.0.1)
     public func assert<DataType: BitwiseCopyable>(
         is value: DataType, for port: Mach.Port
-    ) throws { try port.assertAttribute(self, is: value) }
+    ) throws { try port.attributes.assert(self, is: value) }
 }

@@ -64,10 +64,9 @@
 ### Managing Attributes
 
 - ``Mach/PortAttributeFlavor``
-- ``getAttribute(_:as:)``
-- ``setAttribute(_:to:)``
-- ``assertAttribute(_:is:)``
-- ``limits``
+- ``Mach/PortAttributeManager``
+- ``attributes``
+<!-- - ``limits``
 - ``setLimits(to:)``
 - ``status``
 - ``requestTableCount``
@@ -76,7 +75,7 @@
 - ``setIsImportanceReceiver()``
 - ``setIsDeNapReceiver()``
 - ``info``
-- ``assertGuard(is:)``
+- ``assertGuard(is:)`` -->
 
 ### Guarding Ports
 

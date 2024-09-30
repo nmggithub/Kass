@@ -29,12 +29,12 @@ extension Mach {
 
         /// If the service port is throttled.
         public var isThrottled: Bool {
-            get throws { try self.getAttribute(.throttled, as: boolean_t.self) == 1 }
+            get throws { try self.attributes.get(.throttled, as: boolean_t.self) == 1 }
         }
 
         /// Sets the service port throttling status.
         public func setIsThrottled(to value: Bool) throws {
-            try self.setAttribute(.throttled, to: value ? 1 : 0)
+            try self.attributes.set(.throttled, to: value ? 1 : 0)
         }
     }
 }
