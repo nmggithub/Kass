@@ -83,66 +83,56 @@ extension Mach {
     }
 }
 
-extension Mach.Thread {
-    /// Gets the thread's policy using a raw policy flavor.
-    fileprivate func getPolicy<DataType: BitwiseCopyable>(
-        _ policy: thread_policy_flavor_t, as type: DataType.Type = DataType.self
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: thread_policy_t, count) in
-            var dontGetDefault = boolean_t(0)
-            return thread_policy_get(self.name, policy, array, &count, &dontGetDefault)
-        }
-    }
+extension Mach.ThreadPolicyFlavor {
+    /// A thread's policy state.
+    public static let state = Self(rawValue: THREAD_POLICY_STATE)
 
-    /// Sets the thread's policy using a raw policy flavor.
-    fileprivate func setPolicy<DataType: BitwiseCopyable>(
-        _ policy: thread_policy_flavor_t, to value: DataType
-    ) throws {
-        try Mach.callWithCountIn(value: value) {
-            (array: thread_policy_t, count) in
-            thread_policy_set(self.name, policy, array, count)
-        }
-    }
+    /// A thread's QoS policy.
+    public static let qos = Self(rawValue: THREAD_QOS_POLICY)
+
+    /// A thread's time constraint policy (with a priority field).
+    public static let timeConstraintWithPriority = Self(
+        rawValue: THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY
+    )
+
+    /// A thread's requested QoS policy.
+    public static let requestedState = Self(rawValue: THREAD_REQUESTED_STATE_POLICY)
 }
 
-extension Mach.Thread {
+extension Mach.ThreadPolicyManager {
     /// The thread's policy state.
     /// - Warning: This uses a private policy flavor. Use with caution.
     public var policyState: Mach.ThreadPolicyState {
-        get throws { try self.getPolicy(THREAD_POLICY_STATE) }
+        get throws { try self.get(.state) }
     }
 
     /// The thread's QoS policy.
     /// - Warning: This uses a private policy flavor. Use with caution.
     public var qosPolicy: Mach.ThreadQoSPolicy {
-        get throws { try self.getPolicy(THREAD_QOS_POLICY) }
+        get throws { try self.get(.qos) }
     }
 
     /// Sets the thread's QoS policy.
     /// - Warning: This uses a private policy flavor. Use with caution.
     public func setQoSPolicy(
         to qosPolicy: Mach.ThreadQoSPolicy
-    ) throws { try self.setPolicy(THREAD_QOS_POLICY, to: qosPolicy) }
+    ) throws { try self.set(.qos, to: qosPolicy) }
 
     /// The thread's time constraint policy (with a priority field).
     /// - Warning: This uses a private policy flavor. Use with caution.
     public var timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy {
-        get throws { try self.getPolicy(THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY) }
+        get throws { try self.get(.timeConstraintWithPriority) }
     }
 
     /// Sets the thread's time constraint policy (with a priority field).
     /// - Warning: This uses a private policy flavor. Use with caution.
     public func setTimeConstraintWithPriorityPolicy(
         to timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy
-    ) throws {
-        try self.setPolicy(
-            THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY, to: timeConstraintWithPriorityPolicy)
-    }
+    ) throws { try self.set(.timeConstraintWithPriority, to: timeConstraintWithPriorityPolicy) }
 
     /// The thread's requested QoS policy.
     /// - Warning: This uses a private policy flavor. Use with caution.
     public var requestedQoSPolicy: Mach.ThreadRequestedQoSPolicy {
-        get throws { try self.getPolicy(THREAD_REQUESTED_STATE_POLICY) }
+        get throws { try self.get(.requestedState) }
     }
 }
