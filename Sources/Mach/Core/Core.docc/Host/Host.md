@@ -27,14 +27,14 @@
 
 ### Getting Info
 
-- ``Mach/HostInfoFlavor``
 - ``Mach/HostInfoManager``
+- ``Mach/HostInfoFlavor``
 - ``info``
 
 ### Getting Statistics
 
-- ``Mach/HostStatisticsFlavor``
 - ``Mach/HostStatisticsManager``
+- ``Mach/HostStatisticsFlavor``
 - ``statistics``
 
 ### Making Kext Requests
