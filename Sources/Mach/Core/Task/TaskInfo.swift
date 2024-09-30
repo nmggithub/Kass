@@ -81,72 +81,87 @@ extension Mach {
         /// The task's flags.
         public static let flags = Self(rawValue: task_flavor_t(TASK_FLAGS_INFO))
     }
-}
 
-extension Mach.Task {
-    /// Gets the task's info.
-    public func getInfo<DataType: BitwiseCopyable>(
-        _ flavor: Mach.TaskInfoFlavor, as type: DataType.Type = DataType.self
-    ) throws -> DataType {
-        try Mach.callWithCountInOut(type: type) {
-            (array: task_info_t, count) in
-            task_info(self.name, flavor.rawValue, array, &count)
+    /// A task info manager.
+    public struct TaskInfoManager: FlavoredDataGetter {
+        /// The task port.
+        let port: Mach.Task
+
+        /// The task.
+        internal var task: Mach.Task { self.port }
+
+        /// Creates a task info manager.
+        public init(task: Mach.Task) { self.port = task }
+
+        /// Gets the task's info.
+        public func get<DataType: BitwiseCopyable>(
+            _ flavor: Mach.TaskInfoFlavor, as type: DataType.Type = DataType.self
+        ) throws -> DataType {
+            try Mach.callWithCountInOut(type: type) {
+                (array: task_info_t, count) in
+                task_info(self.port.name, flavor.rawValue, array, &count)
+            }
         }
     }
 }
 
 extension Mach.Task {
+    /// The task's info.
+    public var info: Mach.TaskInfoManager { .init(task: self) }
+}
+
+extension Mach.TaskInfoManager {
     /// Basic information about the task.
     @available(macOS, deprecated: 10.8, message: "Use `basicInfo` instead.")
     public var basicInfo32: task_basic_info_32 {
-        get throws { try self.getInfo(.basic32) }
+        get throws { try self.get(.basic32) }
     }
 
     /// Like ``basicInfo32``, but with the maximum resident size instead of the current size.
     @available(macOS, deprecated: 10.8, message: "Use `basicInfo` instead.")
     public var basic2Info32: task_basic_info_32 {
-        get throws { try self.getInfo(.basic2_32) }
+        get throws { try self.get(.basic2_32) }
     }
 
     /// Basic information about the task (64-bit compatible, older version).
     @available(macOS, deprecated: 10.8, message: "Use `basicInfo` instead.")
     public var basicInfo64: task_basic_info_64 {
-        get throws { try self.getInfo(.basic64) }
+        get throws { try self.get(.basic64) }
     }
 
     /// Counts of specific events on the task.
     public var eventCounts: task_events_info {
-        get throws { try self.getInfo(.events) }
+        get throws { try self.get(.events) }
     }
 
     /// Total thread run times for the task.
     public var threadTimes: task_thread_times_info {
-        get throws { try self.getInfo(.threadTimes) }
+        get throws { try self.get(.threadTimes) }
     }
 
     /// Absolute times for the task.
     public var absoluteTimes: task_absolutetime_info {
-        get throws { try self.getInfo(.absoluteTimes) }
+        get throws { try self.get(.absoluteTimes) }
     }
 
     /// Kernel memory information for the task.
     public var kernelMemoryInfo: task_kernelmemory_info {
-        get throws { try self.getInfo(.kernelMemory) }
+        get throws { try self.get(.kernelMemory) }
     }
 
     /// The task's security token.
     public var securityToken: security_token_t {
-        get throws { try self.getInfo(.securityToken) }
+        get throws { try self.get(.securityToken) }
     }
 
     /// The task's audit token.
     public var auditToken: audit_token_t {
-        get throws { try self.getInfo(.auditToken) }
+        get throws { try self.get(.auditToken) }
     }
 
     /// The task's affinity tag information.
     public var affinityTagInfo: task_affinity_tag_info {
-        get throws { try self.getInfo(.affinityTag) }
+        get throws { try self.get(.affinityTag) }
     }
 
     #if arch(arm) || arch(arm64)
@@ -159,39 +174,39 @@ extension Mach.Task {
         /// - Important: This is only available on the ARM architecture.
         @available(macOS, introduced: 10.13, deprecated: 10.13, message: "Use `basicInfo` instead.")
         public var basicInfo64_2: task_basic_info_64_2 {
-            get throws { try self.getInfo(.basic64_2) }
+            get throws { try self.get(.basic64_2) }
         }
 
     #endif
 
     /// Information about external modifications to the task.
     public var extmodInfo: task_extmod_info {
-        get throws { try self.getInfo(.extmod) }
+        get throws { try self.get(.extmod) }
     }
 
     /// Basic information about the task.
     public var basicInfo: mach_task_basic_info {
-        get throws { try self.getInfo(.basic) }
+        get throws { try self.get(.basic) }
     }
 
     /// Information about the task's power usage.
     public var powerInfo: task_power_info {
-        get throws { try self.getInfo(.power) }
+        get throws { try self.get(.power) }
     }
 
     /// Information about the task's power usage (newer version).
     public var powerInfoV2: task_power_info_v2 {
-        get throws { try self.getInfo(.powerV2) }
+        get throws { try self.get(.powerV2) }
     }
 
     /// Information about the task's virtual memory usage.
     public var vmInfo: task_vm_info {
-        get throws { try self.getInfo(.vm) }
+        get throws { try self.get(.vm) }
     }
 
     /// Information about the task's virtual memory usage, including purgeable memory.
     public var vmPurgeableInfo: task_vm_info {
-        get throws { try self.getInfo(.vmPurgeable) }
+        get throws { try self.get(.vmPurgeable) }
     }
 
     /// Time values for how long threads in the task have been in wait states.
@@ -199,18 +214,11 @@ extension Mach.Task {
     /// deprecated and may not be accurate. However, it's still available to this day.
     @available(macOS, introduced: 10.10, deprecated: 10.10, message: "May not be accurate.")
     public var waitTimes: task_wait_state_info {
-        get throws { try self.getInfo(.waitTimes) }
+        get throws { try self.get(.waitTimes) }
     }
 
     /// The task's flags.
     public var flags: task_flags_info {
-        get throws { try self.getInfo(.flags) }
+        get throws { try self.get(.flags) }
     }
-}
-
-extension Mach.TaskInfoFlavor {
-    /// Gets the information for a given task.
-    public func get<DataType: BitwiseCopyable>(
-        as type: DataType.Type = DataType.self, for task: Mach.Task
-    ) throws -> DataType { try task.getInfo(self) }
 }

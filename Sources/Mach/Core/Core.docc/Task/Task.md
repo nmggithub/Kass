@@ -51,8 +51,8 @@ Alternatively, for the ``getSpecialPort(_:as:)`` API can be used. Please the doc
 | ``setPolicy(_:to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
 | ``setRole(to:)`` | ✅ Yes |  ❌ No | ❌ No | ❌ No |
 | Getting Info      |||||
-| ``getInfo(_:as:)``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| ``dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
+| ``info``* (see below) | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| ``Mach/TaskInfoManager/dyldInfo`` | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Other Functionality      |||||
 | ``stashedPorts`` / ``stashPorts(_:)`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
 | ``inspect(_:as:)`` | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No |
@@ -115,7 +115,9 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 ### Getting Info
 
-- ``getInfo(_:as:)``
+- ``Mach/TaskInfoManager``
+- ``Mach/TaskInfoFlavor``
+- ``info``
 
 ### Managing Policy
 

@@ -1,27 +1,35 @@
-# ``Mach/Task/getInfo(_:as:)``
+# ``Mach/TaskInfoManager``
 
 ## Topics
+
+### Creating a Task Info Manager
+
+- ``init(task:)``
+
+### General Operations
+
+ - ``get(_:as:)``
 
 ### Getting Specific Info
 
 - ``Mach/TaskInfoFlavor``
-- ``Mach/Task/basicInfo32``
-- ``Mach/Task/basic2Info32``
-- ``Mach/Task/basicInfo64``
-- ``Mach/Task/eventCounts``
-- ``Mach/Task/threadTimes``
-- ``Mach/Task/absoluteTimes``
-- ``Mach/Task/kernelMemoryInfo``
-- ``Mach/Task/securityToken``
-- ``Mach/Task/auditToken``
-- ``Mach/Task/affinityTagInfo``
-- ``Mach/Task/dyldInfo``
-- ``Mach/Task/basicInfo64_2``
-- ``Mach/Task/extmodInfo``
-- ``Mach/Task/basicInfo``
-- ``Mach/Task/powerInfo``
-- ``Mach/Task/powerInfoV2``
-- ``Mach/Task/vmInfo``
-- ``Mach/Task/vmPurgeableInfo``
-- ``Mach/Task/waitTimes``
-- ``Mach/Task/flags``
+- ``basicInfo32``
+- ``basic2Info32``
+- ``basicInfo64``
+- ``eventCounts``
+- ``threadTimes``
+- ``absoluteTimes``
+- ``kernelMemoryInfo``
+- ``securityToken``
+- ``auditToken``
+- ``affinityTagInfo``
+- ``dyldInfo``
+- ``basicInfo64_2``
+- ``extmodInfo``
+- ``basicInfo``
+- ``powerInfo``
+- ``powerInfoV2``
+- ``vmInfo``
+- ``vmPurgeableInfo``
+- ``waitTimes``
+- ``flags``

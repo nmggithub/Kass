@@ -71,11 +71,11 @@ extension dyld_all_image_infos {  // Note: The availability constraints are base
 
 }
 
-extension Mach.Task {
+extension Mach.TaskInfoManager {
     /// Information about `dyld` images in the task.
     public var dyldInfo: dyld_all_image_infos {
         get throws {
-            let dyldInfo: task_dyld_info = try self.getInfo(.dyld)
+            let dyldInfo: task_dyld_info = try self.get(.dyld)
             guard let infoPointer = UnsafeRawPointer(bitPattern: UInt(dyldInfo.all_image_info_addr))
             else { fatalError("`task_info` returned a null pointer for the `dyld` info.") }
             guard MemoryLayout<dyld_all_image_infos>.size >= dyldInfo.all_image_info_size

@@ -3,7 +3,10 @@ import Darwin.Mach
 extension Mach {
     /// A flavor of processor info.
     public struct ProcessorInfoFlavor: OptionEnum {
+        /// The raw value of the flavor.
         public let rawValue: processor_flavor_t
+
+        /// Represents a raw processor info flavor.
         public init(rawValue: processor_flavor_t) { self.rawValue = rawValue }
 
         /// Basic information about a processor.

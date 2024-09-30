@@ -1,4 +1,4 @@
-# ``Mach/Task/basicInfo64_2``
+# ``Mach/TaskInfoManager/basicInfo64_2``
 
 @DeprecationSummary {
     Use ``basicInfo`` instead.
