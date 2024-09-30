@@ -6,7 +6,7 @@ extension Mach {
         /// The raw value of the flavor.
         public let rawValue: task_policy_flavor_t
 
-        /// Represents a raw flavor of task policy.
+        /// Represents a raw task policy flavor.
         public init(rawValue: task_policy_flavor_t) { self.rawValue = rawValue }
 
         /// A task's category policy.
