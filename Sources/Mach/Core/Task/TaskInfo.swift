@@ -3,7 +3,10 @@ import Darwin.Mach
 extension Mach {
     /// A flavor of task info.
     public struct TaskInfoFlavor: OptionEnum {
+        /// The raw value of the flavor.
         public let rawValue: task_flavor_t
+
+        /// Represents a raw task info flavor.
         public init(rawValue: task_flavor_t) { self.rawValue = rawValue }
 
         /// Basic information about the task.
