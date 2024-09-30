@@ -75,11 +75,11 @@ let modules: [Module] = [
         dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Msg", folderName: "Message",
+        subModuleName: "Msg", folderName: "Messaging/Message",
         dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "MIG",
+        subModuleName: "MIG", folderName: "Messaging/MIG",
         dependencies: ["MachMsg", "CCompat", "Linking"]
     ),
     MachSubModule.init(
