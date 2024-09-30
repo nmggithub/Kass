@@ -5,12 +5,13 @@ extension Mach.Clock {
     /// An alarm on a clock.
     public class Alarm: Mach.Port {
         /// Sets up an alarm on a given clock.
-        public convenience init(
+        public static func allocate(
             named name: mach_port_name_t? = nil,
             on clock: Mach.Clock, time: mach_timespec_t, type: Mach.Clock.TimeType
-        ) throws {
-            try self.init(right: .receive, named: name)
-            try Mach.call(clock_alarm(clock.name, type.rawValue, time, self.name))
+        ) throws -> Self {
+            let port = try Self.allocate(right: .receive, named: name)
+            try Mach.call(clock_alarm(clock.name, type.rawValue, time, port.name))
+            return port
         }
 
         /// Sends a reply to the alarm.

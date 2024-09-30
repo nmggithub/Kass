@@ -5,13 +5,13 @@ extension Mach {
     public class ServicePort: Mach.Port {
         /// Constructs a service port.
         /// - Important: This is only allowed for the init system.
-        public convenience init(
+        public static func construct(
             _ serviceName: String, domainType: UInt8,
             context: mach_port_context_t? = nil,
             in task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
             flags: consuming Set<Mach.PortConstructFlag> = []
-        ) throws {
+        ) throws -> Self {
             guard serviceName.count <= MACH_SERVICE_PORT_INFO_STRING_NAME_MAX_BUF_LEN else {
                 fatalError("Service name is too long.")
             }
@@ -24,7 +24,7 @@ extension Mach {
             options.service_port_info = servicePortInfoPointer
             options.mpl = limits
             options.flags = UInt32(flags.bitmap())
-            try self.init(options: options, context: context, inNameSpaceOf: task)
+            return try Self.construct(options: options, context: context, inNameSpaceOf: task)
         }
 
         /// If the service port is throttled.

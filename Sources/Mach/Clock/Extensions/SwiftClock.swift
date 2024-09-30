@@ -148,14 +148,18 @@ extension Mach.Clock: Clock, @unchecked Sendable {
 
 extension Mach.Clock.Alarm {
     /// Sets an alarm to ring at a given time.
-    public convenience init(
+    public static func allocate(
         named name: mach_port_name_t? = nil,
         on clock: Mach.Clock, at time: Mach.Clock.Instant
-    ) throws { try self.init(named: name, on: clock, time: time.value, type: .absolute) }
+    ) throws -> Self {
+        try Self.allocate(named: name, on: clock, time: time.value, type: .absolute)
+    }
 
     /// Sets an alarm to ring after a given duration.
-    public convenience init(
+    public static func allocate(
         named name: mach_port_name_t? = nil,
         on clock: Mach.Clock, after duration: Mach.Clock.Duration
-    ) throws { try self.init(named: name, on: clock, time: duration.value, type: .relative) }
+    ) throws -> Self {
+        try Self.allocate(named: name, on: clock, time: duration.value, type: .relative)
+    }
 }

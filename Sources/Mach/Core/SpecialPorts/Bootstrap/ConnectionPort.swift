@@ -13,19 +13,19 @@ extension Mach {
     /// A connection port.
     public class ConnectionPort: Mach.Port {
         /// Constructs a connection port.
-        public convenience init(
-            for servicePort: Mach.ServicePort,
+        public static func construct(
+            servicePort: Mach.ServicePort,
             context: mach_port_context_t? = nil,
             inNameSpaceOf task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
             flags: consuming Set<Mach.PortConstructFlag> = []
-        ) throws {
+        ) throws -> Self {
             flags.insert(.connectionPort)
             var options = mach_port_options_t()
             options.service_port_name = servicePort.name
             options.mpl = limits
             options.flags = UInt32(flags.bitmap())
-            try self.init(options: options, context: context, inNameSpaceOf: task)
+            return try Self.construct(options: options, context: context, inNameSpaceOf: task)
         }
 
         /// Determines if the connection port is for a service and returns the filter policy ID.

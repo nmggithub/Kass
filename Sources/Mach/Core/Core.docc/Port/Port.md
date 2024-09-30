@@ -32,9 +32,9 @@
 
 ### Creating Ports
 
-- ``init(right:named:inNameSpaceOf:)``
-- ``init(options:context:inNameSpaceOf:)``
-- ``init(flags:limits:inNameSpaceOf:)``
+- ``allocate(right:named:inNameSpaceOf:)``
+- ``construct(options:context:inNameSpaceOf:)``
+- ``construct(flags:limits:inNameSpaceOf:)``
 - ``Mach/PortConstructFlag``
 
 ### Comparing Ports
