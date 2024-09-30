@@ -82,32 +82,32 @@ extension Mach.Task {
 
 extension Mach.TaskPolicyManager {
     /// The task's category policy.
-    public var category: task_category_policy {
+    public var categoryPolicy: task_category_policy {
         get throws { try self.get(.category) }
     }
 
     /// Sets the task's category policy.
-    public func setCategory(to categoryPolicy: task_category_policy) throws {
+    public func setCategoryPolicy(to categoryPolicy: task_category_policy) throws {
         try self.set(.category, to: categoryPolicy)
     }
 
     /// The task's QoS policy.
-    public var qos: task_qos_policy {
+    public var qosPolicy: task_qos_policy {
         get throws { try self.get(.baseQoS) }
     }
 
     /// Sets the task's QoS policy.
-    public func setQoS(to qosPolicy: task_qos_policy) throws {
+    public func setQoSPolicy(to qosPolicy: task_qos_policy) throws {
         try self.set(.baseQoS, to: qosPolicy)
     }
 
     /// Set's the task's latency QoS policy.
-    public func setLatencyQoS(to qosPolicy: task_qos_policy) throws {
+    public func setLatencyQoSPolicy(to qosPolicy: task_qos_policy) throws {
         try self.set(.latencyQoS, to: qosPolicy)
     }
 
     /// Set's the task's throughput QoS policy.
-    public func setThroughputQoS(to qosPolicy: task_qos_policy) throws {
+    public func setThroughputQoSPolicy(to qosPolicy: task_qos_policy) throws {
         try self.set(.throughputQoS, to: qosPolicy)
     }
 }

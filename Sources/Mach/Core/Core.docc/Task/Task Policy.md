@@ -13,14 +13,14 @@
 
 ### Managing Specific Policy
 
-- ``category``
-- ``setCategory(to:)``
+- ``categoryPolicy``
+- ``setCategoryPolicy(to:)``
 - ``Mach/TaskSuppressionPolicy``
-- ``suppression``
-- ``setSuppression(to:)``
+- ``suppressionPolicy``
+- ``setSuppressionPolicy(to:)``
 - ``Mach/TaskPolicyState``
-- ``state``
-- ``qos``
-- ``setQoS(to:)``
-- ``setLatencyQoS(to:)``
-- ``setThroughputQoS(to:)``
+- ``policyState``
+- ``qosPolicy``
+- ``setQoSPolicy(to:)``
+- ``setLatencyQoSPolicy(to:)``
+- ``setThroughputQoSPolicy(to:)``
