@@ -58,16 +58,20 @@ extension Mach.TrivialMessagePayload {
 /// Data as a message payload.
 extension Data: Mach.MessagePayload {
     /// Loads a `Data` payload from a raw buffer.
-    /// - Parameter buffer: The raw buffer.
-    /// - Returns: The `Data` payload, or `nil` if the buffer does not contain a valid payload.
     public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? {
         Self(buffer)
     }
     /// Converts the `Data` payload to a raw buffer.
-    /// - Returns: The raw buffer.
     public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
-        withUnsafeBytes {
-            UnsafeRawBufferPointer(start: $0.baseAddress, count: $0.count)
+        self.withUnsafeBytes {
+            dataBuffer in
+            let buffer = UnsafeMutableRawBufferPointer.allocate(
+                byteCount: dataBuffer.count,
+                // This is going into a message, so it should be aligned to the message alignment.
+                alignment: Mach.Message.alignment
+            )
+            buffer.copyMemory(from: dataBuffer)
+            return UnsafeRawBufferPointer(buffer)
         }
     }
 }
@@ -76,11 +80,8 @@ extension Data: Mach.MessagePayload {
 /// A non-existent payload.
 extension Never: Mach.MessagePayload {
     /// Returns `nil`.
-    /// - Parameter buffer: Ignored.
-    /// - Returns: `nil`.
     public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? { nil }
     /// Returns a zero-length empty buffer.
-    /// - Returns: A zero-length empty buffer.
     public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
         UnsafeRawBufferPointer(start: nil, count: 0)
     }
