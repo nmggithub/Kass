@@ -3,7 +3,7 @@ import Darwin.Mach
 extension Mach.Message.Server {
     /// A peeked preview of a message.
     public struct PeekedMessage {
-        /// The advertised message size.
+        /// The advertised size of the message.
         public var size: mach_msg_size_t
 
         /// The message ID.
