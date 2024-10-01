@@ -10,7 +10,7 @@ extension Mach.Message {
             + bodySize
             + payloadSize
         // The `mach_msg` kernel call expects the size to be aligned.
-        return mach_msg_size_t(unalignedSize + (Self.alignment - 1) & ~(Self.alignment - 1))
+        return mach_msg_size_t((unalignedSize + (Self.alignment - 1)) & ~(Self.alignment - 1))
     }
 
     /// The default maximum size for receiving messages.
