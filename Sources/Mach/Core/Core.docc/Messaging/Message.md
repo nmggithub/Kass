@@ -1,4 +1,4 @@
-# ``MachCore/Mach/Message``
+# ``Mach/Message``
 
 ## Topics
 
@@ -8,11 +8,11 @@
 
 ### Sending And Receiving Messages
 
-- ``MachCore/Mach/message(_:options:sendSize:receiveSize:receivePort:timeout:notifyPort:)``
+- ``Mach/message(_:options:sendSize:receiveSize:receivePort:timeout:notifyPort:)``
 - ``sendMessage(_:to:options:timeout:)``
 - ``sendMessage(_:to:receiving:ofMaxSize:on:options:timeout:)``
 - ``receiveMessage(_:ofMaxSize:on:options:timeout:)``
-- ``MachCore/Mach/MessageOptions``
+- ``Mach/MessageOptions``
 
 
 ### Working With Message Headers

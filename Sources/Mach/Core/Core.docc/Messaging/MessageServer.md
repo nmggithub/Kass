@@ -1,4 +1,4 @@
-# ``MachCore/Mach/MessageServer``
+# ``Mach/MessageServer``
 
 ## Topics
 

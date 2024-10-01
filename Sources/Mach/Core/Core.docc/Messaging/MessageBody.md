@@ -1,4 +1,4 @@
-# ``MachCore/Mach/MessageBody``
+# ``Mach/MessageBody``
 
 ## Topics
 

@@ -31,6 +31,9 @@ The core module for interacting with the Mach kernel.
 
 - ``Mach/call(_:)``
 
+### Messaging
+- <doc:Mach-Messages>
+
 ### Submodules
 
 - <doc:Protocols>

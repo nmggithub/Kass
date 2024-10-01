@@ -1,4 +1,4 @@
-# ``MachCore/Mach/MessageDescriptor``
+# ``Mach/MessageDescriptor``
 
 ## Topics
 
@@ -9,13 +9,13 @@
 
 ### Port Descriptors
 
-- ``MachCore/Mach/MessageDescriptorType``
+- ``Mach/MessageDescriptorType``
 - ``Darwin/mach_msg_port_descriptor_t``
-- ``MachCore/Mach/MessagePortGuardFlag``
+- ``Mach/MessagePortGuardFlag``
 
 ### Out-Of-Line Descriptors
 
 - ``Darwin/mach_msg_guarded_port_descriptor_t``
-- ``MachCore/Mach/OOLDescriptorCopyOption``
+- ``Mach/OOLDescriptorCopyOption``
 - ``Darwin/mach_msg_ool_descriptor_t``
 - ``Darwin/mach_msg_ool_ports_descriptor_t``

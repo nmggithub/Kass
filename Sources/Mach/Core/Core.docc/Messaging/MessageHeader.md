@@ -12,5 +12,5 @@ A message header contains ports and configuration bits.
 
 ### Configuration Bits
 
-- ``MachCore/Mach/MessageHeaderBits``
+- ``Mach/MessageHeaderBits``
 - ``bits``

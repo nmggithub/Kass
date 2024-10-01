@@ -1,4 +1,4 @@
-# ``MachCore/Mach/MessageHeaderBits``
+# ``Mach/MessageHeaderBits``
 
 ## Overview
 

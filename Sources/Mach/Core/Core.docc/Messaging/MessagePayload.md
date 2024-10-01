@@ -1,6 +1,6 @@
-# ``MachCore/Mach/MessagePayload``
+# ``Mach/MessagePayload``
 
-A type conforming to this protocol is meant to be used with a ``MachCore/Mach/MessageWithTypedPayload`` to provide a more-specifically-typed experience when working with message payloads. A minimal example is as follows:
+A type conforming to this protocol is meant to be used with a ``Mach/MessageWithTypedPayload`` to provide a more-specifically-typed experience when working with message payloads. A minimal example is as follows:
 
 ```swift
 {extension / struct / class} SomeType: Mach.MessagePayload {

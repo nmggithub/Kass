@@ -1,5 +1,4 @@
 import Darwin.Mach
-@_exported import MachCore
 
 /// Message extensions.
 extension Mach {

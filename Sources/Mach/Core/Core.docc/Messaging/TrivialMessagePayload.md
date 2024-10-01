@@ -1,4 +1,4 @@
-# ``MachCore/Mach/TrivialMessagePayload``
+# ``Mach/TrivialMessagePayload``
 
 ## Overview
 
