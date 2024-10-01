@@ -1,30 +1,35 @@
 import Darwin.Mach
 @_exported import MachCore
 
-extension Mach.Message {
-    /// The size of the message body.
-    var bodySize: Int {
-        body?.totalSize ?? 0
-    }
-    var payloadSize: Int {
-        payloadBuffer?.count ?? 0
-    }
-}
-
 /// Message extensions.
 extension Mach {
     /// A message.
     open class Message: RawRepresentable {
-        public static var alignment: Int { MemoryLayout<mach_msg_header_t>.alignment }
+        /// The memory alignment of the message.
+        internal static var alignment: Int { MemoryLayout<mach_msg_header_t>.alignment }
 
         /// The message header.
-        public var header: Header
+        public var header: mach_msg_header_t
+
         /// The message body.
-        public var body: Body?
+        public var body: Mach.MessageBody?
+
         /// The message payload buffer.
         public var payloadBuffer: UnsafeRawBufferPointer?
+
         /// The message trailer.
         public var trailer: Trailer?
+
+        /// The size of the message body.
+        var bodySize: Int {
+            body?.totalSize ?? 0
+        }
+
+        /// The size of the message payload.
+        var payloadSize: Int {
+            payloadBuffer?.count ?? 0
+        }
+
         /// A pointer to a raw representation of the message.
         public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
             let rawBufferSize =
@@ -38,15 +43,15 @@ extension Mach {
             serializingPointer.initializeMemory(as: UInt8.self, repeating: 0, count: rawBufferSize)  // Start with a zeroed-out buffer.
             let headerPointer = serializingPointer.bindMemory(
                 to: mach_msg_header_t.self, capacity: 1)
-            headerPointer.pointee = self.header.rawValue
+            headerPointer.pointee = self.header  // This is pass-by-value, so we don't have to worry about what happens if `self.header` changes later.
             serializingPointer += MemoryLayout<mach_msg_header_t>.size
             let bodyPointer = serializingPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1)
-            if let body = self.body {
+            if let ownBodyPointer = self.body?.pointer {
                 UnsafeMutableRawPointer(bodyPointer).copyMemory(
-                    from: UnsafeRawPointer(body.rawValue),
-                    byteCount: body.totalSize
+                    from: ownBodyPointer.baseAddress!,  // We control `Mach.MessageBody.pointer`, so we know it's safe to force-unwrap.
+                    byteCount: ownBodyPointer.count
                 )
-                serializingPointer += body.totalSize
+                serializingPointer += ownBodyPointer.count
             }
             if let payloadBuffer = self.payloadBuffer {
                 payloadBuffer.copyBytes(
@@ -76,22 +81,23 @@ extension Mach {
             }
             return headerPointer
         }
+
         /// Represents an existing raw message.
-        /// - Parameter rawValue: A pointer to the raw message.
         public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
             var deserializingPointer = UnsafeMutableRawPointer(rawValue)
-            self.header = Mach.Message.Header(rawValue: rawValue.pointee)
+            self.header = rawValue.pointee
             deserializingPointer += MemoryLayout<mach_msg_header_t>.size
             if self.header.bits.isMessageComplex {
                 let bodyPointer = deserializingPointer.bindMemory(
-                    to: mach_msg_body_t.self, capacity: 1)
-                self.body = Mach.Message.Body(rawValue: bodyPointer)
+                    to: mach_msg_body_t.self, capacity: 1
+                )
+                self.body = Mach.MessageBody(fromPointer: bodyPointer)
                 deserializingPointer += self.bodySize
             } else {
                 self.body = nil
             }
             let rawPayloadSize =
-                Int(header.messageSize)
+                Int(header.msgh_size)
                 - MemoryLayout<mach_msg_header_t>.size
                 - self.bodySize
             if rawPayloadSize > 0 {
@@ -109,16 +115,13 @@ extension Mach {
         }
 
         /// Creates a message with a set of descriptors and a payload.
-        /// - Parameters:
-        ///   - descriptors: The descriptors to include in the message.
-        ///   - payloadBuffer: The payload buffer to include in the message.
         public required init(
-            descriptors: [any Mach.Message.Body.Descriptor]? = nil,
+            descriptors: [any Mach.MessageDescriptor]? = nil,
             payloadBuffer: UnsafeRawBufferPointer? = nil
         ) {
-            self.header = Mach.Message.Header()
+            self.header = mach_msg_header_t()
             if let descriptors = descriptors {
-                self.body = Mach.Message.Body(descriptors: descriptors)
+                self.body = Mach.MessageBody(descriptors: descriptors)
                 self.header.bits.isMessageComplex = true
             }
             self.payloadBuffer = payloadBuffer

@@ -1,7 +1,7 @@
-public typealias MIGReply = Mach.Message.MIG.Reply
-
-extension Mach.Message.MIG {
-    public class Reply<MIGPayloadType: Payload>: Mach.Message, Mach.Message.WithTypedPayload {
+extension Mach {
+    public class MIGReply<MIGPayloadType: Mach.MIGPayload>: Mach.Message,
+        Mach.MessageWithTypedPayload
+    {
         public typealias PayloadType = MIGPayloadType
     }
 }

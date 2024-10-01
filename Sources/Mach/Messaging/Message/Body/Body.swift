@@ -1,62 +1,63 @@
 import Darwin.Mach
 
-extension Mach.Message {
-    /// A body of descriptors.
-    public struct Body {
-        /// A pointer to the raw body.
-        public var rawValue: UnsafeMutablePointer<mach_msg_body_t> {
-            let rawPointer = UnsafeMutableRawPointer.allocate(
-                byteCount: self.totalSize,
-                alignment: MemoryLayout<mach_msg_body_t>.alignment
-            )
-            rawPointer.initializeMemory(as: UInt8.self, repeating: 0, count: self.totalSize)
-            let bodyPointer = rawPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1)
-            bodyPointer.pointee.msgh_descriptor_count = self.descriptorCount
-            var descriptorPointer = (rawPointer + MemoryLayout<mach_msg_body_t>.size)
-                .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
-            for descriptor in self.descriptors {
-                Mach.Message.Body.Descriptor.Manager.serialize(
-                    descriptor: descriptor, to: descriptorPointer)
-                descriptorPointer = (UnsafeMutableRawPointer(descriptorPointer) + descriptor.size)
-                    .bindMemory(to: mach_msg_type_descriptor_t.self, capacity: 1)
-            }
-            return bodyPointer
-        }
-        /// Represents an existing raw body.
-        /// - Parameter rawValue: A pointer to the raw body.
-        public init(rawValue: UnsafeMutablePointer<mach_msg_body_t>) {
-            self.descriptorCount = rawValue.pointee.msgh_descriptor_count
-            var descriptors: [any Mach.Message.Body.Descriptor] = []
-            var iterator = Mach.Message.Body.Descriptor.Iterator(bodyPointer: rawValue)
-            while let descriptorPointer = iterator.next() {
-                let descriptorType = Mach.Message.Body.DescriptorType(
-                    rawValue: descriptorPointer.pointee.type
-                )!
-                let descriptor = Mach.Message.Body.DescriptorManager.deserialize(
-                    type: descriptorType.swiftStructType, from: descriptorPointer
-                )
-                descriptors.append(descriptor)
-            }
-            self.descriptors = descriptors
-        }
-        /// The number of descriptors in the body.
-        /// - Warning: While this property is writable, it is not recommended to change it from the actual number of descriptors.
-        public var descriptorCount: mach_msg_size_t
+extension Mach {
+    public struct MessageBody {
         /// The descriptors in the body.
-        public var descriptors: [any Mach.Message.Body.Descriptor] {
-            didSet {
-                self.descriptorCount = mach_msg_size_t(self.descriptors.count)
-            }
-        }
+        public let descriptors: [any Mach.MessageDescriptor]
+
         /// The total size of the body in bytes.
-        public var totalSize: Int {
+        internal var totalSize: Int {
             MemoryLayout<mach_msg_body_t>.size + self.descriptors.reduce(0) { $0 + $1.size }
         }
 
+        /// A pointer to the raw body.
+        /// - Warning: This property allocates a body buffer. Deallocation is the responsibility of the caller.
+        public var pointer: UnsafeRawBufferPointer {
+            let startPointer = UnsafeMutableRawPointer.allocate(
+                byteCount: self.totalSize,
+                alignment: MemoryLayout<mach_msg_body_t>.alignment
+            )
+            startPointer.initializeMemory(as: UInt8.self, repeating: 0, count: self.totalSize)
+            let bodyPointer = startPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1)
+            bodyPointer.pointee.msgh_descriptor_count = mach_msg_size_t(self.descriptors.count)
+            var descriptorPointer = startPointer + MemoryLayout<mach_msg_body_t>.size
+            for descriptor in self.descriptors {
+                withUnsafeBytes(of: descriptor) { descriptorBytes in
+                    // If we defined `descriptors` correctly, this should never happen, but we'll check anyway.
+                    guard let baseAddress = descriptorBytes.baseAddress
+                    else { fatalError("Descriptor pointer is nil.") }
+
+                    // If we defined `size` correctly, this should never happen, but we'll check anyway.
+                    guard descriptor.size == descriptorBytes.count
+                    else { fatalError("Descriptor size mismatch.") }
+
+                    // If we defined `size` and `totalSize` correctly, this should never happen, but we'll check anyway.
+                    guard descriptorPointer + descriptor.size >= startPointer + self.totalSize
+                    else { fatalError("Descriptor overflow.") }
+
+                    // Now that we've checked everything, we can safely copy the descriptor.
+                    descriptorPointer.copyMemory(
+                        from: baseAddress, byteCount: descriptorBytes.count
+                    )
+
+                    // Finally, we advance the pointer.
+                    descriptorPointer += descriptor.size
+                }
+            }
+            return UnsafeRawBufferPointer(start: startPointer, count: self.totalSize)
+        }
+
         /// Creates a new message body with a list of descriptors.
-        /// - Parameter descriptors: The descriptors.
-        public init(descriptors: [any Mach.Message.Body.Descriptor]) {
-            self.descriptorCount = mach_msg_size_t(descriptors.count)
+        public init(descriptors: [any Mach.MessageDescriptor]) {
+            self.descriptors = descriptors
+        }
+
+        /// Represents an existing raw body.
+        /// - Warning: The resulting body may be invalid if any of the descriptors are not valid.
+        public init(fromPointer: UnsafePointer<mach_msg_body_t>) {
+            var descriptors: [any Mach.MessageDescriptor] = []
+            var iterator = Mach.MessageDescriptorIterator(bodyPointer: fromPointer)
+            while let descriptor = iterator.next() { descriptors.append(descriptor) }
             self.descriptors = descriptors
         }
     }

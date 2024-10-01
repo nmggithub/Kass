@@ -126,9 +126,8 @@ extension Mach {
             let rawMessageBuffer = self.transientBuffer(maxSize)
             defer { rawMessageBuffer.deallocate() }
             rawMessageBuffer.copyMemory(from: originalMessageBuffer)
-            let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
-                to: mach_msg_header_t.self, capacity: 1
-            )
+            let messageBuffer = rawMessageBuffer.baseAddress!  // We control `rawMessageBuffer`, so this is safe.
+                .bindMemory(to: mach_msg_header_t.self, capacity: 1)
             try Self.syscall(
                 messageBuffer, options: options, sendSize: message.sendSize,
                 receiveSize: mach_msg_size_t(rawMessageBuffer.count),

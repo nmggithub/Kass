@@ -1,14 +1,12 @@
 import Darwin.Mach
 import Foundation
 
-extension Mach.Message.MIG {
-    open class Client: Mach.Port {
-        /// The base routine ID for the remote MIG server.
+extension Mach {
+    open class MIGClient: Mach.Port {
+        /// The base routine ID for the remote MIG subsystem.
         public var baseRoutineId: mach_msg_id_t = 0
+
         /// Represents an existing raw MIG server port.
-        /// - Parameters:
-        ///   - name: The name of the port.
-        ///   - baseRoutineId: The base routine ID for the remote MIG server.
         public init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
             self.baseRoutineId = baseRoutineId
             super.init(named: name)
@@ -22,15 +20,10 @@ extension Mach.Message.MIG {
         }
 
         /// Performs a MIG routine.
-        /// - Parameters:
-        ///   - routineIndex: The index of the routine.
-        ///   - request: The request to send.
-        ///   - replyPort: The port on which to receive the reply.
-        /// - Returns: The reply to the request.
         @discardableResult  // users can ignore the reply message if they want to
         public func doRoutine(
             _ routineIndex: mach_msg_id_t,
-            request: MIGRequest<some Payload>,
+            request: MIGRequest<some Mach.MIGPayload>,
             on replyPort: Mach.Port? = nil
         ) throws -> MIGReply<Data> {
             try self.doRoutine(
@@ -41,40 +34,36 @@ extension Mach.Message.MIG {
         }
 
         /// Performs a MIG routine.
-        /// - Parameters:
-        ///   - routineIndex: The index of the routine.
-        ///   - request: The request to send.
-        ///   - receiving: The type of the reply to receive.
-        ///   - replyPort: The port on which to receive the reply.
-        /// - Returns: The reply to the request.
         @discardableResult  // users can ignore the reply message if they want to
         public func doRoutine<
-            ReplyPayload: Payload,
+            ReplyPayload: Mach.MIGPayload,
             Reply: MIGReply<ReplyPayload>
         >(
             _ routineIndex: mach_msg_id_t,
-            request: MIGRequest<some Payload>,
+            request: MIGRequest<some Mach.MIGPayload>,
             receiving replyType: Reply.Type,
-            on replyPort: Mach.Port = ReplyPort()
+            on replyPort: Mach.Port = Mach.MIGReplyPort()
         ) throws -> Reply {
             let routineId = self.baseRoutineId + routineIndex
-            request.header.messageID = routineId
+            request.header.msgh_id = routineId
             request.header.bits.remotePortDisposition = .copySend  // make a copy of the send right so we can reuse the port
-            request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right ao we can receive the reply
+            request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right so we can receive the reply
             let reply = try Mach.Messaging.send(
                 request, to: self,
                 receiving: replyType, on: replyPort
             )
-            guard reply.header.messageID != MACH_NOTIFY_SEND_ONCE else {
-                throw Error(.serverDied)
+            guard reply.header.msgh_id != MACH_NOTIFY_SEND_ONCE else {
+                throw Mach.MIGError(.serverDied)
             }  // the server deallocated the send-once right without using it, assume it died
-            guard reply.header.messageID == routineId + 100 else { throw Error(.replyMismatch) }  // the reply ID should be the request ID + 100
-            guard reply.header.remotePort == Mach.Port.Nil else { throw Error(.typeError) }  // the reply should clear the remote port
+            guard reply.header.msgh_id == routineId + 100 else {
+                throw Mach.MIGError(.replyMismatch)
+            }  // the reply ID should be the request ID + 100
+            guard reply.header.remotePort == Mach.Port.Nil else { throw Mach.MIGError(.typeError) }  // the reply should clear the remote port
             // If the reply is not complex and the same size as a MIG error reply, assume it is an error reply.
             if !reply.header.bits.isMessageComplex
-                && reply.header.messageSize == MemoryLayout<mig_reply_error_t>.size
+                && reply.header.msgh_size == MemoryLayout<mig_reply_error_t>.size
             {
-                let errorReply = ErrorReply(rawValue: reply.rawValue)
+                let errorReply = Mach.MIGErrorReply(rawValue: reply.rawValue)
                 /// An empty successful reply will have the same size as a MIG error reply, but the return code will be `KERN_SUCCESS`.
                 guard errorReply.payload!.returnCode == KERN_SUCCESS else {
                     throw errorReply.error

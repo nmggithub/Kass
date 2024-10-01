@@ -5,17 +5,15 @@ extension Mach.Message.Server {
     public struct PeekedMessage {
         /// The advertised message size.
         public var size: mach_msg_size_t
+
         /// The message ID.
         public var id: mach_msg_id_t
+
         /// The trailer.
         public var trailer: mach_msg_max_trailer_t
     }
+
     /// Peeks at the message in the queue with the given sequence number, receiving a trailer of the given type.
-    /// - Parameters:
-    ///   - trailerType: The type of trailer to receive.
-    ///   - sequenceNumber: The sequence number of the message to peek at.
-    /// - Throws: An error if the message could not be peeked at.
-    /// - Returns: A peeked preview of the message.
     public func peek(
         trailerType: Mach.Message.Trailer.TrailerType,
         sequenceNumber: inout mach_port_seqno_t
