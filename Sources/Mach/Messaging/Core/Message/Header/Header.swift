@@ -9,7 +9,7 @@ extension Mach {
         /// The raw configuration bits.
         public var rawValue: mach_msg_bits_t
 
-        /// Represents existing raw configuration bits.
+        /// Represents existing configuration bits.
         public init(rawValue: mach_msg_bits_t) { self.rawValue = rawValue }
 
         /// The raw remote port disposition.

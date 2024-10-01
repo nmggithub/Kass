@@ -52,7 +52,7 @@ extension Mach {
             self.descriptors = descriptors
         }
 
-        /// Represents an existing raw body.
+        /// Represents an existing body.
         /// - Warning: The resulting body may be invalid if any of the descriptors are not valid.
         public init(fromPointer: UnsafePointer<mach_msg_body_t>) {
             var descriptors: [any Mach.MessageDescriptor] = []
