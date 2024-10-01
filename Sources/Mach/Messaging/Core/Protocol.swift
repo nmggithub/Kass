@@ -77,6 +77,7 @@ extension Mach {
     }
 
     /// Sends a message and receive a message.
+    /// - Warning: This function will block until a message is received.
     /// - Warning: The `remotePort` parameter will override the remote port in the message header.
     /// - Warning: The `receivePort` parameter will override the local port in the message header.
     public static func sendMessage<ReceiveMessage: Mach.Message>(
@@ -114,6 +115,7 @@ extension Mach {
     }
 
     /// Receives a message.
+    /// - Warning: This function will block until a message is received.
     public static func receiveMessage<ReceiveMessage: Mach.Message>(
         _ messageType: ReceiveMessage.Type = Mach.Message.self,
         ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,

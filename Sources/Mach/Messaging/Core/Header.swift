@@ -5,6 +5,7 @@ private let MACH_MSGH_BITS_PORTS_MASK = UInt32(
 )
 
 extension Mach {
+    /// Configuration bits in a message header.
     public struct MessageHeaderBits: RawRepresentable {
         /// The raw configuration bits.
         public var rawValue: mach_msg_bits_t
@@ -12,45 +13,51 @@ extension Mach {
         /// Represents existing configuration bits.
         public init(rawValue: mach_msg_bits_t) { self.rawValue = rawValue }
 
-        /// The raw remote port disposition.
-        public var remoteBits: mach_msg_type_name_t {
+        /// The disposition to apply to the remote port.
+        public var remotePortDisposition: Mach.PortDisposition {
             get {
-                mach_msg_type_name_t(
-                    self.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK)
+                Mach.PortDisposition(
+                    rawValue: mach_msg_type_name_t(
+                        self.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK)
+                    )
                 )
             }
             set {
                 self.rawValue =
                     (self.rawValue & ~mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK))
-                    | newValue & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK)
+                    | newValue.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_REMOTE_MASK)
             }
         }
 
-        /// The raw local port disposition.
-        public var localBits: mach_msg_type_name_t {
+        /// The disposition to apply to the local port.
+        public var localPortDisposition: Mach.PortDisposition {
             get {
-                mach_msg_type_name_t(
-                    (self.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK)) >> 8
+                Mach.PortDisposition(
+                    rawValue: mach_msg_type_name_t(
+                        (self.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK)) >> 8
+                    )
                 )
             }
             set {
                 self.rawValue =
                     (self.rawValue & ~mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK))
-                    | (newValue << 8) & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK)
+                    | (newValue.rawValue << 8) & mach_msg_type_name_t(MACH_MSGH_BITS_LOCAL_MASK)
             }
         }
 
-        /// The raw voucher port disposition.
-        public var voucherBits: mach_msg_type_name_t {
+        /// The disposition to apply to the voucher port.
+        public var voucherPortDisposition: Mach.PortDisposition {
             get {
-                mach_msg_type_name_t(
-                    (self.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK)) >> 16
+                Mach.PortDisposition(
+                    rawValue: mach_msg_type_name_t(
+                        (self.rawValue & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK)) >> 16
+                    )
                 )
             }
             set {
                 self.rawValue =
                     (self.rawValue & ~mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK))
-                    | (newValue << 16) & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK)
+                    | (newValue.rawValue << 16) & mach_msg_type_name_t(MACH_MSGH_BITS_VOUCHER_MASK)
             }
         }
 
@@ -75,27 +82,10 @@ extension Mach {
                 }
             }
         }
-
-        /// The remote port disposition.
-        public var remotePortDisposition: Mach.PortDisposition {
-            get { Mach.PortDisposition(rawValue: self.remoteBits) }
-            set { self.remoteBits = newValue.rawValue }
-        }
-
-        /// The local port disposition.
-        public var localPortDisposition: Mach.PortDisposition {
-            get { Mach.PortDisposition(rawValue: self.localBits) }
-            set { self.localBits = newValue.rawValue }
-        }
-
-        /// The voucher port disposition.
-        public var voucherPortDisposition: Mach.PortDisposition {
-            get { Mach.PortDisposition(rawValue: self.voucherBits) }
-            set { self.voucherBits = newValue.rawValue }
-        }
     }
 }
 
+/// A message header.
 extension mach_msg_header_t {
     /// The configuration bits.
     public var bits: Mach.MessageHeaderBits {
