@@ -11,7 +11,3 @@
 - ``Mach/MessageQueue``
 - ``Mach/MessageClient``
 - ``Mach/MessageServer``
-
-### Other Concepts
-
-- <doc:The-Mach-Interface-Generator>

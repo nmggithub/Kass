@@ -15,6 +15,10 @@ The core module for interacting with the Mach kernel.
 
 ## Topics
 
+### Calling the Kernel
+
+- ``Mach/call(_:)``
+
 ### Core Concepts
 
 - ``Mach``
@@ -22,17 +26,18 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Task``
 - ``Mach/Thread``
 
+### Message Concepts
+
+- <doc:Mach-Messages>
+- <doc:The-Mach-Interface-Generator>
+
 ### Additional Concepts
 - ``Mach/Host``
 - ``Mach/Processor``
 - ``Mach/ProcessorSet``
 
-### Calling the Kernel
 
-- ``Mach/call(_:)``
 
-### Messaging
-- <doc:Mach-Messages>
 
 ### Submodules
 
