@@ -31,7 +31,7 @@ extension Mach.Message {
     }
 }
 
-// MARK: - Message Sending and Receiving
+// MARK: - Sending and Receiving
 extension Mach {
     /// Calls the `mach_msg` kernel call.
     public static func message(
