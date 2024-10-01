@@ -11,7 +11,7 @@
 
 - ``Mach/MessageDescriptorType``
 - ``Darwin/mach_msg_port_descriptor_t``
-- ``Mach/MessagePortGuardFlag``
+- ``Mach/MessagePortGuardFlags``
 
 ### Out-Of-Line Descriptors
 

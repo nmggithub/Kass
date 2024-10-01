@@ -27,7 +27,7 @@
 - ``allocate(right:named:inNameSpaceOf:)``
 - ``construct(options:context:inNameSpaceOf:)``
 - ``construct(flags:limits:inNameSpaceOf:)``
-- ``Mach/PortConstructFlag``
+- ``Mach/PortConstructFlags``
 
 ### Managing Port Rights
 
@@ -62,7 +62,7 @@
 
 - ``guard(with:flags:)``
 - ``unguard(with:)``
-- ``Mach/PortGuardFlag``
+- ``Mach/PortGuardFlags``
 - ``guarded``
 
 ### Using Port Sets
