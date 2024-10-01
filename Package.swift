@@ -60,6 +60,9 @@ let modules: [Module] = [
         dependencies: ["MachC", "BSDBase", "CCompat", "Linking"]
     ),
     MachSubModule.init(
+        subModuleName: "Bootstrap", dependencies: ["CCompat", "Linking"]
+    ),
+    MachSubModule.init(
         subModuleName: "Voucher", dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
