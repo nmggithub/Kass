@@ -30,7 +30,7 @@
 
 private let MPO_PROVISIONAL_ID_PROT_OPTOUT: Int32 = 0x8000
 
-extension Mach.PortConstructFlag {
+extension Mach.PortConstructFlags {
     /// Opt out of identity protection for the port.
     public static let provisionalIdProtectionOptOut = Self(
         rawValue: MPO_PROVISIONAL_ID_PROT_OPTOUT

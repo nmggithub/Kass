@@ -34,12 +34,12 @@ extension Mach.Port {
         if context != nil {
             // We enforce adding this flag if a context is passed, even if the user didn't
             // specify it. The context is ignored otherwise.
-            options.flags |= UInt32(Mach.PortConstructFlag.contextAsGuard.rawValue)
+            options.flags |= UInt32(Mach.PortConstructFlags.contextAsGuard.rawValue)
         }
         if options.mpl.mpl_qlimit != 0 {
             // We enforce adding this flag is a limit is passed, even if the user didn't
             // specify it. The limit is ignored otherwise.
-            options.flags |= UInt32(Mach.PortConstructFlag.queueLimit.rawValue)
+            options.flags |= UInt32(Mach.PortConstructFlags.queueLimit.rawValue)
         }
         let actualContext = context ?? mach_port_context_t()
         try Mach.call(
@@ -49,11 +49,11 @@ extension Mach.Port {
     }
 
     public static func construct(
-        flags: Set<Mach.PortConstructFlag>, limits: mach_port_limits = mach_port_limits(),
+        flags: Mach.PortConstructFlags = [], limits: mach_port_limits = mach_port_limits(),
         inNameSpaceOf task: Mach.Task = .current
     ) throws -> Self {
         var options = mach_port_options_t()
-        options.flags = UInt32(flags.bitmap())
+        options.flags = UInt32(flags.rawValue)
         options.mpl = limits
         return try Self.construct(options: options, context: nil, inNameSpaceOf: task)
     }
