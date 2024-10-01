@@ -21,35 +21,38 @@ extension Mach {
         public var trailer: mach_msg_max_trailer_t?
 
         /// The size of the message body.
-        var bodySize: Int { body?.totalSize ?? 0 }
+        internal var bodySize: Int { body?.totalSize ?? 0 }
 
         /// The size of the message payload.
-        var payloadSize: Int { payloadBuffer?.count ?? 0 }
+        internal var payloadSize: Int { payloadBuffer?.count ?? 0 }
 
         /// The size of the message payload as advertised in the header.
-        var advertisedPayloadSize: Int {
+        internal var advertisedPayloadSize: Int {
             Int(header.msgh_size) - MemoryLayout<mach_msg_header_t>.size - bodySize
+        }
+
+        /// The size of the message buffer.
+        internal var bufferSize: Int {
+            MemoryLayout<mach_msg_header_t>.size
+                + self.bodySize
+                + self.payloadSize
+                + MemoryLayout<mach_msg_max_trailer_t>.size
         }
 
         /// A pointer to a raw representation of the message.
         public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
-            // Calculate the size of the buffer.
-            let rawBufferSize =
-                MemoryLayout<mach_msg_header_t>.size
-                + self.bodySize
-                + self.payloadSize
-                + MemoryLayout<Trailer.RawValue>.size
-
             // Allocate the buffer.
             let startPointer = UnsafeMutableRawPointer.allocate(
-                byteCount: rawBufferSize, alignment: Self.alignment
+                byteCount: self.bufferSize, alignment: Self.alignment
             )
 
             // Create a mutable pointer to advance through the buffer.
             var serializingPointer = startPointer
 
             // Zero out the buffer.
-            serializingPointer.initializeMemory(as: UInt8.self, repeating: 0, count: rawBufferSize)
+            serializingPointer.initializeMemory(
+                as: UInt8.self, repeating: 0, count: self.bufferSize
+            )
 
             // Write the header.
             serializingPointer.bindMemory(to: mach_msg_header_t.self, capacity: 1).pointee =

@@ -11,7 +11,7 @@ extension Mach {
             _ message: Mach.Message, options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws {
-            try Mach.Messaging.send(message, to: self, options: options, timeout: timeout)
+            try Mach.sendMessage(message, to: self, options: options, timeout: timeout)
         }
 
         /// Receives a message from the queue.
@@ -21,7 +21,7 @@ extension Mach {
             options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws -> Mach.Message {
-            try Mach.Messaging.receive(messageType, on: self, options: options, timeout: timeout)
+            try Mach.receiveMessage(messageType, on: self, options: options, timeout: timeout)
         }
     }
 }

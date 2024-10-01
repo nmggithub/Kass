@@ -48,7 +48,7 @@ extension Mach {
             request.header.msgh_id = routineId
             request.header.bits.remotePortDisposition = .copySend  // make a copy of the send right so we can reuse the port
             request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right so we can receive the reply
-            let reply = try Mach.Messaging.send(
+            let reply = try Mach.sendMessage(
                 request, to: self,
                 receiving: replyType, on: replyPort
             )
