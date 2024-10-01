@@ -31,6 +31,7 @@
 - ``ktraceBackground``
 - ``gssd``
 - ``coalition``
+- ``doubleagentd``
 
 ### Unknown Ports
 

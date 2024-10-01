@@ -96,6 +96,8 @@ extension Mach {
 
         /// (Probably) a port to `managedappdistributiond`.
         public static let managedappdistd = Self(rawValue: HOST_MANAGEDAPPDISTD_PORT)  // unknown
+
+        public static let doubleagentd = Self(rawValue: HOST_DOUBLEAGENTD_PORT)  // `launchd`
     }
 }
 
