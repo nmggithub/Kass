@@ -21,14 +21,10 @@ extension Mach {
         public var trailer: Trailer?
 
         /// The size of the message body.
-        var bodySize: Int {
-            body?.totalSize ?? 0
-        }
+        var bodySize: Int { body?.totalSize ?? 0 }
 
         /// The size of the message payload.
-        var payloadSize: Int {
-            payloadBuffer?.count ?? 0
-        }
+        var payloadSize: Int { payloadBuffer?.count ?? 0 }
 
         /// A pointer to a raw representation of the message.
         public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
@@ -46,7 +42,7 @@ extension Mach {
             headerPointer.pointee = self.header  // This is pass-by-value, so we don't have to worry about what happens if `self.header` changes later.
             serializingPointer += MemoryLayout<mach_msg_header_t>.size
             let bodyPointer = serializingPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1)
-            if let ownBodyPointer = self.body?.pointer {
+            if let ownBodyPointer = self.body?.allocate() {
                 UnsafeMutableRawPointer(bodyPointer).copyMemory(
                     from: ownBodyPointer.baseAddress!,  // We control `Mach.MessageBody.pointer`, so we know it's safe to force-unwrap.
                     byteCount: ownBodyPointer.count

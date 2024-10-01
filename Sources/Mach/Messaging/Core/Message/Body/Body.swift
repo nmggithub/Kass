@@ -3,16 +3,16 @@ import Darwin.Mach
 extension Mach {
     public struct MessageBody {
         /// The descriptors in the body.
-        public let descriptors: [any Mach.MessageDescriptor]
+        public var descriptors: [any Mach.MessageDescriptor]
 
         /// The total size of the body in bytes.
         internal var totalSize: Int {
             MemoryLayout<mach_msg_body_t>.size + self.descriptors.reduce(0) { $0 + $1.size }
         }
 
-        /// A pointer to the raw body.
-        /// - Warning: This property allocates a body buffer. Deallocation is the responsibility of the caller.
-        public var pointer: UnsafeRawBufferPointer {
+        /// Allocates a buffer for the body, copies the count and descriptors into it, and returns a pointer to the buffer.
+        /// - Warning: Deallocation is the responsibility of the caller.
+        public func allocate() -> UnsafeRawBufferPointer {
             let startPointer = UnsafeMutableRawPointer.allocate(
                 byteCount: self.totalSize,
                 alignment: MemoryLayout<mach_msg_body_t>.alignment
