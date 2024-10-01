@@ -1,7 +1,6 @@
 import Darwin.Mach
 import Foundation.NSError
 import Linking
-@_exported import MachCore
 
 private let bootstrap_look_up:
     @convention(c) (
