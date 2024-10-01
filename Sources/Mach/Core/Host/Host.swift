@@ -1,4 +1,3 @@
-import CCompat
 import Darwin.Mach
 import Foundation
 

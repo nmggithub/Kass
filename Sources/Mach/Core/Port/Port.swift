@@ -1,10 +1,9 @@
-import CCompat
 import Darwin.Mach
 import Foundation
 
 extension Mach {
-    /// A flag to use when constructing a port.
-    public struct PortConstructFlag: FlagEnum {
+    /// Flags to use when constructing a port.
+    public struct PortConstructFlags: OptionSet, Sendable {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
 
@@ -64,13 +63,7 @@ extension Mach {
 
 extension Mach {
     /// A right to a port.
-    public struct PortRight: OptionEnum,
-        // `PortRight` isn't a flag, so we don't conform to `FlagEnum`. However, we put it in a set
-        // in `Port/rights`, so we still want it to be hashable. We could use an array instead, but
-        // we want to keep the set semantics, as `Port/rights` should only ever contain one of each
-        // right (as it iterates over `PortRight.allCases`).
-        Hashable
-    {
+    public struct PortRight: OptionEnum, Hashable {
         public let rawValue: mach_port_right_t
         public init(rawValue: mach_port_right_t) { self.rawValue = rawValue }
 
@@ -239,8 +232,8 @@ extension Mach.Port {
 }
 
 extension Mach {
-    /// A flag to guard a port with.
-    public struct PortGuardFlag: FlagEnum {
+    /// Flags to guard a port with.
+    public struct PortGuardFlags: OptionSet, Sendable {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
 
@@ -253,11 +246,11 @@ extension Mach.Port {
 
     /// Guards the port using the specified context and flags.
     public func `guard`(
-        with context: mach_port_context_t, flags: Set<Mach.PortGuardFlag> = []
+        with context: mach_port_context_t, flags: Mach.PortGuardFlags = []
     ) throws {
         try Mach.call(
             mach_port_guard_with_flags(
-                self.owningTask.name, self.name, context, UInt64(flags.bitmap())
+                self.owningTask.name, self.name, context, UInt64(flags.rawValue)
             )
         )
     }

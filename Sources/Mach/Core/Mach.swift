@@ -120,7 +120,4 @@ extension Mach {
     /// A structure representing an enumeration of options.
     public protocol OptionEnum: RawRepresentable, Equatable, Sendable
     where RawValue: BinaryInteger {}
-    /// A structure representing an enumeration of flags.
-    public protocol FlagEnum: RawRepresentable, Hashable, Sendable
-    where RawValue: BinaryInteger {}
 }

@@ -1,4 +1,3 @@
-import CCompat
 import Darwin.Mach
 
 // MARK: - Helper Extensions

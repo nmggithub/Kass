@@ -18,13 +18,13 @@ extension Mach {
             context: mach_port_context_t? = nil,
             inNameSpaceOf task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
-            flags: consuming Set<Mach.PortConstructFlag> = []
+            flags: consuming Mach.PortConstructFlags = []
         ) throws -> Self {
             flags.insert(.connectionPort)
             var options = mach_port_options_t()
             options.service_port_name = servicePort.name
             options.mpl = limits
-            options.flags = UInt32(flags.bitmap())
+            options.flags = UInt32(flags.rawValue)
             return try Self.construct(options: options, context: context, inNameSpaceOf: task)
         }
 

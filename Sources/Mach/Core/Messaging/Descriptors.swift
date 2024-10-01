@@ -1,4 +1,3 @@
-import CCompat
 import Darwin.Mach
 import Foundation
 
@@ -102,8 +101,8 @@ extension mach_msg_port_descriptor_t: Mach.MessageDescriptor {
 
 // MARK: - Port Guard Flag
 extension Mach {
-    /// A flag for guarding a port in a message.
-    public struct MessagePortGuardFlag: Mach.FlagEnum {
+    /// Flags for guarding a port in a message.
+    public struct MessagePortGuardFlags: OptionSet, Sendable {
         /// The raw flag value.
         public let rawValue: mach_msg_guard_flags_t
 
@@ -138,11 +137,11 @@ extension mach_msg_guarded_port_descriptor_t: Mach.MessageDescriptor {
     /// Creates a new port descriptor.
     public init(
         _ port: Mach.Port, disposition: Mach.PortDisposition, context: mach_port_context_t = 0,
-        guardFlags: Set<Mach.MessagePortGuardFlag> = []
+        guardFlags: Mach.MessagePortGuardFlags = []
     ) {
         self.init(
             context: context,
-            flags: guardFlags.bitmap(),
+            flags: guardFlags.rawValue,
             disposition: disposition.rawValue,
             type: Mach.MessageDescriptorType.guardedPort.rawValue,
             name: port.name

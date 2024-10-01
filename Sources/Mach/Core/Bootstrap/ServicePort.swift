@@ -10,7 +10,7 @@ extension Mach {
             context: mach_port_context_t? = nil,
             in task: Mach.Task = .current,
             limits: mach_port_limits_t = mach_port_limits_t(),
-            flags: consuming Set<Mach.PortConstructFlag> = []
+            flags: consuming Mach.PortConstructFlags = []
         ) throws -> Self {
             guard serviceName.count <= MACH_SERVICE_PORT_INFO_STRING_NAME_MAX_BUF_LEN else {
                 fatalError("Service name is too long.")
@@ -23,7 +23,7 @@ extension Mach {
             var options = mach_port_options_t()
             options.service_port_info = servicePortInfoPointer
             options.mpl = limits
-            options.flags = UInt32(flags.bitmap())
+            options.flags = UInt32(flags.rawValue)
             return try Self.construct(options: options, context: context, inNameSpaceOf: task)
         }
 
