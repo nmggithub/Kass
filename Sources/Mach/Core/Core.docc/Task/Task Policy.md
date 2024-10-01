@@ -16,10 +16,8 @@
 
 - ``categoryPolicy``
 - ``setCategoryPolicy(to:)``
-- ``Mach/TaskSuppressionPolicy``
 - ``suppressionPolicy``
 - ``setSuppressionPolicy(to:)``
-- ``Mach/TaskPolicyState``
 - ``policyState``
 - ``qosPolicy``
 - ``setQoSPolicy(to:)``
