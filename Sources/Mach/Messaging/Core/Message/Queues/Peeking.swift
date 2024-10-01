@@ -1,6 +1,6 @@
 import Darwin.Mach
 
-extension Mach.Message.Server {
+extension Mach.MessageServer {
     /// A peeked preview of a message.
     public struct PeekedMessage {
         /// The advertised size of the message.
