@@ -8,7 +8,7 @@ extension Mach {
     public class MessageQueue: Mach.Port {
         /// Sends a message to the queue.
         public func enqueue(
-            _ message: Mach.Message, options: Set<Mach.Messaging.Option> = [],
+            _ message: Mach.Message, options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws {
             try Mach.Messaging.send(message, to: self, options: options, timeout: timeout)
@@ -18,7 +18,7 @@ extension Mach {
         /// - Warning: This function blocks until a message is received.
         public func dequeue<ReceiveMessage: Mach.Message>(
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
-            options: Set<Mach.Messaging.Option> = [],
+            options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws -> Mach.Message {
             try Mach.Messaging.receive(messageType, on: self, options: options, timeout: timeout)
@@ -33,7 +33,7 @@ extension Mach {
         @available(*, unavailable, message: "Clients can only enqueue messages.")
         override public func dequeue<ReceiveMessage>(
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
-            options: Set<Mach.Messaging.Option> = [],
+            options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws -> Mach.Message where ReceiveMessage: Mach.Message {
             Mach.Message()
@@ -47,7 +47,7 @@ extension Mach {
     public class MessageServer: Mach.MessageQueue {
         @available(*, unavailable, message: "Servers can only dequeue messages.")
         override public func enqueue(
-            _ message: Mach.Message, options: Set<Mach.Messaging.Option> = [],
+            _ message: Mach.Message, options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws {}
 

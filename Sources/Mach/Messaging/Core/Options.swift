@@ -1,28 +1,36 @@
 import Darwin.Mach
 
-extension Mach.Messaging {
-    /// An option for sending and receiving messages.
-    public enum Option: mach_msg_option_t {
-        case send = 0x0000_0001
-        case receive = 0x0000_0002
-        case receiveLarge = 0x0000_0004
-        case receiveLargeIdentity = 0x0000_0008
-        case sendTimeout = 0x0000_0010
-        case sendOverride = 0x0000_0020
-        case sendInterrupt = 0x0000_0040
-        case sendNotify = 0x0000_0080
-        case sendFilterNonfatal = 0x0001_0000
-        case sendTrailer = 0x0002_0000
-        case sendNoImportance = 0x0004_0000
-        case sendSyncOverride = 0x0010_0000
-        case sendPropagateQOS = 0x0020_0000
-        case sendSyncBootstrapCheckin = 0x0080_0000
-        case receiveTimeout = 0x0000_0100
-        case receiveInterrupt = 0x0000_0400
-        case receiveVoucher = 0x0000_0800
-        case receiveGuardedDesc = 0x0000_1000
-        case receiveSyncWait = 0x0000_4000
-        case receiveSyncPeek = 0x0000_8000
-        case strictReply = 0x0000_0200
+extension Mach {
+    /// Options for sending and receiving messages.
+    public struct MessageOptions: OptionSet, Sendable {
+        /// The raw option value.
+        public let rawValue: mach_msg_option_t
+
+        /// Represents an option with a raw value.
+        public init(rawValue: mach_msg_option_t) { self.rawValue = rawValue }
+
+        public static let send = Self(rawValue: MACH_SEND_MSG)
+        public static let receive = Self(rawValue: MACH_RCV_MSG)
+        public static let receiveLarge = Self(rawValue: MACH_RCV_LARGE)
+        public static let receiveLargeIdentity = Self(rawValue: MACH_RCV_LARGE_IDENTITY)
+        public static let sendTimeout = Self(rawValue: MACH_SEND_TIMEOUT)
+        public static let sendOverride = Self(rawValue: MACH_SEND_OVERRIDE)
+        public static let sendInterrupt = Self(rawValue: MACH_SEND_INTERRUPT)
+        public static let sendNotify = Self(rawValue: MACH_SEND_NOTIFY)
+        public static let sendFilterNonfatal = Self(rawValue: MACH_SEND_FILTER_NONFATAL)
+        public static let sendTrailer = Self(rawValue: MACH_SEND_TRAILER)
+        public static let sendNoImportance = Self(rawValue: MACH_SEND_NOIMPORTANCE)
+        public static let sendSyncOverride = Self(rawValue: MACH_SEND_SYNC_OVERRIDE)
+        public static let sendPropagateQOS = Self(rawValue: MACH_SEND_PROPAGATE_QOS)
+        public static let sendSyncBootstrapCheckin = Self(
+            rawValue: MACH_SEND_SYNC_BOOTSTRAP_CHECKIN
+        )
+        public static let receiveTimeout = Self(rawValue: MACH_RCV_TIMEOUT)
+        public static let receiveInterrupt = Self(rawValue: MACH_RCV_INTERRUPT)
+        public static let receiveVoucher = Self(rawValue: MACH_RCV_VOUCHER)
+        public static let receiveGuardedDesc = Self(rawValue: MACH_RCV_GUARDED_DESC)
+        public static let receiveSyncWait = Self(rawValue: MACH_RCV_SYNC_WAIT)
+        public static let receiveSyncPeek = Self(rawValue: MACH_RCV_SYNC_PEEK)
+        public static let strictReply = Self(rawValue: MACH_MSG_STRICT_REPLY)
     }
 }

@@ -27,7 +27,7 @@ extension Mach {
         /// - Throws: An error if the syscall fails.
         public static func syscall(
             _ messageBuffer: UnsafeMutablePointer<mach_msg_header_t>,
-            options: Set<Option> = [],
+            options: Mach.MessageOptions = [],
             sendSize: mach_msg_size_t,
             receiveSize: mach_msg_size_t,
             receivePort: Mach.Port = Mach.Port.Nil,
@@ -37,7 +37,7 @@ extension Mach {
             try Mach.call(
                 mach_msg(
                     messageBuffer,
-                    options.bitmap(),
+                    options.rawValue,
                     sendSize,
                     receiveSize,
                     receivePort.name,
@@ -72,7 +72,7 @@ extension Mach {
         public static func send(
             _ message: Mach.Message,
             to remotePort: Mach.Port? = nil,
-            options: consuming Set<Option> = [],
+            options: consuming Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws {
             options.insert(.send)
@@ -105,7 +105,7 @@ extension Mach {
             receiving receiveType: ReceiveMessage.Type,
             ofMaxSize maxSize: Int = Self.defaultMaxReceiveSize,
             on localPort: Mach.Port? = nil,
-            options: consuming Set<Option> = [],
+            options: consuming Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = 0
         ) throws -> ReceiveMessage {
             options.insert(.send)
@@ -147,7 +147,7 @@ extension Mach {
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
             ofMaxSize maxSize: Int = Self.defaultMaxReceiveSize,
             on localPort: Mach.Port,
-            options: consuming Set<Option> = [],
+            options: consuming Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
         ) throws -> ReceiveMessage {
             options.remove(.send)
