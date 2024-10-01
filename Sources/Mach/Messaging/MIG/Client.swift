@@ -63,7 +63,7 @@ extension Mach {
             if !reply.header.bits.isMessageComplex
                 && reply.header.msgh_size == MemoryLayout<mig_reply_error_t>.size
             {
-                let errorReply = Mach.MIGErrorReply(rawValue: reply.rawValue)
+                let errorReply = Mach.MIGErrorReply(headerPointer: reply.serialize())
                 /// An empty successful reply will have the same size as a MIG error reply, but the return code will be `KERN_SUCCESS`.
                 guard errorReply.payload!.returnCode == KERN_SUCCESS else {
                     throw errorReply.error

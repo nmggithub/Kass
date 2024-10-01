@@ -4,7 +4,7 @@ import Darwin.Mach
 /// Message extensions.
 extension Mach {
     /// A message.
-    open class Message: RawRepresentable {
+    open class Message {
         /// The memory alignment of the message.
         internal static var alignment: Int { MemoryLayout<mach_msg_header_t>.alignment }
 
@@ -39,8 +39,8 @@ extension Mach {
                 + MemoryLayout<mach_msg_max_trailer_t>.size
         }
 
-        /// A pointer to a raw representation of the message.
-        public var rawValue: UnsafeMutablePointer<mach_msg_header_t> {
+        /// Allocates a message buffer, serializes it with the message contents, and returns a header pointer.
+        public func serialize() -> UnsafeMutablePointer<mach_msg_header_t> {
             // Allocate the buffer.
             let startPointer = UnsafeMutableRawPointer.allocate(
                 byteCount: self.bufferSize, alignment: Self.alignment
@@ -60,14 +60,15 @@ extension Mach {
             serializingPointer += MemoryLayout<mach_msg_header_t>.size
 
             // Write the body, if it exists.
-            if let ownBodyPointer = self.body?.allocate() {
+            if let ownBody = self.body {
                 let bodyPointer = serializingPointer.bindMemory(
-                    to: mach_msg_body_t.self, capacity: 1)
-                UnsafeMutableRawPointer(bodyPointer).copyMemory(
-                    from: ownBodyPointer.baseAddress!,  // We control `ownBodyPointer`, so we know it's safe to force-unwrap.
-                    byteCount: ownBodyPointer.count
+                    to: mach_msg_body_t.self, capacity: 1
                 )
-                serializingPointer += ownBodyPointer.count
+                UnsafeMutableRawPointer(bodyPointer).copyMemory(
+                    from: ownBody.serialize(),
+                    byteCount: ownBody.totalSize
+                )
+                serializingPointer += ownBody.totalSize
             }
 
             // Write the payload, if it exists.
@@ -103,13 +104,13 @@ extension Mach {
             return startPointer.bindMemory(to: mach_msg_header_t.self, capacity: 1)
         }
 
-        /// Represents an existing message.
-        public required init(rawValue: UnsafeMutablePointer<mach_msg_header_t>) {
+        /// Deserializes an existing message from a header pointer.
+        public required init(headerPointer: UnsafeMutablePointer<mach_msg_header_t>) {
             // Create a mutable pointer to advance through the buffer.
-            var deserializingPointer = UnsafeMutableRawPointer(rawValue)
+            var deserializingPointer = UnsafeMutableRawPointer(headerPointer)
 
             // Read the header.
-            self.header = rawValue.pointee
+            self.header = headerPointer.pointee
             deserializingPointer += MemoryLayout<mach_msg_header_t>.size
 
             // Read the body, if it exists.

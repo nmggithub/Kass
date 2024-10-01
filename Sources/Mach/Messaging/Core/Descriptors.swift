@@ -2,8 +2,9 @@ import CCompat
 import Darwin.Mach
 import Foundation
 
-/// MARK: - Body
+// MARK: - Body
 extension Mach {
+    /// A body of message descriptors.
     public struct MessageBody {
         /// The descriptors in the body.
         public var descriptors: [any Mach.MessageDescriptor]
@@ -15,7 +16,7 @@ extension Mach {
 
         /// Allocates a buffer for the body, copies the count and descriptors into it, and returns a pointer to the buffer.
         /// - Warning: Deallocation is the responsibility of the caller.
-        public func allocate() -> UnsafeRawBufferPointer {
+        public func serialize() -> UnsafePointer<mach_msg_body_t> {
             let startPointer = UnsafeMutableRawPointer.allocate(
                 byteCount: self.totalSize,
                 alignment: MemoryLayout<mach_msg_body_t>.alignment
@@ -47,7 +48,7 @@ extension Mach {
                     descriptorPointer += descriptor.size
                 }
             }
-            return UnsafeRawBufferPointer(start: startPointer, count: self.totalSize)
+            return UnsafePointer(startPointer.bindMemory(to: mach_msg_body_t.self, capacity: 1))
         }
 
         /// Creates a new message body with a list of descriptors.
@@ -66,7 +67,7 @@ extension Mach {
     }
 }
 
-/// MARK: - Descriptor
+// MARK: - Descriptor
 extension Mach {
     /// A descriptor for a message body.
     public protocol MessageDescriptor {}
@@ -81,7 +82,7 @@ extension Mach.MessageDescriptor {
     public var size: Int { MemoryLayout<Self>.size }
 }
 
-/// MARK: - Descriptor Type
+// MARK: - Descriptor Type
 extension Mach {
     /// A descriptor type.
     public struct MessageDescriptorType: Mach.OptionEnum {
@@ -138,7 +139,7 @@ extension Mach {
     }
 }
 
-/// MARK: - Port Descriptor
+// MARK: - Port Descriptor
 extension mach_msg_port_descriptor_t: Mach.MessageDescriptor {
     /// The port.
     public var port: Mach.Port {
@@ -163,7 +164,7 @@ extension mach_msg_port_descriptor_t: Mach.MessageDescriptor {
     }
 }
 
-/// MARK: - Port Guard Flag
+// MARK: - Port Guard Flag
 extension Mach {
     /// A flag for guarding a port in a message.
     public struct MessagePortGuardFlag: Mach.FlagEnum {
@@ -183,7 +184,7 @@ extension Mach {
     }
 }
 
-/// MARK: - Guarded Port
+// MARK: - Guarded Port
 extension mach_msg_guarded_port_descriptor_t: Mach.MessageDescriptor {
     /// The port.
     public var port: Mach.Port {
@@ -212,7 +213,7 @@ extension mach_msg_guarded_port_descriptor_t: Mach.MessageDescriptor {
     }
 }
 
-/// MARK: - OOL Copy Option
+// MARK: - OOL Copy Option
 extension Mach {
     /// A copy option for OOL descriptors.
     public struct OOLDescriptorCopyOption: OptionEnum {
@@ -229,7 +230,7 @@ extension Mach {
     }
 }
 
-/// MARK: - OOL Descriptor
+// MARK: - OOL Descriptor
 extension mach_msg_ool_descriptor_t: Mach.MessageDescriptor {
     /// The copy option.
     public var copyOption: Mach.OOLDescriptorCopyOption {
@@ -284,7 +285,7 @@ extension mach_msg_ool_descriptor_t: Mach.MessageDescriptor {
     }
 }
 
-/// MARK: - OOL Ports Descriptor
+// MARK: - OOL Ports Descriptor
 extension mach_msg_ool_ports_descriptor_t: Mach.MessageDescriptor {
     /// The ports.
     /// - Important: Setting this property will allocate a new buffer for the ports. Deallocation of
@@ -342,7 +343,7 @@ extension mach_msg_ool_ports_descriptor_t: Mach.MessageDescriptor {
     }
 }
 
-/// MARK: - Descriptor Iterator
+// MARK: - Descriptor Iterator
 extension Mach {
     public struct MessageDescriptorIterator: IteratorProtocol {
         /// The element type.

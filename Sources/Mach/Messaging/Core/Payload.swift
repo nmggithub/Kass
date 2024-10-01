@@ -1,6 +1,6 @@
 import Foundation
 
-/// MARK: - Message Payload
+// MARK: - Message Payload
 extension Mach {
     /// A message payload.
     public protocol MessagePayload {
@@ -36,7 +36,7 @@ extension Mach.MessageWithTypedPayload {
     ) { self.init(descriptors: descriptors, payloadBuffer: payload.toRawPayloadBuffer()) }
 }
 
-/// MARK: - Trivial Payload
+// MARK: - Trivial Payload
 extension Mach {
     /// A payload with a fixed length and trivial representation.
     public protocol TrivialMessagePayload: Mach.MessagePayload, BitwiseCopyable {}
@@ -47,6 +47,7 @@ extension Mach.TrivialMessagePayload {
         guard buffer.count == MemoryLayout<Self>.size else { return nil }
         return buffer.load(as: Self.self)
     }
+
     public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
         return withUnsafeBytes(of: self) {
             UnsafeRawBufferPointer(start: $0.baseAddress, count: $0.count)
@@ -61,6 +62,7 @@ extension Data: Mach.MessagePayload {
     public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? {
         Self(buffer)
     }
+
     /// Converts the `Data` payload to a raw buffer.
     public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
         self.withUnsafeBytes {
@@ -81,6 +83,7 @@ extension Data: Mach.MessagePayload {
 extension Never: Mach.MessagePayload {
     /// Returns `nil`.
     public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? { nil }
+
     /// Returns a zero-length empty buffer.
     public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
         UnsafeRawBufferPointer(start: nil, count: 0)

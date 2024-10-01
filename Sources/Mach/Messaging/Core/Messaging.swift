@@ -70,7 +70,7 @@ extension Mach {
         if timeout != MACH_MSG_TIMEOUT_NONE { options.insert(.sendTimeout) }
         if let remotePortOverride = remotePort { message.header.remotePort = remotePortOverride }
         try Mach.message(
-            message.rawValue, options: options, sendSize: message.sendSize,
+            message.serialize(), options: options, sendSize: message.sendSize,
             receiveSize: 0, receivePort: Mach.Port.Nil, timeout: timeout,
             notifyPort: Mach.Port.Nil
         )
@@ -97,7 +97,7 @@ extension Mach {
         if let remotePortOverride = remotePort { message.header.remotePort = remotePortOverride }
         if let receivePortOverride = receivePort { message.header.localPort = receivePortOverride }
         let originalMessageBuffer = UnsafeRawBufferPointer(
-            start: message.rawValue, count: Int(message.sendSize)
+            start: message.serialize(), count: Int(message.sendSize)
         )
         let rawMessageBuffer = Mach.Message.transientBuffer(maxSize)
         defer { rawMessageBuffer.deallocate() }
@@ -110,7 +110,7 @@ extension Mach {
             receivePort: message.header.localPort, timeout: timeout,
             notifyPort: Mach.Port.Nil
         )
-        return ReceiveMessage.init(rawValue: messageBuffer)
+        return ReceiveMessage.init(headerPointer: messageBuffer)
     }
 
     /// Receives a message.
@@ -135,6 +135,6 @@ extension Mach {
             timeout: timeout,
             notifyPort: Mach.Port.Nil
         )
-        return ReceiveMessage.init(rawValue: messageBuffer)
+        return ReceiveMessage.init(headerPointer: messageBuffer)
     }
 }
