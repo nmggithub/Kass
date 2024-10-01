@@ -7,4 +7,8 @@ module MachC {
         header "mk_timer.h"
         export *
     }
+    module TaskPolicyPrivate {
+        header "task_policy_private.h"
+        export *
+    }
 }
