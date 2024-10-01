@@ -2,7 +2,7 @@ import Darwin.Mach
 import Foundation.NSError
 
 extension Mach {
-    /// Error code from a Mach Interface Generator (MIG) server routine.
+    /// An error code from a MIG server routine.
     public struct MIGErrorCode: Mach.OptionEnum {
         /// The raw error code.
         public let rawValue: kern_return_t
@@ -22,6 +22,7 @@ extension Mach {
         public static let serverDied = Self(rawValue: MIG_SERVER_DIED)
         public static let trailerError = Self(rawValue: MIG_TRAILER_ERROR)
     }
+    /// An error from a MIG server routine.
     public class MIGError: NSError, @unchecked Sendable {
         convenience init(_ error: MIGErrorCode) {
             self.init(

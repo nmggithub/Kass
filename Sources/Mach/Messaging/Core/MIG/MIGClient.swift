@@ -2,6 +2,7 @@ import Darwin.Mach
 import Foundation
 
 extension Mach {
+    /// A client for a MIG subsystem.
     open class MIGClient: Mach.Port {
         /// The base routine ID for the remote MIG subsystem.
         public var baseRoutineId: mach_msg_id_t = 0

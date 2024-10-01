@@ -1,5 +1,6 @@
 extension Mach {
-    public class MIGReply<MIGPayloadType: Mach.MIGPayload>: Mach.Message,
+    /// A MIG request message.
+    public class MIGRequest<MIGPayloadType: Mach.MIGPayload>: Mach.Message,
         Mach.MessageWithTypedPayload
     {
         public typealias PayloadType = MIGPayloadType
