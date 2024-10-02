@@ -1,40 +1,5 @@
-/*
- * Portions Copyright (c) 2022 Apple Inc. All rights reserved.
- *
- * The structures for these policies are not included in the public
- * header files. They are taken from the XNU source code.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
- *
- * This file contains Original Code and/or Modifications of Original Code
- * as defined in and that are subject to the Apple Public Source License
- * Version 2.0 (the 'License'). You may not use this file except in
- * compliance with the License. The rights granted to you under the License
- * may not be used to create, or enable the creation or redistribution of,
- * unlawful or unlicensed copies of an Apple operating system, or to
- * circumvent, violate, or enable the circumvention or violation of, any
- * terms of an Apple operating system software license agreement.
- *
- * Please obtain a copy of the License at
- * http://www.opensource.apple.com/apsl/ and read it before using this file.
- *
- * The Original Code and all software distributed under the License are
- * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
- * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
- * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
- * Please see the License for the specific language governing rights and
- * limitations under the License.
- *
- * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
- */
-
 import Darwin.Mach
-
-private let THREAD_POLICY_STATE: thread_policy_flavor_t = 6
-private let THREAD_QOS_POLICY: thread_policy_flavor_t = 9
-private let THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY: thread_policy_flavor_t = 10
-private let THREAD_REQUESTED_STATE_POLICY: thread_policy_flavor_t = 11
+import MachC.ThreadPolicyPrivate
 
 extension Mach {
     /// A thread's policy state.
@@ -85,54 +50,54 @@ extension Mach {
 
 extension Mach.ThreadPolicyFlavor {
     /// A thread's policy state.
-    public static let state = Self(rawValue: THREAD_POLICY_STATE)
+    public static let state = Self(rawValue: UInt32(THREAD_POLICY_STATE))
 
     /// A thread's QoS policy.
-    public static let qos = Self(rawValue: THREAD_QOS_POLICY)
+    public static let qos = Self(rawValue: UInt32(THREAD_QOS_POLICY))
 
     /// A thread's time constraint policy (with a priority field).
     public static let timeConstraintWithPriority = Self(
-        rawValue: THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY
+        rawValue: UInt32(THREAD_TIME_CONSTRAINT_WITH_PRIORITY_POLICY)
     )
 
     /// A thread's requested QoS policy.
-    public static let requestedState = Self(rawValue: THREAD_REQUESTED_STATE_POLICY)
+    public static let requestedState = Self(rawValue: UInt32(THREAD_REQUESTED_STATE_POLICY))
 }
 
 extension Mach.ThreadPolicyManager {
     /// The thread's policy state.
     /// - Warning: This uses a private policy flavor. Use with caution.
-    public var policyState: Mach.ThreadPolicyState {
+    public var policyState: thread_policy_state {
         get throws { try self.get(.state) }
     }
 
     /// The thread's QoS policy.
     /// - Warning: This uses a private policy flavor. Use with caution.
-    public var qosPolicy: Mach.ThreadQoSPolicy {
+    public var qosPolicy: thread_qos_policy {
         get throws { try self.get(.qos) }
     }
 
     /// Sets the thread's QoS policy.
     /// - Warning: This uses a private policy flavor. Use with caution.
     public func setQoSPolicy(
-        to qosPolicy: Mach.ThreadQoSPolicy
+        to qosPolicy: thread_qos_policy
     ) throws { try self.set(.qos, to: qosPolicy) }
 
     /// The thread's time constraint policy (with a priority field).
     /// - Warning: This uses a private policy flavor. Use with caution.
-    public var timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy {
+    public var timeConstraintWithPriorityPolicy: thread_time_constraint_with_priority_policy {
         get throws { try self.get(.timeConstraintWithPriority) }
     }
 
     /// Sets the thread's time constraint policy (with a priority field).
     /// - Warning: This uses a private policy flavor. Use with caution.
     public func setTimeConstraintWithPriorityPolicy(
-        to timeConstraintWithPriorityPolicy: Mach.ThreadTimeConstraintWithPriorityPolicy
+        to timeConstraintWithPriorityPolicy: thread_time_constraint_with_priority_policy
     ) throws { try self.set(.timeConstraintWithPriority, to: timeConstraintWithPriorityPolicy) }
 
     /// The thread's requested QoS policy.
     /// - Warning: This uses a private policy flavor. Use with caution.
-    public var requestedQoSPolicy: Mach.ThreadRequestedQoSPolicy {
+    public var requestedQoSPolicy: thread_requested_qos_policy {
         get throws { try self.get(.requestedState) }
     }
 }

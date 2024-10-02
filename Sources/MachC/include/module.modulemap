@@ -11,4 +11,13 @@ module MachC {
         header "task_policy_private.h"
         export *
     }
+    module ThreadPolicyPrivate {
+        header "thread_policy_private.h"
+        export *
+    }
+
+    module VMStatistics {
+        header "vm_statistics.h"
+        export *
+    }
 }

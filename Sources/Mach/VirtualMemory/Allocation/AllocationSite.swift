@@ -1,123 +1,160 @@
 import Darwin.Mach
+import MachC.VMStatistics
+
+extension Mach {
+    public struct MemoryInfoSiteType: Mach.OptionEnum {
+        public var rawValue: UInt8
+        public init(rawValue: UInt8) { self.rawValue = rawValue }
+
+        public static let tag = Self(rawValue: UInt8(VM_KERN_SITE_TAG))
+
+        public static let kmod = Self(rawValue: UInt8(VM_KERN_SITE_KMOD))
+
+        public static let kernel = Self(rawValue: UInt8(VM_KERN_SITE_KERNEL))
+
+        public static let counter = Self(rawValue: UInt8(VM_KERN_SITE_COUNTER))
+    }
+
+    public struct MemoryInfoTag: Mach.OptionEnum {
+        public var rawValue: UInt16
+        public init(rawValue: UInt16) { self.rawValue = rawValue }
+
+        public static let none = Self(rawValue: UInt16(VM_KERN_MEMORY_NONE))
+
+        public static let osfmk = Self(rawValue: UInt16(VM_KERN_MEMORY_OSFMK))
+
+        public static let bsd = Self(rawValue: UInt16(VM_KERN_MEMORY_BSD))
+
+        public static let iokit = Self(rawValue: UInt16(VM_KERN_MEMORY_IOKIT))
+
+        public static let libkern = Self(rawValue: UInt16(VM_KERN_MEMORY_LIBKERN))
+
+        public static let oskext = Self(rawValue: UInt16(VM_KERN_MEMORY_OSKEXT))
+
+        public static let kext = Self(rawValue: UInt16(VM_KERN_MEMORY_KEXT))
+
+        public static let ipc = Self(rawValue: UInt16(VM_KERN_MEMORY_IPC))
+
+        public static let stack = Self(rawValue: UInt16(VM_KERN_MEMORY_STACK))
+
+        public static let cpu = Self(rawValue: UInt16(VM_KERN_MEMORY_CPU))
+
+        public static let pmap = Self(rawValue: UInt16(VM_KERN_MEMORY_PMAP))
+
+        public static let pte = Self(rawValue: UInt16(VM_KERN_MEMORY_PTE))
+
+        public static let zone = Self(rawValue: UInt16(VM_KERN_MEMORY_ZONE))
+
+        public static let kalloc = Self(rawValue: UInt16(VM_KERN_MEMORY_KALLOC))
+
+        public static let compressor = Self(rawValue: UInt16(VM_KERN_MEMORY_COMPRESSOR))
+
+        public static let compressedData = Self(rawValue: UInt16(VM_KERN_MEMORY_COMPRESSED_DATA))
+
+        public static let phantomCache = Self(rawValue: UInt16(VM_KERN_MEMORY_PHANTOM_CACHE))
+
+        public static let waitq = Self(rawValue: UInt16(VM_KERN_MEMORY_WAITQ))
+
+        public static let diag = Self(rawValue: UInt16(VM_KERN_MEMORY_DIAG))
+
+        public static let log = Self(rawValue: UInt16(VM_KERN_MEMORY_LOG))
+
+        public static let file = Self(rawValue: UInt16(VM_KERN_MEMORY_FILE))
+
+        public static let mbuf = Self(rawValue: UInt16(VM_KERN_MEMORY_MBUF))
+
+        public static let ubc = Self(rawValue: UInt16(VM_KERN_MEMORY_UBC))
+
+        public static let security = Self(rawValue: UInt16(VM_KERN_MEMORY_SECURITY))
+
+        public static let mlock = Self(rawValue: UInt16(VM_KERN_MEMORY_MLOCK))
+
+        public static let reason = Self(rawValue: UInt16(VM_KERN_MEMORY_REASON))
+
+        public static let skywalk = Self(rawValue: UInt16(VM_KERN_MEMORY_SKYWALK))
+
+        public static let ltable = Self(rawValue: UInt16(VM_KERN_MEMORY_LTABLE))
+
+        public static let hv = Self(rawValue: UInt16(VM_KERN_MEMORY_HV))
+
+        public static let kallocData = Self(rawValue: UInt16(VM_KERN_MEMORY_KALLOC_DATA))
+
+        public static let retired = Self(rawValue: UInt16(VM_KERN_MEMORY_RETIRED))
+
+        public static let kallocType = Self(rawValue: UInt16(VM_KERN_MEMORY_KALLOC_TYPE))
+
+        public static let triage = Self(rawValue: UInt16(VM_KERN_MEMORY_TRIAGE))
+
+        public static let recount = Self(rawValue: UInt16(VM_KERN_MEMORY_RECOUNT))
+
+        public static let exclaves = Self(rawValue: UInt16(VM_KERN_MEMORY_EXCLAVES))
+    }
+
+    public struct MemoryInfoCountType: Mach.OptionEnum {
+        public var rawValue: UInt64
+        public init(rawValue: UInt64) { self.rawValue = rawValue }
+
+        public static let managed = Self(rawValue: UInt64(VM_KERN_COUNT_MANAGED))
+
+        public static let reserved = Self(rawValue: UInt64(VM_KERN_COUNT_RESERVED))
+
+        public static let wired = Self(rawValue: UInt64(VM_KERN_COUNT_WIRED))
+
+        public static let wiredManaged = Self(rawValue: UInt64(VM_KERN_COUNT_WIRED_MANAGED))
+
+        public static let stolen = Self(rawValue: UInt64(VM_KERN_COUNT_STOLEN))
+
+        public static let loPage = Self(rawValue: UInt64(VM_KERN_COUNT_LOPAGE))
+
+        public static let mapZone = Self(rawValue: UInt64(VM_KERN_COUNT_MAP_ZONE))
+
+        public static let mapKernel = Self(rawValue: UInt64(VM_KERN_COUNT_MAP_KERNEL))
+
+        public static let mapKalloc = Self(rawValue: UInt64(VM_KERN_COUNT_MAP_KALLOC))
+
+        public static let wiredBoot = Self(rawValue: UInt64(VM_KERN_COUNT_WIRED_BOOT))
+
+        public static let bootStolen = Self(rawValue: UInt64(VM_KERN_COUNT_BOOT_STOLEN))
+
+        public static let wiredStaticKernelcache = Self(
+            rawValue: UInt64(VM_KERN_COUNT_WIRED_STATIC_KERNELCACHE))
+
+        public static let mapKallocLargeData = Self(
+            rawValue: UInt64(VM_KERN_COUNT_MAP_KALLOC_LARGE_DATA))
+
+        public static let mapKernelData = Self(rawValue: UInt64(VM_KERN_COUNT_MAP_KERNEL_DATA))
+    }
+}
+
+extension mach_memory_info {
+    public var nameString: String {
+        withUnsafePointer(to: self.name) {
+            pointer in
+            pointer.withMemoryRebound(
+                to: CChar.self,
+                capacity: Int(MACH_MEMORY_INFO_NAME_MAX_LEN)
+            ) { String(cString: $0) }
+        }
+    }
+
+    public var siteType: Mach.MemoryInfoSiteType {
+        Mach.MemoryInfoSiteType(rawValue: UInt8(self.flags & UInt64(VM_KERN_SITE_TYPE)))
+    }
+
+    public var tagValue: Mach.MemoryInfoTag? {
+        guard self.siteType == .tag else { return nil }
+        return Mach.MemoryInfoTag(rawValue: UInt16(self.tag))
+    }
+
+    public var counterType: Mach.MemoryInfoCountType? {
+        guard self.siteType == .counter else { return nil }
+        return Mach.MemoryInfoCountType(rawValue: self.site)
+    }
+}
 
 extension Mach.VM {
-    /// Information about an allocation site.
-    public class AllocationSite: RawRepresentable {
-        /// The raw information about the allocation site.
-        public let rawValue: mach_memory_info_t
-        /// Represents the allocation site with the given raw information.
-        /// - Parameter rawValue: The raw information about the allocation site.
-        public required init(rawValue: mach_memory_info_t) {
-            self.rawValue = rawValue
-        }
-        /// A type of allocation site.
-        public enum SiteType: UInt8 {
-            case unknown = 0xFF
-            case tag = 0
-            case kmod = 1
-            case kernel = 2
-            case counter = 3
-        }
-        /// The name of the allocation site.
-        public var name: String {
-            withUnsafePointer(to: self.rawValue.name) {
-                pointer in
-                pointer.withMemoryRebound(
-                    to: CChar.self,
-                    capacity: Int(MACH_MEMORY_INFO_NAME_MAX_LEN)
-                ) { String(cString: $0) }
-            }
-        }
-        /// The type of the allocation site.
-        public var type: SiteType {
-            SiteType(rawValue: UInt8(rawValue.flags & 0xFF)) ?? .unknown
-        }
-        /// The size of the allocation site.
-        public var size: UInt64 { rawValue.size }
-    }
-
-    /// Information about an allocation site with a tag.
-    public class TaggedAllocationSite: AllocationSite {
-        /// An allocation site tag.
-        public enum Tag: UInt16 {  // vm_tag_t in the kernel
-            case unknown = 0xFFFF
-            case none = 0
-            case osfmk = 1
-            case bsd = 2
-            case iokit = 3
-            case libkern = 4
-            case oskext = 5
-            case kext = 6
-            case ipc = 7
-            case stack = 8
-            case cpu = 9
-            case pmap = 10
-            case pte = 11
-            case zone = 12
-            case kalloc = 13
-            case compressor = 14
-            case compressedData = 15
-            case phantomCache = 16
-            case waitq = 17
-            case diag = 18
-            case log = 19
-            case file = 20
-            case mbuf = 21
-            case ubc = 22
-            case security = 23
-            case mlock = 24
-            case reason = 25
-            case skywalk = 26
-            case ltable = 27
-            case hv = 28
-            case kallocData = 29
-            case retired = 30
-            case kallocType = 31
-            case triage = 32
-            case recount = 33
-            // where is 34?
-            case exclaves = 35
-        }
-        /// The tag for the allocation site.
-        public var tag: Tag {
-            Tag(rawValue: rawValue.tag) ?? .unknown
-        }
-    }
-
-    /// Information about an "allocation site" that's actually a counter.
-    public class CounterAllocationSite: AllocationSite {
-        /// A type of counter.
-        public enum CounterType: UInt64 {
-            case unknown = 0xFFFF
-            case managed = 0
-            case reserved = 1
-            case wired = 2
-            case wiredManaged = 3
-            case stolen = 4
-            case loPage = 5
-            case mapZone = 6
-            case mapKernel = 7
-            case mapKalloc = 8
-            case wiredBoot = 9
-            case bootStolen = 10
-            case wiredStaticKernelcache = 11
-            // these last two don't appear to be used
-            case mapKallocLargeData = 12
-            case mapKernelData = 13
-        }
-        /// The type of the counter.
-        public var counterType: CounterType {
-            CounterType(rawValue: rawValue.site) ?? .unknown
-        }
-        public var free: UInt64 { rawValue.free }
-        public var mapped: UInt64 { rawValue.mapped }
-    }
-
     /// Gets the allocation sites in a host.
-    /// - Parameter host: The host to get the allocation sites for.
-    /// - Throws: If the allocation sites cannot be retrieved.
-    /// - Returns: The allocation sites in the host.
-    public static func allocationSites(in host: Mach.Host = .current) throws -> [AllocationSite] {
+    public static func allocationSites(in host: Mach.Host = .current) throws -> [mach_memory_info] {
         // These are ignored, but required by the kernel call.
         var names: mach_zone_name_array_t?
         var nameCount = mach_msg_type_number_t.max
@@ -132,13 +169,6 @@ extension Mach.VM {
                 &memoryInfos, &memoryInfoCount
             )
         )
-        return (0..<Int(memoryInfoCount)).map {
-            let site = AllocationSite(rawValue: memoryInfos![$0])
-            return switch site.type {
-            case .tag: TaggedAllocationSite(rawValue: site.rawValue)
-            case .counter: CounterAllocationSite(rawValue: site.rawValue)
-            default: site
-            }
-        }
+        return (0..<Int(memoryInfoCount)).map { memoryInfos![$0] }
     }
 }
