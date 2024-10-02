@@ -1,10 +1,9 @@
-import CCompat
 import MachC.MKTimer
 @_exported import MachCore
 
 extension Mach {
-    /// A flag for arming a timer.
-    public struct TimerArmFlag: FlagEnum {
+    /// Flags for arming a timer.
+    public struct TimerArmFlags: OptionSet, Sendable {
         /// The raw value of the flag.
         public let rawValue: Int32
 
@@ -38,11 +37,11 @@ extension Mach {
         }
 
         /// Arms the timer to expire at a given time.
-        public func arm(expireTime: UInt64, flags: Set<Mach.TimerArmFlag> = [], leeway: UInt64 = 0)
+        public func arm(expireTime: UInt64, flags: Mach.TimerArmFlags = [], leeway: UInt64 = 0)
             throws
         {
             try Mach.call(
-                mk_timer_arm_leeway(self.name, UInt64(flags.bitmap()), expireTime, leeway)
+                mk_timer_arm_leeway(self.name, UInt64(flags.rawValue), expireTime, leeway)
             )
         }
 
