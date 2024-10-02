@@ -6,9 +6,9 @@ extension Mach {
     public protocol MIGPayload: Mach.MessagePayload {}
 
     /// A payload for a MIG message containing an NDR record.
-    public protocol MIGPayloadWithNDR: Mach.MIGPayload {
+    /// - Important: The NDR record must be the first field in the payload.
+    public protocol MIGPayloadWithNDR: Mach.MIGPayload, Mach.TrivialMessagePayload {
         /// The NDR record for the payload.
-        /// - Important: The NDR record must be the first field in the payload.
         var NDR: NDR_record_t { get }
     }
 

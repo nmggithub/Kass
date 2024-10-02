@@ -14,7 +14,7 @@ extension Mach {
         public var body: Mach.MessageBody?
 
         /// The message payload buffer.
-        public var payloadBuffer: UnsafeRawBufferPointer?
+        public var payload: UnsafeRawBufferPointer?
 
         /// The message trailer.
         public var trailer: mach_msg_max_trailer_t?
@@ -23,7 +23,7 @@ extension Mach {
         internal var bodySize: Int { body?.totalSize ?? 0 }
 
         /// The size of the message payload.
-        internal var payloadSize: Int { payloadBuffer?.count ?? 0 }
+        internal var payloadSize: Int { payload?.count ?? 0 }
 
         /// The size of the message payload as advertised in the header.
         internal var advertisedPayloadSize: Int {
@@ -71,7 +71,7 @@ extension Mach {
             }
 
             // Write the payload, if it exists.
-            if let ownPayloadBuffer = self.payloadBuffer {
+            if let ownPayloadBuffer = self.payload {
                 ownPayloadBuffer.copyBytes(
                     to: UnsafeMutableRawBufferPointer(
                         start: serializingPointer, count: ownPayloadBuffer.count
@@ -126,7 +126,7 @@ extension Mach {
             deserializingPointer += self.bodySize
 
             // Read the payload, if it exists.
-            self.payloadBuffer =
+            self.payload =
                 switch self.advertisedPayloadSize {
                 case 0: nil
                 case let size:
@@ -144,14 +144,14 @@ extension Mach {
         /// Creates a message with a set of descriptors and a payload.
         public required init(
             descriptors: [any Mach.MessageDescriptor]? = nil,
-            payloadBuffer: UnsafeRawBufferPointer? = nil
+            payloadBytes: UnsafeRawBufferPointer? = nil
         ) {
             self.header = mach_msg_header_t()
             if let descriptors = descriptors {
                 self.body = Mach.MessageBody(descriptors: descriptors)
                 self.header.bits.isMessageComplex = true
             }
-            self.payloadBuffer = payloadBuffer
+            self.payload = payloadBytes
         }
     }
 }

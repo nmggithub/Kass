@@ -15,25 +15,25 @@ extension Mach {
     public protocol MessageWithTypedPayload: Mach.Message {
         associatedtype PayloadType: Mach.MessagePayload
         /// The typed message payload.
-        var payload: PayloadType? { get set }
+        var typedPayload: PayloadType? { get set }
     }
 }
 
 extension Mach.MessageWithTypedPayload {
     /// The typed message payload.
-    public var payload: PayloadType? {
+    public var typedPayload: PayloadType? {
         get {
-            guard let payloadBuffer = payloadBuffer else { return nil }
+            guard let payloadBuffer = payload else { return nil }
             return PayloadType.fromRawPayloadBuffer(payloadBuffer)
         }
-        set { payloadBuffer = newValue?.toRawPayloadBuffer() }
+        set { payload = newValue?.toRawPayloadBuffer() }
     }
 
     /// Creates a message with a set of descriptors and a payload.
     public init(
         descriptors: [any Mach.MessageDescriptor]? = nil,
         payload: PayloadType
-    ) { self.init(descriptors: descriptors, payloadBuffer: payload.toRawPayloadBuffer()) }
+    ) { self.init(descriptors: descriptors, payloadBytes: payload.toRawPayloadBuffer()) }
 }
 
 // MARK: - Trivial Payload

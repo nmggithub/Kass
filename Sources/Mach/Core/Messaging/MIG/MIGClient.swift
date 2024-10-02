@@ -49,9 +49,9 @@ extension Mach {
             request.header.msgh_id = routineId
             request.header.bits.remotePortDisposition = .copySend  // make a copy of the send right so we can reuse the port
             request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right so we can receive the reply
-            let reply = try Mach.sendMessage(
+            let reply = try Mach.Message.send(
                 request, to: self,
-                receiving: replyType, on: replyPort
+                receiving: replyType, from: replyPort
             )
             guard reply.header.msgh_id != MACH_NOTIFY_SEND_ONCE else {
                 throw Mach.MIGError(.serverDied)
@@ -66,7 +66,7 @@ extension Mach {
             {
                 let errorReply = Mach.MIGErrorReply(headerPointer: reply.serialize())
                 /// An empty successful reply will have the same size as a MIG error reply, but the return code will be `KERN_SUCCESS`.
-                guard errorReply.payload!.returnCode == KERN_SUCCESS else {
+                guard errorReply.typedPayload!.returnCode == KERN_SUCCESS else {
                     throw errorReply.error
                 }
             }

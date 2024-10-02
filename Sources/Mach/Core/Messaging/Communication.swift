@@ -32,7 +32,7 @@ extension Mach.Message {
 }
 
 // MARK: - Sending and Receiving
-extension Mach {
+extension Mach.Message {
     /// Calls the `mach_msg` kernel call.
     public static func message(
         _ messageBuffer: UnsafeMutablePointer<mach_msg_header_t>,
@@ -58,7 +58,7 @@ extension Mach {
 
     /// Sends a message.
     /// - Warning: The `remotePort` parameter will override the remote port in the message header.
-    public static func sendMessage(
+    public static func send(
         _ message: Mach.Message,
         to remotePort: Mach.Port? = nil,
         options: consuming Mach.MessageOptions = [],
@@ -68,7 +68,7 @@ extension Mach {
         options.remove(.receive)
         if timeout != MACH_MSG_TIMEOUT_NONE { options.insert(.sendTimeout) }
         if let remotePortOverride = remotePort { message.header.remotePort = remotePortOverride }
-        try Mach.message(
+        try Self.message(
             message.serialize(), options: options, sendSize: message.sendSize,
             receiveSize: 0, receivePort: Mach.Port.Nil, timeout: timeout,
             notifyPort: Mach.Port.Nil
@@ -79,12 +79,12 @@ extension Mach {
     /// - Warning: This function will block until a message is received.
     /// - Warning: The `remotePort` parameter will override the remote port in the message header.
     /// - Warning: The `receivePort` parameter will override the local port in the message header.
-    public static func sendMessage<ReceiveMessage: Mach.Message>(
+    public static func send<ReceiveMessage: Mach.Message>(
         _ message: Mach.Message,
         to remotePort: Mach.Port? = nil,
         receiving receiveType: ReceiveMessage.Type,
         ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
-        on receivePort: Mach.Port? = nil,
+        from receivePort: Mach.Port? = nil,
         options: consuming Mach.MessageOptions = [],
         timeout: mach_msg_timeout_t = 0
     ) throws -> ReceiveMessage {
@@ -104,7 +104,7 @@ extension Mach {
         rawMessageBuffer.copyMemory(from: originalMessageBuffer)
         let messageBuffer = rawMessageBuffer.baseAddress!  // We control `rawMessageBuffer`, so this is safe.
             .bindMemory(to: mach_msg_header_t.self, capacity: 1)
-        try Mach.message(
+        try Self.message(
             messageBuffer, options: options, sendSize: message.sendSize,
             receiveSize: mach_msg_size_t(rawMessageBuffer.count),
             receivePort: message.header.localPort, timeout: timeout,
@@ -115,10 +115,10 @@ extension Mach {
 
     /// Receives a message.
     /// - Warning: This function will block until a message is received.
-    public static func receiveMessage<ReceiveMessage: Mach.Message>(
+    public static func receive<ReceiveMessage: Mach.Message>(
         _ messageType: ReceiveMessage.Type = Mach.Message.self,
         ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
-        on localPort: Mach.Port,
+        from localPort: Mach.Port,
         options: consuming Mach.MessageOptions = [],
         timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
     ) throws -> ReceiveMessage {
@@ -130,7 +130,7 @@ extension Mach {
         let messageBuffer = rawMessageBuffer.baseAddress!.bindMemory(
             to: mach_msg_header_t.self, capacity: 1
         )
-        try Mach.message(
+        try Self.message(
             messageBuffer, options: options, sendSize: 0,
             receiveSize: mach_msg_size_t(rawMessageBuffer.count), receivePort: localPort,
             timeout: timeout,

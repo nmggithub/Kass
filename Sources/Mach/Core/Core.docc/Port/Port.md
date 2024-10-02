@@ -77,10 +77,6 @@
 - ``destroy()``
 - ``destruct(guard:sendRightDelta:)``
 
-### Service-Related Ports
-
-- ``Mach/ServicePort``
-- ``Mach/ConnectionPort``
 
 ### Comparing Ports
 

@@ -28,4 +28,4 @@ To see a full list of payload types available in this library, visit the ``Mach/
 ### The Payload
 
 - ``PayloadType``
-- ``payload``
+- ``typedPayload``

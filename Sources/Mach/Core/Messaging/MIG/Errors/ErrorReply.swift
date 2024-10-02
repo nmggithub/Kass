@@ -8,7 +8,7 @@ extension Mach {
     public final class MIGErrorReply: Mach.MIGReply<Mach.MIGErrorReply.ErrorPayload> {
         /// The error represented by the reply.
         public var error: Swift.Error {
-            NSError(domain: NSMachErrorDomain, code: Int(self.payload!.returnCode))
+            NSError(domain: NSMachErrorDomain, code: Int(self.typedPayload!.returnCode))
         }
         public struct ErrorPayload: Mach.MIGPayload, Mach.TrivialMessagePayload {
             // based on `mig_reply_error_t`
