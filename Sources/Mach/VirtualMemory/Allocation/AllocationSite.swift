@@ -15,8 +15,27 @@ extension Mach {
         public static let counter = Self(rawValue: UInt8(VM_KERN_SITE_COUNTER))
     }
 
+    public struct MemoryInfoFlags: OptionSet, Sendable {
+        public var rawValue: UInt32
+        public init(rawValue: UInt32) {
+            self.rawValue = rawValue & ~UInt32(VM_KERN_SITE_TYPE)
+        }
+
+        public static let wired = Self(rawValue: UInt32(VM_KERN_SITE_WIRED))
+
+        public static let hide = Self(rawValue: UInt32(VM_KERN_SITE_HIDE))
+
+        public static let named = Self(rawValue: UInt32(VM_KERN_SITE_NAMED))
+
+        public static let zone = Self(rawValue: UInt32(VM_KERN_SITE_ZONE))
+
+        public static let zoneView = Self(rawValue: UInt32(VM_KERN_SITE_ZONE_VIEW))
+
+        public static let kalloc = Self(rawValue: UInt32(VM_KERN_SITE_KALLOC))
+    }
+
     public struct MemoryInfoTag: Mach.OptionEnum {
-        public var rawValue: UInt16
+        public let rawValue: UInt16
         public init(rawValue: UInt16) { self.rawValue = rawValue }
 
         public static let none = Self(rawValue: UInt16(VM_KERN_MEMORY_NONE))
@@ -91,7 +110,7 @@ extension Mach {
     }
 
     public struct MemoryInfoCountType: Mach.OptionEnum {
-        public var rawValue: UInt64
+        public let rawValue: UInt64
         public init(rawValue: UInt64) { self.rawValue = rawValue }
 
         public static let managed = Self(rawValue: UInt64(VM_KERN_COUNT_MANAGED))
@@ -127,14 +146,15 @@ extension Mach {
 }
 
 extension mach_memory_info {
-    public var nameString: String {
-        withUnsafePointer(to: self.name) {
+    public var nameString: String? {
+        let maybeName = withUnsafePointer(to: self.name) {
             pointer in
             pointer.withMemoryRebound(
                 to: CChar.self,
                 capacity: Int(MACH_MEMORY_INFO_NAME_MAX_LEN)
             ) { String(cString: $0) }
         }
+        return maybeName != "" ? maybeName : nil
     }
 
     public var siteType: Mach.MemoryInfoSiteType {
@@ -149,6 +169,10 @@ extension mach_memory_info {
     public var counterType: Mach.MemoryInfoCountType? {
         guard self.siteType == .counter else { return nil }
         return Mach.MemoryInfoCountType(rawValue: self.site)
+    }
+
+    public var flagsSet: Mach.MemoryInfoFlags {
+        Mach.MemoryInfoFlags(rawValue: UInt32(self.flags))
     }
 }
 
