@@ -119,5 +119,39 @@ extension Mach {
 extension Mach {
     /// A structure representing an enumeration of options.
     public protocol OptionEnum: RawRepresentable, Equatable, Sendable
-    where RawValue: BinaryInteger {}
+    where RawValue: BinaryInteger {
+
+    }
+
+    /// A structure representing an enumeration of options with names.
+    public protocol NamedOptionEnum: OptionEnum, CaseIterable, CustomStringConvertible {
+        /// The name of the option, if it can be determined.
+        var name: String? { get }
+
+        /// All known cases of the option.
+        static var allCases: [Self] { get }
+
+        /// Represents an option with a raw value.
+        init(rawValue: RawValue)
+
+        /// Represents an option with an optional name and raw value.
+        init(name: String?, rawValue: RawValue)
+    }
+}
+
+extension Mach.NamedOptionEnum {
+    /// The description of the option.
+    public var description: String {
+        let className = String(describing: Self.self)
+        let caseName = "\(name ?? "unknown") (\(rawValue))"
+        return "\(className): \(caseName)"
+    }
+    /// Represents an option with a raw value, taking one of the known cases if the raw value matches one.
+    public init(rawValue: RawValue) {
+        guard let value = Self.allCases.first(where: { $0.rawValue == rawValue }) else {
+            self.init(name: nil, rawValue: rawValue)
+            return
+        }
+        self = value
+    }
 }

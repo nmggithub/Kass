@@ -7,6 +7,7 @@ This core module exposes protocols that are used by other sub-modules. Direct us
 ### Enum Protocols
 
 - ``Mach/OptionEnum``
+- ``Mach/NamedOptionEnum``
 
 ### Flavored Data Protocols
 
