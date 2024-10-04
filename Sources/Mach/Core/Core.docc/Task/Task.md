@@ -160,6 +160,11 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``setPhysicalFootprintLimit(_:)``
 
+### Allocating Virtual Memory
+
+- ``Mach/VMAllocationFlags``
+- ``allocate(address:size:flags:physicallyContiguous:)``
+
 ### Managing kernelcache Objects
 
 - ``kernelcacheData(of:as:)``

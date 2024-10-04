@@ -65,3 +65,13 @@
 - ``clock(_:)``
 - ``calendarClock``
 - ``systemClock``
+
+### Getting Zones
+
+- ``Mach/Zone``
+- ``zones``
+
+### Getting Memory Info
+
+- ``Darwin/mach_memory_info``
+- ``memoryInfos``

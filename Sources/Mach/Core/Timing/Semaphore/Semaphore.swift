@@ -6,7 +6,7 @@ extension Mach {
         /// The name of the policy option, if it can be determined.
         public var name: String?
 
-        /// Represents a policy option with an optional name and a raw value.
+        /// Represents a raw policy option with an optional name.
         public init(name: String?, rawValue: sync_policy_t) {
             self.name = name
             self.rawValue = rawValue

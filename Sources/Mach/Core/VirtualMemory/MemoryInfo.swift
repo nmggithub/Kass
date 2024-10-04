@@ -5,7 +5,7 @@ extension Mach {
     // MARK: - Info Types
     /// A type of memory info.
     public struct MemoryInfoType: Mach.OptionEnum, Mach.NamedOptionEnum {
-        /// Represents a info type with an optional name and a raw value.
+        /// Represents a raw info type with an optional name.
         public init(name: String?, rawValue: UInt8) {
             self.name = name
             self.rawValue = rawValue
@@ -36,7 +36,7 @@ extension Mach {
     // MARK: - Flags
     /// Flags for memory info.
     public struct MemoryInfoFlags: Mach.NamedOptionEnum, OptionSet, Sendable {
-        /// Represents a flag with an optional name and a raw value.
+        /// Represents a raw flag with an optional name.
         public init(name: String?, rawValue: UInt32) {
             self.name = name
             self.rawValue = rawValue & ~UInt32(VM_KERN_SITE_TYPE)
@@ -80,7 +80,7 @@ extension Mach {
     // MARK: - Tags
     /// A tag for memory info.
     public struct MemoryInfoTag: Mach.OptionEnum, Mach.NamedOptionEnum {
-        /// Represents a tag with an optional name and a raw value.
+        /// Represents a raw tag with an optional name.
         public init(name: String?, rawValue: UInt16) {
             self.name = name
             self.rawValue = rawValue
@@ -187,7 +187,7 @@ extension Mach {
     // MARK: - Counters
     /// A type of memory counter.
     public struct MemoryInfoCounterType: Mach.OptionEnum, Mach.NamedOptionEnum {
-        /// Represents a counter type with an optional name and a raw value.
+        /// Represents a raw counter type with an optional name.
         public init(name: String?, rawValue: UInt64) {
             self.name = name
             self.rawValue = rawValue
@@ -300,31 +300,7 @@ extension mach_memory_info {
     }
 }
 
-// MARK: - mach_zone_name
-extension mach_zone_name {
-    public var nameString: String? {
-        let maybeName = withUnsafePointer(to: self.mzn_name) {
-            pointer in
-            pointer.withMemoryRebound(
-                to: CChar.self,
-                capacity: Int(MACH_ZONE_NAME_MAX_LEN)
-            ) { String(cString: $0) }
-        }
-        return maybeName != "" ? maybeName : nil
-    }
-}
-
-// MARK: - Zone
-extension Mach {
-    /// A zone.
-    /// - Note: For historical reasons, the zone name type is a separate type from the zone info.
-    public struct Zone {
-        public let name: mach_zone_name
-        public let info: mach_zone_info_data
-    }
-}
-
-// MARK: - Functions
+// MARK: - Memory Infos
 extension Mach.Host {
     /// The memory infos in the host.
     public var memoryInfos: [mach_memory_info] {
@@ -344,26 +320,6 @@ extension Mach.Host {
                 )
             )
             return (0..<Int(memoryInfoCount)).map { memoryInfos![$0] }
-        }
-    }
-
-    /// The zones in the host.
-    public var zones: [Mach.Zone] {
-        get throws {
-            var names: mach_zone_name_array_t?
-            var nameCount = mach_msg_type_number_t.max
-            var infos: mach_zone_info_array_t?
-            var infoCount = mach_msg_type_number_t.max
-
-            try Mach.call(mach_zone_info(self.name, &names, &nameCount, &infos, &infoCount))
-
-            guard nameCount == infoCount else { fatalError("Zone names and infos count mismatch!") }
-
-            return (0..<Int(infoCount)).map {
-                // It's not explicitly stated in the documentation, but the arrays should hopefully
-                // be the same length and represent the same zones in the same order.
-                Mach.Zone(name: names![$0], info: infos![$0])
-            }
         }
     }
 }

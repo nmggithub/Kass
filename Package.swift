@@ -63,10 +63,6 @@ let modules: [Module] = [
         subModuleName: "Voucher", dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "VM", folderName: "VirtualMemory",
-        dependencies: ["CCompat", "Linking"]
-    ),
-    MachSubModule.init(
         subModuleName: "Exception",
         dependencies: ["CCompat", "Linking"]
     ),
