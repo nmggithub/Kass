@@ -37,6 +37,7 @@ The core module for interacting with the Mach kernel.
 ### Timing
 
 - ``Mach/Clock``
+- ``Mach/ClockControl``
 - ``Mach/Alarm``
 - ``Mach/Timer``
 - ``Mach/Semaphore``

@@ -54,6 +54,7 @@ extension BSD.FS.Attribute.File: BSD.FS.Attribute.`Any` {}
 extension BSD.FS.Attribute.Fork: BSD.FS.Attribute.`Any` {}
 extension BSD.FS.Attribute.Common.Extended: BSD.FS.Attribute.`Any` {}
 
+@available(macOS 11.0, *)
 extension BSD.FS.Attribute.`Any` {
     /// Creates an attribute list for setting the attribute.
     /// - Parameter options: The options to use when setting the attribute.

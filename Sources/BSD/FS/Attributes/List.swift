@@ -66,6 +66,7 @@ extension BSD.FS.Attribute {
         /// - Throws: An error if the operation fails.
         /// - Important: This function makes an initial syscall to get the buffer size. Errors from both syscalls are thrown.
         /// - Warning: This function will crash if the length of the buffer is greater on the second call.
+        @available(macOS 11.0, *)
         public func get(for path: FilePath) throws -> BSD.FS.Attribute.Buffer {
             // `getattrlist` truncates, so only get the length field first
             let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
@@ -111,6 +112,7 @@ extension BSD.FS.Attribute {
         /// - Throws: An error if the operation fails.
         /// - Important: This function makes an initial syscall to get the buffer size. Errors from both syscalls are thrown.
         /// - Warning: This function will crash if the length of the buffer is greater on the second call.
+        @available(macOS 11.0, *)
         public func get(for fileDescriptor: FileDescriptor) throws -> BSD.FS.Attribute.Buffer {
             // `fgetattrlist` truncates, so only get the length field first
             let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)

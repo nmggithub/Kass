@@ -164,6 +164,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``Mach/VMAllocationFlags``
 - ``allocateMemory(_:size:flags:)``
+- ``allocatePhysicallyContiguous(_:size:flags:)``
 
 ### Wiring Virtual Memory
 

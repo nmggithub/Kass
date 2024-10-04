@@ -32,8 +32,8 @@
 
 - ``host``
 - ``hostPriv``
-<!-- - ``hostNotify`` -->
-<!-- - ``hostSecurity`` -->
+- ``hostNotify``
+- ``hostSecurity``
 
 ### Processor-Related Ports
 
@@ -58,11 +58,14 @@
 
 - ``memoryEntry``
 - ``memoryObject``
-<!-- - ``memObjControl`` -->
+- ``memObjControl``
+- ``upl``
+- ``ledger``
 
 ### Timing-Related Kernel Objects
 
 - ``clock``
+- ``clockCtrl``
 - ``semaphore``
 - ``timer``
 
@@ -82,7 +85,8 @@
 
 ### Message-Related Kernel Objects
 - ``voucher``
-<!-- - ``mig`` -->
+- ``voucherAttrControl``
+- ``mig``
 
 ### Utility Ports
 
@@ -92,7 +96,7 @@
 
 - ``auditSession``
 - ``fileport``
-<!-- - ``setuidCredential`` -->
+- ``setuidCredential``
 
 ### Seemingly Unused Kernel Objects
 

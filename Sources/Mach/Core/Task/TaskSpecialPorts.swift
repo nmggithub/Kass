@@ -41,6 +41,7 @@ extension Mach {
 
         private static let TASK_SEATBELT_PORT: Int32 = 7  // This is commented out in the header file.
 
+        /// The task's seatbelt port.
         @available(macOS, obsoleted: 12.0.1)
         public static let seatbelt = Self(rawValue: TASK_SEATBELT_PORT)
 

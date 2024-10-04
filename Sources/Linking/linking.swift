@@ -150,7 +150,11 @@ public class Framework: Library, @unchecked Sendable {
     ///   - path: The directory containing the framework.
     /// - Returns: The path to the framework.
     private static func frameworkPath(for name: String, inPath path: URL) -> String {
-        return path.appending(component: "\(name).framework/\(name)").path
+        if #available(macOS 13.0, *) {
+            return path.appending(component: "\(name).framework/\(name)").path
+        } else {
+            return path.appendingPathComponent("\(name).framework/\(name)", isDirectory: true).path
+        }
     }
     /// Creates a new framework handle.
     /// - Parameters:
@@ -175,10 +179,18 @@ public class Framework: Library, @unchecked Sendable {
     /// - Parameter subFramework: The name of the sub-framework.
     /// - Returns: A handle to the sub-framework, or `nil` if the sub-framework could not be found.
     public func get(subFramework: String) -> Framework? {
-        let subFrameworksPath = self.pathURL.deletingLastPathComponent()
-            .appending(component: "Frameworks")
-        return Framework(
-            path: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
-        )
+        if #available(macOS 13.0, *) {
+            let subFrameworksPath = self.pathURL.deletingLastPathComponent()
+                .appending(component: "Frameworks")
+            return Framework(
+                path: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
+            )
+        } else {
+            let subFrameworksPath = self.pathURL.deletingLastPathComponent()
+                .appendingPathComponent("Frameworks", isDirectory: true)
+            return Framework(
+                path: Self.frameworkPath(for: subFramework, inPath: subFrameworksPath)
+            )
+        }
     }
 }
