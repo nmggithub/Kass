@@ -1,6 +1,5 @@
 import Darwin.Mach
 import Foundation
-@_exported import MachCore
 
 extension Mach {
     /// A type of time value.

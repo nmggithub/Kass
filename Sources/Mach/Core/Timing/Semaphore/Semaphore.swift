@@ -1,64 +1,72 @@
 import Darwin.Mach
-@_exported import MachCore
+
+extension Mach {
+    /// A synchronization policy for a semaphore.
+    public struct SemaphorePolicy: Mach.OptionEnum, Mach.NamedOptionEnum {
+        /// The name of the policy option, if it can be determined.
+        public var name: String?
+
+        /// Represents a policy option with an optional name and a raw value.
+        public init(name: String?, rawValue: sync_policy_t) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the policy option.
+        public let rawValue: sync_policy_t
+
+        /// All known synchronization policies.
+        public static let allCases: [Self] = [.fifo, .lifo]
+
+        /// First-in-first-out policy.
+        public static let fifo = Self(name: "fifo", rawValue: SYNC_POLICY_FIFO)
+
+        /// Last-in-first-out policy.
+        public static let lifo = Self(name: "lifo", rawValue: SYNC_POLICY_LIFO)
+    }
+
+}
 
 extension Mach {
     /// A semaphore.
     public class Semaphore: Mach.Port {
-        /// A synchronization policy for a semaphore.
-        public enum Policy: sync_policy_t {
-            /// - Warning: This case should never be used.
-            case unknown = -1
-            case fifo = 0
-            @available(*, deprecated)
-            case fixedPriority = 1
-            case lifo = 2
-        }
         /// The task that owns the semaphore.
         public let semaphoreOwningTask: Mach.Task
+
         /// The synchronization policy of the semaphore.
-        public let policy: Policy
+        public let policy: Mach.SemaphorePolicy
+
         /// Creates a new semaphore in the given task.
-        /// - Parameters:
-        ///   - task: The task in which to create the semaphore.
-        ///   - policy: The synchronization policy to use for the semaphore.
-        ///   - value: The initial value of the semaphore.
-        /// - Throws: An error if the semaphore could not be created.
-        public init(in task: Mach.Task, policy: Policy, value: Int32) throws {
+        public init(inTask task: Mach.Task, policy: Mach.SemaphorePolicy, value: Int32) throws {
             self.semaphoreOwningTask = task  // store the owning task so we use it to destroy the semaphore
             self.policy = policy  // store the policy so we can refer to it later
             var semaphore = semaphore_t()
             try Mach.call(semaphore_create(task.name, &semaphore, policy.rawValue, value))
             super.init(named: semaphore)
         }
+
         @available(*, unavailable, message: "Use `init(in:policy:value:)` instead")
         required init(named name: mach_port_name_t, inNameSpaceOf task: Task = .current) {
             self.semaphoreOwningTask = Mach.Task.current
-            self.policy = .unknown
+            self.policy = .init(rawValue: -1)
             super.init(named: name, inNameSpaceOf: task)
         }
         /// Destroys the semaphore.
-        /// - Throws: An error if the semaphore could not be destroyed.
         public override func destroy() throws {
             try Mach.call(semaphore_destroy(semaphoreOwningTask.name, name))
         }
+
         /// Signals the semaphore.
-        /// - Parameter all: Whether to signal all threads waiting on the semaphore.
-        /// - Throws: An error if the semaphore could not be signaled.
         public func signal(all: Bool = false) throws {
             try Mach.call(all ? semaphore_signal_all(name) : semaphore_signal(name))
         }
 
         /// Signals a specific thread waiting on the semaphore.
-        /// - Parameter thread: The thread to signal.
-        /// - Throws: An error if the thread could not be signaled.
-        /// - Warning: If a null thread is specified, any thread waiting on the semaphore will be signaled.
         public func signal(_ thread: Mach.Thread) throws {
             try Mach.call(semaphore_signal_thread(name, thread.name))
         }
 
         /// Waits for the semaphore.
-        /// - Parameter timeout: The timeout to wait for the semaphore.
-        /// - Throws: An error if the semaphore could not be waited on.
         public func wait(timeout: mach_timespec_t? = nil) throws {
             try Mach.call(
                 timeout != nil
@@ -68,12 +76,8 @@ extension Mach {
         }
 
         /// Atomically waits for one semaphore and signals another.
-        /// - Parameters:
-        ///   - waitSemaphore: The semaphore to wait for.
-        ///   - signalSemaphore: The semaphore to signal.
-        /// - Throws: An error if the semaphores could not be waited on and signaled.
         public static func wait(
-            for waitSemaphore: Semaphore, thenSignal signalSemaphore: Semaphore,
+            forSemaphore waitSemaphore: Semaphore, thenSignalSemaphore signalSemaphore: Semaphore,
             timeout: mach_timespec_t? = nil
         ) throws {
             try Mach.call(

@@ -1,5 +1,4 @@
 import MachC.MKTimer
-@_exported import MachCore
 
 extension Mach {
     /// Flags for arming a timer.

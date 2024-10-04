@@ -13,7 +13,7 @@
 ### Arming Timers
 
 - ``arm(expireTime:)``
-- ``Mach/TimerArmFlag``
+- ``Mach/TimerArmFlags``
 - ``arm(expireTime:flags:leeway:)``
 
 ### Other Timer Actions

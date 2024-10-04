@@ -34,6 +34,14 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Processor``
 - ``Mach/ProcessorSet``
 
+### Timing
+
+- ``Mach/Clock``
+- ``Mach/Alarm``
+- ``Mach/Timer``
+- ``Mach/Semaphore``
+- ``Darwin/mach_timespec``
+
 ### Calling the Kernel
 
 - ``Mach/call(_:)``

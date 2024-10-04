@@ -63,24 +63,12 @@ let modules: [Module] = [
         subModuleName: "Voucher", dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
-        subModuleName: "Sema", folderName: "Semaphore",
-        dependencies: ["CCompat", "Linking"]
-    ),
-    MachSubModule.init(
         subModuleName: "VM", folderName: "VirtualMemory",
         dependencies: ["CCompat", "Linking"]
     ),
     MachSubModule.init(
         subModuleName: "Exception",
         dependencies: ["CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Clock", folderName: "Timing/Clock",
-        dependencies: ["CCompat", "Linking"]
-    ),
-    MachSubModule.init(
-        subModuleName: "Timer", folderName: "Timing/Timer",
-        dependencies: ["MachC", "CCompat", "Linking"]
     ),
 ]
 

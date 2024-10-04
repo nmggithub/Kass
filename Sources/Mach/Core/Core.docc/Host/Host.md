@@ -59,3 +59,9 @@
 - ``Mach/MemoryManager``
 - ``getDefaultMemoryManager()``
 - ``setDefaultMemoryManager(to:)``
+
+### Getting Clocks
+
+- ``clock(_:)``
+- ``calendarClock``
+- ``systemClock``
