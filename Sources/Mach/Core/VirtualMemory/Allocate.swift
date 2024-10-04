@@ -56,8 +56,8 @@ extension Mach {
 
 extension Mach.Task {
     /// Allocates a new VM region in the task's address space.
-    public func allocate(
-        address: inout vm_address_t, size: vm_size_t,
+    public func allocateMemory(
+        _ address: inout vm_address_t, size: vm_size_t,
         flags: Mach.VMAllocationFlags = []
     ) throws {
         try Mach.call(vm_allocate(self.name, &address, size, flags.rawValue))
@@ -68,7 +68,7 @@ extension Mach.Task {
     /// function could be from either call. Please see the source code for more information.
     @available(macOS, obsoleted: 15.0)
     public func allocatePhysicallyContiguous(
-        address: inout vm_address_t, size: vm_size_t,
+        _ address: inout vm_address_t, size: vm_size_t,
         flags: Mach.VMAllocationFlags = []
     ) throws {
         let taskHost = try self.getSpecialPort(.host)

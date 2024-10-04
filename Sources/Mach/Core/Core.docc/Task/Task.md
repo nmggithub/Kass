@@ -163,7 +163,13 @@ It is possible to get a task port of a given flavor for a process with a given P
 ### Allocating Virtual Memory
 
 - ``Mach/VMAllocationFlags``
-- ``allocate(address:size:flags:physicallyContiguous:)``
+- ``allocateMemory(_:size:flags:)``
+
+### Wiring Virtual Memory
+
+- ``Mach/VMProtectionOptions``
+- ``wireMemory(_:size:options:)``
+- ``unwireMemory(_:size:)``
 
 ### Managing kernelcache Objects
 

@@ -48,7 +48,7 @@ extension Mach.Task {
     /// - Warning: This function may make an additional kernel call. Errors from this
     /// call are also thrown. Please see the source code for more information.
     public func wireMemory(
-        address: vm_address_t, size: vm_size_t,
+        _ address: vm_address_t, size: vm_size_t,
         options: Mach.VMProtectionOptions
     ) throws {
         guard !options.isEmpty && options != [.none] else {
@@ -65,7 +65,7 @@ extension Mach.Task {
     /// - Warning: This function may make an additional kernel call. Errors from this
     /// call are also thrown. Please see the source code for more information.
     public func unwireMemory(
-        address: vm_address_t, size: vm_size_t
+        _ address: vm_address_t, size: vm_size_t
     ) throws {
         let options: Mach.VMProtectionOptions = [.none]
         let host = try hostForVMWire
