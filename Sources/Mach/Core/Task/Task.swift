@@ -14,6 +14,15 @@ extension Mach {
             TaskControl(named: mach_task_self_, inNameSpaceOf: mach_task_self_)
         }
 
+        /// The PID of the task.
+        public var pid: pid_t {
+            get throws {
+                var pid: pid_t = 0
+                try Mach.call(pid_for_task(self.name, &pid))
+                return pid
+            }
+        }
+
         /// If the task is the current task.
         @available(macOS 11.3, *)
         public var isCurrentTask: Bool { mach_task_is_self(self.name) != 0 ? true : false }
