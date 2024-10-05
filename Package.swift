@@ -47,7 +47,6 @@ struct BSDSubModule: Module {
 
 /// The modules that are part of the package, in build order.
 let modules: [Module] = [
-    BasicModule.init(targetName: "Kass", dependencies: []),
     BasicModule.init(targetName: "CCompat", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
