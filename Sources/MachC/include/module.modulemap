@@ -3,14 +3,17 @@ module MachC {
         header "dyld_extra.h"
         export *
     }
+
     module MKTimer {
         header "mk_timer.h"
         export *
     }
+
     module TaskPolicyPrivate {
         header "task_policy_private.h"
         export *
     }
+
     module ThreadPolicyPrivate {
         header "thread_policy_private.h"
         export *
