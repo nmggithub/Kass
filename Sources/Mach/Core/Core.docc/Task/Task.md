@@ -26,7 +26,7 @@ Alternatively, for the ``getSpecialPort(_:as:)`` API can be used. Please the doc
 ## Flavor-Functionality Support Table
 - Note: Most functionality is implemented on and around the base ``Mach/Task`` class, even functionality that not all flavors support. This is done to avoid having to implement the same behavior on multiple subclasses.
 
-| Functionality | ``Mach/TaskControl`` | ``Mach/TaskRead`` | ``Mach/TaskInspect`` | ``Mach/TaskName``|
+| Functionality | ``Mach/TaskControl`` | ``Mach/TaskRead`` | ``Mach/TaskInspect`` | ``Mach/TaskName`` |
 | --- | --- | --- | --- | --- |
 | Lifecycle Management     |||||
 |  ``suspend()`` / ``resume()`` / ``terminate()`` / ``suspend2()`` / ``resume2(token:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
