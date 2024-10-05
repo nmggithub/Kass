@@ -23,4 +23,9 @@ module MachC {
         header "vm_statistics.h"
         export *
     }
+
+    module VoucherExtra {
+        header "voucher_extra.h"
+        export *
+    }
 }
