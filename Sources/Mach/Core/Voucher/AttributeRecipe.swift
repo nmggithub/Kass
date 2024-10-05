@@ -190,146 +190,156 @@ extension Mach {
         /// All known other commands.
         public static let allCases: [Self] = []
     }
-}
+    // MARK: - Attribute Recipe
+    /// A voucher attribute recipe.
+    public struct VoucherAttributeRecipe: RawRepresentable {
+        /// The raw recipe pointer.
+        public var rawValue: mach_voucher_attr_raw_recipe_t
 
-// MARK: - Recipe Extension
-/// Adds helper properties to the recipe type.
-extension mach_voucher_attr_recipe_t {
-    /// Creates a new voucher attribute recipe.
-    public init(
-        key: Mach.VoucherAttributeKey, command: some Mach.VoucherAttributeRecipeCommand,
-        previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
-    ) {
-        let contentSize = mach_voucher_attr_content_size_t(content?.count ?? 0)
-        let totalSize = MemoryLayout<mach_voucher_attr_recipe_data_t>.size + Int(contentSize)
-        let recipePointer = UnsafeMutablePointer<UInt8>.allocate(capacity: totalSize)
-        recipePointer.withMemoryRebound(
-            to: mach_voucher_attr_recipe_data_t.self, capacity: 1
+        /// The typed recipe pointer.
+        public var typedValue: mach_voucher_attr_recipe_t {
+            self.rawValue.withMemoryRebound(
+                to: mach_voucher_attr_recipe_data_t.self, capacity: 1
+            ) { $0 }
+        }
+
+        /// Represents an existing voucher attribute recipe.
+        public init(rawValue: mach_voucher_attr_raw_recipe_t) { self.rawValue = rawValue }
+
+        /// Creates a new voucher attribute recipe.
+        public init(
+            key: Mach.VoucherAttributeKey, command: some Mach.VoucherAttributeRecipeCommand,
+            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
         ) {
-            $0.pointee.key = key.rawValue
-            $0.pointee.command = command.rawValue
-            $0.pointee.previous_voucher = previousVoucher.name
-            $0.pointee.content_size = contentSize
-        }
-        if let inputContent = content {
-            inputContent.withUnsafeBytes { (inputContentBytes: UnsafeRawBufferPointer) in
-                let selfContentBuffer = UnsafeMutableBufferPointer<UInt8>(
-                    start: recipePointer.advanced(
-                        by: MemoryLayout<mach_voucher_attr_recipe_data_t>.size
-                    ), count: inputContent.count
-                )
-                inputContentBytes.copyBytes(to: selfContentBuffer, count: inputContent.count)
+            let contentSize = mach_voucher_attr_content_size_t(content?.count ?? 0)
+            let totalSize = MemoryLayout<mach_voucher_attr_recipe_data_t>.size + Int(contentSize)
+            let recipePointer = UnsafeMutablePointer<UInt8>.allocate(capacity: totalSize)
+            recipePointer.withMemoryRebound(
+                to: mach_voucher_attr_recipe_data_t.self, capacity: 1
+            ) {
+                $0.pointee.key = key.rawValue
+                $0.pointee.command = command.rawValue
+                $0.pointee.previous_voucher = previousVoucher.name
+                $0.pointee.content_size = contentSize
             }
+            if let inputContent = content {
+                inputContent.withUnsafeBytes { (inputContentBytes: UnsafeRawBufferPointer) in
+                    let selfContentBuffer = UnsafeMutableBufferPointer<UInt8>(
+                        start: recipePointer.advanced(
+                            by: MemoryLayout<mach_voucher_attr_recipe_data_t>.size
+                        ), count: inputContent.count
+                    )
+                    inputContentBytes.copyBytes(to: selfContentBuffer, count: inputContent.count)
+                }
+            }
+            self.rawValue = recipePointer
         }
-        self = recipePointer.withMemoryRebound(
-            to: mach_voucher_attr_recipe_data_t.self, capacity: 1
-        ) { $0 }
-    }
 
-    /// Creates a new voucher attribute recipe for an importance command.
-    public init(
-        importanceCommand: Mach.ImportanceRecipeCommand,
-        previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
-    ) {
-        self.init(
-            key: .importance, command: importanceCommand,
-            previousVoucher: previousVoucher, content: content
-        )
-    }
-
-    /// Creates a new voucher attribute recipe for an ATM command.
-    public init(
-        atmCommand: Mach.ATMRecipeCommand,
-        previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
-    ) {
-        self.init(
-            key: .atm, command: atmCommand,
-            previousVoucher: previousVoucher, content: content
-        )
-    }
-
-    /// Creates a new voucher attribute recipe for a bank command.
-    public init(
-        bankCommand: Mach.BankRecipeCommand,
-        previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
-    ) {
-        self.init(
-            key: .bank, command: bankCommand,
-            previousVoucher: previousVoucher, content: content
-        )
-    }
-
-    /// Creates a new voucher attribute recipe for a POSIX thread priority command.
-    public init(
-        pthreadPriorityCommand: Mach.PthreadPriorityRecipeCommand,
-        previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
-    ) {
-        self.init(
-            key: .pthreadPriority, command: pthreadPriorityCommand,
-            previousVoucher: previousVoucher, content: content
-        )
-    }
-
-    /// The key for the recipe.
-    public var key: Mach.VoucherAttributeKey {
-        Mach.VoucherAttributeKey(rawValue: self.pointee.key)
-    }
-
-    /// The command in the recipe.
-    public var command: any Mach.VoucherAttributeRecipeCommand {
-        for commandType: any Mach.VoucherAttributeRecipeCommand.Type in [
-            Mach.BaseVoucherAttributeRecipeCommand.self,
-            Mach.ImportanceRecipeCommand.self,
-            Mach.ATMRecipeCommand.self,
-            Mach.BankRecipeCommand.self,
-            Mach.PthreadPriorityRecipeCommand.self,
-        ] {
-            let command = commandType.init(rawValue: self.pointee.command)
-            // Known commands should have a name, so we can use the existence of
-            // a name as a proxy for whether the command is known or not.
-            if command.name != nil { return command }
+        /// Creates a new voucher attribute recipe for an importance command.
+        public init(
+            importanceCommand: Mach.ImportanceRecipeCommand,
+            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
+        ) {
+            self.init(
+                key: .importance, command: importanceCommand,
+                previousVoucher: previousVoucher, content: content
+            )
         }
-        return Mach.OtherVoucherAttributeRecipeCommand(
-            name: nil, rawValue: self.pointee.command
-        )
-    }
 
-    /// The previous voucher in the recipe.
-    public var previousVoucher: Mach.Voucher {
-        Mach.Voucher(named: self.pointee.previous_voucher)
-    }
+        /// Creates a new voucher attribute recipe for an ATM command.
+        public init(
+            atmCommand: Mach.ATMRecipeCommand,
+            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
+        ) {
+            self.init(
+                key: .atm, command: atmCommand,
+                previousVoucher: previousVoucher, content: content
+            )
+        }
 
-    /// The advertised size of the additional content in the recipe.
-    public var contentSize: mach_voucher_attr_content_size_t {
-        self.pointee.content_size
-    }
+        /// Creates a new voucher attribute recipe for a bank command.
+        public init(
+            bankCommand: Mach.BankRecipeCommand,
+            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
+        ) {
+            self.init(
+                key: .bank, command: bankCommand,
+                previousVoucher: previousVoucher, content: content
+            )
+        }
 
-    /// The additional content in the recipe.
-    public var content: Data {
-        Data(
-            bytes: UnsafeRawPointer(self).advanced(
-                by: MemoryLayout<mach_voucher_attr_recipe_data_t>.size),
-            count: Int(self.contentSize)
-        )
-    }
+        /// Creates a new voucher attribute recipe for a POSIX thread priority command.
+        public init(
+            pthreadPriorityCommand: Mach.PthreadPriorityRecipeCommand,
+            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
+        ) {
+            self.init(
+                key: .pthreadPriority, command: pthreadPriorityCommand,
+                previousVoucher: previousVoucher, content: content
+            )
+        }
 
-    /// The total size of the recipe.
-    public var size: Int {
-        MemoryLayout<mach_voucher_attr_recipe_data_t>.size + Int(self.contentSize)
+        /// The key for the recipe.
+        public var key: Mach.VoucherAttributeKey {
+            Mach.VoucherAttributeKey(rawValue: self.typedValue.pointee.key)
+        }
+
+        /// The command in the recipe.
+        public var command: any Mach.VoucherAttributeRecipeCommand {
+            for commandType: any Mach.VoucherAttributeRecipeCommand.Type in [
+                Mach.BaseVoucherAttributeRecipeCommand.self,
+                Mach.ImportanceRecipeCommand.self,
+                Mach.ATMRecipeCommand.self,
+                Mach.BankRecipeCommand.self,
+                Mach.PthreadPriorityRecipeCommand.self,
+            ] {
+                let command = commandType.init(rawValue: self.typedValue.pointee.command)
+                // Known commands should have a name, so we can use the existence of
+                // a name as a proxy for whether the command is known or not.
+                if command.name != nil { return command }
+            }
+            return Mach.OtherVoucherAttributeRecipeCommand(
+                name: nil, rawValue: self.typedValue.pointee.command
+            )
+        }
+
+        /// The previous voucher in the recipe.
+        public var previousVoucher: Mach.Voucher {
+            Mach.Voucher(named: self.typedValue.pointee.previous_voucher)
+        }
+
+        /// The advertised size of the additional content in the recipe.
+        public var contentSize: mach_voucher_attr_content_size_t {
+            self.typedValue.pointee.content_size
+        }
+
+        /// The additional content in the recipe.
+        public var content: Data {
+            Data(
+                bytes: UnsafeRawPointer(self.typedValue).advanced(
+                    by: MemoryLayout<mach_voucher_attr_recipe_data_t>.size),
+                count: Int(self.contentSize)
+            )
+        }
+
+        /// The total size of the recipe.
+        public var size: Int {
+            MemoryLayout<mach_voucher_attr_recipe_data_t>.size + Int(self.contentSize)
+        }
     }
 }
 
 // MARK: - Voucher Extension
 extension Mach.Voucher {
     /// Creates a new voucher with the given recipes.
-    public convenience init(recipes: consuming [mach_voucher_attr_recipe_t]) throws {
+    public convenience init(recipes: consuming [Mach.VoucherAttributeRecipe]) throws {
         let totalSize = recipes.reduce(0, { $0 + $1.size })
         let recipeArray = mach_voucher_attr_raw_recipe_array_t.allocate(capacity: totalSize)
         var currentPointer = recipeArray
         for recipe in recipes {
             let recipeSize = recipe.size
             UnsafeMutableRawPointer(currentPointer).copyMemory(
-                from: UnsafeRawPointer(recipe), byteCount: recipeSize
+                from: UnsafeRawPointer(recipe.rawValue), byteCount: recipeSize
             )
             currentPointer = currentPointer.advanced(by: recipeSize)
         }
@@ -361,7 +371,7 @@ extension Mach.Voucher {
 
     /// The recipes in the voucher.
     /// - Warning: This property accessor allocates memory for the recipes. Deallocation is the responsibility of the caller.
-    public var recipes: [mach_voucher_attr_recipe_t] {
+    public var recipes: [Mach.VoucherAttributeRecipe] {
         get throws {
             // We need to make sure we allocate enough memory to store all the recipes. The kernel
             // will return an error if the size is too small, so we use the maximum size.
@@ -372,17 +382,15 @@ extension Mach.Voucher {
                 capacity: Int(size)
             )
             try Mach.call(mach_voucher_extract_all_attr_recipes(self.name, rawArray, &size))
-            var recipes: [mach_voucher_attr_recipe_t] = []
+            var recipes: [Mach.VoucherAttributeRecipe] = []
             var sizeRemaining = size
             var rawRecipePointer = rawArray
             while sizeRemaining > 0 {
-                let recipePointer = rawRecipePointer.withMemoryRebound(
-                    to: mach_voucher_attr_recipe_data_t.self, capacity: 1
-                ) { $0 }
-                recipes.append(recipePointer)
+                let recipeToAppend = Mach.VoucherAttributeRecipe(rawValue: rawRecipePointer)
+                recipes.append(recipeToAppend)
                 let recipeSize = mach_voucher_attr_raw_recipe_size_t(
                     MemoryLayout<mach_voucher_attr_recipe_data_t>.size
-                        + recipePointer.content.count
+                        + recipeToAppend.content.count
                 )
                 sizeRemaining -= recipeSize
                 rawRecipePointer = rawRecipePointer.advanced(by: Int(recipeSize))
