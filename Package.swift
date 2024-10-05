@@ -58,10 +58,6 @@ let modules: [Module] = [
         targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["MachC", "BSDBase", "CCompat", "Linking"]
     ),
-    MachSubModule.init(
-        subModuleName: "Exception",
-        dependencies: ["CCompat", "Linking"]
-    ),
 ]
 
 /// The name of the package.
