@@ -8,7 +8,7 @@ extension Mach {
         public var baseRoutineId: mach_msg_id_t = 0
 
         /// Represents an existing MIG server port.
-        public init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
+        public required init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
             self.baseRoutineId = baseRoutineId
             super.init(named: name)
         }
