@@ -106,8 +106,8 @@ extension mach_msg_header_t {
     }
 
     /// The voucher port.
-    public var voucherPort: Mach.Port {
-        get { Mach.Port(named: self.msgh_voucher_port) }
+    public var voucherPort: Mach.Voucher {
+        get { Mach.Voucher(named: self.msgh_voucher_port) }
         set { self.msgh_voucher_port = newValue.name }
     }
 }
