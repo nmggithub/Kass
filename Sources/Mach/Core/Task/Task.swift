@@ -23,6 +23,13 @@ extension Mach {
             }
         }
 
+        /// Atomically gets the debug port for the task with the given PID.
+        public static func debugPortForPID(_ pid: pid_t) throws -> Mach.Port {
+            var port: mach_port_name_t = 0
+            try Mach.call(debug_control_port_for_pid(mach_task_self_, pid, &port))
+            return Mach.Port(named: port, inNameSpaceOf: .current)
+        }
+
         /// If the task is the current task.
         @available(macOS 11.3, *)
         public var isCurrentTask: Bool { mach_task_is_self(self.name) != 0 ? true : false }
