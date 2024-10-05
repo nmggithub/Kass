@@ -26,32 +26,29 @@ extension Mach {
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
             on replyPort: Mach.Port? = nil
-        ) throws -> MIGReply<Data> {
+        ) throws -> MIGReply<Never> {
             try self.doRoutine(
                 routineIndex,
                 request: request,
-                receiving: MIGReply<Data>.self
+                replyPayloadType: Never.self
             )
         }
 
         /// Performs a MIG routine.
         @discardableResult  // users can ignore the reply message if they want to
-        public func doRoutine<
-            ReplyPayload: Mach.MIGPayload,
-            Reply: MIGReply<ReplyPayload>
-        >(
+        public func doRoutine<ReplyPayload: Mach.MIGPayload>(
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
-            receiving replyType: Reply.Type,
+            replyPayloadType: ReplyPayload.Type,
             on replyPort: Mach.Port = Mach.MIGReplyPort()
-        ) throws -> Reply {
+        ) throws -> Mach.MIGReply<ReplyPayload> {
             let routineId = self.baseRoutineId + routineIndex
             request.header.msgh_id = routineId
             request.header.bits.remotePortDisposition = .copySend  // make a copy of the send right so we can reuse the port
             request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right so we can receive the reply
             let reply = try Mach.Message.send(
                 request, to: self,
-                receiving: replyType, from: replyPort
+                receiving: Mach.MIGReply<ReplyPayload>.self, from: replyPort
             )
             guard reply.header.msgh_id != MACH_NOTIFY_SEND_ONCE else {
                 throw Mach.MIGError(.serverDied)
