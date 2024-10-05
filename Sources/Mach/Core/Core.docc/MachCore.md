@@ -43,9 +43,10 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Semaphore``
 - ``Darwin/mach_timespec``
 
-### Others
+### Others API's
 
 - <doc:Virtual-Memory>
+- <doc:Vouchers>
 
 ### Calling the Kernel
 

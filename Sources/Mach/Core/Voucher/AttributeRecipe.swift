@@ -9,7 +9,7 @@ extension Mach {
 
     // MARK: - Base Command
     /// A base voucher attribute recipe command.
-    public struct BaseVoucherAttributeRecipeCommand: VoucherAttributeRecipeCommand {
+    public struct VoucherBaseAttributeRecipeCommand: VoucherAttributeRecipeCommand {
         /// The name of the base command, if it can be determined.
         public let name: String?
 
@@ -48,38 +48,10 @@ extension Mach {
         public static let redeem = Self(name: "redeem", rawValue: MACH_VOUCHER_ATTR_REDEEM)
     }
 
-    // MARK: - Importance Command
-    /// An importance voucher attribute recipe command.
-    public struct ImportanceRecipeCommand: VoucherAttributeRecipeCommand {
-        /// The name of the importance command, if it can be determined.
-        public let name: String?
-
-        /// Represents an importance command with an optional name.
-        public init(name: String?, rawValue: mach_voucher_attr_recipe_command_t) {
-            self.name = name
-            self.rawValue = rawValue
-        }
-
-        /// The raw value of the importance command.
-        public let rawValue: mach_voucher_attr_recipe_command_t
-
-        /// All known importance commands.
-        public static let allCases: [Self] = [
-            .importanceSelf, .userDataStore,
-        ]
-
-        public static let importanceSelf = Self(
-            name: "self", rawValue: MACH_VOUCHER_ATTR_IMPORTANCE_SELF
-        )
-
-        public static let userDataStore = Self(
-            name: "userDataStore", rawValue: MACH_VOUCHER_ATTR_USER_DATA_STORE
-        )
-    }
-
     // MARK: - ATM Command
     /// An ATM voucher attribute recipe command.
-    public struct ATMRecipeCommand: VoucherAttributeRecipeCommand {
+    @available(macOS, obsoleted: 11.0.1)
+    public struct VoucherATMAttributeRecipeCommand: VoucherAttributeRecipeCommand {
         /// The name of the ATM command, if it can be determined.
         public let name: String?
 
@@ -110,9 +82,32 @@ extension Mach {
         )
     }
 
+    // MARK: - Importance Command
+    /// An importance voucher attribute recipe command.
+    public struct VoucherImportanceAttributeRecipeCommand: VoucherAttributeRecipeCommand {
+        /// The name of the importance command, if it can be determined.
+        public let name: String?
+
+        /// Represents an importance command with an optional name.
+        public init(name: String?, rawValue: mach_voucher_attr_recipe_command_t) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the importance command.
+        public let rawValue: mach_voucher_attr_recipe_command_t
+
+        /// All known importance commands.
+        public static let allCases: [Self] = [.importanceSelf]
+
+        public static let importanceSelf = Self(
+            name: "self", rawValue: MACH_VOUCHER_ATTR_IMPORTANCE_SELF
+        )
+    }
+
     // MARK: - Bank Command
     /// A bank voucher attribute recipe command.
-    public struct BankRecipeCommand: VoucherAttributeRecipeCommand {
+    public struct VoucherBankAttributeRecipeCommand: VoucherAttributeRecipeCommand {
         /// The name of the bank command, if it can be determined.
         public let name: String?
 
@@ -145,7 +140,7 @@ extension Mach {
 
     // MARK: - POSIX Thread Priority Command
     /// A POSIX thread priority voucher attribute recipe command.
-    public struct PthreadPriorityRecipeCommand: VoucherAttributeRecipeCommand {
+    public struct VoucherPthreadPriorityAttributeRecipeCommand: VoucherAttributeRecipeCommand {
         /// The name of the POSIX thread priority command, if it can be determined.
         public let name: String?
 
@@ -172,9 +167,33 @@ extension Mach {
         )
     }
 
+    // MARK: User Data Command
+    /// A user data voucher attribute recipe command.
+    @available(macOS, deprecated: 13.0)
+    public struct VoucherUserDataAttributeRecipeCommand: VoucherAttributeRecipeCommand {
+        /// The name of the user data command, if it can be determined.
+        public let name: String?
+
+        /// Represents a user data command with an optional name.
+        public init(name: String?, rawValue: mach_voucher_attr_recipe_command_t) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the user data command.
+        public let rawValue: mach_voucher_attr_recipe_command_t
+
+        /// All known user data commands.
+        public static let allCases: [Self] = [.store]
+
+        public static let store = Self(
+            name: "store", rawValue: MACH_VOUCHER_ATTR_USER_DATA_STORE
+        )
+    }
+
     // MARK: - Other Command
-    /// An other voucher attribute recipe command.
-    public struct OtherVoucherAttributeRecipeCommand: VoucherAttributeRecipeCommand {
+    /// A voucher attribute recipe command that cannot be represented by a known command.
+    public struct VoucherOtherAttributeRecipeCommand: VoucherAttributeRecipeCommand {
         /// The name of the command, if it can be determined.
         public let name: String?
 
@@ -237,7 +256,7 @@ extension Mach {
 
         /// Creates a new voucher attribute recipe for an importance command.
         public init(
-            importanceCommand: Mach.ImportanceRecipeCommand,
+            importanceCommand: Mach.VoucherImportanceAttributeRecipeCommand,
             previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
         ) {
             self.init(
@@ -248,7 +267,7 @@ extension Mach {
 
         /// Creates a new voucher attribute recipe for an ATM command.
         public init(
-            atmCommand: Mach.ATMRecipeCommand,
+            atmCommand: Mach.VoucherATMAttributeRecipeCommand,
             previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
         ) {
             self.init(
@@ -259,7 +278,7 @@ extension Mach {
 
         /// Creates a new voucher attribute recipe for a bank command.
         public init(
-            bankCommand: Mach.BankRecipeCommand,
+            bankCommand: Mach.VoucherBankAttributeRecipeCommand,
             previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
         ) {
             self.init(
@@ -270,11 +289,22 @@ extension Mach {
 
         /// Creates a new voucher attribute recipe for a POSIX thread priority command.
         public init(
-            pthreadPriorityCommand: Mach.PthreadPriorityRecipeCommand,
+            pthreadPriorityCommand: Mach.VoucherPthreadPriorityAttributeRecipeCommand,
             previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
         ) {
             self.init(
                 key: .pthreadPriority, command: pthreadPriorityCommand,
+                previousVoucher: previousVoucher, content: content
+            )
+        }
+
+        /// Creates a new voucher attribute recipe for a user data command.
+        public init(
+            userDataCommand: Mach.VoucherUserDataAttributeRecipeCommand,
+            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
+        ) {
+            self.init(
+                key: .userData, command: userDataCommand,
                 previousVoucher: previousVoucher, content: content
             )
         }
@@ -287,18 +317,18 @@ extension Mach {
         /// The command in the recipe.
         public var command: any Mach.VoucherAttributeRecipeCommand {
             for commandType: any Mach.VoucherAttributeRecipeCommand.Type in [
-                Mach.BaseVoucherAttributeRecipeCommand.self,
-                Mach.ImportanceRecipeCommand.self,
-                Mach.ATMRecipeCommand.self,
-                Mach.BankRecipeCommand.self,
-                Mach.PthreadPriorityRecipeCommand.self,
+                Mach.VoucherBaseAttributeRecipeCommand.self,
+                Mach.VoucherImportanceAttributeRecipeCommand.self,
+                Mach.VoucherATMAttributeRecipeCommand.self,
+                Mach.VoucherBankAttributeRecipeCommand.self,
+                Mach.VoucherPthreadPriorityAttributeRecipeCommand.self,
             ] {
                 let command = commandType.init(rawValue: self.typedValue.pointee.command)
                 // Known commands should have a name, so we can use the existence of
                 // a name as a proxy for whether the command is known or not.
                 if command.name != nil { return command }
             }
-            return Mach.OtherVoucherAttributeRecipeCommand(
+            return Mach.VoucherOtherAttributeRecipeCommand(
                 name: nil, rawValue: self.typedValue.pointee.command
             )
         }
@@ -329,7 +359,7 @@ extension Mach {
     }
 }
 
-// MARK: - Voucher Extension
+// MARK: - Voucher Extensions
 extension Mach.Voucher {
     /// Creates a new voucher with the given recipes.
     public convenience init(recipes: consuming [Mach.VoucherAttributeRecipe]) throws {

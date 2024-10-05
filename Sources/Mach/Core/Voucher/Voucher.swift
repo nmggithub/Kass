@@ -1,5 +1,6 @@
 import Darwin.Mach.mach_voucher_types
 import Foundation
+import MachC.VoucherExtra
 
 extension Mach {
     // MARK: - Attribute Key
@@ -30,6 +31,7 @@ extension Mach {
             name: "none", rawValue: MACH_VOUCHER_ATTR_KEY_NONE
         )
 
+        @available(macOS, obsoleted: 11.0.1)
         public static let atm = VoucherAttributeKey(
             name: "atm", rawValue: MACH_VOUCHER_ATTR_KEY_ATM
         )
@@ -46,10 +48,12 @@ extension Mach {
             name: "pthpriority", rawValue: MACH_VOUCHER_ATTR_KEY_PTHPRIORITY
         )
 
+        @available(macOS, deprecated: 13.0)
         public static let userData = VoucherAttributeKey(
             name: "userData", rawValue: MACH_VOUCHER_ATTR_KEY_USER_DATA
         )
 
+        @available(macOS, deprecated: 13.0)
         public static let test = VoucherAttributeKey(
             name: "test", rawValue: MACH_VOUCHER_ATTR_KEY_TEST
         )
@@ -60,9 +64,72 @@ extension Mach {
     public protocol VoucherAttributeCommand: Mach.NamedOptionEnum
     where RawValue == mach_voucher_attr_command_t {}
 
+    // MARK: - ATM Action
+    /// A voucher attribute command for the ``Mach/VoucherAttributeKey/atm`` key.
+    @available(macOS, obsoleted: 11.0.1)
+    public struct VoucherATMAction: VoucherAttributeCommand {
+        /// The name of the ATM action, if it can be determined.
+        public var name: String?
+
+        /// Represents an ATM action with an optional name.
+        public init(name: String?, rawValue: atm_action_t) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the ATM action.
+        public let rawValue: atm_action_t
+
+        /// All known ATM actions.
+        public static let allCases: [Self] = [.atmCreate, .register]
+
+        public static let atmCreate = Self(
+            name: "atmCreate", rawValue: atm_action_t(MACH_VOUCHER_ATTR_ATM_CREATE)
+        )
+
+        public static let register = Self(
+            name: "register", rawValue: atm_action_t(MACH_VOUCHER_ATTR_ATM_REGISTER)
+        )
+    }
+
+    // MARK: - Importance Action
+    /// A voucher attribute command for the ``Mach/VoucherAttributeKey/importance`` key.
+    public struct VoucherImportanceAction: VoucherAttributeCommand {
+        /// The name of the importance action, if it can be determined.
+        public var name: String?
+
+        /// Represents an importance action with an optional name.
+        public init(name: String?, rawValue: mach_voucher_attr_importance_refs) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the importance action.
+        public let rawValue: mach_voucher_attr_importance_refs
+
+        /// All known importance actions.
+        public static let allCases: [Self] = [
+            .addExternal, .dropExternal,
+        ]
+
+        public static let addExternal = Self(
+            name: "addExternal",
+            rawValue: mach_voucher_attr_importance_refs(
+                MACH_VOUCHER_IMPORTANCE_ATTR_ADD_EXTERNAL
+            )
+        )
+
+        public static let dropExternal = Self(
+            name: "dropExternal",
+            rawValue: mach_voucher_attr_importance_refs(
+                MACH_VOUCHER_IMPORTANCE_ATTR_DROP_EXTERNAL
+            )
+        )
+    }
+
     // MARK: - Bank Action
-    /// A voucher attribute command for the .bank key.
-    public struct BankAction: VoucherAttributeCommand {
+    /// A voucher attribute command for the ``Mach/VoucherAttributeKey/bank`` key.
+    public struct VoucherBankAction: VoucherAttributeCommand {
         /// The name of the bank action, if it can be determined.
         public var name: String?
 
@@ -101,62 +168,29 @@ extension Mach {
         )
     }
 
-    // MARK: - Importance Action
-    /// A voucher attribute command for the .importance key.
-    public struct ImportanceAction: VoucherAttributeCommand {
-        /// The name of the importance action, if it can be determined.
-        public var name: String?
-
-        /// Represents an importance action with an optional name.
-        public init(name: String?, rawValue: mach_voucher_attr_importance_refs) {
-            self.name = name
-            self.rawValue = rawValue
-        }
-
-        /// The raw value of the importance action.
-        public let rawValue: mach_voucher_attr_importance_refs
-
-        /// All known importance actions.
-        public static let allCases: [Self] = [
-            .addExternal, .dropExternal,
-        ]
-
-        public static let addExternal = Self(
-            name: "addExternal",
-            rawValue: mach_voucher_attr_importance_refs(
-                MACH_VOUCHER_IMPORTANCE_ATTR_ADD_EXTERNAL
-            )
-        )
-
-        public static let dropExternal = Self(
-            name: "dropExternal",
-            rawValue: mach_voucher_attr_importance_refs(
-                MACH_VOUCHER_IMPORTANCE_ATTR_DROP_EXTERNAL
-            )
-        )
-    }
-
     // MARK: - Voucher
     /// A voucher.
     public class Voucher: Mach.Port {
+        /// A voucher that represents no voucher.
         public class override var Nil: Self {
             Self(named: IPC_VOUCHER_NULL)
         }
-        /// Invokes a command on the voucher.
-        public func command(
+
+        /// Executes a command on the voucher.
+        public func executeCommand(
             key: Mach.VoucherAttributeKey, command: any Mach.VoucherAttributeCommand,
-            in: BitwiseCopyable? = nil
+            input: BitwiseCopyable? = nil
         ) throws -> Data? {
-            let inContent = `in` != nil ? withUnsafeBytes(of: `in`, { Data(copy $0) }) : Data()
+            let inputContent = input != nil ? withUnsafeBytes(of: input, { Data(copy $0) }) : Data()
             let outContentPointer = mach_voucher_attr_content_t.allocate(capacity: 1)
             var outContentSize = mach_voucher_attr_content_size_t.max
             try Mach.call(
                 mach_voucher_attr_command(
                     self.name, key.rawValue, command.rawValue,
                     UnsafeMutablePointer(
-                        mutating: (inContent as NSData).bytes.assumingMemoryBound(to: UInt8.self)
+                        mutating: (inputContent as NSData).bytes.assumingMemoryBound(to: UInt8.self)
                     ),
-                    mach_voucher_attr_content_size_t(inContent.count),
+                    mach_voucher_attr_content_size_t(inputContent.count),
                     outContentPointer, &outContentSize
                 )
             )
