@@ -28,4 +28,9 @@ module MachC {
         header "voucher_extra.h"
         export *
     }
+
+    module ExceptionPrivate {
+        header "exception_private.h"
+        export *
+    }
 }
