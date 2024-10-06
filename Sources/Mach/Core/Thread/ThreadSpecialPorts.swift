@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A special port for a thread.
-    public struct ThreadSpecialPort: Mach.Port.SpecialPortType {
+    public struct ThreadSpecialPort: Mach.SpecialPortType {
         /// The parent port type.
         public typealias ParentPort = Mach.Thread
 
@@ -32,7 +32,7 @@ extension Mach {
     }
 }
 
-extension Mach.Thread: Mach.Port.WithSpecialPorts {
+extension Mach.Thread: Mach.PortWithSpecialPorts {
     /// Gets a special port for the thread.
     public func getSpecialPort<PortType: Mach.Port>(
         _ specialPort: Mach.ThreadSpecialPort, as type: PortType.Type = PortType.self

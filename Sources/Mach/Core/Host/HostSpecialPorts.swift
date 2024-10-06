@@ -2,7 +2,7 @@ import Darwin.Mach
 
 extension Mach {
     /// A special port for a host.
-    public struct HostSpecialPort: Mach.Port.SpecialPortType {
+    public struct HostSpecialPort: Mach.SpecialPortType {
         /// The parent port type.
         typealias ParentPort = Mach.Host
 
@@ -101,7 +101,7 @@ extension Mach {
     }
 }
 
-extension Mach.Host: Mach.Port.WithSpecialPorts {
+extension Mach.Host: Mach.PortWithSpecialPorts {
     /// Gets a special port for the host.
     public func getSpecialPort<PortType: Mach.Port>(
         _ specialPort: Mach.HostSpecialPort, as type: PortType.Type = PortType.self

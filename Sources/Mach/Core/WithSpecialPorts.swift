@@ -1,6 +1,6 @@
-extension Mach.Port {
+extension Mach {
     /// A port with special ports.
-    internal protocol WithSpecialPorts {
+    internal protocol PortWithSpecialPorts {
         associatedtype SpecialPort: SpecialPortType
         /// Gets a special port.
         func getSpecialPort<PortType: Mach.Port>(
@@ -14,7 +14,7 @@ extension Mach.Port {
     internal protocol SpecialPortType: Mach.OptionEnum
     where RawValue == Int32, ParentPort.SpecialPort == Self {
         /// The parent port type.
-        associatedtype ParentPort: Mach.Port.WithSpecialPorts
+        associatedtype ParentPort: Mach.PortWithSpecialPorts
 
         /// Gets a special port.
         func get<PortType: Mach.Port>(
@@ -26,7 +26,7 @@ extension Mach.Port {
     }
 }
 
-extension Mach.Port.SpecialPortType {
+extension Mach.SpecialPortType {
     /// Gets a special port.
     public func get<PortType: Mach.Port>(
         for parentPort: ParentPort, as type: PortType.Type = PortType.self
