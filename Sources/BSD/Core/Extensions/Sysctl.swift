@@ -1,12 +1,7 @@
 import Darwin.POSIX
 
 extension BSD {
-    /// Gets system information.
-    /// - Parameters:
-    ///   - mibNameArray: The MiB name, expressed as an array of integers.
-    ///   - type: The data type of the system information.
-    /// - Throws: If the system information cannot be retrieved.
-    /// - Returns: The system information.
+    /// Gets kernel state.
     public static func sysctl<DataType>(
         _ mibNameArray: consuming [Int32],
         asArrayOf type: DataType.Type = UInt8.self
@@ -28,12 +23,8 @@ extension BSD {
         )
         return Array(bufferPointer)
     }
-    /// Gets system information.
-    /// - Parameters:
-    ///   - mibName: The MiB name, expressed as a string.
-    ///   - type: The data type of the system information.
-    /// - Throws: If the system information cannot be retrieved.
-    /// - Returns: The system information.
+
+    /// Gets kernel state.
     public static func sysctl<DataType>(
         _ mibName: String,
         asArrayOf type: DataType.Type = UInt8.self
