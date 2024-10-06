@@ -55,7 +55,6 @@ let modules: [Module] = [
         targetName: "BSDCore", path: "Sources/BSD/Core",
         dependencies: ["KassHelpers", "KassC", "CCompat", "Linking"]
     ),
-    BSDSubModule.init(subModuleName: "FS", dependencies: ["CCompat", "Linking"]),
     BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["KassHelpers", "KassC", "BSDCore", "CCompat", "Linking"]

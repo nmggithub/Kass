@@ -1,6 +1,6 @@
 import Darwin.POSIX
 
-extension BSD.FS.Attribute.File: BSD.FS.Attribute.Parseable {
+extension BSD.FSFileAttributes: BSD.FSParseableAttribute {
     public func parse(from pointer: inout UnsafeRawPointer) -> Any {
         switch self {
         case .linkCount: pointer.parseAttribute(as: UInt32.self)
@@ -18,6 +18,7 @@ extension BSD.FS.Attribute.File: BSD.FS.Attribute.Parseable {
         case .resourceLogicalSize: pointer.parseAttribute(as: off_t.self)
         case .resourcePhysicalSize: pointer.parseAttribute(as: off_t.self)
         case .resourceExtents: pointer.parseAttribute(as: extentrecord.self)
+        default: fatalError("Unsupported file attribute: \(self)")
         }
     }
 }

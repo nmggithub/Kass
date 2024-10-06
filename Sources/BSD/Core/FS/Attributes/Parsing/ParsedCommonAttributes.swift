@@ -1,9 +1,9 @@
 import Darwin.POSIX
 
-extension BSD.FS.Attribute.Common: BSD.FS.Attribute.Parseable {
+extension BSD.FSCommonAttributes: BSD.FSParseableAttribute {
     public func parse(from pointer: inout UnsafeRawPointer) -> Any {
         switch self {
-        case .name: pointer.getAttributeReference().parse(with: .string)
+        case .name: pointer.getAttributeReference().parse(withParser: .string)
         case .deviceID: pointer.parseAttribute(as: dev_t.self)
         case .filesystemID: pointer.parseAttribute(as: fsid_t.self)
         case .objectType: pointer.parseAttribute(as: fsobj_type_t.self)
@@ -30,10 +30,11 @@ extension BSD.FS.Attribute.Common: BSD.FS.Attribute.Parseable {
         case .groupUUID: pointer.parseAttribute(as: guid_t.self)
         case .fileID: pointer.parseAttribute(as: UInt64.self)
         case .parentID: pointer.parseAttribute(as: UInt64.self)
-        case .fullPath: pointer.getAttributeReference().parse(with: .string)
+        case .fullPath: pointer.getAttributeReference().parse(withParser: .string)
         case .addedTime: pointer.parseAttribute(as: timespec.self)
         case .dataProtectionClass: pointer.parseAttribute(as: UInt32.self)
         case .returnedAttributes: fatalError("This should not be parsed")
+        default: fatalError("Unsupported common attribute: \(self)")
         }
     }
 }

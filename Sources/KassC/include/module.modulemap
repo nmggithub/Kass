@@ -43,4 +43,9 @@ module KassC {
         header "csr.h"
         export *
     }
+
+    module AttrPrivate {
+        header "attr_private.h"
+        export *
+    }
 }
