@@ -17,15 +17,14 @@ extension Mach.Message {
     internal static let defaultMaxReceiveSize: Int = 1024
 
     /// Allocates a transient buffer for receiving messages, set to a given size.
-    fileprivate static func transientBuffer(_ size: Int) -> UnsafeMutableRawBufferPointer {
-        guard size >= MemoryLayout<mach_msg_header_t>.size else {
-            fatalError("The requested buffer size is too small!")
-        }
+    fileprivate static func transientBuffer(_ size: consuming Int) -> UnsafeMutableRawBufferPointer
+    {
+        let actualSize = max(size, MemoryLayout<mach_msg_header_t>.size)  // We just go ahead and round up if needed and don't tell the user.
         let bufferPointer = UnsafeMutableRawPointer.allocate(
-            byteCount: size,
+            byteCount: actualSize,
             alignment: MemoryLayout<mach_msg_header_t>.alignment
         )
-        let buffer = UnsafeMutableRawBufferPointer(start: bufferPointer, count: size)
+        let buffer = UnsafeMutableRawBufferPointer(start: bufferPointer, count: actualSize)
         buffer.initializeMemory(as: UInt8.self, repeating: 0)
         return buffer
     }
