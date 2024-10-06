@@ -45,6 +45,7 @@ The core module for interacting with the Mach kernel.
 
 ### Others API's
 
+- <doc:Exceptions>
 - <doc:Virtual-Memory>
 - <doc:Vouchers>
 

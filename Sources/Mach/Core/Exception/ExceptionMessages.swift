@@ -1,6 +1,7 @@
 import Darwin.Mach
 
 extension Mach {
+    /// A message sent when an exception occurs using the ``Mach/ExceptionBehavior/default`` exception behavior.
     public class DefaultExceptionMessage: Mach.MIGReply<Mach.DefaultExceptionMessage.PayloadType> {
         /// An exception message payload.
         public struct PayloadType: Mach.MIGPayload, Mach.TrivialMessagePayload {

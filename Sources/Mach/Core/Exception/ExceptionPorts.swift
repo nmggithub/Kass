@@ -1,11 +1,11 @@
 import Darwin.Mach
 
-extension Mach.Exception {
+extension Mach.ExceptionPort {
     /// Gets the exception ports for the port's kernel object that catch the exception types specified by the mask.
     fileprivate static func exceptionPorts(
         forPort port: Mach.PortWithExceptionPorts, mask: Mach.ExceptionMask
-    ) throws -> [Mach.Exception] {
-        var exceptionPorts: [Mach.Exception] = []
+    ) throws -> [Mach.ExceptionPort] {
+        var exceptionPorts: [Mach.ExceptionPort] = []
         let maxCount = 32  // The mask is a 32-bit integer, so we can have at most 32 exception ports (one for each bit).
         let masks = exception_mask_array_t.allocate(capacity: maxCount)
         let handlers = exception_handler_array_t.allocate(capacity: maxCount)
@@ -43,7 +43,7 @@ extension Mach.Exception {
         guard count <= maxCount else { fatalError("Too many exception ports!") }  // This should never happen, but it's better to be safe than sorry.
         for i in 0..<Int(count) {
             exceptionPorts.append(
-                Mach.Exception(
+                Mach.ExceptionPort(
                     named: handlers[i],
                     mask: Mach.ExceptionMask(
                         rawValue: masks[i]
@@ -61,23 +61,23 @@ extension Mach.Exception {
     }
 
     /// Gets the exception ports for the task that catch the exception types specified by the mask.
-    public func exceptionPorts(
+    public static func exceptionPorts(
         forTask task: Mach.Task, mask: Mach.ExceptionMask
-    ) throws -> [Mach.Exception] { try Self.exceptionPorts(forPort: task, mask: self.mask) }
+    ) throws -> [Mach.ExceptionPort] { try Self.exceptionPorts(forPort: task, mask: mask) }
 
     /// Gets the exception ports for the thread that catch the exception types specified by the mask.
-    public func exceptionPorts(
+    public static func exceptionPorts(
         forThread thread: Mach.Thread, mask: Mach.ExceptionMask
-    ) throws -> [Mach.Exception] { try Self.exceptionPorts(forPort: thread, mask: self.mask) }
+    ) throws -> [Mach.ExceptionPort] { try Self.exceptionPorts(forPort: thread, mask: mask) }
 
     /// Gets the exception ports for the host that catch the exception types specified by the mask.
-    public func exceptionPorts(
+    public static func exceptionPorts(
         forHost host: Mach.Host, mask: Mach.ExceptionMask
-    ) throws -> [Mach.Exception] { try Self.exceptionPorts(forPort: host, mask: self.mask) }
+    ) throws -> [Mach.ExceptionPort] { try Self.exceptionPorts(forPort: host, mask: mask) }
 
     /// Adds an exception port to the port's kernel object.
     fileprivate static func addExceptionPort(
-        _ exceptionPort: Mach.Exception, toPort port: Mach.PortWithExceptionPorts
+        _ exceptionPort: Mach.ExceptionPort, toPort port: Mach.PortWithExceptionPorts
     ) throws {
         let setExceptionPortsCall:
             @convention(c) (
@@ -100,18 +100,18 @@ extension Mach.Exception {
     }
 
     /// Adds an exception port to the task.
-    public func addExceptionPort(toTask task: Mach.Task) throws {
-        try Self.addExceptionPort(self, toPort: task)
+    public static func addExceptionPort(_ port: Mach.ExceptionPort, toTask task: Mach.Task) throws {
+        try Self.addExceptionPort(port, toPort: task)
     }
 
     /// Adds an exception port to the thread.
-    public func addExceptionPort(toThread thread: Mach.Thread) throws {
-        try Self.addExceptionPort(self, toPort: thread)
-    }
+    public static func addExceptionPort(_ port: Mach.ExceptionPort, toThread thread: Mach.Thread)
+        throws
+    { try Self.addExceptionPort(port, toPort: thread) }
 
     /// Adds an exception port to the host.
-    public func addExceptionPort(toHost host: Mach.Host) throws {
-        try Self.addExceptionPort(self, toPort: host)
+    public static func addExceptionPort(_ port: Mach.ExceptionPort, toHost host: Mach.Host) throws {
+        try Self.addExceptionPort(port, toPort: host)
     }
 }
 
@@ -120,64 +120,64 @@ extension Mach {
     public protocol PortWithExceptionPorts: Mach.Port {
 
         /// Returns the exception ports for the port's kernel object for the types specified by the mask.
-        func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.Exception]
+        func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.ExceptionPort]
 
         /// All the exception ports for the port's kernel object.
-        var exceptionPorts: [Mach.Exception] { get throws }
+        var exceptionPorts: [Mach.ExceptionPort] { get throws }
 
         /// Adds an exception port to the port's kernel object.
-        func addExceptionPort(_ exceptionPort: Mach.Exception) throws
+        func addExceptionPort(_ exceptionPort: Mach.ExceptionPort) throws
     }
 }
 
 extension Mach.Task: Mach.PortWithExceptionPorts {
     /// Gets the exception ports for the task that catch the exception types specified by the mask.
-    public func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.Exception] {
-        try Mach.Exception.exceptionPorts(forPort: self, mask: mask)
+    public func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.ExceptionPort] {
+        try Mach.ExceptionPort.exceptionPorts(forPort: self, mask: mask)
     }
 
     /// All the exception ports for the task.
-    public var exceptionPorts: [Mach.Exception] {
+    public var exceptionPorts: [Mach.ExceptionPort] {
         get throws { try exceptionPorts(mask: .all) }
     }
 
     /// Adds an exception port to the task.
-    public func addExceptionPort(_ exceptionPort: Mach.Exception) throws {
-        try exceptionPort.addExceptionPort(toTask: self)
+    public func addExceptionPort(_ exceptionPort: Mach.ExceptionPort) throws {
+        try Mach.ExceptionPort.addExceptionPort(exceptionPort, toTask: self)
     }
 }
 
 extension Mach.Thread: Mach.PortWithExceptionPorts {
     /// Gets the exception ports for the thread that catch the exception types specified by the mask.
-    public func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.Exception] {
-        try Mach.Exception.exceptionPorts(forPort: self, mask: mask)
+    public func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.ExceptionPort] {
+        try Mach.ExceptionPort.exceptionPorts(forPort: self, mask: mask)
     }
 
     /// All the exception ports for the thread.
-    public var exceptionPorts: [Mach.Exception] {
+    public var exceptionPorts: [Mach.ExceptionPort] {
         get throws { try exceptionPorts(mask: .all) }
     }
 
     /// Adds an exception port to the thread.
-    public func addExceptionPort(_ exceptionPort: Mach.Exception) throws {
-        try exceptionPort.addExceptionPort(toThread: self)
+    public func addExceptionPort(_ exceptionPort: Mach.ExceptionPort) throws {
+        try Mach.ExceptionPort.addExceptionPort(exceptionPort, toThread: self)
     }
 }
 
 extension Mach.Host: Mach.PortWithExceptionPorts {
     /// Gets the exception ports for the host that catch the exception types specified by the mask.
-    public func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.Exception] {
-        try Mach.Exception.exceptionPorts(forPort: self, mask: mask)
+    public func exceptionPorts(mask: Mach.ExceptionMask) throws -> [Mach.ExceptionPort] {
+        try Mach.ExceptionPort.exceptionPorts(forPort: self, mask: mask)
     }
 
     /// All the exception ports for the host.
-    public var exceptionPorts: [Mach.Exception] {
+    public var exceptionPorts: [Mach.ExceptionPort] {
         get throws { try exceptionPorts(mask: .all) }
     }
 
     /// Adds an exception port to the host.
-    public func addExceptionPort(_ exceptionPort: Mach.Exception) throws {
-        try exceptionPort.addExceptionPort(toHost: self)
+    public func addExceptionPort(_ exceptionPort: Mach.ExceptionPort) throws {
+        try Mach.ExceptionPort.addExceptionPort(exceptionPort, toHost: self)
     }
 }
 
@@ -185,7 +185,7 @@ extension Mach.Task {
     /// Registers a hardened exception handler for the task.
     @available(macOS, introduced: 15.0)
     public func registerHardenedExceptionHandler(
-        _ exceptionPort: Mach.Exception, signedPCKey: UInt32
+        _ exceptionPort: Mach.ExceptionPort, signedPCKey: UInt32
     ) throws {
         try Mach.call(
             task_register_hardened_exception_handler(

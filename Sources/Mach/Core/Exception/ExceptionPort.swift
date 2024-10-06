@@ -196,7 +196,7 @@ extension Mach {
     }
 
     /// An exception port.
-    public class Exception: Mach.Port {
+    public class ExceptionPort: Mach.Port {
         /// The mask of the exception types that the port will catch.
         public let mask: Mach.ExceptionMask
 
