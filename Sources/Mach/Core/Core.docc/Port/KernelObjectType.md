@@ -1,4 +1,4 @@
-# ``Mach/KernelObjectType``
+# ``MachC/ipc_kotype_t``
 
 - Note: In some cases, a port with an underlying kernel object can be said to represent the kernel object itself and is referred to as the kernel object type instead of as a "port". However, in many cases (particularly those around tasks, threads, and hosts), the term "port" is still used to describe a port with an underlying kernel object.
 

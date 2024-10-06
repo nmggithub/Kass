@@ -50,7 +50,7 @@
 
 - ``Mach/KernelObject``
 - ``kernelObject``
-- ``Mach/KernelObjectType``
+- ``MachC/ipc_kotype_t``
 
 ### Managing Context
 

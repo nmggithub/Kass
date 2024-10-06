@@ -33,4 +33,9 @@ module MachC {
         header "exception_private.h"
         export *
     }
+
+    module IPCKobject {
+        header "ipc_kobject.h"
+        export *
+    }
 }
