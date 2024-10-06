@@ -10,6 +10,7 @@ extension Mach {
         /// Sets a special port.
         func setSpecialPort(_ specialPort: SpecialPort, to port: Mach.Port) throws
     }
+
     /// A special port for a port.
     internal protocol SpecialPortType: Mach.OptionEnum
     where RawValue == Int32, ParentPort.SpecialPort == Self {
