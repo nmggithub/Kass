@@ -5,7 +5,7 @@ import KassHelpers
 extension BSD {
     /// Configuration options for Configurable Security Restrictions (CSR).
     /// - Important: CSR is the system behind the more-commonly-known System Integrity Protection (SIP).
-    public struct CSRConfigOptions: OptionSet, Sendable, CaseIterable, KassHelpers.NamedOptionEnum {
+    public struct CSRConfigOptions: OptionSet, Sendable, KassHelpers.NamedOptionEnum {
         /// The name of the CSR configuration, if it can be determined.
         public let name: String?
 
