@@ -1,6 +1,7 @@
 /*
  * Portions Copyright (c) 2000-2020 Apple Inc. All rights reserved.
  *
+ * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.1.10/osfmk/mach/vm_statistics.h
  * Only the private constants from the original file are included here.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@

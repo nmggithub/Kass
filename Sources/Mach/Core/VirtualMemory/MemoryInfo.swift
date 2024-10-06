@@ -1,5 +1,5 @@
 import Darwin.Mach
-import MachC.VMStatistics
+import MachC.VMPrivate
 
 extension Mach {
     // MARK: - Info Types

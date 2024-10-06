@@ -19,8 +19,8 @@ module MachC {
         export *
     }
 
-    module VMStatistics {
-        header "vm_statistics.h"
+    module VMPrivate {
+        header "vm_private.h"
         export *
     }
 
