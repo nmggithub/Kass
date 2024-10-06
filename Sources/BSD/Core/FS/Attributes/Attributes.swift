@@ -416,10 +416,8 @@ extension BSD {
             .forkList,
             .dataLogicalSize,
             .dataPhysicalSize,
-            .dataExtents,
             .resourceLogicalSize,
             .resourcePhysicalSize,
-            .resourceExtents,
         ]
 
         public static let linkCount = Self(
@@ -466,20 +464,12 @@ extension BSD {
             name: "dataPhysicalSize", rawValue: UInt32(ATTR_FILE_DATAALLOCSIZE)
         )
 
-        public static let dataExtents = Self(
-            name: "dataExtents", rawValue: UInt32(ATTR_FILE_DATAEXTENTS)
-        )
-
         public static let resourceLogicalSize = Self(
             name: "resourceLogicalSize", rawValue: UInt32(ATTR_FILE_RSRCLENGTH)
         )
 
         public static let resourcePhysicalSize = Self(
             name: "resourcePhysicalSize", rawValue: UInt32(ATTR_FILE_RSRCALLOCSIZE)
-        )
-
-        public static let resourceExtents = Self(
-            name: "resourceExtents", rawValue: UInt32(ATTR_FILE_RSRCEXTENTS)
         )
     }
 

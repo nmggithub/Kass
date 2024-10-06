@@ -14,10 +14,8 @@ extension BSD.FSFileAttributes: BSD.FSParseableAttribute {
         case .forkList: pointer.getAttributeReference()
         case .dataLogicalSize: pointer.parseAttribute(as: off_t.self)
         case .dataPhysicalSize: pointer.parseAttribute(as: off_t.self)
-        case .dataExtents: pointer.parseAttribute(as: extentrecord.self)
         case .resourceLogicalSize: pointer.parseAttribute(as: off_t.self)
         case .resourcePhysicalSize: pointer.parseAttribute(as: off_t.self)
-        case .resourceExtents: pointer.parseAttribute(as: extentrecord.self)
         default: fatalError("Unsupported file attribute: \(self)")
         }
     }
