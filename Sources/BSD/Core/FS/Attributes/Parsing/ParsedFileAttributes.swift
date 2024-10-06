@@ -9,7 +9,6 @@ extension BSD.FSFileAttributes: BSD.FSParseableAttribute {
         case .ioBlockSize: pointer.parseAttribute(as: UInt32.self)
         case .clumpSize: pointer.parseAttribute(as: UInt32.self)
         case .deviceType: pointer.parseAttribute(as: UInt32.self)
-        case .fileType: pointer.parseAttribute(as: UInt32.self)
         case .forkCount: pointer.parseAttribute(as: UInt32.self)
         case .forkList: pointer.getAttributeReference()
         case .dataLogicalSize: pointer.parseAttribute(as: off_t.self)

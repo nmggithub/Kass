@@ -411,7 +411,6 @@ extension BSD {
             .ioBlockSize,
             .clumpSize,
             .deviceType,
-            .fileType,
             .forkCount,
             .forkList,
             .dataLogicalSize,
@@ -442,10 +441,6 @@ extension BSD {
 
         public static let deviceType = Self(
             name: "deviceType", rawValue: UInt32(ATTR_FILE_DEVTYPE)
-        )
-
-        public static let fileType = Self(
-            name: "fileType", rawValue: UInt32(ATTR_FILE_FILETYPE)
         )
 
         public static let forkCount = Self(
