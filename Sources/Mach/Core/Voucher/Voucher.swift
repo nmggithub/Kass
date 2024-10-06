@@ -1,11 +1,12 @@
 import Darwin.Mach.mach_voucher_types
 import Foundation
+import KassHelpers
 import MachC.VoucherExtra
 
 extension Mach {
     // MARK: - Attribute Key
     /// A voucher attribute key.
-    public struct VoucherAttributeKey: Mach.NamedOptionEnum {
+    public struct VoucherAttributeKey: KassHelpers.NamedOptionEnum {
         /// The name of the key, if it can be determined.
         public var name: String?
 
@@ -61,7 +62,7 @@ extension Mach {
 
     // MARK: - Attribute Command
     /// A voucher attribute command.
-    public protocol VoucherAttributeCommand: Mach.NamedOptionEnum
+    public protocol VoucherAttributeCommand: KassHelpers.NamedOptionEnum
     where RawValue == mach_voucher_attr_command_t {}
 
     // MARK: - ATM Action

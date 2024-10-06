@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A type of clock attribute.
-    public struct ClockAttribute: OptionEnum {
+    public struct ClockAttribute: KassHelpers.OptionEnum {
         /// The raw value of the clock attribute.
         public let rawValue: clock_flavor_t
 

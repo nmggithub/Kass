@@ -1,10 +1,11 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 import MachC.VoucherExtra
 
 extension Mach {
     /// A voucher attribute recipe command.
-    public protocol VoucherAttributeRecipeCommand: Mach.NamedOptionEnum
+    public protocol VoucherAttributeRecipeCommand: KassHelpers.NamedOptionEnum
     where RawValue == mach_voucher_attr_recipe_command_t {}
 
     // MARK: - Base Command

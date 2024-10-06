@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A flavor of host info.
-    public struct HostInfoFlavor: OptionEnum {
+    public struct HostInfoFlavor: KassHelpers.OptionEnum {
         /// The raw value of the flavor.
         public let rawValue: host_flavor_t
 

@@ -1,4 +1,5 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A thread in a task.
@@ -44,7 +45,7 @@ extension Mach {
 
 extension Mach {
     /// A thread switching option.
-    public struct ThreadSwitchOption: OptionEnum {
+    public struct ThreadSwitchOption: KassHelpers.OptionEnum {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }
         public static let none = Self(rawValue: SWITCH_OPTION_NONE)

@@ -1,7 +1,8 @@
 import Darwin.Mach
+import KassHelpers
 
 /// Adds properties to make the `task_inspect_flavor` enum more Swift-friendly.
-extension task_inspect_flavor: Mach.OptionEnum, @unchecked @retroactive Sendable {
+extension task_inspect_flavor: KassHelpers.OptionEnum, @unchecked @retroactive Sendable {
     /// The basic CPU instruction and cycle counts.
     public static let basicCounts = TASK_INSPECT_BASIC_COUNTS
 }

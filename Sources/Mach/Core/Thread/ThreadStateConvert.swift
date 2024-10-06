@@ -1,9 +1,10 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 
 extension Mach {
     /// A direction for converting thread states.
-    public struct ThreadStateConvertDirection: Mach.OptionEnum {
+    public struct ThreadStateConvertDirection: KassHelpers.OptionEnum {
         /// The raw value of the direction.
         public let rawValue: Int32
 

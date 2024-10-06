@@ -1,9 +1,10 @@
 import Darwin.Mach.exception_types
+import KassHelpers
 import MachC.ExceptionPrivate
 
 extension Mach {
     /// A type of exception.
-    public struct ExceptionType: Mach.NamedOptionEnum {
+    public struct ExceptionType: KassHelpers.NamedOptionEnum {
         /// The name of the exception type, if it can be determined.
         public let name: String?
 
@@ -52,7 +53,7 @@ extension Mach {
     }
 
     /// A behavior for an exception.
-    public struct ExceptionBehavior: Mach.NamedOptionEnum {
+    public struct ExceptionBehavior: KassHelpers.NamedOptionEnum {
         /// The name of the exception behavior, if it can be determined.
         public let name: String?
 
@@ -132,7 +133,7 @@ extension Mach {
     }
 
     /// A mask for getting or setting exception ports.
-    public struct ExceptionMask: Mach.NamedOptionEnum, OptionSet {
+    public struct ExceptionMask: KassHelpers.NamedOptionEnum, OptionSet {
         /// The name of the exception mask, if it can be determined.
         public let name: String?
 

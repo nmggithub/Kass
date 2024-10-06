@@ -1,9 +1,10 @@
 import Darwin.Mach
 import Foundation.NSError
+import KassHelpers
 
 extension Mach {
     /// An error code from a MIG server routine.
-    public struct MIGErrorCode: Mach.OptionEnum {
+    public struct MIGErrorCode: KassHelpers.OptionEnum {
         /// The raw error code.
         public let rawValue: kern_return_t
 

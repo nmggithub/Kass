@@ -1,3 +1,5 @@
+import KassHelpers
+
 extension Mach {
     /// A port with special ports.
     internal protocol PortWithSpecialPorts {
@@ -12,7 +14,7 @@ extension Mach {
     }
 
     /// A special port for a port.
-    internal protocol SpecialPortType: Mach.OptionEnum
+    internal protocol SpecialPortType: KassHelpers.OptionEnum
     where RawValue == Int32, ParentPort.SpecialPort == Self {
         /// The parent port type.
         associatedtype ParentPort: Mach.PortWithSpecialPorts

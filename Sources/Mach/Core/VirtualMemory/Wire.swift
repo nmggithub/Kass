@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A protection option for virtual memory.
-    public struct VMProtectionOptions: OptionSet, Mach.NamedOptionEnum {
+    public struct VMProtectionOptions: OptionSet, KassHelpers.NamedOptionEnum {
 
         /// Represents a raw protection option with an optional name.
         public init(name: String? = nil, rawValue: vm_prot_t) {

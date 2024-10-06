@@ -1,10 +1,11 @@
 import Darwin.Mach
+import KassHelpers
 import MachC.VMPrivate
 
 extension Mach {
     // MARK: - Info Types
     /// A type of memory info.
-    public struct MemoryInfoType: Mach.OptionEnum, Mach.NamedOptionEnum {
+    public struct MemoryInfoType: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
         /// Represents a raw info type with an optional name.
         public init(name: String?, rawValue: UInt8) {
             self.name = name
@@ -35,7 +36,7 @@ extension Mach {
 
     // MARK: - Flags
     /// Flags for memory info.
-    public struct MemoryInfoFlags: Mach.NamedOptionEnum, OptionSet, Sendable {
+    public struct MemoryInfoFlags: KassHelpers.NamedOptionEnum, OptionSet, Sendable {
         /// Represents a raw flag with an optional name.
         public init(name: String?, rawValue: UInt32) {
             self.name = name
@@ -79,7 +80,7 @@ extension Mach {
 
     // MARK: - Tags
     /// A tag for memory info.
-    public struct MemoryInfoTag: Mach.OptionEnum, Mach.NamedOptionEnum {
+    public struct MemoryInfoTag: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
         /// Represents a raw tag with an optional name.
         public init(name: String?, rawValue: UInt16) {
             self.name = name
@@ -186,7 +187,7 @@ extension Mach {
 
     // MARK: - Counters
     /// A type of memory counter.
-    public struct MemoryInfoCounterType: Mach.OptionEnum, Mach.NamedOptionEnum {
+    public struct MemoryInfoCounterType: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
         /// Represents a raw counter type with an optional name.
         public init(name: String?, rawValue: UInt64) {
             self.name = name

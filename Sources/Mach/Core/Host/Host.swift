@@ -1,5 +1,6 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 
 extension Mach {
     /// A host.
@@ -60,7 +61,7 @@ extension Mach {
     public struct HostRebootOption:
         // The way the `host_reboot` function is defined, it seems it could take more than one option. However,
         // it functionally only ever *uses* one option. So, we'll just define it as a single-option enum.
-        OptionEnum
+        KassHelpers.OptionEnum
     {
         public let rawValue: Int32
         public init(rawValue: Int32) { self.rawValue = rawValue }

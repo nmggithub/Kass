@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// Processing to perform on a port.
-    public struct PortDisposition: OptionEnum {
+    public struct PortDisposition: KassHelpers.OptionEnum {
 
         public let rawValue: mach_msg_type_name_t
         public init(rawValue: mach_msg_type_name_t) { self.rawValue = rawValue }

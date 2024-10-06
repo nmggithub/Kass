@@ -1,9 +1,10 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A flavor of port attribute.
     /// - Important: Attributes are only supported on receive rights.
-    public struct PortAttributeFlavor: OptionEnum {
+    public struct PortAttributeFlavor: KassHelpers.OptionEnum {
         /// The raw value of the flavor.
         public let rawValue: mach_port_flavor_t
 

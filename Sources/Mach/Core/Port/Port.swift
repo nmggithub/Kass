@@ -1,5 +1,6 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 
 extension Mach {
     /// Flags to use when constructing a port.
@@ -63,7 +64,7 @@ extension Mach {
 
 extension Mach {
     /// A right to a port.
-    public struct PortRight: OptionEnum, Hashable {
+    public struct PortRight: KassHelpers.OptionEnum, Hashable {
         public let rawValue: mach_port_right_t
         public init(rawValue: mach_port_right_t) { self.rawValue = rawValue }
 

@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// Flags for allocating memory.
-    public struct VMAllocationFlags: OptionSet, Sendable, Mach.NamedOptionEnum {
+    public struct VMAllocationFlags: OptionSet, Sendable, KassHelpers.NamedOptionEnum {
         /// Represents a raw flag with an optional name.
         public init(name: String?, rawValue: Int32) {
             self.name = name

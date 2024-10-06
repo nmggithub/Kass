@@ -1,5 +1,6 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 
 // MARK: - Descriptor
 extension Mach {
@@ -19,7 +20,7 @@ extension Mach.MessageDescriptor {
 // MARK: - Descriptor Type
 extension Mach {
     /// A descriptor type.
-    public struct MessageDescriptorType: Mach.OptionEnum {
+    public struct MessageDescriptorType: KassHelpers.OptionEnum {
         /// The raw descriptor type.
         public let rawValue: mach_msg_descriptor_type_t
 
@@ -152,7 +153,7 @@ extension mach_msg_guarded_port_descriptor_t: Mach.MessageDescriptor {
 // MARK: - OOL Copy Option
 extension Mach {
     /// A copy option for out-of-line descriptors.
-    public struct OOLDescriptorCopyOption: OptionEnum {
+    public struct OOLDescriptorCopyOption: KassHelpers.OptionEnum {
         /// The raw copy option.
         public let rawValue: mach_msg_copy_options_t
 

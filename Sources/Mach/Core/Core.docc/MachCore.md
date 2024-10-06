@@ -53,11 +53,6 @@ The core module for interacting with the Mach kernel.
 
 - ``Mach/call(_:)``
 
-
-### Submodules
-
-- <doc:Protocols>
-
 ### Licenses
 
 - <doc:APSL>

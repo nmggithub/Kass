@@ -1,16 +1,9 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 
-@_documentation(visibility: private)
-/// A non-instantiable struct acting as a namespace.
-public protocol Namespace {}
-
-extension Namespace {
-    @available(*, unavailable, message: "This is a namespace and cannot be instantiated.")
-    public init() { fatalError() }
-}
 /// The Mach kernel.
-public struct Mach: Namespace {
+public struct Mach: KassHelpers.Namespace {
     /// Calls the kernel and throws an error if the call fails.
     public static func call(_ call: @autoclosure () -> kern_return_t) throws {
         let kr = call()
@@ -113,45 +106,5 @@ extension Mach {
         return array.withUnsafeBytes { arrayBytes in
             arrayBytes.load(as: DataType.self)
         }
-    }
-}
-
-extension Mach {
-    /// A structure representing an enumeration of options.
-    public protocol OptionEnum: RawRepresentable, Equatable, Sendable
-    where RawValue: BinaryInteger {
-
-    }
-
-    /// A structure representing an enumeration of options with names.
-    public protocol NamedOptionEnum: OptionEnum, CaseIterable, CustomStringConvertible {
-        /// The name of the option, if it can be determined.
-        var name: String? { get }
-
-        /// All known cases of the option.
-        static var allCases: [Self] { get }
-
-        /// Represents an option with a raw value.
-        init(rawValue: RawValue)
-
-        /// Represents an option with an optional name and raw value.
-        init(name: String?, rawValue: RawValue)
-    }
-}
-
-extension Mach.NamedOptionEnum {
-    /// The description of the option.
-    public var description: String {
-        let className = String(describing: Self.self)
-        let caseName = "\(name ?? "unknown") (\(rawValue))"
-        return "\(className): \(caseName)"
-    }
-    /// Represents an option with a raw value, taking one of the known cases if the raw value matches one.
-    public init(rawValue: RawValue) {
-        guard let value = Self.allCases.first(where: { $0.rawValue == rawValue }) else {
-            self.init(name: nil, rawValue: rawValue)
-            return
-        }
-        self = value
     }
 }

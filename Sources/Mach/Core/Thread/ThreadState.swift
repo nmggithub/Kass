@@ -1,4 +1,5 @@
 import Darwin.Mach
+import KassHelpers
 
 // Technically, there's nothing stopping an ARM thread from getting and setting state on an x86 thread (and visa versa), but the
 // headers containing the state structs are only available on the correct architecture, so we can't provide a cross-architecture
@@ -8,7 +9,7 @@ extension Mach {
     // MARK: - Thread State Flavors
 
     /// A flavor of thread state.
-    public struct ThreadStateFlavor: OptionEnum {
+    public struct ThreadStateFlavor: KassHelpers.OptionEnum {
         public let rawValue: thread_state_flavor_t
         public init(rawValue: thread_state_flavor_t) { self.rawValue = rawValue }
 

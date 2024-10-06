@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A flavor of task info.
-    public struct TaskInfoFlavor: OptionEnum {
+    public struct TaskInfoFlavor: KassHelpers.OptionEnum {
         /// The raw value of the flavor.
         public let rawValue: task_flavor_t
 

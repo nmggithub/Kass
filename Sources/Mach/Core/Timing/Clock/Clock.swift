@@ -1,9 +1,10 @@
 import Darwin.Mach
 import Foundation
+import KassHelpers
 
 extension Mach {
     /// A type of time value.
-    public struct TimeType: OptionEnum {
+    public struct TimeType: KassHelpers.OptionEnum {
         /// The raw value of the option.
         public let rawValue: alarm_type_t
 
@@ -18,7 +19,7 @@ extension Mach {
     }
 
     /// A type of clock.
-    public struct ClockType: OptionEnum {
+    public struct ClockType: KassHelpers.OptionEnum {
         /// The raw value of the option.
         public let rawValue: clock_id_t
 

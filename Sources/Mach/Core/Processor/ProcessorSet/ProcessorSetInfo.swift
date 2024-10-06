@@ -1,7 +1,8 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
-    public struct ProcessorSetInfoFlavor: OptionEnum {
+    public struct ProcessorSetInfoFlavor: KassHelpers.OptionEnum {
         /// The raw value of the flavor.
         public let rawValue: Int32
 

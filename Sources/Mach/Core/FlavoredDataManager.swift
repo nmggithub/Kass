@@ -1,3 +1,5 @@
+import KassHelpers
+
 extension Mach {
     /// A data operator that operates on flavored data for a port.
     public protocol PortDataOperator {
@@ -11,7 +13,7 @@ extension Mach {
     /// A data operator that can get flavored data for a port.
     public protocol FlavoredDataGetter: PortDataOperator {
         /// The flavor type.
-        associatedtype Flavor: OptionEnum
+        associatedtype Flavor: KassHelpers.OptionEnum
 
         /// Gets flavored data for the port.
         func get<DataType: BitwiseCopyable>(_ flavor: Flavor, as type: DataType.Type)
@@ -21,7 +23,7 @@ extension Mach {
     /// A data operator that can set flavored data for a port.
     public protocol FlavoredDataSetter: PortDataOperator {
         /// The flavor type.
-        associatedtype Flavor: OptionEnum
+        associatedtype Flavor: KassHelpers.OptionEnum
 
         /// Sets flavored data for the port.
         func set<DataType: BitwiseCopyable>(_ flavor: Flavor, to value: DataType)

@@ -1,8 +1,9 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// A flavor of processor info.
-    public struct ProcessorInfoFlavor: OptionEnum {
+    public struct ProcessorInfoFlavor: KassHelpers.OptionEnum {
         /// The raw value of the flavor.
         public let rawValue: processor_flavor_t
 
