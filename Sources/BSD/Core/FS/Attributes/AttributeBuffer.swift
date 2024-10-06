@@ -1,6 +1,7 @@
 import Foundation
 
 extension BSD {
+    /// A buffer of attributes.
     public struct FSAttributeBuffer {
         /// The buffer pointer.
         public let bufferPointer: UnsafeRawBufferPointer

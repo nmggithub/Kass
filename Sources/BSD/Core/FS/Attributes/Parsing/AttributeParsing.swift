@@ -3,7 +3,7 @@ import Foundation
 
 extension BSD {
     /// A parseable attribute.
-    public protocol FSParseableAttribute {
+    protocol FSParseableAttribute {
         /// Parses the attribute from a pointer and advances the pointer to the next attribute.
         func parse(from pointer: inout UnsafeRawPointer) -> Any
 
@@ -24,7 +24,7 @@ extension BSD.FSParseableAttribute {
 
 extension Array where Element: Hashable, Element: BSD.FSParseableAttribute {
     /// Maps the attributes to their parsed values.
-    public func map(fromPointer pointer: inout UnsafeRawPointer) -> [Element: Any] {
+    func map(fromPointer pointer: inout UnsafeRawPointer) -> [Element: Any] {
         var parsed: [Element: Any] = [:]
         for attribute in self {
             parsed[attribute] = attribute.parse(from: &pointer)

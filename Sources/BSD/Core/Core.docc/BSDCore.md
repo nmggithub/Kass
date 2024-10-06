@@ -33,6 +33,10 @@ The core module for interacting with the BSD kernel.
 - ``BSD/activeCSRConfig``
 - ``BSD/csrCheck(_:)``
 
+### Other API's
+
+- <doc:File-System>
+
 ### Licenses
 
 - <doc:APSL>

@@ -12,9 +12,9 @@ extension UnsafeRawPointer {
 
 extension BSD {
     /// An attribute reference parser function.
-    public typealias FSAttributeReferenceParserFunction<T> = (Data) -> T
+    typealias FSAttributeReferenceParserFunction<T> = (Data) -> T
     /// A parser for the attribute data.
-    public struct FSAttributeReferenceParser<T> {
+    struct FSAttributeReferenceParser<T> {
         /// The parser function.
         let parse: BSD.FSAttributeReferenceParserFunction<T>
         /// A parser for a null-terminated string attribute.
@@ -38,14 +38,14 @@ extension UnsafePointer where Pointee == attrreference {
     }
 
     /// Parses the attribute data.
-    public func parse<ParsedType>(
+    func parse<ParsedType>(
         withParser parser: BSD.FSAttributeReferenceParser<ParsedType>
     ) -> ParsedType {
         parser.parse(self.data)
     }
 
     /// Parses the attribute data.
-    public func parse<ParsedType>(
+    func parse<ParsedType>(
         withFunction parserFunction: @escaping BSD.FSAttributeReferenceParserFunction<ParsedType>
     ) -> ParsedType {
         BSD.FSAttributeReferenceParser(parse: parserFunction).parse(self.data)
