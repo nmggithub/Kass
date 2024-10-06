@@ -3,7 +3,7 @@
 > Important: The types used by this info are not natively exposed to Swift, but this library exposes them through the `MachC` module. To ensure full compatibility, include the following `import` declaration in your code when using this info.
 >
 > ```swift
-> import MachC.DyldExtra
+> import KassC.DyldExtra
 > ```
 
 ## Topics

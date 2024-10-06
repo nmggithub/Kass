@@ -1,4 +1,4 @@
-@_exported import BSDBase
+@_exported import BSDCore
 import Darwin.POSIX
 
 extension BSD {

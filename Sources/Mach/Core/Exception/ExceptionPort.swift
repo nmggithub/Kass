@@ -1,6 +1,6 @@
 import Darwin.Mach.exception_types
+import KassC.ExceptionPrivate
 import KassHelpers
-import MachC.ExceptionPrivate
 
 extension Mach {
     /// A type of exception.

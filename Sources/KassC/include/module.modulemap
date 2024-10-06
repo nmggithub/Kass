@@ -1,4 +1,4 @@
-module MachC {
+module KassC {
     module DyldExtra {
         header "dyld_extra.h"
         export *
@@ -36,6 +36,11 @@ module MachC {
 
     module IPCKobject {
         header "ipc_kobject.h"
+        export *
+    }
+
+    module CSR {
+        header "csr.h"
         export *
     }
 }

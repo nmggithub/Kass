@@ -1,4 +1,4 @@
-import MachC.TaskPolicyPrivate
+import KassC.TaskPolicyPrivate
 
 extension Mach.TaskPolicyManager {
     /// The task's suppression policy.

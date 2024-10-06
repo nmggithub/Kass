@@ -48,16 +48,17 @@ struct BSDSubModule: Module {
 /// The modules that are part of the package, in build order.
 let modules: [Module] = [
     BasicModule.init(targetName: "KassHelpers", dependencies: []),
+    BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
     BasicModule.init(targetName: "CCompat", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
-        targetName: "BSDCore", path: "Sources/BSD/Core", dependencies: ["CCompat", "Linking"]
+        targetName: "BSDCore", path: "Sources/BSD/Core",
+        dependencies: ["KassHelpers", "KassC", "CCompat", "Linking"]
     ),
     BSDSubModule.init(subModuleName: "FS", dependencies: ["CCompat", "Linking"]),
-    BasicModule.init(targetName: "MachC", path: "Sources/MachC", dependencies: []),
     BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
-        dependencies: ["KassHelpers", "MachC", "BSDCore", "CCompat", "Linking"]
+        dependencies: ["KassHelpers", "KassC", "BSDCore", "CCompat", "Linking"]
     ),
     BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "MachCore"]),
 

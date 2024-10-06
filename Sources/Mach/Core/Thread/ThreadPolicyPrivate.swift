@@ -1,5 +1,5 @@
 import Darwin.Mach
-import MachC.ThreadPolicyPrivate
+import KassC.ThreadPolicyPrivate
 
 extension Mach {
     /// A thread's policy state.

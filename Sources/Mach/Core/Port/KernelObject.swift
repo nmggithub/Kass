@@ -1,5 +1,5 @@
 import Darwin.Mach
-import MachC.IPCKobject
+import KassC.IPCKobject
 
 /// A type of kernel object.
 /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.

@@ -1,6 +1,6 @@
 import Darwin.Mach
+import KassC.VMPrivate
 import KassHelpers
-import MachC.VMPrivate
 
 extension Mach {
     // MARK: - Info Types

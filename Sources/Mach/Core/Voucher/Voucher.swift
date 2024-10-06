@@ -1,7 +1,7 @@
 import Darwin.Mach.mach_voucher_types
 import Foundation
+import KassC.VoucherExtra
 import KassHelpers
-import MachC.VoucherExtra
 
 extension Mach {
     // MARK: - Attribute Key

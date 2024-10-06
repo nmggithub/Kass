@@ -1,4 +1,4 @@
-import MachC.MKTimer
+import KassC.MKTimer
 
 extension Mach {
     /// Flags for arming a timer.

@@ -1,6 +1,6 @@
 import Darwin.Mach
 import Foundation
-import MachC.DyldExtra
+import KassC.DyldExtra
 
 /// Adds properties to make the `dyld_image_mode` enum more Swift-friendly.
 extension dyld_image_mode {

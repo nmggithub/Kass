@@ -1,7 +1,7 @@
 import Darwin.Mach
 import Foundation
+import KassC.VoucherExtra
 import KassHelpers
-import MachC.VoucherExtra
 
 extension Mach {
     /// A voucher attribute recipe command.
