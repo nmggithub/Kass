@@ -54,7 +54,10 @@ extension attrlist {
 
     /// Gets the attributes for a file or directory.
     @available(macOS 11.0, *)
-    public func get(for path: FilePath, options: BSD.FSOptions) throws -> BSD.FSAttributeBuffer {
+    public func get(
+        for path: FilePath, options: consuming BSD.FSOptions
+    ) throws -> BSD.FSAttributeBuffer {
+        if !self.commonExtendedAttributes.isEmpty { options.insert(.useExtendedCommonAttributes) }
         // `getattrlist` truncates, so only get the length field first
         let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
         let listPointer = UnsafeMutablePointer<attrlist>.allocate(capacity: 1)
