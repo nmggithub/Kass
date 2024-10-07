@@ -1,4 +1,3 @@
-import CCompat  // for bitmap functions
 import Darwin.POSIX
 import Darwin.sys.attr
 import Foundation

@@ -59,7 +59,7 @@ let modules: [Module] = [
         targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["KassHelpers", "KassC", "BSDCore", "CCompat", "Linking"]
     ),
-    BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "MachCore"]),
+    BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "BSDCore", "MachCore"]),
 
 ]
 

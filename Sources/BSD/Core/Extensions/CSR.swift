@@ -1,4 +1,3 @@
-import CCompat
 import KassC.CSR
 import KassHelpers
 
