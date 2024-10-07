@@ -32,7 +32,7 @@ This is merely a namespace "module". It can be used to access the the `MachCore`
 
 This module provides facilities for interacting with the Mach portion of the XNU kernel. Most Mach API's are provided, although some are intentionally left in specific cases. Virtual memory API's are largely left out but are planned for a later release. This module should be considered the most stable, as it has had the most work put into it.
 
-### [`BSBCore`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/bsdcore/)
+### [`BSDCore`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/bsdcore/)
 
 This module provides facilities for interacting with the Mach portion of the XNU kernel. It is very much a work-in-progress and should not be considered very stable as it may be subject to change.
 
