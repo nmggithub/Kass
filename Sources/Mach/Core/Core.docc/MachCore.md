@@ -17,6 +17,22 @@ The core module for interacting with the Mach kernel.
 >
 > Any other use, such as in user-facing apps, is **not recommended** and _**heavily discouraged.**_
 
+> Important: When used in a file that also imports the `System` framework, the `Mach` from that framework may conflict with the `Mach` from this module. In these cases `MachCore.Mach` may be used like so:
+>```swift
+> import MachCore
+> import System // Also includes a `Mach`
+>
+> // May compile, but editors may provide incorrect syntax highting / code completion.
+> Mach.[...]
+> // Fully qualifies the access. Better editor support.
+> MachCore.Mach.[...]
+>```
+>
+> While use of `MachCore.Mach` may not be required when `System` is also imported, it is recommended.
+>
+> Where the `System` framework is ***not*** imported, use of `Mach` is recommended over `MachCore.Mach`.
+
+
 ## Topics
 
 ### Core Concepts

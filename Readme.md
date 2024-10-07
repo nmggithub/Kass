@@ -2,32 +2,43 @@
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnmggithub%2FKass%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/nmggithub/Kass)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fnmggithub%2FKass%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/nmggithub/Kass)
 
-Kass is a collection of modules for reverse-engineering and security research on macOS, written in Swift.
+Kass is a collection of modules for reverse-engineering and security research on macOS, written in Swift. It is currently focused on interacting with the XNU kernel which underlies macOS, but may be expanded in the future to support other XNU-based operating systems such as iOS.
 
-## License
+Note that while it may compile on older versions of macOS, this library is only thoroughly tested on the latest version of macOS. In some cases, older deprecated (or even obsoleted) API's are included, but they should be assumed to be untested as it stands today. This may change in the future.
+
+## A Message From The Developer
+
+Hi! This is [nmggithub](https://github.com/nmggithub), the sole developer of this project. I tend to avoid using pronouns in general when it comes to documentation, but I realized I couldn't really avoid it here, so this section is going to be a lot more personal than any of the other documentation. Perhaps I may change my style in the future, but for now this is going to stand out, so I thought I'd address it.
+
+Anyway, this library is currently, as of writing on version 3.0. After months of work and multiple refactors, it's here. Kass 3.0 is a major upgrade from Kass 2.0, hence the major version change. But even now, it's still a library in transition. Hopefully not in the architecture department, but Kass 3.0 is still missing several features I wish I could have included.
+
+Going forward, I want to try and stick with [Semantic Versioning](https://semver.org/), but I don't think I can commit to that fully (especially with how often my mind changes). I honestly don't know how many (if anyone) is using this project, but I want 3.0 onward to be at least somewhat stable.
+
+I consider the `MachCore` module to be mostly stable, so there will likely be little changes to it going forward (save for the addition of virtual memory API's). `BSDCore` is in its early stages, so a lot can change there. Finally, `Linking` will likely be folded into `BSDCore` at some point.
+
+I hope this library is of some use to you, and I look forward to more stable releases in the future. If you have any issues with it, feel free to [file an issue.](https://github.com/nmggithub/Kass/issues) If you'd like to contribute, go ahead and [open a PR.](https://github.com/nmggithub/Kass/pulls) I appreciate all the feedback and support.
+
+## On Licenses
 
 Most of this code is MIT-licensed. However, there are some cases where substance is copied from header files licensed under [Apple's Public Source License](https://opensource.apple.com/apsl/) and other licenses. Where deemed appropriate, copyright notices for the relevant licenses are included. Please see the source code for more information.
 
-## Notice
-
-This package is in a state of transition. Documentation may be inaccurate.
-
 ## Modules
 
-### [`CCompat`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/ccompat/)
-This is simply a helper module to allow for option sets where each option can be represented by a C Macro. The built-in [`OptionSet`](https://developer.apple.com/documentation/swift/optionset) type was not chosen due to it not using `enum`'s. This may change in future versions.
+### [`Kass`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/kass/)
+
+This is merely a namespace "module". It can be used to access the the `MachCore` and `BSDCore` modules, but is not strictly necessary.
+
+### [`MachCore`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machcore/)
+
+This module provides facilities for interacting with the Mach portion of the XNU kernel. Most Mach API's are provided, although some are intentionally left in specific cases. Virtual memory API's are largely left out but are planned for a later release. This module should be considered the most stable, as it has had the most work put into it.
+
+### [`BSBCore`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/bsdcore/)
+
+This module provides facilities for interacting with the Mach portion of the XNU kernel. It is very much a work-in-progress and should not be considered very stable as it may be subject to change.
 
 ### [`Linking`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/linking/)
 
-This module provides a simple API to access symbols that uses the `dlopen`/`dlsym` functions internally.
-
-### [`MachPort`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machport/)
-
-In userspace, many objects are represented by underlying Mach ports. This module provides a set of API's for interacting with these ports.
-
-### [`MachMsg`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machmsg/)
-
-This module provides an API for interacting with, sending, and receiving Mach messages. It also provides an API for interacting with MIG servers. Currently, MIG messages must be hand-built. This may change in future versions.
+This module provides a simple API to access symbols that uses the `dlopen`/`dlsym` functions internally. It will likely be folded into `BSDCore` at some point.
 
 ## Notes
 
@@ -69,4 +80,4 @@ at the top of your Swift file.
 
 ### Naming collisions
 
-If any module names collides with existing modules in your package, simply use the [`moduleAliases:`](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0339-module-aliasing-for-disambiguation.md) option when defining the dependency.
+If any module names collides with existing modules in your package, simply use the [`moduleAliases:`](https://github.com/swiftlang/swift-evolution/blob/main/proposals/0339-module-aliasing-for-disambiguation.md) option when defining the dependency. Please see the documentation for any additional information on naming collisions.

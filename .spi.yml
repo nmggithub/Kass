@@ -1,5 +1,5 @@
 version: 1
 builder:
   configs:
-    - documentation_targets: [MachCore, Linking]
-      platform: macos
+    - documentation_targets: [Kass, MachCore, BSDCore, Linking]
+      platform: macOS
