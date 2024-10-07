@@ -49,15 +49,14 @@ struct BSDSubModule: Module {
 let modules: [Module] = [
     BasicModule.init(targetName: "KassHelpers", dependencies: []),
     BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
-    BasicModule.init(targetName: "CCompat", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
         targetName: "BSDCore", path: "Sources/BSD/Core",
-        dependencies: ["KassHelpers", "KassC", "CCompat", "Linking"]
+        dependencies: ["KassHelpers", "KassC", "Linking"]
     ),
     BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
-        dependencies: ["KassHelpers", "KassC", "BSDCore", "CCompat", "Linking"]
+        dependencies: ["KassHelpers", "KassC", "BSDCore", "Linking"]
     ),
     BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "BSDCore", "MachCore"]),
 
