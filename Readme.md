@@ -10,7 +10,7 @@ Note that while it may compile on older versions of macOS, this library is only 
 
 Hi! This is [nmggithub](https://github.com/nmggithub), the sole developer of this project. I tend to avoid using pronouns in general when it comes to documentation, but I realized I couldn't really avoid it here, so this section is going to be a lot more personal than any of the other documentation. Perhaps I may change my style in the future, but for now this is going to stand out, so I thought I'd address it.
 
-Anyway, this library is currently, as of writing on version 3.0. After months of work and multiple refactors, it's here. Kass 3.0 is a major upgrade from Kass 2.0, hence the major version change. But even now, it's still a library in transition. Hopefully not in the architecture department, but Kass 3.0 is still missing several features I wish I could have included.
+Anyway, this library is currently, as of writing on version 3.0.0. After months of work and multiple refactors, it's here. Kass 3.0.0 is a major upgrade from Kass 2.0.0, hence the major version change. But even now, it's still a library in transition. Hopefully not in the architecture department, but Kass 3.0.0 is still missing several features I wish I could have included.
 
 Going forward, I want to try and stick with [Semantic Versioning](https://semver.org/), but I don't think I can commit to that fully (especially with how often my mind changes). I honestly don't know how many (if anyone) is using this project, but I want 3.0 onward to be at least somewhat stable.
 
