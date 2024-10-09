@@ -54,7 +54,10 @@ extension Mach {
             )
 
             // Write the header.
-            serializingPointer.bindMemory(to: mach_msg_header_t.self, capacity: 1).pointee =
+            let headerPointer = serializingPointer.bindMemory(
+                to: mach_msg_header_t.self, capacity: 1
+            )
+            headerPointer.pointee =
                 self.header  // This is pass-by-value, so we don't have to worry about what happens if `self.header` changes later.
             serializingPointer += MemoryLayout<mach_msg_header_t>.size
 
@@ -84,10 +87,10 @@ extension Mach {
             // field), we still need to be able to deserialize this raw representation back into a `MachMessage`. Thus, we
             // set it to what the kernel would set it to. The kernel allegedly ignores this field for sent messages, so it
             // should be safe to set it here. If the value is non-zero, we leave it as-is and assume it's purposeful.
-            if self.header.msgh_size == 0 {
+            if headerPointer.pointee.msgh_size == 0 {
                 // `serializingPointer` sould be at the end of the payload, so we can calculate the size of the message.
                 let payloadEndPointer = serializingPointer
-                self.header.msgh_size = mach_msg_size_t(payloadEndPointer - startPointer)
+                headerPointer.pointee.msgh_size = mach_msg_size_t(payloadEndPointer - startPointer)
             }
 
             // Realign the pointer after writing an arbitrarily-sized payload.
