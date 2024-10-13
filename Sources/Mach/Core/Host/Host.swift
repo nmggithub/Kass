@@ -87,7 +87,7 @@ extension Mach.Host {
 
 extension Mach.Host {
     /// Performs a kext request.
-    public func kextRequest(_ request: Data) throws -> Data {
+    public func kextRequest(_ request: Data) throws -> (logs: Data, response: Data) {
         let dataCopy = request.withUnsafeBytes {
             buffer in
             let bufferCopy = UnsafeMutableRawBufferPointer.allocate(
@@ -117,7 +117,11 @@ extension Mach.Host {
             bytes: UnsafeRawPointer(bitPattern: responseAddress)!,
             count: Int(responseCount)
         )
-        return response
+        let logData = Data(
+            bytes: UnsafeRawPointer(bitPattern: logDataPointer)!,
+            count: Int(logDataCount)
+        )
+        return (logData, response)
     }
 }
 
