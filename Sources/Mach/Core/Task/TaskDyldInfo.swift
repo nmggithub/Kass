@@ -29,7 +29,7 @@ extension dyld_aot_image_info {
 
 /// Adds a failible initializer to convert a potentially-nil C string to a Swift string.
 extension String {
-    internal init?(cString: UnsafePointer<CChar>?) {
+    fileprivate init?(cString: UnsafePointer<CChar>?) {
         guard let actualCString = cString else { return nil }
         self.init(cString: actualCString)
     }
@@ -37,7 +37,7 @@ extension String {
 
 /// Adds a failible initializer to convert a potentially-nil data pointer to a Swift `Data` object.
 extension Data {
-    internal init?(bytes: UnsafeRawPointer?, count: Int) {
+    fileprivate init?(bytes: UnsafeRawPointer?, count: Int) {
         guard let actualBytes = bytes else { return nil }
         self.init(bytes: actualBytes, count: count)
     }
