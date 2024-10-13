@@ -125,6 +125,7 @@ extension Mach {
     /// A memory manager.
     public class MemoryManager: Mach.Port {}
 }
+
 extension Mach.Host {
     /// Gets the default memory manager for the host.
     public func getDefaultMemoryManager() throws -> Mach.MemoryManager {
