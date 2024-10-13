@@ -107,10 +107,16 @@ extension Mach.Host: Mach.PortWithSpecialPorts {
         _ specialPort: Mach.HostSpecialPort, as type: PortType.Type = PortType.self
     ) throws -> PortType {
         var portName = mach_port_name_t()
-        try Mach.call(
-            // for historical reasons, we pass in HOST_LOCAL_NODE as the second parameter
-            host_get_special_port(self.name, HOST_LOCAL_NODE, specialPort.rawValue, &portName)
-        )
+        switch specialPort {
+        case .ioMain:
+            // This works with unprivileged host ports, while the default case does not.
+            try Mach.call(host_get_io_main(self.name, &portName))
+        default:
+            try Mach.call(
+                // For historical reasons, we pass in HOST_LOCAL_NODE as the second parameter.
+                host_get_special_port(self.name, HOST_LOCAL_NODE, specialPort.rawValue, &portName)
+            )
+        }
         return PortType(named: portName)
     }
 
