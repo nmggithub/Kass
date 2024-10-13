@@ -98,16 +98,16 @@ extension Mach.Host {
         }
         defer { dataCopy.deallocate() }
         var responseAddress = vm_offset_t()
-        var responseCount = mach_msg_size_t()
+        var responseCount = mach_msg_type_number_t()
         var actualReturn = kern_return_t()
         var logDataPointer = vm_offset_t()
-        var logDataCount = mach_msg_size_t()
+        var logDataCount = mach_msg_type_number_t()
         try Mach.call(
             kext_request(
                 self.name,
                 0,
                 vm_offset_t(bitPattern: dataCopy.baseAddress),
-                mach_msg_size_t(request.count),
+                mach_msg_type_number_t(request.count),
                 &responseAddress, &responseCount,
                 &logDataPointer, &logDataCount, &actualReturn
             )
