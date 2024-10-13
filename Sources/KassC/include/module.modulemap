@@ -48,4 +48,9 @@ module KassC {
         header "attr_private.h"
         export *
     }
+
+    module OSKextLibPrivate {
+        header "OSKextLibPrivate.h"
+        export *
+    }
 }
