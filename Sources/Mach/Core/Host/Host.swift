@@ -100,6 +100,8 @@ extension Mach.Host {
         var responseAddress = vm_offset_t()
         var responseCount = mach_msg_size_t()
         var actualReturn = kern_return_t()
+        var logDataPointer = vm_offset_t()
+        var logDataCount = mach_msg_size_t()
         try Mach.call(
             kext_request(
                 self.name,
@@ -107,7 +109,7 @@ extension Mach.Host {
                 vm_offset_t(bitPattern: dataCopy.baseAddress),
                 mach_msg_size_t(request.count),
                 &responseAddress, &responseCount,
-                nil, nil, &actualReturn
+                &logDataPointer, &logDataCount, &actualReturn
             )
         )
         try Mach.call(actualReturn)
