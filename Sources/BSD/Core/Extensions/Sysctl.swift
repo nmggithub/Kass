@@ -43,4 +43,33 @@ extension BSD {
         try BSD.syscall(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
         return try BSD.sysctl(mibNameArray, asArrayOf: type)
     }
+
+    /// Sets kernel state.
+    public static func sysctl<DataType>(
+        _ mibNameArray: consuming [Int32],
+        setTo value: consuming [DataType]
+    ) throws {
+        let valuePointer = UnsafeMutablePointer<DataType>.allocate(capacity: value.count)
+        defer { valuePointer.deallocate() }
+        for (index, element) in value.enumerated() {
+            valuePointer.advanced(by: index).initialize(to: element)
+        }
+        try BSD.syscall(
+            Darwin.sysctl(
+                &mibNameArray, UInt32(mibNameArray.count), nil, nil, valuePointer, value.count
+            )
+        )
+    }
+
+    /// Sets kernel state.
+    public static func sysctl<DataType>(
+        _ mibName: String,
+        setTo value: consuming [DataType]
+    ) throws {
+        var mibNameArrayLength = size_t()
+        try BSD.syscall(sysctlnametomib(mibName, nil, &mibNameArrayLength))
+        var mibNameArray = [Int32](repeating: 0, count: Int(mibNameArrayLength))
+        try BSD.syscall(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
+        try BSD.sysctl(mibNameArray, setTo: value)
+    }
 }
