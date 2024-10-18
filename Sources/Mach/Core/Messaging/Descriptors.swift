@@ -363,7 +363,7 @@ extension Mach {
                     else { fatalError("Descriptor size mismatch.") }
 
                     // If we defined `size` and `totalSize` correctly, this should never happen, but we'll check anyway.
-                    guard descriptorPointer + descriptor.size >= startPointer + self.totalSize
+                    guard (descriptorPointer + descriptor.size) <= (startPointer + self.totalSize)
                     else { fatalError("Descriptor overflow.") }
 
                     // Now that we've checked everything, we can safely copy the descriptor.
