@@ -56,11 +56,11 @@ public class Library: Handle, @unchecked Sendable {
     ///   - symbol: The name of the symbol.
     ///   - expectedAddress: The address of the symbol.
     ///   - otherSymbol: The name of another symbol in the library to use as a reference.
-    ///   - otherSymbolExpectedAddress: The exepected address of the other symbol.
+    ///   - otherSymbolExpectedAddress: The expected address of the other symbol.
     /// - Returns: The symbol handle, or `nil` if the symbol could not be found.
     /// - Note: Use a binary analysis tool to find the expected addresses of the symbols.
     /// - Important: `otherSymbol` must be an exported symbol in the same library. This is because the actual addresses at runtime may
-    ///              noy be the expected addresses, but the difference between them should be the same. This function uses the address
+    ///              not be the expected addresses, but the difference between them should be the same. This function uses the address
     ///              of `otherSymbol` and the offset between the two expected addresses to get the actual address of `symbol`. However,
     ///              it cannot determine the address of `otherSymbol` if it's not an exported symbol.
     public func get(
