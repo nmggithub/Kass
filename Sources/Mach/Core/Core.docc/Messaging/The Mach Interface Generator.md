@@ -36,3 +36,4 @@ When there are multiple routines in an IDL file, the compiler will often compile
 
 - ``Mach/MIGPayload``
 - ``Mach/MIGPayloadWithNDR``
+- ``Mach/MIGPayloadWithOnlyNDR``
