@@ -25,12 +25,13 @@ extension Mach {
         public func doRoutine(
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
-            on replyPort: Mach.Port? = nil
+            replyPort: Mach.Port? = nil
         ) throws -> MIGReply<Never> {
             try self.doRoutine(
                 routineIndex,
                 request: request,
-                replyPayloadType: Never.self
+                replyPayloadType: Never.self,
+                replyPort: replyPort
             )
         }
 
@@ -40,7 +41,7 @@ extension Mach {
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
             replyPayloadType: ReplyPayload.Type,
-            on replyPort: Mach.Port = Mach.MIGReplyPort()
+            replyPort: Mach.Port?
         ) throws -> Mach.MIGReply<ReplyPayload> {
             let routineId = self.baseRoutineId + routineIndex
             request.header.msgh_id = routineId
@@ -48,7 +49,7 @@ extension Mach {
             request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right so we can receive the reply
             let reply = try Mach.Message.send(
                 request, to: self,
-                receiving: Mach.MIGReply<ReplyPayload>.self, from: replyPort
+                receiving: Mach.MIGReply<ReplyPayload>.self, from: replyPort ?? Mach.MIGReplyPort()
             )
             guard reply.header.msgh_id != MACH_NOTIFY_SEND_ONCE else {
                 throw Mach.MIGError(.serverDied)
