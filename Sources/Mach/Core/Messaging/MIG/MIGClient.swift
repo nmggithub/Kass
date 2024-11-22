@@ -40,8 +40,8 @@ extension Mach {
         public func doRoutine<ReplyPayload: Mach.MIGPayload>(
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
-            replyPayloadType: ReplyPayload.Type,
-            replyPort: Mach.Port?
+            replyPayloadType: ReplyPayload.Type = ReplyPayload.self,
+            replyPort: Mach.Port? = nil
         ) throws -> Mach.MIGReply<ReplyPayload> {
             let routineId = self.baseRoutineId + routineIndex
             request.header.msgh_id = routineId
