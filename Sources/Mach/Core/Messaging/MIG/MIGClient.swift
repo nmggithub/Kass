@@ -2,10 +2,13 @@ import Darwin.Mach
 import Foundation
 
 extension Mach {
-    /// A client for a MIG subsystem.
+    /// A client for MIG requests.
     open class MIGClient: Mach.Port {
         /// The base routine ID for the remote MIG subsystem.
-        public var baseRoutineId: mach_msg_id_t = 0
+        /// - Warning: The vast majority of the time, this should not change after initialization. However, it is left as a
+        /// variable for advanced cases (such as when multiple MIG subsystems are available through the same port), as well
+        /// as to allow it to be set by convenience initializers (after the actual initializer has been called).
+        public var baseRoutineId: mach_msg_id_t
 
         /// Represents an existing MIG server port.
         public required init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
@@ -70,5 +73,13 @@ extension Mach {
             }
             return reply
         }
+    }
+}
+
+extension Mach.PortInitializableByServiceName where Self: Mach.MIGClient {
+    /// Obtains a MIG client for the given service.
+    public init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
+        try self.init(serviceName: serviceName)
+        self.baseRoutineId = baseRoutineId
     }
 }
