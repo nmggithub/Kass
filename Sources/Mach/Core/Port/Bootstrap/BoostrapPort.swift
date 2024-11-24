@@ -1,16 +1,6 @@
+import Bootstrap
 import Darwin.Mach
 import Foundation.NSError
-import Linking
-
-private let bootstrap_look_up:
-    @convention(c) (
-        _ bp: mach_port_t, _ service_name: UnsafePointer<CChar>,
-        _ sp: UnsafeMutablePointer<mach_port_t>
-    )
-        -> kern_return_t = libSystem().get(symbol: "bootstrap_look_up")!.cast()
-
-private let bootstrap_strerror: @convention(c) (_ ret: kern_return_t) -> UnsafePointer<CChar>? =
-    libSystem().get(symbol: "bootstrap_strerror")!.cast()
 
 extension Mach {
     /// A port for communicating with the bootstrap server.

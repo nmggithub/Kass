@@ -1,13 +1,4 @@
 import Darwin.Mach
-import Linking
-
-let mach_port_is_connection_for_service:
-    @convention(c) (
-        _ task: task_t, _ connection_port_name: mach_port_name_t,
-        _ service_port_name: mach_port_name_t,
-        _ filter_policy_id: UnsafePointer<UInt64>
-    )
-        -> kern_return_t = libSystem().get(symbol: "mach_port_is_connection_for_service")!.cast()
 
 extension Mach {
     /// A connection port.
