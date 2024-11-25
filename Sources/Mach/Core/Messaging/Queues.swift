@@ -3,8 +3,8 @@ import Darwin.Mach
 // MARK: - Message Queue
 extension Mach {
     /// A message queue.
-    /// - Important: This does not support a combined send and receive operation. For such an operation, use
-    /// the ``Mach/Message/send(_:to:receiving:ofMaxSize:from:options:timeout:)`` function.
+    /// - Important: This does not support a combined send and receive operation. For such an operation, instead use the
+    /// ``Mach/Message/send(_:to:withDisposition:receiving:ofMaxSize:from:withDisposition:options:timeout:)`` function.
     public class MessageQueue: Mach.Port {
         /// Sends a message to the queue.
         public func enqueue(

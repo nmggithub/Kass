@@ -21,9 +21,9 @@ A message contains, in order:
 
 The kernel provides for three main message operations:
 
-- sending (``send(_:to:options:timeout:)``),
+- sending (``send(_:to:withDisposition:options:timeout:)``),
 - receiving (``receive(_:ofMaxSize:from:options:timeout:)``), and
-- a combined send and receive (``send(_:to:receiving:ofMaxSize:from:options:timeout:)``).
+- a combined send and receive (``send(_:to:withDisposition:receiving:ofMaxSize:from:withDisposition:options:timeout:)``).
 
 For more advanced operation, the underlying `mach_msg` kernel call is available in an error-safe format through ``message(_:options:sendSize:receiveSize:receivePort:timeout:notifyPort:)``.
 
@@ -36,8 +36,8 @@ For more advanced operation, the underlying `mach_msg` kernel call is available 
 ### Communication
 
 - ``message(_:options:sendSize:receiveSize:receivePort:timeout:notifyPort:)``
-- ``send(_:to:options:timeout:)``
-- ``send(_:to:receiving:ofMaxSize:from:options:timeout:)``
+- ``send(_:to:withDisposition:options:timeout:)``
+- ``send(_:to:withDisposition:receiving:ofMaxSize:from:withDisposition:options:timeout:)``
 - ``receive(_:ofMaxSize:from:options:timeout:)``
 - ``MessageOptions``
 
