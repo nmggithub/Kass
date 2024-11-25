@@ -48,11 +48,11 @@ extension Mach {
         ) throws -> Mach.MIGReply<ReplyPayload> {
             let routineId = self.baseRoutineId + routineIndex
             request.header.msgh_id = routineId
-            request.header.bits.remotePortDisposition = .copySend  // make a copy of the send right so we can reuse the port
-            request.header.bits.localPortDisposition = .makeSendOnce  // make a send-once right so we can receive the reply
             let reply = try Mach.Message.send(
-                request, to: self,
-                receiving: Mach.MIGReply<ReplyPayload>.self, from: replyPort ?? Mach.MIGReplyPort()
+                request,
+                to: self, withDisposition: .copySend,  // make a copy of the send right so we can reuse the port
+                receiving: Mach.MIGReply<ReplyPayload>.self,
+                from: replyPort ?? Mach.MIGReplyPort(), withDisposition: .makeSendOnce  // make a send-once right so we can receive the reply
             )
             guard reply.header.msgh_id != MACH_NOTIFY_SEND_ONCE else {
                 throw Mach.MIGError(.serverDied)
