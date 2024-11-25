@@ -81,7 +81,7 @@ extension Mach.Message {
     public static func send<ReceiveMessage: Mach.Message>(
         _ message: Mach.Message,
         to remotePort: Mach.Port? = nil,
-        receiving receiveType: ReceiveMessage.Type,
+        receiving receiveType: ReceiveMessage.Type = ReceiveMessage.self,
         ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
         from receivePort: Mach.Port? = nil,
         options: consuming Mach.MessageOptions = [],
@@ -115,7 +115,7 @@ extension Mach.Message {
     /// Receives a message.
     /// - Warning: This function will block until a message is received.
     public static func receive<ReceiveMessage: Mach.Message>(
-        _ messageType: ReceiveMessage.Type = Mach.Message.self,
+        _ messageType: ReceiveMessage.Type = ReceiveMessage.self,
         ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
         from localPort: Mach.Port,
         options: consuming Mach.MessageOptions = [],
