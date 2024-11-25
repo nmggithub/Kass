@@ -57,10 +57,11 @@ extension Mach.Message {
 
     /// Sends a message.
     /// - Warning: The `remotePort` parameter will override the remote port in the message header.
+    /// - Warning: The `remoteDisposition` parameter will override the remote port disposition in the message header.
     public static func send(
         _ message: Mach.Message,
         to remotePort: Mach.Port? = nil,
-        withDisposition remoteDisposition: Mach.PortDisposition = .copySend,
+        withDisposition remoteDisposition: Mach.PortDisposition? = nil,
         options: consuming Mach.MessageOptions = [],
         timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
     ) throws {
@@ -68,7 +69,9 @@ extension Mach.Message {
         options.remove(.receive)
         if timeout != MACH_MSG_TIMEOUT_NONE { options.insert(.sendTimeout) }
         if let remotePortOverride = remotePort { message.header.remotePort = remotePortOverride }
-        message.header.bits.remotePortDisposition = remoteDisposition
+        if let remoteDispositionOverride = remoteDisposition {
+            message.header.bits.remotePortDisposition = remoteDispositionOverride
+        }
         try Self.message(
             message.serialize(), options: options, sendSize: message.sendSize,
             receiveSize: 0, receivePort: Mach.Port.Nil, timeout: timeout,
@@ -80,14 +83,16 @@ extension Mach.Message {
     /// - Warning: This function will block until a message is received.
     /// - Warning: The `remotePort` parameter will override the remote port in the message header.
     /// - Warning: The `receivePort` parameter will override the local port in the message header.
+    /// - Warning: The `remoteDisposition` parameter will override the remote port disposition in the message header.
+    /// - Warning: The `localDisposition` parameter will override the local port disposition in the message header.
     public static func send<ReceiveMessage: Mach.Message>(
         _ message: Mach.Message,
         to remotePort: Mach.Port? = nil,
-        withDisposition remoteDisposition: Mach.PortDisposition = .copySend,
+        withDisposition remoteDisposition: Mach.PortDisposition? = nil,
         receiving receiveType: ReceiveMessage.Type = ReceiveMessage.self,
         ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
         from receivePort: Mach.Port? = nil,
-        withDisposition localDisposition: Mach.PortDisposition = .makeSendOnce,
+        withDisposition localDisposition: Mach.PortDisposition? = nil,
         options: consuming Mach.MessageOptions = [],
         timeout: mach_msg_timeout_t = 0
     ) throws -> ReceiveMessage {
@@ -99,8 +104,12 @@ extension Mach.Message {
         }
         if let remotePortOverride = remotePort { message.header.remotePort = remotePortOverride }
         if let receivePortOverride = receivePort { message.header.localPort = receivePortOverride }
-        message.header.bits.remotePortDisposition = remoteDisposition
-        message.header.bits.localPortDisposition = localDisposition
+        if let remoteDispositionOverride = remoteDisposition {
+            message.header.bits.remotePortDisposition = remoteDispositionOverride
+        }
+        if let localDispositionOverride = localDisposition {
+            message.header.bits.localPortDisposition = localDispositionOverride
+        }
         let originalMessageBuffer = UnsafeRawBufferPointer(
             start: message.serialize(), count: Int(message.sendSize)
         )
