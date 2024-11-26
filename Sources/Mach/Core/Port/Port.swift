@@ -64,28 +64,37 @@ extension Mach {
 
 extension Mach {
     /// A right to a port.
-    public struct PortRight: KassHelpers.OptionEnum, Hashable {
+    public struct PortRight: KassHelpers.NamedOptionEnum, Hashable {
+        /// The name of the port right, if it can be determined.
+        public let name: String?
+
+        /// Represents a port right with an optional name.
+        public init(name: String?, rawValue: mach_port_right_t) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the port right.
         public let rawValue: mach_port_right_t
-        public init(rawValue: mach_port_right_t) { self.rawValue = rawValue }
 
         public static var allCases: [Mach.PortRight] {
             [.send, .receive, .sendOnce, .portSet, .deadName]
         }
 
         /// A right to send messages to a port.
-        public static let send = Self(rawValue: MACH_PORT_RIGHT_SEND)
+        public static let send = Self(name: "send", rawValue: MACH_PORT_RIGHT_SEND)
 
         /// A right to receive messages from a port.
-        public static let receive = Self(rawValue: MACH_PORT_RIGHT_RECEIVE)
+        public static let receive = Self(name: "receive", rawValue: MACH_PORT_RIGHT_RECEIVE)
 
         /// A right to send messages to a port once.
-        public static let sendOnce = Self(rawValue: MACH_PORT_RIGHT_SEND_ONCE)
+        public static let sendOnce = Self(name: "sendOnce", rawValue: MACH_PORT_RIGHT_SEND_ONCE)
 
         /// A special right to manage a collection of ports (a port set).
-        public static let portSet = Self(rawValue: MACH_PORT_RIGHT_PORT_SET)
+        public static let portSet = Self(name: "portSet", rawValue: MACH_PORT_RIGHT_PORT_SET)
 
         /// A special right that is named by a dead name.
-        public static let deadName = Self(rawValue: MACH_PORT_RIGHT_DEAD_NAME)
+        public static let deadName = Self(name: "deadName", rawValue: MACH_PORT_RIGHT_DEAD_NAME)
     }
 
     /// A port ``name`` in the ``owningTask``'s name space.
