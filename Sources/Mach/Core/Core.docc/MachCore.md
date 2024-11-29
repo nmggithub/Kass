@@ -35,14 +35,17 @@ The core module for interacting with the Mach kernel.
 
 ## Topics
 
-### Core Concepts
+### The Kernel
 
 - ``Mach``
+- <doc:Bootstrap>
+
+### Core Concepts
+
 - ``Mach/Task``
+- ``Mach/Thread``
 - ``Mach/Port``
 - ``Mach/Message``
-- ``Mach/Thread``
-- <doc:Bootstrap>
 
 
 ### Additional Concepts
