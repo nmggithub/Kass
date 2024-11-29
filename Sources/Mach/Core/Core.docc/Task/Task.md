@@ -67,7 +67,7 @@ Tasks are essentially analogous to processes, as [processes on macOS are impleme
 
 It is possible to get a task port of a given flavor for a process with a given PID with the ``init(forPID:)`` initializer.
 
-- Note: Retrieval of task _control_ ports are severely restricted in more recent versions of macOS is generally only possible under very limited circumstances (such as getting the task control port for the calling process). Task read ports and task inspect ports are similarly restricted. However, task _name_ ports are generally unrestricted as they don't indicate any level of privilege over the task itself.
+- Note: Retrieval of task _control_ ports are severely restricted in more recent versions of macOS and is generally only possible under very limited circumstances (such as getting the task control port for the calling process). Task read ports and task inspect ports are similarly restricted. However, task _name_ ports are generally unrestricted as they don't indicate any level of privilege over the task itself.
 
 ## Topics
 
