@@ -178,3 +178,14 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``kernelcacheData(of:as:)``
 - ``kernelcacheData(of:)``
+
+### Managing Vouchers
+
+- ``voucher``
+- ``setVoucher(_:)``
+- ``swapVoucher(with:)``
+
+### Managing Exceptions
+
+- ``swapExceptionPort(_:)``
+- ``registerHardenedExceptionHandler(_:signedPCKey:)``

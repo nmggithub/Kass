@@ -65,3 +65,13 @@
 - ``controlPort``
 - ``readPort``
 - ``inspectPort``
+
+### Managing Vouchers
+
+- ``voucher``
+- ``setVoucher(_:)``
+- ``swapVoucher(with:)``
+
+### Managing Exceptions
+
+- ``swapExceptionPort(_:)``
