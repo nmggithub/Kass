@@ -98,7 +98,7 @@ extension Mach.Host {
 extension Mach.Host {
     /// Performs a kext request and returns more information.
     /// - Important: This function will not throw if the request fails. Instead, it will
-    // return the error code and any log data that was generated through the process.
+    /// return the error code and any log data that was generated through the process.
     /// - Important: See the source code for more information on the `logSpec` parameter.
     public func kextRequestWithLogging(_ request: Data, logSpec: OSKextLogSpec = 0) throws -> (
         return: kern_return_t, logData: Data?, response: Data?

@@ -40,6 +40,7 @@
 ### Making Kext Requests
 
 - ``kextRequest(_:)``
+- ``kextRequestWithLogging(_:logSpec:)``
 
 ### Getting Special Ports
 
@@ -75,3 +76,7 @@
 
 - ``Darwin/mach_memory_info``
 - ``memoryInfos``
+
+### Managing Exceptions
+
+- ``swapExceptionPort(_:)``
