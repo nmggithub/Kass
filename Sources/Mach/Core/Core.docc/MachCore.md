@@ -41,12 +41,12 @@ The core module for interacting with the Mach kernel.
 - ``Mach/Task``
 - ``Mach/Port``
 - ``Mach/Message``
+- ``Mach/Thread``
 - <doc:Bootstrap>
 
 
 ### Additional Concepts
 
-- ``Mach/Thread``
 - ``Mach/Host``
 - ``Mach/Processor``
 - ``Mach/ProcessorSet``
