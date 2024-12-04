@@ -155,7 +155,7 @@ extension Mach {
         public static var all: Self {
             var literalAll: Self = []  // We take advantage of the fact that `OptionSet` is `ExpressibleByArrayLiteral`.
             for exception in allCases { literalAll.insert(exception) }
-            return literalAll
+            return Self(name: "all", rawValue: literalAll.rawValue)
         }
 
         /// The individual masks that are contained in the mask.
