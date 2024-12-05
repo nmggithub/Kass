@@ -73,10 +73,10 @@ extension Mach {
         }
 
         /// Looks up a service by name.
-        public func lookUp(serviceName: String) throws -> Mach.Port {
+        public func lookUp<PortType: Mach.Port>(serviceName: String) throws -> PortType {
             var portName = mach_port_name_t()
             try Self.call(bootstrap_look_up(self.name, serviceName, &portName))
-            return Mach.Port(named: portName)
+            return PortType(named: portName)
         }
 
         /// Registers a service with the bootstrap server.
