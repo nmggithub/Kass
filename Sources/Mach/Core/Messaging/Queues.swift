@@ -17,11 +17,11 @@ extension Mach {
         /// Receives a message from the queue.
         /// - Warning: This function blocks until a message is received.
         public func dequeue<ReceiveMessage: Mach.Message>(
-            _ messageType: ReceiveMessage.Type = Mach.Message.self,
+            _ messageType: ReceiveMessage.Type = ReceiveMessage.self,
             options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
-        ) throws -> Mach.Message {
-            try Mach.Message.receive(messageType, from: self, options: options, timeout: timeout)
+        ) throws -> ReceiveMessage {
+            try ReceiveMessage.receive(messageType, from: self, options: options, timeout: timeout)
         }
     }
 }
@@ -31,12 +31,13 @@ extension Mach {
     /// A message client for enqueuing messages.
     public class MessageClient: Mach.MessageQueue {
         @available(*, unavailable, message: "Clients can only enqueue messages.")
-        override public func dequeue<ReceiveMessage>(
+        override public func dequeue<ReceiveMessage: Mach.Message>(
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
             options: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
-        ) throws -> Mach.Message where ReceiveMessage: Mach.Message {
-            Mach.Message()
+        ) throws -> ReceiveMessage where ReceiveMessage: Mach.Message {
+            // If the user somehow gets here, return an empty message.
+            ReceiveMessage()
         }
     }
 }
