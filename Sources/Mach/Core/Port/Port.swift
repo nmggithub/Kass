@@ -53,12 +53,25 @@ extension Mach {
         /// Enforce reply port semantics.
         ///
         /// When reply port semantics are enforced, messages that are sent to the port
-        ///  must indicate a reply port as the local port in the message header.
+        /// must indicate a reply port as the local port in the message header.
         public static let enforceReplyPortSemantics = Self(
-            rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS)
+            rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS
+        )
 
         /// Mark the port as a provisional reply port.
-        public static let provisionalReplyPort = Self(rawValue: MPO_PROVISIONAL_REPLY_PORT)
+        public static let provisionalReplyPort = Self(
+            rawValue: MPO_PROVISIONAL_REPLY_PORT
+        )
+
+        /// Mark the port as an exception port.
+        @available(macOS, introduced: 15)
+        // There was briefly an flag with the name `MPO_PROVISIONAL_ID_PROT_OPTOUT` that had
+        // the same value as this flag now has. It didn't appear to actually do anything. It
+        // is no longer in the header files and has been replaced with this flag, which does
+        // seem to do something. The previous flag will not be included in this library.
+        public static let exceptionPort = Self(
+            rawValue: MPO_EXCEPTION_PORT
+        )
     }
 }
 
