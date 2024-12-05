@@ -4,62 +4,102 @@ import KassHelpers
 
 extension Mach {
     /// Flags to use when constructing a port.
-    public struct PortConstructFlags: OptionSet, Sendable {
+    public struct PortConstructFlags: OptionSet, Sendable, KassHelpers.NamedOptionEnum {
+
+        /// The name of the flag, if it can be determined.
+        public let name: String?
+
+        /// Represents a flag with an optional name.
+        public init(name: String?, rawValue: Int32) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the flags.
         public let rawValue: Int32
-        public init(rawValue: Int32) { self.rawValue = rawValue }
+
+        /// All known port construction flags.
+        public static var allCases: [Self] {
+            var allGeneralFlags: [Self] =
+                [
+                    .contextAsGuard, .queueLimit, .tempOwner, .importanceReceiver, .insertSendRight,
+                    .strict, .denapReceiver, .immovableReceive, .filterMsg,
+                    .trackThreadGroupBlocking, .servicePort, .connectionPort,
+                    .replyPort, .enforceReplyPortSemantics,
+                    .provisionalReplyPort,
+                ]
+            if #available(macOS 15, *) {
+                allGeneralFlags.append(.exceptionPort)
+            }
+            return allGeneralFlags
+        }
 
         /// Use the passed context as a guard.
-        public static let contextAsGuard = Self(rawValue: MPO_CONTEXT_AS_GUARD)
+        public static let contextAsGuard = Self(
+            name: "contextAsGuard", rawValue: MPO_CONTEXT_AS_GUARD
+        )
 
         /// Use the passed queue limit.
-        public static let queueLimit = Self(rawValue: MPO_QLIMIT)
+        public static let queueLimit = Self(name: "queueLimit", rawValue: MPO_QLIMIT)
 
         /// Set the tempower bit on the port.
-        public static let tempOwner = Self(rawValue: MPO_TEMPOWNER)
+        public static let tempOwner = Self(name: "tempOwner", rawValue: MPO_TEMPOWNER)
 
         /// Mark the port as an importance receiver.
-        public static let importanceReceiver = Self(rawValue: MPO_IMPORTANCE_RECEIVER)
+        public static let importanceReceiver = Self(
+            name: "importanceReceiver", rawValue: MPO_IMPORTANCE_RECEIVER
+        )
 
         /// Insert a send right in addition to the allocated receive right.
-        public static let insertSendRight = Self(rawValue: MPO_INSERT_SEND_RIGHT)
+        public static let insertSendRight = Self(
+            name: "insertSendRight", rawValue: MPO_INSERT_SEND_RIGHT
+        )
 
         /// Use strict guarding.
         /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-        public static let strict = Self(rawValue: MPO_STRICT)
+        public static let strict = Self(name: "strict", rawValue: MPO_STRICT)
 
         /// Mark the port as a De-Nap receiver.
-        public static let denapReceiver = Self(rawValue: MPO_DENAP_RECEIVER)
+        public static let denapReceiver = Self(name: "denapReceiver", rawValue: MPO_DENAP_RECEIVER)
 
         /// Mark the receive right as immovable, protected by the guard.
         /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-        public static let immovableReceive = Self(rawValue: MPO_IMMOVABLE_RECEIVE)
+        public static let immovableReceive = Self(
+            name: "immovableReceive", rawValue: MPO_IMMOVABLE_RECEIVE
+        )
 
         /// Enable message filtering.
-        public static let filterMsg = Self(rawValue: MPO_FILTER_MSG)
+        public static let filterMsg = Self(name: "filterMsg", rawValue: MPO_FILTER_MSG)
 
         /// Enable tracking of thread group blocking.
-        public static let trackThreadGroupBlocking = Self(rawValue: MPO_TG_BLOCK_TRACKING)
+        public static let trackThreadGroupBlocking = Self(
+            name: "trackThreadGroupBlocking", rawValue: MPO_TG_BLOCK_TRACKING
+        )
 
         /// Construct a service port.
         /// - Important: This is only allowed for the init system.
-        public static let servicePort = Self(rawValue: MPO_SERVICE_PORT)
+        public static let servicePort = Self(name: "servicePort", rawValue: MPO_SERVICE_PORT)
 
         /// Construct a connection port.
-        public static let connectionPort = Self(rawValue: MPO_CONNECTION_PORT)
+        public static let connectionPort = Self(
+            name: "connectionPort", rawValue: MPO_CONNECTION_PORT
+        )
 
         /// Mark the port as a reply port.
-        public static let replyPort = Self(rawValue: MPO_REPLY_PORT)
+        public static let replyPort = Self(name: "replyPort", rawValue: MPO_REPLY_PORT)
 
         /// Enforce reply port semantics.
         ///
         /// When reply port semantics are enforced, messages that are sent to the port
         /// must indicate a reply port as the local port in the message header.
         public static let enforceReplyPortSemantics = Self(
+            name: "enforceReplyPortSemantics",
             rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS
         )
 
         /// Mark the port as a provisional reply port.
         public static let provisionalReplyPort = Self(
+            name: "provisionalReplyPort",
             rawValue: MPO_PROVISIONAL_REPLY_PORT
         )
 
@@ -70,6 +110,7 @@ extension Mach {
         // is no longer in the header files and has been replaced with this flag, which does
         // seem to do something. The previous flag will not be included in this library.
         public static let exceptionPort = Self(
+            name: "exceptionPort",
             rawValue: MPO_EXCEPTION_PORT
         )
     }
