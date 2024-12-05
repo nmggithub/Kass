@@ -212,7 +212,7 @@ extension Mach.Task: Mach.PortWithExceptionPorts {
     }
 
     /// Swaps an exception port for the task and returns the previous exception ports.
-    public func swapExceptionPort(_ exceptionPort: Mach.ExceptionPort)
+    public func swapExceptionPort(with exceptionPort: Mach.ExceptionPort)
         throws -> [Mach.ExceptionPort]
     {
         try Mach.ExceptionPort.swapExceptionPort(exceptionPort, forPort: self)
@@ -236,7 +236,7 @@ extension Mach.Thread: Mach.PortWithExceptionPorts {
     }
 
     /// Swaps an exception port for the thread and returns the previous exception ports.
-    public func swapExceptionPort(_ exceptionPort: Mach.ExceptionPort)
+    public func swapExceptionPort(with exceptionPort: Mach.ExceptionPort)
         throws -> [Mach.ExceptionPort]
     {
         try Mach.ExceptionPort.swapExceptionPort(exceptionPort, forPort: self)
@@ -260,7 +260,7 @@ extension Mach.Host: Mach.PortWithExceptionPorts {
     }
 
     /// Swaps an exception port for the host and returns the previous exception ports.
-    public func swapExceptionPort(_ exceptionPort: Mach.ExceptionPort)
+    public func swapExceptionPort(with exceptionPort: Mach.ExceptionPort)
         throws -> [Mach.ExceptionPort]
     {
         try Mach.ExceptionPort.swapExceptionPort(exceptionPort, forPort: self)
