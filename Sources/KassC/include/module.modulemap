@@ -53,4 +53,14 @@ module KassC {
         header "OSKextLibPrivate.h"
         export *
     }
+
+    module CodeSign {
+        header "codesign.h"
+        export *
+    }
+
+    module CSBlobs {
+        header "cs_blobs.h"
+        export *
+    }
 }
