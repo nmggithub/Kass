@@ -63,4 +63,14 @@ module KassC {
         header "cs_blobs.h"
         export *
     }
+
+    module ProcInfo {
+        header "proc_info.h"
+        export *
+    }
+
+    module ProcInfoPrivate {
+        header "proc_info_private.h"
+        export *
+    }
 }
