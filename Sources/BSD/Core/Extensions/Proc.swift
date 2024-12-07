@@ -26,7 +26,7 @@ extension BSD {
             .pidFDInfo,
             .kernelMessageBuffer,
             .setControl,
-            .pidFilePortInfo,
+            .pidFileportInfo,
             .terminate,
             .dirtyControl,
             .pidResourceUsage,
@@ -63,8 +63,8 @@ extension BSD {
             name: "setControl", rawValue: PROC_INFO_CALL_SETCONTROL
         )
 
-        public static let pidFilePortInfo = Self(
-            name: "pidFilePortInfo", rawValue: PROC_INFO_CALL_PIDFILEPORTINFO
+        public static let pidFileportInfo = Self(
+            name: "pidFileportInfo", rawValue: PROC_INFO_CALL_PIDFILEPORTINFO
         )
 
         public static let terminate = Self(
