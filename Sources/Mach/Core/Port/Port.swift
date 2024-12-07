@@ -118,7 +118,7 @@ extension Mach {
 
 extension Mach {
     /// A right to a port.
-    public struct PortRight: KassHelpers.NamedOptionEnum, Hashable {
+    public struct PortRights: OptionSet, KassHelpers.NamedOptionEnum, Hashable {
         /// The name of the port right, if it can be determined.
         public let name: String?
 
@@ -131,8 +131,13 @@ extension Mach {
         /// The raw value of the port right.
         public let rawValue: mach_port_right_t
 
-        public static var allCases: [Mach.PortRight] {
+        public static var allCases: [Mach.PortRights] {
             [.send, .receive, .sendOnce, .portSet, .deadName]
+        }
+
+        /// The individual rights in the set.
+        public var rights: [Mach.PortRights] {
+            Mach.PortRights.allCases.filter { contains($0) }
         }
 
         /// A right to send messages to a port.
@@ -168,12 +173,12 @@ extension Mach {
         }
 
         /// The port rights named by ``Port/name``.
-        public var rights: Set<Mach.PortRight> {
+        public var rights: Mach.PortRights {
             get throws {
                 var type = mach_port_type_t()
                 try Mach.call(mach_port_type(self.owningTask.name, self.name, &type))
-                var rights = Set<Mach.PortRight>()
-                for right in Mach.PortRight.allCases {
+                var rights: Mach.PortRights = []
+                for right in Mach.PortRights.allCases {
                     // `mach_port_type_t` is a bitfield for the rights
                     if type & 1 << (right.rawValue + 16) != 0 {
                         rights.insert(right)

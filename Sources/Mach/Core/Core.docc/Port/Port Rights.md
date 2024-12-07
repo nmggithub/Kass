@@ -1,4 +1,4 @@
-# ``Mach/PortRight``
+# ``Mach/PortRights``
 
 ## Topics
 

@@ -1,4 +1,5 @@
 import Darwin
+import Foundation
 
 extension Mach.Port {
     /// A user reference count for a port right.
@@ -7,7 +8,14 @@ extension Mach.Port {
         internal let port: Mach.Port
 
         /// The port right the user reference count is for.
-        internal let right: Mach.PortRight
+        internal let right: Mach.PortRights
+
+        /// Initialize a user reference count accessor for a port right.
+        internal init(port: Mach.Port, right: Mach.PortRights) throws {
+            guard right.rights.count == 1 else { throw MachError(.invalidValue) }
+            self.port = port
+            self.right = right
+        }
 
         /// The user reference count.
         public var count: mach_port_urefs_t {
@@ -48,14 +56,14 @@ extension Mach.Port {
     }
 
     /// Gets the user reference count for the port right.
-    public func userRefs(for right: Mach.PortRight) -> UserRefs {
-        UserRefs(port: self, right: right)
+    public func userRefs(for right: Mach.PortRights) throws -> UserRefs {
+        return try UserRefs(port: self, right: right)
     }
 
     /// Sets the user reference count for the port right.
     /// - Warning: This function is not atomic.
-    public func setUserRefs(for right: Mach.PortRight, to count: mach_port_urefs_t) throws {
-        let refs = userRefs(for: right)
+    public func setUserRefs(for right: Mach.PortRights, to count: mach_port_urefs_t) throws {
+        let refs = try userRefs(for: right)
         let delta = mach_port_delta_t(count) - mach_port_delta_t(try refs.count)
         if delta > 0 { try refs += delta } else if delta < 0 { try refs -= -delta }
     }

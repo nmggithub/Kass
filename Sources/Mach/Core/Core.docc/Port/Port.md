@@ -11,7 +11,7 @@
 
 ### Getting Port Rights
 
-- ``Mach/PortRight``
+- ``Mach/PortRights``
 - ``rights``
 
 ### Representing a Nil-Named Port

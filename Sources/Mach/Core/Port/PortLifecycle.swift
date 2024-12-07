@@ -3,7 +3,7 @@ import Darwin.Mach
 extension Mach.Port {
     /// Allocates a new port with a given right in the specified task with an optional name.
     public static func allocate(
-        right: Mach.PortRight, named name: mach_port_name_t? = nil,
+        right: Mach.PortRights, named name: mach_port_name_t? = nil,
         inNameSpaceOf task: Mach.Task = .current
     ) throws -> Self {
         var generatedPortName = mach_port_name_t()
