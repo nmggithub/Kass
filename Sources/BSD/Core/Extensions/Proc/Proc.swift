@@ -159,7 +159,7 @@ extension BSD {
     }
 
     /// Helper functions for working with processes.
-    public struct Proc {
+    public struct Proc: Namespace {
         public func info(
             _ pid: pid_t,
             call: ProcInfoCall,
