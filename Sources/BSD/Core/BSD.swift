@@ -5,22 +5,17 @@ import KassHelpers
 /// The BSD kernel.
 public struct BSD: KassHelpers.Namespace {
     /// Executes a system call and throw an error if it fails.
-    public static func syscall(_ syscall: @autoclosure () -> Int32) throws {
+    @discardableResult  // Most of the time, users won't care about the return value, but we still want it to be available.
+    public static func syscall(_ syscall: @autoclosure () -> Int32) throws -> Int32 {
         let ret = syscall()
-        let code =
-            switch ret {
-            // While it's not a standard, a return value of -1 usually indicates an error with `errno` set.
-            case -1: errno
-            // In all other cases, the return value should be the error code.
-            default: ret
-            }
-        guard code == 0 else {
-            guard let posixCode = POSIXError.Code(rawValue: errno) else {
+        guard ret != -1 else {
+            let currentErrno = copy errno  // Make a copy to avoid potential race conditions.
+            guard let posixCode = POSIXError.Code(rawValue: currentErrno) else {
                 // Let's try again with an `NSError`. We use `NSPOSIXErrorDomain` because this is still a POSIX error (we hope).
-                throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+                throw NSError(domain: NSPOSIXErrorDomain, code: Int(currentErrno))
             }
             throw POSIXError(posixCode)
         }
-        return  // Explicitly return safely.
+        return ret
     }
 }
