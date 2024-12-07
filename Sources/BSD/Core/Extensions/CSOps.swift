@@ -321,7 +321,7 @@ extension BSD {
                 pid,
                 .getStatus,
                 auditToken: auditToken,
-                dataIn: Data([UInt8](repeating: 0, count: MemoryLayout<UInt32>.size))
+                dataIn: Data(repeating: 0, count: MemoryLayout<UInt32>.size)
             ).withUnsafeBytes { buffer in
                 return CSFlags(rawValue: buffer.load(as: UInt32.self))
             }
@@ -343,7 +343,7 @@ extension BSD {
         {
             return try self.call(
                 pid, .getCDHash, auditToken: auditToken,
-                dataIn: Data([UInt8](repeating: 0, count: Int(CS_SHA1_LEN)))
+                dataIn: Data(repeating: 0, count: Int(CS_SHA1_LEN))
             )
         }
 
@@ -352,7 +352,7 @@ extension BSD {
         {
             return try self.call(
                 pid, .getPIDOffset, auditToken: auditToken,
-                dataIn: Data([UInt8](repeating: 0, count: MemoryLayout<UInt64>.size))
+                dataIn: Data(repeating: 0, count: MemoryLayout<UInt64>.size)
             ).withUnsafeBytes { buffer in
                 return buffer.load(as: UInt64.self)
             }
@@ -369,7 +369,7 @@ extension BSD {
             let firstDataOut = try self.call(
                 pid, operation, auditToken: auditToken,
                 // Only get the header first.
-                dataIn: Data([UInt8](repeating: 0, count: self.blobHeaderSize)),
+                dataIn: Data(repeating: 0, count: self.blobHeaderSize),
                 // ERANGE is expected here, since we're not getting the full blob.
                 ignoreERANGE: true
             )
@@ -382,7 +382,7 @@ extension BSD {
             let dataOut = try self.call(
                 pid, operation, auditToken: auditToken,
                 // Get the full blob.
-                dataIn: Data([UInt8](repeating: 0, count: Int(actualLength)))
+                dataIn: Data(repeating: 0, count: Int(actualLength))
             )
             return dataOut
         }
@@ -457,7 +457,7 @@ extension BSD {
                 pid,
                 .getValidationCategory,
                 auditToken: auditToken,
-                dataIn: Data([UInt8](repeating: 0, count: MemoryLayout<UInt32>.size))
+                dataIn: Data(repeating: 0, count: MemoryLayout<UInt32>.size)
             ).withUnsafeBytes { buffer in
                 return CSValidationCategory(rawValue: buffer.load(as: UInt32.self))
             }
