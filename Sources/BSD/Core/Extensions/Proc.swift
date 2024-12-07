@@ -176,12 +176,14 @@ extension BSD {
             try buffer.withUnsafeMutableBytes {
                 (bufferPointer) -> Void in
                 if let actualExtendedID = extendedID {
-                    __proc_info_extended_id(
-                        call.rawValue, pid, UInt32(flavor),
-                        actualExtendedID.flag.rawValue, actualExtendedID.value,
-                        arg,
-                        UInt64(UInt(bitPattern: bufferPointer.baseAddress)),
-                        Int32(bufferPointer.count)
+                    try BSD.syscall(
+                        __proc_info_extended_id(
+                            call.rawValue, pid, UInt32(flavor),
+                            actualExtendedID.flag.rawValue, actualExtendedID.value,
+                            arg,
+                            UInt64(UInt(bitPattern: bufferPointer.baseAddress)),
+                            Int32(bufferPointer.count)
+                        )
                     )
                 } else {
                     try BSD.syscall(
