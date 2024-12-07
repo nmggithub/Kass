@@ -1,27 +1,14 @@
-import BSDCore
 import Darwin.Mach
-import Linking
-
-private let task_read_for_pid:
-    @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_read_t>) -> kern_return_t =
-        libSystem()
-        .get(symbol: "task_read_for_pid")!.cast()
-
-private let task_inspect_for_pid:
-    @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_inspect_t>) -> kern_return_t =
-        libSystem()
-        .get(symbol: "task_inspect_for_pid")!.cast()
+import Foundation
 
 extension Mach.Task {
     /// Gets the task port for a process.
-    public convenience init(forPID pid: pid_t) throws {
+    // This initializer is is marked as `@objc` to allow the BSDCore module to override it and use
+    // BSD syscalls for task read and inspect ports. Please see that module for more information.
+    @objc public convenience init(forPID pid: pid_t) throws {
         var portName = mach_port_name_t()
         // The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
         switch Self.self {
-        case is Mach.TaskRead.Type:
-            try BSD.syscall(task_read_for_pid(Mach.Task.current.name, pid, &portName))  // This is weirdly a BSD syscall, not a Mach call.
-        case is Mach.TaskInspect.Type:
-            try BSD.syscall(task_inspect_for_pid(Mach.Task.current.name, pid, &portName))  // This is weirdly a BSD syscall, not a Mach call.
         case is Mach.TaskName.Type:
             try Mach.call(task_name_for_pid(Mach.Task.current.name, pid, &portName))
         case is Mach.TaskControl.Type:  // We default to the control port.
@@ -30,5 +17,11 @@ extension Mach.Task {
             try Mach.call(task_for_pid(Mach.Task.current.name, pid, &portName))
         }
         self.init(named: portName)
+    }
+}
+
+extension Mach.TaskControl {
+    public convenience init(forPID pid: pid_t) throws {
+        try self.init(forPID: pid)
     }
 }
