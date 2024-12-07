@@ -5,7 +5,7 @@ import KassHelpers
 extension Mach {
     // MARK: - Info Types
     /// A type of memory info.
-    public struct MemoryInfoType: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
+    public struct MemoryInfoType: KassHelpers.NamedOptionEnum {
         /// Represents a raw info type with an optional name.
         public init(name: String?, rawValue: UInt8) {
             self.name = name
@@ -80,7 +80,7 @@ extension Mach {
 
     // MARK: - Tags
     /// A tag for memory info.
-    public struct MemoryInfoTag: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
+    public struct MemoryInfoTag: KassHelpers.NamedOptionEnum {
         /// Represents a raw tag with an optional name.
         public init(name: String?, rawValue: UInt16) {
             self.name = name
@@ -187,7 +187,7 @@ extension Mach {
 
     // MARK: - Counters
     /// A type of memory counter.
-    public struct MemoryInfoCounterType: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
+    public struct MemoryInfoCounterType: KassHelpers.NamedOptionEnum {
         /// Represents a raw counter type with an optional name.
         public init(name: String?, rawValue: UInt64) {
             self.name = name

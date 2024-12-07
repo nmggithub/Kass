@@ -3,7 +3,7 @@ import KassHelpers
 
 extension Mach {
     /// A synchronization policy for a semaphore.
-    public struct SemaphorePolicy: KassHelpers.OptionEnum, KassHelpers.NamedOptionEnum {
+    public struct SemaphorePolicy: KassHelpers.NamedOptionEnum {
         /// The name of the policy option, if it can be determined.
         public var name: String?
 
