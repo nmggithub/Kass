@@ -174,7 +174,7 @@ extension BSD {
             extendedID: ProcInfoExtendedID? = nil
         ) throws {
             try buffer.withUnsafeMutableBytes {
-                bufferPointer in
+                (bufferPointer) -> Void in
                 if let actualExtendedID = extendedID {
                     __proc_info_extended_id(
                         call.rawValue, pid, UInt32(flavor),
