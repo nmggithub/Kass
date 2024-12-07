@@ -51,12 +51,12 @@ let modules: [Module] = [
     BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
-        targetName: "BSDCore", path: "Sources/BSD/Core",
+        targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["KassHelpers", "KassC", "Linking"]
     ),
     BasicModule.init(
-        targetName: "MachCore", path: "Sources/Mach/Core",
-        dependencies: ["KassHelpers", "KassC", "BSDCore", "Linking"]
+        targetName: "BSDCore", path: "Sources/BSD/Core",
+        dependencies: ["KassHelpers", "MachCore", "KassC", "Linking"]
     ),
     BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "BSDCore", "MachCore"]),
 
