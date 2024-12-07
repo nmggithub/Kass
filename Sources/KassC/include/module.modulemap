@@ -73,4 +73,9 @@ module KassC {
         header "proc_info_private.h"
         export *
     }
+
+    module Fileport {
+        header "fileport.h"
+        export *
+    }
 }
