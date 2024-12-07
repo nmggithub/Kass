@@ -1,7 +1,6 @@
 import Darwin.POSIX
 import Foundation
-import KassC.ProcInfo
-import KassC.ProcInfoPrivate
+import KassC.LibProc
 import KassHelpers
 
 extension BSD {
@@ -192,6 +191,16 @@ extension BSD {
                             bufferPointer.baseAddress, Int32(bufferPointer.count)
                         )
                     )
+
+                    func terminateAllRSR(signal: Int32) throws {
+                        var data = Data()  // Unused buffer
+                        try self.info(
+                            0,  // unused
+                            call: .terminateRSR,
+                            arg: UInt64(signal),
+                            buffer: &data
+                        )
+                    }
                 }
             }
         }

@@ -64,8 +64,8 @@ module KassC {
         export *
     }
 
-    module ProcInfo {
-        header "proc_info.h"
+    module LibProc {
+        header "libproc.c"
         export *
     }
 
