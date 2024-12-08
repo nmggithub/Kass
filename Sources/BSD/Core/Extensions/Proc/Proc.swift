@@ -191,16 +191,6 @@ extension BSD {
                             bufferPointer.baseAddress, Int32(bufferPointer.count)
                         )
                     )
-
-                    func terminateAllRSR(signal: Int32) throws {
-                        var data = Data()  // Unused buffer
-                        try self.info(
-                            0,  // unused
-                            call: .terminateRSR,
-                            arg: UInt64(signal),
-                            buffer: &data
-                        )
-                    }
                 }
             }
         }
