@@ -20,25 +20,10 @@ extension BSD {
 
         /// All known `proc_info` calls.
         public static let allCases: [Self] = [
-            .listPIDs,
-            .pidInfo,
-            .pidFDInfo,
-            .kernelMessageBuffer,
-            .setControl,
-            .pidFileportInfo,
-            .terminate,
-            .dirtyControl,
-            .pidResourceUsage,
-            .pidOriginatorInfo,
-            .listCoalitions,
-            .canUseForegroundHardware,
-            .pidDynamicKernelQueueInfo,
-            .userDataInfo,
-            .setDyldImages,
-            .terminateRSR,
-            .signalAuditToken,
-            .terminateAuditToken,
-            .delegateSignal,
+            .listPIDs, .pidInfo, .pidFDInfo, .kernelMessageBuffer, .setControl, .pidFileportInfo,
+            .terminate, .dirtyControl, .pidResourceUsage, .pidOriginatorInfo, .listCoalitions,
+            .canUseForegroundHardware, .pidDynamicKernelQueueInfo, .userDataInfo, .setDyldImages,
+            .terminateRSR, .signalAuditToken, .terminateAuditToken, .delegateSignal,
             .delegateTerminate,
         ]
 
