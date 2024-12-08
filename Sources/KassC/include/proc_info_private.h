@@ -60,6 +60,19 @@ struct kevent_qos_s
 	int64_t data;	 /* filter-specific data */
 	uint64_t ext[4]; /* filter-specific extensions */
 };
+typedef uint64_t kqueue_id_t;
+
+// Taken from `vm_types.h` in the XNU kernel source code.
+typedef struct
+{
+	uint64_t rtfabstime;  // mach_continuous_time at start of fault
+	uint64_t rtfduration; // fault service duration
+	uint64_t rtfaddr;	  // fault address
+	uint64_t rtfpc;		  // userspace program counter of thread incurring the fault
+	uint64_t rtftid;	  // thread ID
+	uint64_t rtfupid;	  // process identifier
+	uint64_t rtftype;	  // fault type
+} vm_rtfault_record_t;
 
 __BEGIN_DECLS
 
