@@ -20,7 +20,7 @@ extension BSD {
 
         /// All known `proc_info` calls.
         public static let allCases: [Self] = [
-            .listPIDs, .pidInfo, .pidFDInfo, .kernelMessageBuffer, .setControl, .pidFileportInfo,
+            .listPIDs, .pidInfo, .pidFDInfo, .getKernelMessageBuffer, .setControl, .pidFileportInfo,
             .terminate, .dirtyControl, .pidResourceUsage, .pidOriginatorInfo, .listCoalitions,
             .canUseForegroundHardware, .pidDynamicKernelQueueInfo, .userDataInfo, .setDyldImages,
             .terminateRSR, .signalAuditToken, .terminateAuditToken, .delegateSignal,
@@ -39,8 +39,8 @@ extension BSD {
             name: "pidFDInfo", rawValue: PROC_INFO_CALL_PIDFDINFO
         )
 
-        public static let kernelMessageBuffer = Self(
-            name: "kernelMessageBuffer", rawValue: PROC_INFO_CALL_KERNMSGBUF
+        public static let getKernelMessageBuffer = Self(
+            name: "getKernelMessageBuffer", rawValue: PROC_INFO_CALL_KERNMSGBUF
         )
 
         public static let setControl = Self(
@@ -145,20 +145,21 @@ extension BSD {
 
     /// Helper functions for working with processes.
     public struct Proc: Namespace {
-        public func info(
+        /// Call the `proc_info` syscall.
+        @discardableResult
+        public static func info(
             _ pid: pid_t,
             call: ProcInfoCall,
             // The semantics of these two are different for each call. They are set to
             // 0 by default to indicate "no value" for calls that don't use them.
             flavor: Int32 = 0,
             arg: UInt64 = 0,
-            // This is set to an empty buffer by default for calls that don't use it.
             buffer: inout Data,
-            // This is set to nil to `nil` by default to use the non-extended syscall.
+            // This is set to `nil` by default to use the non-extended syscall.
             extendedID: ProcInfoExtendedID? = nil
-        ) throws {
-            try buffer.withUnsafeMutableBytes {
-                (bufferPointer) -> Void in
+        ) throws -> Int32 {
+            return try buffer.withUnsafeMutableBytes {
+                (bufferPointer) -> Int32 in
                 if let actualExtendedID = extendedID {
                     try BSD.syscall(
                         __proc_info_extended_id(
@@ -178,6 +179,24 @@ extension BSD {
                     )
                 }
             }
+        }
+
+        // Calls with sufficient complexity are broken out into their own files. The others are
+        // implemented below.
+
+        /// Get the kernel message buffer.
+        /// - Note: This must be called with root privileges.
+        public static func getKernelMessageBuffer(largeBuffer: Bool = true) throws -> Data {
+            // These are defined at build time in the XNU kernel source code. It seems that the
+            // macOS builds use the larger size, while other builds use the smaller one. Though
+            // this library is primarily meant for macOS, we should provide the smaller size as
+            // an option (especially if we ever want to support other platforms).
+            let bufferSize = largeBuffer ? 131072 : 16384
+            var buffer = Data(count: bufferSize)
+            let returnedSize = try self.info(
+                0, call: .getKernelMessageBuffer, buffer: &buffer
+            )
+            return buffer.prefix(Int(returnedSize))
         }
     }
 }

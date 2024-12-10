@@ -78,4 +78,9 @@ module KassC {
         header "fileport.h"
         export *
     }
+
+    module ProcInternal {
+        header "proc_internal.h"
+        export *
+    }
 }
