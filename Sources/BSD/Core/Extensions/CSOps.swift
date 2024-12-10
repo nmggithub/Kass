@@ -286,7 +286,7 @@ extension BSD {
         // Perform a code signing operation on a process.
         @discardableResult
         public static func call(
-            _ pid: pid_t, _ ops: CSOperation,
+            forPID pid: pid_t, _ ops: CSOperation,
             auditToken: audit_token_t? = nil,
             dataIn: Data = Data(),
             // The system call will still copy data when ERANGE is returned, so the user
@@ -315,10 +315,10 @@ extension BSD {
         }
 
         public static func getStatus(
-            _ pid: pid_t, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> CSFlags {
             try call(
-                pid,
+                forPID: pid,
                 .getStatus,
                 auditToken: auditToken,
                 dataIn: Data(repeating: 0, count: MemoryLayout<UInt32>.size)
@@ -327,31 +327,32 @@ extension BSD {
             }
         }
 
-        public static func markInvalid(_ pid: pid_t, auditToken: audit_token_t? = nil) throws {
-            try self.call(pid, .markInvalid, auditToken: auditToken)
+        public static func markInvalid(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws {
+            try self.call(forPID: pid, .markInvalid, auditToken: auditToken)
         }
 
-        public static func markHard(_ pid: pid_t, auditToken: audit_token_t? = nil) throws {
-            try self.call(pid, .markHard, auditToken: auditToken)
+        public static func markHard(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws {
+            try self.call(forPID: pid, .markHard, auditToken: auditToken)
         }
 
-        public static func markKill(_ pid: pid_t, auditToken: audit_token_t? = nil) throws {
-            try self.call(pid, .markKill, auditToken: auditToken)
+        public static func markKill(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws {
+            try self.call(forPID: pid, .markKill, auditToken: auditToken)
         }
 
-        public static func getCDHash(_ pid: pid_t, auditToken: audit_token_t? = nil) throws -> Data
+        public static func getCDHash(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
+            -> Data
         {
             return try self.call(
-                pid, .getCDHash, auditToken: auditToken,
+                forPID: pid, .getCDHash, auditToken: auditToken,
                 dataIn: Data(repeating: 0, count: Int(CS_SHA1_LEN))
             )
         }
 
-        public static func getPIDOffset(_ pid: pid_t, auditToken: audit_token_t? = nil) throws
+        public static func getPIDOffset(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> UInt64
         {
             return try self.call(
-                pid, .getPIDOffset, auditToken: auditToken,
+                forPID: pid, .getPIDOffset, auditToken: auditToken,
                 dataIn: Data(repeating: 0, count: MemoryLayout<UInt64>.size)
             ).withUnsafeBytes { buffer in
                 return buffer.load(as: UInt64.self)
@@ -364,10 +365,10 @@ extension BSD {
         /// Get a blob through a code signing operation.
         private static func getBlob(
             _ operation: CSOperation,
-            _ pid: pid_t, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> Data {
             let firstDataOut = try self.call(
-                pid, operation, auditToken: auditToken,
+                forPID: pid, operation, auditToken: auditToken,
                 // Only get the header first.
                 dataIn: Data(repeating: 0, count: self.blobHeaderSize),
                 // ERANGE is expected here, since we're not getting the full blob.
@@ -380,7 +381,7 @@ extension BSD {
             // The length field is in network byte order.
             let actualLength = blob.length.byteSwapped
             let dataOut = try self.call(
-                pid, operation, auditToken: auditToken,
+                forPID: pid, operation, auditToken: auditToken,
                 // Get the full blob.
                 dataIn: Data(repeating: 0, count: Int(actualLength))
             )
@@ -388,73 +389,75 @@ extension BSD {
         }
 
         public static func getEntitlementsBlob(
-            _ pid: pid_t, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> Data {
-            return try self.getBlob(.getEntitlementsBlob, pid, auditToken: auditToken)
+            return try self.getBlob(.getEntitlementsBlob, forPID: pid, auditToken: auditToken)
         }
 
-        public static func markRestrict(_ pid: pid_t, auditToken: audit_token_t? = nil) throws {
-            try self.call(pid, .markRestrict, auditToken: auditToken)
+        public static func markRestrict(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
+        {
+            try self.call(forPID: pid, .markRestrict, auditToken: auditToken)
         }
 
         public static func setStatus(
-            _ pid: pid_t, _ flags: CSFlags, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, _ flags: CSFlags, auditToken: audit_token_t? = nil
         ) throws {
             var flags = flags.rawValue
             try self.call(
-                pid, .setStatus, auditToken: auditToken,
+                forPID: pid, .setStatus, auditToken: auditToken,
                 dataIn: Data(bytes: &flags, count: MemoryLayout<UInt32>.size)
             )
         }
 
-        public static func getCSBlob(_ pid: pid_t, auditToken: audit_token_t? = nil) throws
+        public static func getCSBlob(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> Data
         {
-            try self.getBlob(.getCSBlob, pid, auditToken: auditToken)
+            try self.getBlob(.getCSBlob, forPID: pid, auditToken: auditToken)
         }
 
-        public static func getIdentity(_ pid: pid_t, auditToken: audit_token_t? = nil) throws
+        public static func getIdentity(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> String?
         {
-            let identityData = try self.getBlob(.getIdentity, pid, auditToken: auditToken)
+            let identityData = try self.getBlob(.getIdentity, forPID: pid, auditToken: auditToken)
             return String(data: identityData, encoding: .utf8)
         }
 
-        public static func clearInstallerFlags(_ pid: pid_t, auditToken: audit_token_t? = nil)
+        public static func clearInstallerFlags(forPID pid: pid_t, auditToken: audit_token_t? = nil)
             throws
         {
-            try self.call(pid, .clearInstallerFlags, auditToken: auditToken)
+            try self.call(forPID: pid, .clearInstallerFlags, auditToken: auditToken)
         }
 
-        public static func clearPlatformFlags(_ pid: pid_t, auditToken: audit_token_t? = nil) throws
+        public static func clearPlatformFlags(forPID pid: pid_t, auditToken: audit_token_t? = nil)
+            throws
         {
-            try self.call(pid, .clearLibraryValidation, auditToken: auditToken)
+            try self.call(forPID: pid, .clearLibraryValidation, auditToken: auditToken)
         }
 
-        public static func getTeamID(_ pid: pid_t, auditToken: audit_token_t? = nil) throws
+        public static func getTeamID(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> String?
         {
-            let teamIDData = try self.getBlob(.getTeamID, pid, auditToken: auditToken)
+            let teamIDData = try self.getBlob(.getTeamID, forPID: pid, auditToken: auditToken)
             return String(data: teamIDData, encoding: .utf8)
         }
 
         public static func clearLibraryValidation(
-            _ pid: pid_t, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws {
-            try self.call(pid, .clearLibraryValidation, auditToken: auditToken)
+            try self.call(forPID: pid, .clearLibraryValidation, auditToken: auditToken)
         }
 
         public static func getDEREntitlementsBlob(
-            _ pid: pid_t, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> Data {
-            return try self.getBlob(.getDEREntitlementsBlob, pid, auditToken: auditToken)
+            return try self.getBlob(.getDEREntitlementsBlob, forPID: pid, auditToken: auditToken)
         }
 
         public static func getValidationCategory(
-            _ pid: pid_t, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> CSValidationCategory {
             try self.call(
-                pid,
+                forPID: pid,
                 .getValidationCategory,
                 auditToken: auditToken,
                 dataIn: Data(repeating: 0, count: MemoryLayout<UInt32>.size)

@@ -148,7 +148,7 @@ extension BSD {
         /// Call the `proc_info` syscall.
         @discardableResult
         public static func info(
-            _ pid: pid_t,
+            forPID pid: pid_t = 0,
             call: ProcInfoCall,
             // The semantics of these two are different for each call. They are set to
             // 0 by default to indicate "no value" for calls that don't use them.
@@ -193,9 +193,7 @@ extension BSD {
             // an option (especially if we ever want to support other platforms).
             let bufferSize = largeBuffer ? 131072 : 16384
             var buffer = Data(count: bufferSize)
-            let returnedSize = try self.info(
-                0, call: .getKernelMessageBuffer, buffer: &buffer
-            )
+            let returnedSize = try self.info(call: .getKernelMessageBuffer, buffer: &buffer)
             return buffer.prefix(Int(returnedSize))
         }
     }

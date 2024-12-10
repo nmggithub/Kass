@@ -175,7 +175,7 @@ extension BSD.Proc {
         /// Get information about a process.
         @discardableResult
         public static func call(
-            _ pid: pid_t,
+            forPID pid: pid_t,
             flavor: BSD.ProcPIDInfoFlavor,
             // We default to 0 to indicate "no value" for flavors that don't use the argument.
             arg: UInt64 = 0,
@@ -192,27 +192,27 @@ extension BSD.Proc {
         /// Get information about a process.
         @discardableResult
         public static func call(
-            _ pid: pid_t,
+            forPID pid: pid_t,
             flavor: BSD.ProcPIDInfoFlavor,
             // We default to 0 to indicate "no value" for flavors that don't use the argument.
             arg: UInt64 = 0,
             buffer: inout Data
         ) throws -> Int32 {
             try buffer.withUnsafeMutableBytes {
-                try self.call(pid, flavor: flavor, arg: arg, bufferPointer: $0)
+                try self.call(forPID: pid, flavor: flavor, arg: arg, bufferPointer: $0)
             }
         }
 
         // Get information about a process and return it as a specific type.
         public static func call<DataType>(
-            _ pid: pid_t,
+            forPID pid: pid_t,
             flavor: BSD.ProcPIDInfoFlavor,
             // We default to 0 to indicate "no value" for flavors that don't use the argument.
             arg: UInt64 = 0,
             returnAs type: DataType.Type = DataType.self
         ) throws -> DataType {
             var buffer = Data(repeating: 0, count: MemoryLayout<DataType>.size)
-            try call(pid, flavor: flavor, arg: arg, buffer: &buffer)
+            try call(forPID: pid, flavor: flavor, arg: arg, buffer: &buffer)
             return buffer.withUnsafeBytes {
                 $0.load(as: DataType.self)
             }
@@ -220,7 +220,7 @@ extension BSD.Proc {
 
         // Get information about a process and return it as an array of a specific type.
         public static func call<DataType>(
-            _ pid: pid_t,
+            forPID pid: pid_t,
             flavor: BSD.ProcPIDInfoFlavor,
             // We default to 0 to indicate "no value" for flavors that don't use the argument.
             arg: UInt64 = 0,
@@ -232,7 +232,7 @@ extension BSD.Proc {
             defer { bufferPointer.deallocate() }
             let rawBufferPointer = UnsafeMutableRawBufferPointer(bufferPointer)
             let returnedBufferSize = try call(
-                pid, flavor: flavor, arg: arg,
+                forPID: pid, flavor: flavor, arg: arg,
                 bufferPointer: rawBufferPointer
             )
             return Array(
@@ -248,22 +248,22 @@ extension BSD.Proc {
         public static func listFDs(forPID pid: pid_t) throws -> [proc_fdinfo] {
             let maxFDsPerProc = try BSD.sysctl("kern.maxfilesperproc")
                 .withUnsafeBytes { $0.load(as: Int32.self) }
-            return try call(pid, flavor: .listFDs, count: Int(maxFDsPerProc))
+            return try call(forPID: pid, flavor: .listFDs, count: Int(maxFDsPerProc))
         }
 
         // Get all information about the task for a process.
         public static func taskAllInfo(forPID pid: pid_t) throws -> proc_taskallinfo {
-            try call(pid, flavor: .taskAllInfo)
+            try call(forPID: pid, flavor: .taskAllInfo)
         }
 
         // Get BSD information about a process.
         public static func bsdInfo(forPID pid: pid_t) throws -> proc_bsdinfo {
-            try call(pid, flavor: .bsdInfo)
+            try call(forPID: pid, flavor: .bsdInfo)
         }
 
         /// Get information about a task for a process.
         public static func taskInfo(forPID pid: pid_t) throws -> proc_taskinfo {
-            try call(pid, flavor: .taskInfo)
+            try call(forPID: pid, flavor: .taskInfo)
         }
 
         /// Get information about a thread for a process.
@@ -275,7 +275,7 @@ extension BSD.Proc {
             throws -> proc_threadinfo
         {
             let tsdAddressAsUInt64 = UInt64(UInt(bitPattern: tsdAddress))
-            return try call(pid, flavor: .threadInfo, arg: tsdAddressAsUInt64)
+            return try call(forPID: pid, flavor: .threadInfo, arg: tsdAddressAsUInt64)
         }
 
         /// List the TSD addresses for all threads in a process.
@@ -285,7 +285,7 @@ extension BSD.Proc {
             let maxThreadsPerProc = try BSD.sysctl("kern.num_taskthreads")
                 .withUnsafeBytes { $0.load(as: Int32.self) }
             let addresses: [UInt64] = try call(
-                pid, flavor: .listThreads,
+                forPID: pid, flavor: .listThreads,
                 count: Int(maxThreadsPerProc)
             )
             return addresses.map { UnsafeRawPointer(bitPattern: Int($0))! }
@@ -293,32 +293,32 @@ extension BSD.Proc {
 
         /// Get information about a region in a process.
         public static func regionInfo(forPID pid: pid_t, region: UInt64) throws -> proc_regioninfo {
-            try call(pid, flavor: .regionInfo, arg: region)
+            try call(forPID: pid, flavor: .regionInfo, arg: region)
         }
 
         /// Get information about a region in a process, including the path.
         public static func regionPathInfo(forPID pid: pid_t, region: UInt64)
             throws -> proc_regionwithpathinfo
         {
-            try call(pid, flavor: .regionPathInfo, arg: region)
+            try call(forPID: pid, flavor: .regionPathInfo, arg: region)
         }
 
         /// Get information about the vnode for a process.
         public static func vnodePathInfo(forPID pid: pid_t) throws -> proc_vnodepathinfo {
-            try call(pid, flavor: .vnodePathInfo)
+            try call(forPID: pid, flavor: .vnodePathInfo)
         }
 
         /// Get information about a thread in a process, including the path.
         public static func threadPathInfo(forPID pid: pid_t, arg: UInt64)
             throws -> proc_threadwithpathinfo
         {
-            try call(pid, flavor: .threadPathInfo, arg: arg)
+            try call(forPID: pid, flavor: .threadPathInfo, arg: arg)
         }
 
         /// Get the path of the executable for a process.
         public static func getPath(forPID pid: pid_t) throws -> String? {
             var pathBuffer = Data(repeating: 0, count: Int(MAXPATHLEN))
-            try call(pid, flavor: .path, buffer: &pathBuffer)
+            try call(forPID: pid, flavor: .path, buffer: &pathBuffer)
             return pathBuffer.withUnsafeBytes {
                 (bufferPointer) -> String? in
                 guard let stringPointer = bufferPointer.baseAddress
@@ -331,26 +331,26 @@ extension BSD.Proc {
 
         /// Get information about the work queues for a process.
         public static func workQueueInfo(forPID pid: pid_t) throws -> proc_workqueueinfo {
-            try call(pid, flavor: .workQueueInfo)
+            try call(forPID: pid, flavor: .workQueueInfo)
         }
 
         /// Get short BSD information about a process.
         public static func shortBSDInfo(forPID pid: pid_t) throws -> proc_bsdshortinfo {
-            try call(pid, flavor: .shortBSDInfo)
+            try call(forPID: pid, flavor: .shortBSDInfo)
         }
 
         /// List all file ports for a process.
         public static func listFileports(forPID pid: pid_t) throws -> [proc_fileportinfo] {
             let maxFileportsPerProc = try BSD.sysctl("kern.maxfilesperproc")
                 .withUnsafeBytes { $0.load(as: Int32.self) }
-            return try call(pid, flavor: .listFileports, count: Int(maxFileportsPerProc))
+            return try call(forPID: pid, flavor: .listFileports, count: Int(maxFileportsPerProc))
         }
 
         /// Get information about a thread in a process.
         public static func threadID64Info(forPID pid: pid_t, threadID: UInt64)
             throws -> proc_threadinfo
         {
-            try call(pid, flavor: .threadID64Info, arg: threadID)
+            try call(forPID: pid, flavor: .threadID64Info, arg: threadID)
         }
 
         // MARK: - Private Flavor Getters
@@ -359,53 +359,53 @@ extension BSD.Proc {
         public static func uniqueIdentifier(forPID pid: pid_t)
             throws -> proc_uniqidentifierinfo
         {
-            try call(pid, flavor: .pidUniqueIdentifier)
+            try call(forPID: pid, flavor: .pidUniqueIdentifier)
         }
 
         /// Get BSD information for a process, along with the unique identifier information.
         public static func bsdInfoWithUniqueIdentifier(forPID pid: pid_t)
             throws -> proc_bsdinfowithuniqid
         {
-            try call(pid, flavor: .bsdInfoWithUniqueIdentifier)
+            try call(forPID: pid, flavor: .bsdInfoWithUniqueIdentifier)
         }
 
         /// Get architecture information for a process.
         public static func archInfo(forPID pid: pid_t) throws -> proc_archinfo {
-            try call(pid, flavor: .archInfo)
+            try call(forPID: pid, flavor: .archInfo)
         }
 
         /// Get coalition information for a process.
         public static func coalitionInfo(forPID pid: pid_t) throws -> proc_pidcoalitioninfo {
-            try call(pid, flavor: .coalitionInfo)
+            try call(forPID: pid, flavor: .coalitionInfo)
         }
 
         /// Get exit notification information for a process.
         public static func noteExit(forPID pid: pid_t) throws -> UInt32 {
-            try call(pid, flavor: .noteExit)
+            try call(forPID: pid, flavor: .noteExit)
         }
 
         /// Get region information for a process, including the path.
         public static func regionPathInfo2(forPID pid: pid_t, region: UInt64)
             throws -> proc_regionwithpathinfo
         {
-            try call(pid, flavor: .regionPathInfo2, arg: region)
+            try call(forPID: pid, flavor: .regionPathInfo2, arg: region)
         }
 
         /// Get region information for a process, including the path.
         public static func regionPathInfo3(forPID pid: pid_t, region: UInt64)
             throws -> proc_regionwithpathinfo
         {
-            try call(pid, flavor: .regionPathInfo3, arg: region)
+            try call(forPID: pid, flavor: .regionPathInfo3, arg: region)
         }
 
         /// Get exit reason information for a process.
         public static func exitReason(forPID pid: pid_t) throws -> proc_exitreasoninfo {
-            try call(pid, flavor: .exitReason)
+            try call(forPID: pid, flavor: .exitReason)
         }
 
         /// Get basic exit reason information for a process.
         public static func exitReasonBasic(forPID pid: pid_t) throws -> proc_exitreasonbasicinfo {
-            try call(pid, flavor: .exitReasonBasic)
+            try call(forPID: pid, flavor: .exitReasonBasic)
         }
 
         /// List the user pointers for a process.
@@ -413,7 +413,7 @@ extension BSD.Proc {
             // The largest buffer size is `Int32.max`, so the maximum count is that
             // divided by the size of a user pointer.
             let maxUserPointersPerProc = Int(Int32.max) / MemoryLayout<UInt64>.size
-            return try call(pid, flavor: .listUserPointers, count: maxUserPointersPerProc)
+            return try call(forPID: pid, flavor: .listUserPointers, count: maxUserPointersPerProc)
         }
 
         /// List the dynamic queues for a process.
@@ -421,7 +421,8 @@ extension BSD.Proc {
             // The largest buffer size is `Int32.max`, so the maximum count is that
             // divided by the size of a queue ID.
             let maxDynamicQueuesPerProc = Int(Int32.max) / MemoryLayout<UInt64>.size
-            return try call(pid, flavor: .listDynamicQueues, count: Int(maxDynamicQueuesPerProc))
+            return try call(
+                forPID: pid, flavor: .listDynamicQueues, count: Int(maxDynamicQueuesPerProc))
         }
 
         /// List the thread IDs for a process.
@@ -430,36 +431,36 @@ extension BSD.Proc {
             // processes map onto Mach tasks), so it's also the maximum thread count for processes.
             let maxThreadsPerProc = try BSD.sysctl("kern.num_taskthreads")
                 .withUnsafeBytes { $0.load(as: Int32.self) }
-            return try call(pid, flavor: .listThreadIDs, count: Int(maxThreadsPerProc))
+            return try call(forPID: pid, flavor: .listThreadIDs, count: Int(maxThreadsPerProc))
         }
 
         public static func vmRTFaultInfo(forPID pid: pid_t) throws -> [vm_rtfault_record_t] {
             // The largest buffer size is `Int32.max`, so the maximum count is that
             // divided by the size of a fault record.
             let maxDynamicQueuesPerProc = Int(Int32.max) / MemoryLayout<vm_rtfault_record_t>.size
-            return try call(pid, flavor: .vmRTFaultInfo, count: maxDynamicQueuesPerProc)
+            return try call(forPID: pid, flavor: .vmRTFaultInfo, count: maxDynamicQueuesPerProc)
         }
 
         /// Get the platform for a process.
         public static func getPlatform(forPID pid: pid_t) throws -> UInt32 {
-            try call(pid, flavor: .platform)
+            try call(forPID: pid, flavor: .platform)
         }
 
         /// Get the path of a region in a process.
         public static func regionPath(forPID pid: pid_t, region: UInt64) throws -> proc_regionpath {
-            try call(pid, flavor: .regionPath, arg: region)
+            try call(forPID: pid, flavor: .regionPath, arg: region)
         }
 
         /// Get information about the IPC table for a process.
         public static func ipcTableInfo(forPID pid: pid_t) throws -> proc_ipctableinfo {
-            try call(pid, flavor: .ipcTableInfo)
+            try call(forPID: pid, flavor: .ipcTableInfo)
         }
 
         /// Get scheduling information for a thread in a process.
         public static func threadSchedulingInfo(forPID pid: pid_t, threadID: UInt64)
             throws -> proc_threadinfo
         {
-            try call(pid, flavor: .threadSchedulingInfo, arg: threadID)
+            try call(forPID: pid, flavor: .threadSchedulingInfo, arg: threadID)
         }
 
         /// Get thread counts for a process.
@@ -470,7 +471,7 @@ extension BSD.Proc {
                 MemoryLayout<proc_threadcounts>.size
                 + (Int(numberOfPerformanceLevels) * MemoryLayout<proc_threadcounts_data>.size)
             var buffer = Data(repeating: 0, count: dataSize)
-            let returnedSize = try call(pid, flavor: .threadCounts, buffer: &buffer)
+            let returnedSize = try call(forPID: pid, flavor: .threadCounts, buffer: &buffer)
             return buffer.prefix(Int(returnedSize)).withUnsafeBytes {
                 $0.load(as: proc_threadcounts.self)
             }

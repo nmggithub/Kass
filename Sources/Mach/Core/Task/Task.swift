@@ -24,7 +24,7 @@ extension Mach {
         }
 
         /// Atomically gets the debug port for the task with the given PID.
-        public static func debugPortForPID<PortType: Mach.Port>(_ pid: pid_t) throws -> PortType {
+        public static func debugPort<PortType: Mach.Port>(forPID pid: pid_t) throws -> PortType {
             var port: mach_port_name_t = 0
             try Mach.call(debug_control_port_for_pid(mach_task_self_, pid, &port))
             return PortType(named: port, inNameSpaceOf: .current)
