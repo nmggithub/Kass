@@ -33,136 +33,169 @@ extension BSD {
 
         // MARK: - Public Flavors
 
+        /// List all file descriptors for a process.
         public static let listFDs = Self(
             name: "listFDs", rawValue: PROC_PIDLISTFDS
         )
 
+        /// Get all information about the task for a process.
         public static let taskAllInfo = Self(
             name: "allInfo", rawValue: PROC_PIDTASKALLINFO
         )
 
+        /// Get BSD information about a process.
         public static let bsdInfo = Self(
             name: "bsdInfo", rawValue: PROC_PIDTASKINFO
         )
 
+        /// Get information about a task for a process.
         public static let taskInfo = Self(
             name: "taskInfo", rawValue: PROC_PIDTASKINFO
         )
 
+        /// Get information about a thread for a process.
         public static let threadInfo = Self(
             name: "threadInfo", rawValue: PROC_PIDTHREADINFO
         )
 
+        /// List the thread-specific data (TSD) addresses for all threads in a process.
         public static let listThreads = Self(
             name: "listThreads", rawValue: PROC_PIDLISTTHREADS
         )
 
+        /// Get information about a region in a process.
         public static let regionInfo = Self(
             name: "regionInfo", rawValue: PROC_PIDREGIONINFO
         )
 
+        /// Get information about a region in a process, including the path.
         public static let regionPathInfo = Self(
             name: "regionPathInfo", rawValue: PROC_PIDREGIONPATHINFO
         )
 
+        /// Get information about the vnode for a process.
         public static let vnodePathInfo = Self(
             name: "vnodePathInfo", rawValue: PROC_PIDVNODEPATHINFO
         )
 
+        /// Get information about a thread in a process, including the path.
         public static let threadPathInfo = Self(
             name: "threadPathInfo", rawValue: PROC_PIDTHREADPATHINFO
         )
 
+        /// Get the path of the executable for a process.
         public static let path = Self(
             name: "path", rawValue: PROC_PIDPATHINFO
         )
 
+        /// Get information about the work queues for a process.
         public static let workQueueInfo = Self(
             name: "workQueueInfo", rawValue: PROC_PIDWORKQUEUEINFO
         )
 
+        /// Get short BSD information about a process.
         public static let shortBSDInfo = Self(
             name: "shortBSDInfo", rawValue: PROC_PIDT_SHORTBSDINFO
         )
 
+        /// List all file ports for a process.
         public static let listFileports = Self(
             name: "listFileports", rawValue: PROC_PIDLISTFILEPORTS
         )
 
+        /// Get information about a thread in a process.
         public static let threadID64Info = Self(
             name: "threadID64Info", rawValue: PROC_PIDTHREADID64INFO
         )
 
         // MARK: - Private Flavors
 
+        /// Get unique identifier information for a process.
         public static let pidUniqueIdentifier = Self(
             name: "pidUniqueIdentifier", rawValue: PROC_PIDUNIQIDENTIFIERINFO
         )
 
+        /// Get BSD information for a process, along with the unique identifier information.
         public static let bsdInfoWithUniqueIdentifier = Self(
             name: "bsdInfoWithUniqueIdentifier", rawValue: PROC_PIDT_BSDINFOWITHUNIQID
         )
 
+        /// Get architecture information for a process.
         public static let archInfo = Self(
             name: "archInfo", rawValue: PROC_PIDARCHINFO
         )
 
+        /// Get coalition information for a process.
         public static let coalitionInfo = Self(
             name: "coalitionInfo", rawValue: PROC_PIDCOALITIONINFO
         )
 
+        /// Get exit information for a process.
         public static let noteExit = Self(
             name: "noteExit", rawValue: PROC_PIDNOTEEXIT
         )
 
+        /// Get region information for a process, including the path.
         public static let regionPathInfo2 = Self(
             name: "regionPathInfo2", rawValue: PROC_PIDREGIONPATHINFO2
         )
 
+        /// Get region information for a process, including the path.
         public static let regionPathInfo3 = Self(
             name: "regionPathInfo3", rawValue: PROC_PIDREGIONPATHINFO3
         )
 
+        /// Get exit reason information for a process.
         public static let exitReason = Self(
             name: "exitReason", rawValue: PROC_PIDEXITREASONINFO
         )
 
+        /// Get basic exit reason information for a process.
         public static let exitReasonBasic = Self(
             name: "exitReasonBasic", rawValue: PROC_PIDEXITREASONBASICINFO
         )
 
+        /// List the user pointers for a process.
         public static let listUserPointers = Self(
             name: "listUserPointers", rawValue: PROC_PIDLISTUPTRS
         )
 
+        /// List the dynamic queues for a process.
         public static let listDynamicQueues = Self(
             name: "listDynamicQueues", rawValue: PROC_PIDLISTDYNKQUEUES
         )
 
+        /// List the thread IDs for a process.
         public static let listThreadIDs = Self(
             name: "listThreadIDs", rawValue: PROC_PIDLISTTHREADIDS
         )
 
+        /// Get information about a thread in a process.
         public static let vmRTFaultInfo = Self(
             name: "vmRTFaultInfo", rawValue: PROC_PIDVMRTFAULTINFO
         )
 
+        /// Get the platform for a process.
         public static let platform = Self(
             name: "platform", rawValue: PROC_PIDPLATFORMINFO
         )
 
+        /// Get the path of a region in a process.
         public static let regionPath = Self(
             name: "regionPath", rawValue: PROC_PIDREGIONPATH
         )
 
+        /// Get information about the IPC table for a process.
         public static let ipcTableInfo = Self(
             name: "ipcTableInfo", rawValue: PROC_PIDIPCTABLEINFO
         )
 
+        /// Get scheduling information for a thread in a process.
         public static let threadSchedulingInfo = Self(
             name: "threadSchedulingInfo", rawValue: PROC_PIDTHREADSCHEDINFO
         )
 
+        /// Get thread counts for a process.
         public static let threadCounts = Self(
             name: "threadCounts", rawValue: PROC_PIDTHREADCOUNTS
         )
@@ -278,7 +311,7 @@ extension BSD.Proc {
             return try call(forPID: pid, flavor: .threadInfo, arg: tsdAddressAsUInt64)
         }
 
-        /// List the TSD addresses for all threads in a process.
+        /// List the thread-specific data (TSD) addresses for all threads in a process.
         public static func listThreads(forPID pid: pid_t) throws -> [UnsafeRawPointer] {
             // The name is a bit vague, but this is the maximum number of threads for a task (and BSD
             // processes map onto Mach tasks), so it's also the maximum thread count for processes.
@@ -379,7 +412,7 @@ extension BSD.Proc {
             try call(forPID: pid, flavor: .coalitionInfo)
         }
 
-        /// Get exit notification information for a process.
+        /// Get exit information for a process.
         public static func noteExit(forPID pid: pid_t) throws -> UInt32 {
             try call(forPID: pid, flavor: .noteExit)
         }
