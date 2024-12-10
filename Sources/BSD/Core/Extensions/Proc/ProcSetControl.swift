@@ -79,7 +79,7 @@ extension BSD.Proc {
         buffer: inout Data
     ) throws {
         try Self.info(
-            getpid(),
+            forPID: getpid(),
             call: .setControl,
             flavor: flavor.rawValue,
             arg: arg,
