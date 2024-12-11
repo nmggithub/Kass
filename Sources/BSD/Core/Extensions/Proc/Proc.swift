@@ -145,7 +145,7 @@ extension BSD {
 
     /// Helper functions for working with processes.
     public struct Proc: Namespace {
-        /// Call the `proc_info` syscall.
+        /// Calls the `proc_info` syscall.
         @discardableResult
         public static func info(
             forPID pid: pid_t = 0,
@@ -184,7 +184,7 @@ extension BSD {
         // Calls with sufficient complexity are broken out into their own files. The others are
         // implemented below.
 
-        /// Get the kernel message buffer.
+        /// Gets the kernel message buffer.
         /// - Note: This must be called with root privileges.
         public static func getKernelMessageBuffer(largeBuffer: Bool = true) throws -> Data {
             // These are defined at build time in the XNU kernel source code. It seems that the

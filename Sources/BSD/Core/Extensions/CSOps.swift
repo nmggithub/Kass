@@ -283,7 +283,7 @@ extension BSD {
     }
 
     public struct CSOps {
-        // Perform a code signing operation on a process.
+        // Performs a code signing operation on a process.
         @discardableResult
         public static func call(
             forPID pid: pid_t, _ ops: CSOperation,
@@ -362,7 +362,7 @@ extension BSD {
         /// The size of the header of a code signing blob.
         private static let blobHeaderSize = MemoryLayout<__SC_GenericBlob>.size
 
-        /// Get a blob through a code signing operation.
+        /// Gets a blob through a code signing operation.
         private static func getBlob(
             _ operation: CSOperation,
             forPID pid: pid_t, auditToken: audit_token_t? = nil

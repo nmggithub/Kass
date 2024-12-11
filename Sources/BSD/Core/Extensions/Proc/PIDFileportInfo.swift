@@ -50,7 +50,7 @@ extension BSD.Proc {
 
     /// Helper functions for getting information about a fileport in a process.
     public struct PIDFileportInfo: Namespace {
-        /// Get information about a fileport in a process.
+        /// Gets information about a fileport in a process.
         @discardableResult
         public static func call(
             forPID pid: pid_t, fileport: BSD.Fileport,
@@ -65,7 +65,7 @@ extension BSD.Proc {
             )
         }
 
-        /// Get information about a fileport in a process.
+        /// Gets information about a fileport in a process.
         @discardableResult
         public static func call(
             forPID pid: pid_t, fileport: BSD.Fileport,
@@ -77,7 +77,7 @@ extension BSD.Proc {
             }
         }
 
-        /// Get information about a fileport in a process and return it as a specific type.
+        /// Gets information about a fileport in a process and return it as a specific type.
         @discardableResult
         public static func call<DataType>(
             forPID pid: pid_t, fileport: BSD.Fileport,
@@ -91,7 +91,7 @@ extension BSD.Proc {
             }
         }
 
-        /// Get information about a fileport in a process and return it as an array of a specific type.
+        /// Gets information about a fileport in a process and return it as an array of a specific type.
         @discardableResult
         public static func call<DataType>(
             forPID pid: pid_t, fileport: BSD.Fileport,

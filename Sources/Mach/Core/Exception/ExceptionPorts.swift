@@ -1,7 +1,6 @@
 import Darwin.Mach
 
 extension Mach.ExceptionPort {
-
     /// Gets the exception ports for the port's kernel object that catch the exception types specified by the mask.
     fileprivate static func exceptionPorts(
         forPort port: Mach.PortWithExceptionPorts, mask: Mach.ExceptionMask

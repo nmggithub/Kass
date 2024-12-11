@@ -8,9 +8,7 @@ extension lockgroup_info {
             pointer in
             return pointer.withMemoryRebound(
                 to: CChar.self, capacity: Int(LOCKGROUP_MAX_NAME)
-            ) {
-                String(cString: $0)
-            }
+            ) { String(cString: $0) }
         }
     }
 }

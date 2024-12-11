@@ -3,7 +3,9 @@ import KassHelpers
 extension Mach {
     /// A port with special ports.
     internal protocol PortWithSpecialPorts {
+        /// The special port type.
         associatedtype SpecialPort: SpecialPortType
+
         /// Gets a special port.
         func getSpecialPort<PortType: Mach.Port>(
             _ specialPort: SpecialPort, as type: PortType.Type

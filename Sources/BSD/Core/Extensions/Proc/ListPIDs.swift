@@ -78,7 +78,7 @@ extension BSD {
 }
 
 extension BSD.Proc {
-    /// Get a list of PIDs.
+    /// Gets a list of PIDs.
     public static func listPIDs(
         _ list: BSDCore.BSD.ProcPIDListDescription
     ) throws -> [pid_t] {

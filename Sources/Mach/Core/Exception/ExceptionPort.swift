@@ -60,6 +60,7 @@ extension Mach {
         /// The actual raw value of the exception behavior (with flags).
         private let rawValueWithFlags: UInt32
 
+        /// Extracts the raw value of the exception behavior (without flags).
         private static func behaviorValueWithoutFlags(_ value: exception_behavior_t)
             -> exception_behavior_t
         {

@@ -79,6 +79,8 @@ extension BSD.Proc {
         buffer: inout Data
     ) throws {
         try Self.info(
+            // This flavor will only ever work for the current process, so
+            // we might as well just hardcode it with `getpid()`.
             forPID: getpid(),
             call: .setControl,
             flavor: flavor.rawValue,

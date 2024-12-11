@@ -77,7 +77,7 @@ extension BSD.Proc {
 
     /// Helper functions for getting information about a file descriptor in a process.
     public struct PIDFDInfo: Namespace {
-        /// Get information about a file descriptor in a process.
+        /// Gets information about a file descriptor in a process.
         @discardableResult
         public static func call(
             forPID pid: pid_t, fd: Int32,
@@ -92,7 +92,7 @@ extension BSD.Proc {
             )
         }
 
-        /// Get information about a file descriptor in a process.
+        /// Gets information about a file descriptor in a process.
         @discardableResult
         public static func call(
             forPID pid: pid_t, fd: Int32,
@@ -104,7 +104,7 @@ extension BSD.Proc {
             }
         }
 
-        /// Get information about a file descriptor in a process and return it as a specific type.
+        /// Gets information about a file descriptor in a process and return it as a specific type.
         @discardableResult
         public static func call<DataType>(
             forPID pid: pid_t, fd: Int32,
@@ -118,7 +118,7 @@ extension BSD.Proc {
             }
         }
 
-        /// Get information about a file descriptor in a process and return it as an array of a specific type.
+        /// Gets information about a file descriptor in a process and return it as an array of a specific type.
         @discardableResult
         public static func call<DataType>(
             forPID pid: pid_t, fd: Int32,
