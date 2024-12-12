@@ -40,61 +40,54 @@ extension BSD {
         public static let pipeInfo = Self(
             name: "pipeInfo", rawValue: PROC_PIDFILEPORTPIPEINFO
         )
-
     }
-}
 
-// MARK: - Getters
+    /// A fileport in a process.
+    public struct PIDFileport {
+        internal let pid: pid_t
+        internal let fd: UInt32
 
-extension BSD.Proc {
-
-    /// Helper functions for getting information about a fileport in a process.
-    public struct PIDFileportInfo: Namespace {
-        /// Gets information about a fileport in a process.
+        /// Gets information about a fileport in the process.
         @discardableResult
-        public static func call(
-            forPID pid: pid_t, fileport: BSD.Fileport,
+        public func info(
             flavor: BSD.PIDFileportInfoFlavor,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
             try BSD.syscall(
                 proc_pidfileportinfo(
-                    pid, fileport.name, flavor.rawValue,
+                    self.pid, self.fd, flavor.rawValue,
                     bufferPointer.baseAddress, Int32(bufferPointer.count)
                 )
             )
         }
 
-        /// Gets information about a fileport in a process.
+        /// Gets information about a fileport in the process.
         @discardableResult
-        public static func call(
-            forPID pid: pid_t, fileport: BSD.Fileport,
+        public func info(
             flavor: BSD.PIDFileportInfoFlavor,
             buffer: inout Data
         ) throws -> Int32 {
             try buffer.withUnsafeMutableBytes {
-                try self.call(forPID: pid, fileport: fileport, flavor: flavor, bufferPointer: $0)
+                try self.info(flavor: flavor, bufferPointer: $0)
             }
         }
 
-        /// Gets information about a fileport in a process and return it as a specific type.
+        /// Gets information about a fileport in the process and return it as a specific type.
         @discardableResult
-        public static func call<DataType>(
-            forPID pid: pid_t, fileport: BSD.Fileport,
+        public func info<DataType>(
             flavor: BSD.PIDFileportInfoFlavor,
             returnAs type: DataType.Type = DataType.self
         ) throws -> DataType {
             var buffer = Data(repeating: 0, count: MemoryLayout<DataType>.size)
-            try self.call(forPID: pid, fileport: fileport, flavor: flavor, buffer: &buffer)
+            try self.info(flavor: flavor, buffer: &buffer)
             return buffer.withUnsafeBytes {
                 $0.load(as: DataType.self)
             }
         }
 
-        /// Gets information about a fileport in a process and return it as an array of a specific type.
+        /// Gets information about a fileport in the process and return it as an array of a specific type.
         @discardableResult
-        public static func call<DataType>(
-            forPID pid: pid_t, fileport: BSD.Fileport,
+        public func info<DataType>(
             flavor: BSD.PIDFileportInfoFlavor,
             returnAs type: DataType.Type = DataType.self,
             count: Int
@@ -103,10 +96,7 @@ extension BSD.Proc {
                 .allocate(capacity: count)
             defer { bufferPointer.deallocate() }
             let rawBufferPointer = UnsafeMutableRawBufferPointer(bufferPointer)
-            let returnedBufferSize = try call(
-                forPID: pid, fileport: fileport, flavor: flavor,
-                bufferPointer: rawBufferPointer
-            )
+            let returnedBufferSize = try self.info(flavor: flavor, bufferPointer: rawBufferPointer)
             return Array(
                 rawBufferPointer
                     .prefix(Int(returnedBufferSize))
@@ -114,30 +104,31 @@ extension BSD.Proc {
             )
         }
 
+        // MARK: - Getters
+
         // MARK: - Public Flavor Getters
 
-        public static func vnodePathInfo(
-            forPID pid: pid_t, fileport: BSD.Fileport
-        ) throws -> vnode_fdinfowithpath {
-            try call(forPID: pid, fileport: fileport, flavor: .vnodePathInfo)
+        public var vnodePathInfo: vnode_fdinfowithpath {
+            get throws { try self.info(flavor: .vnodePathInfo) }
         }
 
-        public static func socketInfo(
-            forPID pid: pid_t, fileport: BSD.Fileport
-        ) throws -> socket_fdinfo {
-            try call(forPID: pid, fileport: fileport, flavor: .socketInfo)
+        public var socketInfo: socket_fdinfo {
+            get throws { try self.info(flavor: .socketInfo) }
         }
 
-        public static func posixSharedMemoryInfo(
-            forPID pid: pid_t, fileport: BSD.Fileport
-        ) throws -> pshm_fdinfo {
-            try call(forPID: pid, fileport: fileport, flavor: .posixSharedMemoryInfo)
+        public var posixSharedMemoryInfo: pshm_fdinfo {
+            get throws { try self.info(flavor: .posixSharedMemoryInfo) }
         }
 
-        public static func pipeInfo(
-            forPID pid: pid_t, fileport: BSD.Fileport
-        ) throws -> pipe_fdinfo {
-            try call(forPID: pid, fileport: fileport, flavor: .pipeInfo)
+        public var pipeInfo: pipe_fdinfo {
+            get throws { try self.info(flavor: .pipeInfo) }
         }
+    }
+}
+
+extension BSD.Proc {
+    /// Represents a fileport in a process.
+    public func fileport(fd: UInt32) -> BSD.PIDFileport {
+        BSD.PIDFileport(pid: self.pid, fd: fd)
     }
 }

@@ -143,58 +143,52 @@ extension BSD {
         let value: UInt64
     }
 
-    /// Helper functions for working with processes.
-    public struct Proc: Namespace {
-        /// Calls the `proc_info` syscall.
-        @discardableResult
-        public static func info(
-            forPID pid: pid_t = 0,
-            call: ProcInfoCall,
-            // The semantics of these two are different for each call. They are set to
-            // 0 by default to indicate "no value" for calls that don't use them.
-            flavor: Int32 = 0,
-            arg: UInt64 = 0,
-            buffer: inout Data,
-            // This is set to `nil` by default to use the non-extended syscall.
-            extendedID: ProcInfoExtendedID? = nil
-        ) throws -> Int32 {
-            return try buffer.withUnsafeMutableBytes {
-                (bufferPointer) -> Int32 in
-                if let actualExtendedID = extendedID {
-                    try BSD.syscall(
-                        __proc_info_extended_id(
-                            call.rawValue, pid, UInt32(flavor),
-                            actualExtendedID.flag.rawValue, actualExtendedID.value,
-                            arg,
-                            UInt64(UInt(bitPattern: bufferPointer.baseAddress)),
-                            Int32(bufferPointer.count)
-                        )
+    /// Calls the `proc_info` syscall.
+    @discardableResult
+    public static func procInfo(
+        forPID pid: pid_t = 0,
+        call: ProcInfoCall,
+        // The semantics of these two are different for each call. They are set to
+        // 0 by default to indicate "no value" for calls that don't use them.
+        flavor: Int32 = 0,
+        arg: UInt64 = 0,
+        buffer: inout Data,
+        // This is set to `nil` by default to use the non-extended syscall.
+        extendedID: ProcInfoExtendedID? = nil
+    ) throws -> Int32 {
+        return try buffer.withUnsafeMutableBytes {
+            (bufferPointer) -> Int32 in
+            if let actualExtendedID = extendedID {
+                try BSD.syscall(
+                    __proc_info_extended_id(
+                        call.rawValue, pid, UInt32(flavor),
+                        actualExtendedID.flag.rawValue, actualExtendedID.value,
+                        arg,
+                        UInt64(UInt(bitPattern: bufferPointer.baseAddress)),
+                        Int32(bufferPointer.count)
                     )
-                } else {
-                    try BSD.syscall(
-                        __proc_info(
-                            call.rawValue, pid, flavor, arg,
-                            bufferPointer.baseAddress, Int32(bufferPointer.count)
-                        )
+                )
+            } else {
+                try BSD.syscall(
+                    __proc_info(
+                        call.rawValue, pid, flavor, arg,
+                        bufferPointer.baseAddress, Int32(bufferPointer.count)
                     )
-                }
+                )
             }
         }
+    }
 
-        // Calls with sufficient complexity are broken out into their own files. The others are
-        // implemented below.
-
-        /// Gets the kernel message buffer.
-        /// - Note: This must be called with root privileges.
-        public static func getKernelMessageBuffer(largeBuffer: Bool = true) throws -> Data {
-            // These are defined at build time in the XNU kernel source code. It seems that the
-            // macOS builds use the larger size, while other builds use the smaller one. Though
-            // this library is primarily meant for macOS, we should provide the smaller size as
-            // an option (especially if we ever want to support other platforms).
-            let bufferSize = largeBuffer ? 131072 : 16384
-            var buffer = Data(count: bufferSize)
-            let returnedSize = try self.info(call: .getKernelMessageBuffer, buffer: &buffer)
-            return buffer.prefix(Int(returnedSize))
-        }
+    /// Gets the kernel message buffer.
+    /// - Note: This must be called with root privileges.
+    public static func getKernelMessageBuffer(largeBuffer: Bool = true) throws -> Data {
+        // These are defined at build time in the XNU kernel source code. It seems that the
+        // macOS builds use the larger size, while other builds use the smaller one. Though
+        // this library is primarily meant for macOS, we should provide the smaller size as
+        // an option (especially if we ever want to support other platforms).
+        let bufferSize = largeBuffer ? 131072 : 16384
+        var buffer = Data(count: bufferSize)
+        let returnedSize = try self.procInfo(call: .getKernelMessageBuffer, buffer: &buffer)
+        return buffer.prefix(Int(returnedSize))
     }
 }

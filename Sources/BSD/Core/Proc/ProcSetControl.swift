@@ -70,15 +70,14 @@ extension BSD {
     }
 }
 
-extension BSD.Proc {
-
-    public static func callSetControl(
+extension BSD {
+    public static func procCallSetControl(
         flavor: BSD.ProcSetControlFlavor,
         // This is set to 0 for calls that don't use it.
         arg: UInt64 = 0,
         buffer: inout Data
     ) throws {
-        try Self.info(
+        try Self.procInfo(
             // This flavor will only ever work for the current process, so
             // we might as well just hardcode it with `getpid()`.
             forPID: getpid(),
@@ -89,9 +88,9 @@ extension BSD.Proc {
         )
     }
 
-    public static func setSelfControlState(_ state: BSD.ProcControlState) throws {
+    public func setSelfControlState(_ state: BSD.ProcControlState) throws {
         var empty = Data()
-        try Self.callSetControl(
+        try Self.procCallSetControl(
             flavor: .processorControl, arg: UInt64(state.rawValue),
             buffer: &empty
         )
@@ -101,7 +100,7 @@ extension BSD.Proc {
         guard var nameData = name.data(using: .utf8) else {
             throw POSIXError(.EINVAL)
         }
-        try Self.callSetControl(
+        try Self.procCallSetControl(
             flavor: .threadName,
             buffer: &nameData
         )
@@ -109,7 +108,7 @@ extension BSD.Proc {
 
     public static func setSelfAsVirtualMemoryResourceOwner() throws {
         var empty = Data()
-        try Self.callSetControl(
+        try Self.procCallSetControl(
             flavor: .virtualMemoryResourceOwner,
             buffer: &empty
         )
@@ -117,7 +116,7 @@ extension BSD.Proc {
 
     public static func selfSetDelayIdleSleep(_ state: Bool) throws {
         var empty = Data()
-        try Self.callSetControl(
+        try Self.procCallSetControl(
             flavor: .delayIdleSleep,
             arg: state ? 1 : 0,
             buffer: &empty

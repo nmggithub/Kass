@@ -69,59 +69,53 @@ extension BSD {
             name: "kqueueExtInfo", rawValue: PROC_PIDFDKQUEUE_EXTINFO
         )
     }
-}
 
-// MARK: - Getters
+    /// A file descriptor in a process.
+    public struct PIDFD {
+        internal let pid: pid_t
+        internal let fd: Int32
 
-extension BSD.Proc {
-
-    /// Helper functions for getting information about a file descriptor in a process.
-    public struct PIDFDInfo: Namespace {
-        /// Gets information about a file descriptor in a process.
+        /// Gets information about a file descriptor in the process.
         @discardableResult
-        public static func call(
-            forPID pid: pid_t, fd: Int32,
+        public func info(
             flavor: BSD.PIDFDInfoFlavor,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
             try BSD.syscall(
                 proc_pidfdinfo(
-                    pid, fd, flavor.rawValue,
+                    self.pid, self.fd, flavor.rawValue,
                     bufferPointer.baseAddress, Int32(bufferPointer.count)
                 )
             )
         }
 
-        /// Gets information about a file descriptor in a process.
+        /// Gets information about a file descriptor in the process.
         @discardableResult
-        public static func call(
-            forPID pid: pid_t, fd: Int32,
+        public func info(
             flavor: BSD.PIDFDInfoFlavor,
             buffer: inout Data
         ) throws -> Int32 {
             try buffer.withUnsafeMutableBytes {
-                try self.call(forPID: pid, fd: fd, flavor: flavor, bufferPointer: $0)
+                try self.info(flavor: flavor, bufferPointer: $0)
             }
         }
 
-        /// Gets information about a file descriptor in a process and return it as a specific type.
+        /// Gets information about a file descriptor in the process and return it as a specific type.
         @discardableResult
-        public static func call<DataType>(
-            forPID pid: pid_t, fd: Int32,
+        public func info<DataType>(
             flavor: BSD.PIDFDInfoFlavor,
             returnAs type: DataType.Type = DataType.self
         ) throws -> DataType {
             var buffer = Data(repeating: 0, count: MemoryLayout<DataType>.size)
-            try self.call(forPID: pid, fd: fd, flavor: flavor, buffer: &buffer)
+            try self.info(flavor: flavor, buffer: &buffer)
             return buffer.withUnsafeBytes {
                 $0.load(as: DataType.self)
             }
         }
 
-        /// Gets information about a file descriptor in a process and return it as an array of a specific type.
+        /// Gets information about a file descriptor in the process and return it as an array of a specific type.
         @discardableResult
-        public static func call<DataType>(
-            forPID pid: pid_t, fd: Int32,
+        public func info<DataType>(
             flavor: BSD.PIDFDInfoFlavor,
             returnAs type: DataType.Type = DataType.self,
             count: Int
@@ -130,10 +124,7 @@ extension BSD.Proc {
                 .allocate(capacity: count)
             defer { bufferPointer.deallocate() }
             let rawBufferPointer = UnsafeMutableRawBufferPointer(bufferPointer)
-            let returnedBufferSize = try call(
-                forPID: pid, fd: fd, flavor: flavor,
-                bufferPointer: rawBufferPointer
-            )
+            let returnedBufferSize = try self.info(flavor: flavor, bufferPointer: rawBufferPointer)
             return Array(
                 rawBufferPointer
                     .prefix(Int(returnedBufferSize))
@@ -141,68 +132,57 @@ extension BSD.Proc {
             )
         }
 
+        // MARK: - Getters
+
         // MARK: - Public Flavor Getters
 
-        public static func vnodeInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> vnode_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .vnodeInfo)
+        public var vnodeInfo: vnode_fdinfo {
+            get throws { try self.info(flavor: .vnodeInfo) }
         }
 
-        public static func vnodePathInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> vnode_fdinfowithpath {
-            try call(forPID: pid, fd: fd, flavor: .vnodePathInfo)
+        public var vnodePathInfo: vnode_fdinfowithpath {
+            get throws { try self.info(flavor: .vnodePathInfo) }
         }
 
-        public static func socketInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> socket_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .socketInfo)
+        public var socketInfo: socket_fdinfo {
+            get throws { try self.info(flavor: .socketInfo) }
         }
 
-        public static func posixSemaphoreInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> psem_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .posixSemaphoreInfo)
+        public var posixSemaphoreInfo: psem_fdinfo {
+            get throws { try self.info(flavor: .posixSemaphoreInfo) }
         }
 
-        public static func posixSharedMemoryInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> pshm_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .posixSharedMemoryInfo)
+        public var posixSharedMemoryInfo: pshm_fdinfo {
+            get throws { try self.info(flavor: .posixSharedMemoryInfo) }
         }
 
-        public static func pipeInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> pipe_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .pipeInfo)
+        public var pipeInfo: pipe_fdinfo {
+            get throws { try self.info(flavor: .pipeInfo) }
         }
 
-        public static func kqueueInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> kqueue_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .kqueueInfo)
+        public var kqueueInfo: kqueue_fdinfo {
+            get throws { try self.info(flavor: .kqueueInfo) }
         }
 
-        public static func appleTalkInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> appletalk_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .appleTalkInfo)
+        public var appleTalkInfo: appletalk_fdinfo {
+            get throws { try self.info(flavor: .appleTalkInfo) }
         }
 
-        public static func channelInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> channel_fdinfo {
-            try call(forPID: pid, fd: fd, flavor: .channelInfo)
+        public var channelInfo: channel_fdinfo {
+            get throws { try self.info(flavor: .channelInfo) }
         }
 
         // MARK: - Private Flavor Getters
 
-        public static func kqueueExtInfo(
-            forPID pid: pid_t, fd: Int32
-        ) throws -> [kevent_extinfo] {
-            try call(forPID: pid, fd: fd, flavor: .kqueueExtInfo)
+        public var kqueueExtInfo: [kevent_extinfo] {
+            get throws { try self.info(flavor: .kqueueExtInfo) }
         }
+    }
+}
+
+extension BSD.Proc {
+    /// Represents a file descriptor in the process.
+    public func fd(_ fd: Int32) -> BSD.PIDFD {
+        return BSD.PIDFD(pid: self.pid, fd: fd)
     }
 }
