@@ -25,7 +25,7 @@ extension BSD {
             // Private flavors
             .pidUniqueIdentifier, .bsdInfoWithUniqueIdentifier, .archInfo, .coalitionInfo,
             .noteExit, .regionPathInfo2, .regionPathInfo3, .exitReason, .exitReasonBasic,
-            .listDynamicQueues, .listThreadIDs, .vmRTFaultInfo, .platform, .regionPath,
+            .listDynamicQueues, .listThreadIDs, .vmRealtimeFaultInfo, .platform, .regionPath,
             .ipcTableInfo, .threadSchedulingInfo, .threadCounts,
         ]
 
@@ -141,8 +141,8 @@ extension BSD {
             name: "listThreadIDs", rawValue: PROC_PIDLISTTHREADIDS
         )
 
-        public static let vmRTFaultInfo = Self(
-            name: "vmRTFaultInfo", rawValue: PROC_PIDVMRTFAULTINFO
+        public static let vmRealtimeFaultInfo = Self(
+            name: "vmRealtimeFaultInfo", rawValue: PROC_PIDVMRTFAULTINFO
         )
 
         public static let platform = Self(
@@ -435,12 +435,13 @@ extension BSD {
             }
         }
 
-        public var vmRTFaultInfo: [vm_rtfault_record_t] {
+        /// Fault records for threads in the process that use real-time scheduling.
+        public var vmRealtimeFaultRecords: [vm_rtfault_record_t] {
             get throws {  // The largest buffer size is `Int32.max`, so the maximum count is that
                 // divided by the size of a fault record.
                 let maxDynamicQueuesPerProc =
                     Int(Int32.max) / MemoryLayout<vm_rtfault_record_t>.size
-                return try self.info(flavor: .vmRTFaultInfo, count: maxDynamicQueuesPerProc)
+                return try self.info(flavor: .vmRealtimeFaultInfo, count: maxDynamicQueuesPerProc)
             }
         }
 
