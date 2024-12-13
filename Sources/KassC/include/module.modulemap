@@ -83,4 +83,9 @@ module KassC {
         header "proc_internal.h"
         export *
     }
+
+    module KDebugPrivate {
+        header "kdebug_private.h"
+        export *
+    }
 }
