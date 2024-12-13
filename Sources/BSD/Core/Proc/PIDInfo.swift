@@ -4,7 +4,7 @@ import KassC.ProcInfoPrivate
 import KassHelpers
 
 extension BSD {
-    // A flavor of PID info.
+    /// A flavor of PID info.
     public struct ProcPIDInfoFlavor: KassHelpers.NamedOptionEnum {
         /// The name of the flavor, if it can be determined.
         public var name: String?
@@ -166,9 +166,9 @@ extension BSD {
         )
     }
 
-    /// A process represented by a PID.
+    /// The information about a process.
     public struct Proc {
-        // The PID of the process.
+        /// The PID of the process.
         public let pid: pid_t
 
         /// Represents a process with a PID.
@@ -263,7 +263,7 @@ extension BSD {
 
         /// Gets information about a thread for the process.
         /// - Note: The `tsdAddress` parameter is a pointer to the thread-specific data (TSD) for the thread. These
-        /// addresses can be retrieved using ```threadTSDAddresses```.
+        /// addresses can be retrieved using ```tsdAddresses```.
         public func threadInfo(tsdAddress: UnsafeRawPointer) throws -> [UnsafeRawPointer] {
             let tsdAddressAsUInt64 = UInt64(UInt(bitPattern: tsdAddress))
             return try self.info(flavor: .threadInfo, arg: tsdAddressAsUInt64)

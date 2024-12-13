@@ -4,8 +4,8 @@ import KassC.ProcInfoPrivate
 import KassHelpers
 
 extension BSD {
-    // A flavor of PID fileport info.
-    public struct PIDFileportInfoFlavor: KassHelpers.NamedOptionEnum {
+    /// A flavor of PID fileport info.
+    public struct ProcPIDFileportInfoFlavor: KassHelpers.NamedOptionEnum {
         /// The name of the flavor, if it can be determined.
         public var name: String?
 
@@ -43,19 +43,19 @@ extension BSD {
     }
 
     /// A fileport in a process.
-    public struct PIDFileport {
+    public struct ProcPIDFileport {
         internal let pid: pid_t
-        internal let fd: UInt32
+        internal let fileport: BSD.Fileport
 
         /// Gets information about a fileport in the process.
         @discardableResult
         public func info(
-            flavor: BSD.PIDFileportInfoFlavor,
+            flavor: BSD.ProcPIDFileportInfoFlavor,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
             try BSD.syscall(
                 proc_pidfileportinfo(
-                    self.pid, self.fd, flavor.rawValue,
+                    self.pid, self.fileport.name, flavor.rawValue,
                     bufferPointer.baseAddress, Int32(bufferPointer.count)
                 )
             )
@@ -64,7 +64,7 @@ extension BSD {
         /// Gets information about a fileport in the process.
         @discardableResult
         public func info(
-            flavor: BSD.PIDFileportInfoFlavor,
+            flavor: BSD.ProcPIDFileportInfoFlavor,
             buffer: inout Data
         ) throws -> Int32 {
             try buffer.withUnsafeMutableBytes {
@@ -75,7 +75,7 @@ extension BSD {
         /// Gets information about a fileport in the process and return it as a specific type.
         @discardableResult
         public func info<DataType>(
-            flavor: BSD.PIDFileportInfoFlavor,
+            flavor: BSD.ProcPIDFileportInfoFlavor,
             returnAs type: DataType.Type = DataType.self
         ) throws -> DataType {
             var buffer = Data(repeating: 0, count: MemoryLayout<DataType>.size)
@@ -88,7 +88,7 @@ extension BSD {
         /// Gets information about a fileport in the process and return it as an array of a specific type.
         @discardableResult
         public func info<DataType>(
-            flavor: BSD.PIDFileportInfoFlavor,
+            flavor: BSD.ProcPIDFileportInfoFlavor,
             returnAs type: DataType.Type = DataType.self,
             count: Int
         ) throws -> [DataType] {
@@ -127,8 +127,8 @@ extension BSD {
 }
 
 extension BSD.Proc {
-    /// Represents a fileport in a process.
-    public func fileport(fd: UInt32) -> BSD.PIDFileport {
-        BSD.PIDFileport(pid: self.pid, fd: fd)
+    /// Represents a fileport in the process.
+    public func fileport(_ fileport: BSD.Fileport) -> BSD.ProcPIDFileport {
+        BSD.ProcPIDFileport(pid: self.pid, fileport: fileport)
     }
 }

@@ -17,11 +17,6 @@ extension BSD {
             )
         }
 
-        /// Returns if tracing is enabled for the given debug ID.
-        public static func isDebugIDEnabled(_ debugID: UInt32) -> Bool {
-            kdebug_is_enabled(debugID)
-        }
-
         // MARK: - Timestamps
 
         /// Returns if the kernel debugging system is using continuous time.
@@ -49,6 +44,11 @@ extension BSD {
         }
 
         // MARK: - Tracing
+
+        /// Returns if tracing is enabled for the given debug ID.
+        public static func isTracingEnabled(_ debugID: UInt32) -> Bool {
+            kdebug_is_enabled(debugID)
+        }
 
         /// Calls `kdebug_trace` with the given arguments.
         public static func trace(_ debugID: UInt32, args: (UInt64, UInt64, UInt64, UInt64)) throws {

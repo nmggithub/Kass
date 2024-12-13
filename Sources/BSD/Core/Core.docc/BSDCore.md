@@ -30,6 +30,8 @@ The core module for interacting with the BSD kernel.
 
 - ``BSD/sysctl(_:asArrayOf:)-6wq7p``
 - ``BSD/sysctl(_:asArrayOf:)-9mw64``
+- ``BSD/sysctl(_:setTo:)-1nefv``
+- ``BSD/sysctl(_:setTo:)-ds60``
 
 ### Configurable Security Restrictions
 
@@ -40,6 +42,9 @@ The core module for interacting with the BSD kernel.
 ### Other API's
 
 - <doc:File-System>
+- ``BSD/Proc``
+- ``BSD/KernelDebug``
+- ``BSD/CSOps``
 
 ### Licenses
 

@@ -142,19 +142,21 @@ extension BSD {
         /// The extended ID.
         let value: UInt64
     }
+}
 
+extension BSD.Proc {
     /// Calls the `proc_info` syscall.
     @discardableResult
-    public static func procInfo(
+    public static func info(
         forPID pid: pid_t = 0,
-        call: ProcInfoCall,
+        call: BSD.ProcInfoCall,
         // The semantics of these two are different for each call. They are set to
         // 0 by default to indicate "no value" for calls that don't use them.
         flavor: Int32 = 0,
         arg: UInt64 = 0,
         buffer: inout Data,
         // This is set to `nil` by default to use the non-extended syscall.
-        extendedID: ProcInfoExtendedID? = nil
+        extendedID: BSD.ProcInfoExtendedID? = nil
     ) throws -> Int32 {
         return try buffer.withUnsafeMutableBytes {
             (bufferPointer) -> Int32 in
@@ -188,7 +190,7 @@ extension BSD {
         // an option (especially if we ever want to support other platforms).
         let bufferSize = largeBuffer ? 131072 : 16384
         var buffer = Data(count: bufferSize)
-        let returnedSize = try self.procInfo(call: .getKernelMessageBuffer, buffer: &buffer)
+        let returnedSize = try BSD.Proc.info(call: .getKernelMessageBuffer, buffer: &buffer)
         return buffer.prefix(Int(returnedSize))
     }
 }

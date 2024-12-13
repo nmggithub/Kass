@@ -3,7 +3,7 @@ import Foundation
 import KassHelpers
 
 extension BSD {
-    // A type of list of PIDs.
+    /// A type of list of PIDs.
     public struct ProcPIDListType: KassHelpers.NamedOptionEnum {
         /// The name of the list type, if it can be determined.
         public var name: String?
@@ -57,7 +57,7 @@ extension BSD {
         )
     }
 
-    // A description of a list of PIDs.
+    /// A description of a list of PIDs.
     public struct ProcPIDListDescription {
         /// The type of list.
         let type: ProcPIDListType

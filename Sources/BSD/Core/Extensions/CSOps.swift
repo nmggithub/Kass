@@ -5,7 +5,7 @@ import KassC.CodeSign
 import KassHelpers
 
 extension BSD {
-    // A code signing attribute (or flag) for a process.
+    /// A code signing attribute (or flag) for a process.
     public struct CSFlags: OptionSet, KassHelpers.NamedOptionEnum {
         /// The name of the flag, if it can be determined.
         public var name: String?
@@ -125,7 +125,7 @@ extension BSD {
         )
     }
 
-    // A code signing operation.
+    /// A code signing operation.
     public struct CSOperation: KassHelpers.NamedOptionEnum {
         /// The name of the operation, if it can be determined.
         public var name: String?
@@ -143,80 +143,62 @@ extension BSD {
         public static let allCases: [Self] = [
             .getStatus, .markInvalid, .markHard, .markKill, .getCDHash, .getPIDOffset,
             .getEntitlementsBlob, .markRestrict, .setStatus, .getCSBlob, .getIdentity,
-            .clearInstallerFlags, .getTeamID, .clearLibraryValidation, .getDEREntitlementsBlob,
+            .clearInstallerFlags, .getTeamID, .clearLibraryValidationFlags, .getDEREntitlementsBlob,
             .getValidationCategory,
         ]
 
-        // Get the code signing status.
         public static let getStatus = Self(name: "getStatus", rawValue: UInt32(CS_OPS_STATUS))
 
-        // Mark the process as invalid.
         public static let markInvalid = Self(
             name: "markInvalid", rawValue: UInt32(CS_OPS_MARKINVALID))
 
-        // Set the HARD flag.
         public static let markHard = Self(name: "markHard", rawValue: UInt32(CS_OPS_MARKHARD))
 
-        // Set the KILL flag.
         public static let markKill = Self(name: "markKill", rawValue: UInt32(CS_OPS_MARKKILL))
 
-        // Get the code directory hash.
         public static let getCDHash = Self(name: "getCDHash", rawValue: UInt32(CS_OPS_CDHASH))
 
-        // Get the offset of the active Mach-O slice.
         public static let getPIDOffset = Self(
             name: "getPIDOffset", rawValue: UInt32(CS_OPS_PIDOFFSET))
 
-        // Get the entitlements blob (XML).
         public static let getEntitlementsBlob = Self(
             name: "getEntitlementsBlob", rawValue: UInt32(CS_OPS_ENTITLEMENTS_BLOB)
         )
 
-        // Set the RESTRICT flag.
         public static let markRestrict = Self(
             name: "markRestrict", rawValue: UInt32(CS_OPS_MARKRESTRICT)
         )
 
-        // Set the code signing status.
         public static let setStatus = Self(name: "setStatus", rawValue: UInt32(CS_OPS_SET_STATUS))
 
-        // Get the code signing blob.
         public static let getCSBlob = Self(name: "getCSBlob", rawValue: UInt32(CS_OPS_BLOB))
 
-        // Get the code signing identity.
         public static let getIdentity = Self(name: "getIdentity", rawValue: UInt32(CS_OPS_IDENTITY))
 
-        // Clear the installer-related flags.
         public static let clearInstallerFlags = Self(
             name: "clearInstallerFlags", rawValue: UInt32(CS_OPS_CLEARINSTALLER)
         )
 
-        // Clear the platform-related flags.
         public static let clearPlatformFlags = Self(
             name: "clearPlatformFlags", rawValue: UInt32(CS_OPS_CLEARPLATFORM)
         )
 
-        // Get the team ID.
         public static let getTeamID = Self(name: "getTeamID", rawValue: UInt32(CS_OPS_TEAMID))
 
-        // Clear the library validation flag.
-        // - Note: This is currently restricted to the caller's PID, and the caller must have a special entitlement.
-        public static let clearLibraryValidation = Self(
-            name: "clearLibraryValidation", rawValue: UInt32(CS_OPS_CLEAR_LV)
+        public static let clearLibraryValidationFlags = Self(
+            name: "clearLibraryValidationFlags", rawValue: UInt32(CS_OPS_CLEAR_LV)
         )
 
-        // Get the entitlements blob (DER).
         public static let getDEREntitlementsBlob = Self(
             name: "getDEREntitlementsBlob", rawValue: UInt32(CS_OPS_DER_ENTITLEMENTS_BLOB)
         )
 
-        // Get the validation category.
         public static let getValidationCategory = Self(
             name: "getValidationCategory", rawValue: UInt32(CS_OPS_VALIDATION_CATEGORY)
         )
     }
 
-    // A code signing validation category.
+    /// A code signing validation category.
     public struct CSValidationCategory: KassHelpers.NamedOptionEnum {
         /// The name of the validation category, if it can be determined.
         public var name: String?
@@ -282,15 +264,16 @@ extension BSD {
         )
     }
 
+    /// A collection of code signing operations.
     public struct CSOps {
-        // Performs a code signing operation on a process.
+        /// Performs a code signing operation on a process.
         @discardableResult
         public static func call(
             forPID pid: pid_t, _ ops: CSOperation,
             auditToken: audit_token_t? = nil,
             dataIn: Data = Data(),
-            // The system call will still copy data when ERANGE is returned, so the user
-            // should have the option to ignore an ERANGE error and still get the data.
+            /// The system call will still copy data when ERANGE is returned, so the user
+            /// should have the option to ignore an ERANGE error and still get the data.
             ignoreERANGE: Bool = false
         ) throws -> Data {
             var inBytes = [UInt8](dataIn)
@@ -314,6 +297,7 @@ extension BSD {
             return Data(bytes: &inBytes, count: inBytes.count)
         }
 
+        /// Gets the code signing status.
         public static func getStatus(
             forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> CSFlags {
@@ -327,18 +311,22 @@ extension BSD {
             }
         }
 
+        /// Mark the process as invalid.
         public static func markInvalid(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws {
             try self.call(forPID: pid, .markInvalid, auditToken: auditToken)
         }
 
+        /// Sets the HARD flag.
         public static func markHard(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws {
             try self.call(forPID: pid, .markHard, auditToken: auditToken)
         }
 
+        /// Sets the KILL flag.
         public static func markKill(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws {
             try self.call(forPID: pid, .markKill, auditToken: auditToken)
         }
 
+        /// Gets the code directory hash.
         public static func getCDHash(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> Data
         {
@@ -348,6 +336,7 @@ extension BSD {
             )
         }
 
+        /// Gets the offset of the active Mach-O slice.
         public static func getPIDOffset(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> UInt64
         {
@@ -362,45 +351,49 @@ extension BSD {
         /// The size of the header of a code signing blob.
         private static let blobHeaderSize = MemoryLayout<__SC_GenericBlob>.size
 
-        /// Gets a blob through a code signing operation.
+        /// Getss a blob through a code signing operation.
         private static func getBlob(
             _ operation: CSOperation,
             forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> Data {
             let firstDataOut = try self.call(
                 forPID: pid, operation, auditToken: auditToken,
-                // Only get the header first.
+                /// Only get the header first.
                 dataIn: Data(repeating: 0, count: self.blobHeaderSize),
-                // ERANGE is expected here, since we're not getting the full blob.
+                /// ERANGE is expected here, since we're not getting the full blob.
                 ignoreERANGE: true
             )
             let blob = firstDataOut.withUnsafeBytes {
                 buffer -> __SC_GenericBlob in
                 return buffer.load(as: __SC_GenericBlob.self)
             }
-            // The length field is in network byte order.
+            /// The length field is in network byte order.
             let actualLength = blob.length.byteSwapped
             let dataOut = try self.call(
                 forPID: pid, operation, auditToken: auditToken,
-                // Get the full blob.
+                /// Gets the full blob.
                 dataIn: Data(repeating: 0, count: Int(actualLength))
             )
             return dataOut
         }
 
+        /// Gets the entitlements blob (XML).
         public static func getEntitlementsBlob(
             forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> Data {
             return try self.getBlob(.getEntitlementsBlob, forPID: pid, auditToken: auditToken)
         }
 
+        /// Sets the RESTRICT flag.
         public static func markRestrict(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
         {
             try self.call(forPID: pid, .markRestrict, auditToken: auditToken)
         }
 
+        /// Sets the code signing status.
         public static func setStatus(
-            forPID pid: pid_t, _ flags: CSFlags, auditToken: audit_token_t? = nil
+            forPID pid: pid_t, auditToken: audit_token_t? = nil,
+            _ flags: CSFlags
         ) throws {
             var flags = flags.rawValue
             try self.call(
@@ -409,12 +402,14 @@ extension BSD {
             )
         }
 
+        /// Gets the code signing blob.
         public static func getCSBlob(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> Data
         {
             try self.getBlob(.getCSBlob, forPID: pid, auditToken: auditToken)
         }
 
+        /// Gets the code signing identity.
         public static func getIdentity(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> String?
         {
@@ -422,18 +417,21 @@ extension BSD {
             return String(data: identityData, encoding: .utf8)
         }
 
+        /// Clears the installer-related flags.
         public static func clearInstallerFlags(forPID pid: pid_t, auditToken: audit_token_t? = nil)
             throws
         {
             try self.call(forPID: pid, .clearInstallerFlags, auditToken: auditToken)
         }
 
+        /// Clears the platform-related flags.
         public static func clearPlatformFlags(forPID pid: pid_t, auditToken: audit_token_t? = nil)
             throws
         {
-            try self.call(forPID: pid, .clearLibraryValidation, auditToken: auditToken)
+            try self.call(forPID: pid, .clearLibraryValidationFlags, auditToken: auditToken)
         }
 
+        /// Gets the team ID.
         public static func getTeamID(forPID pid: pid_t, auditToken: audit_token_t? = nil) throws
             -> String?
         {
@@ -441,18 +439,22 @@ extension BSD {
             return String(data: teamIDData, encoding: .utf8)
         }
 
-        public static func clearLibraryValidation(
+        /// Clears the library validation flag.
+        /// - Note: This is currently restricted to the caller's PID, and the caller must have a special entitlement.
+        public static func clearLibraryValidationFlags(
             forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws {
-            try self.call(forPID: pid, .clearLibraryValidation, auditToken: auditToken)
+            try self.call(forPID: pid, .clearLibraryValidationFlags, auditToken: auditToken)
         }
 
+        /// Gets the entitlements blob (DER).
         public static func getDEREntitlementsBlob(
             forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> Data {
             return try self.getBlob(.getDEREntitlementsBlob, forPID: pid, auditToken: auditToken)
         }
 
+        /// Gets the validation category.
         public static func getValidationCategory(
             forPID pid: pid_t, auditToken: audit_token_t? = nil
         ) throws -> CSValidationCategory {

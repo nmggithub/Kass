@@ -4,8 +4,8 @@ import KassC.ProcInfoPrivate
 import KassHelpers
 
 extension BSD {
-    // A flavor of PID file descriptor info.
-    public struct PIDFDInfoFlavor: KassHelpers.NamedOptionEnum {
+    /// A flavor of PID file descriptor info.
+    public struct ProcPIDFDInfoFlavor: KassHelpers.NamedOptionEnum {
         /// The name of the flavor, if it can be determined.
         public var name: String?
 
@@ -71,14 +71,14 @@ extension BSD {
     }
 
     /// A file descriptor in a process.
-    public struct PIDFD {
+    public struct ProcPIDFD {
         internal let pid: pid_t
         internal let fd: Int32
 
         /// Gets information about a file descriptor in the process.
         @discardableResult
         public func info(
-            flavor: BSD.PIDFDInfoFlavor,
+            flavor: BSD.ProcPIDFDInfoFlavor,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
             try BSD.syscall(
@@ -92,7 +92,7 @@ extension BSD {
         /// Gets information about a file descriptor in the process.
         @discardableResult
         public func info(
-            flavor: BSD.PIDFDInfoFlavor,
+            flavor: BSD.ProcPIDFDInfoFlavor,
             buffer: inout Data
         ) throws -> Int32 {
             try buffer.withUnsafeMutableBytes {
@@ -103,7 +103,7 @@ extension BSD {
         /// Gets information about a file descriptor in the process and return it as a specific type.
         @discardableResult
         public func info<DataType>(
-            flavor: BSD.PIDFDInfoFlavor,
+            flavor: BSD.ProcPIDFDInfoFlavor,
             returnAs type: DataType.Type = DataType.self
         ) throws -> DataType {
             var buffer = Data(repeating: 0, count: MemoryLayout<DataType>.size)
@@ -116,7 +116,7 @@ extension BSD {
         /// Gets information about a file descriptor in the process and return it as an array of a specific type.
         @discardableResult
         public func info<DataType>(
-            flavor: BSD.PIDFDInfoFlavor,
+            flavor: BSD.ProcPIDFDInfoFlavor,
             returnAs type: DataType.Type = DataType.self,
             count: Int
         ) throws -> [DataType] {
@@ -182,7 +182,7 @@ extension BSD {
 
 extension BSD.Proc {
     /// Represents a file descriptor in the process.
-    public func fd(_ fd: Int32) -> BSD.PIDFD {
-        return BSD.PIDFD(pid: self.pid, fd: fd)
+    public func fd(_ fd: Int32) -> BSD.ProcPIDFD {
+        return BSD.ProcPIDFD(pid: self.pid, fd: fd)
     }
 }
