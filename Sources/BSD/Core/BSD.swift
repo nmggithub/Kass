@@ -6,7 +6,9 @@ import KassHelpers
 public struct BSD: KassHelpers.Namespace {
     /// Executes a system call and throw an error if it fails.
     @discardableResult  // Most of the time, users won't care about the return value, but we still want it to be available.
-    public static func syscall(_ syscall: @autoclosure () -> Int32) throws -> Int32 {
+    public static func syscall<ReturnType: BinaryInteger>(_ syscall: @autoclosure () -> ReturnType)
+        throws -> ReturnType
+    {
         let ret = syscall()
         guard ret != -1 else {
             let currentErrno = copy errno  // Make a copy to avoid potential race conditions.
