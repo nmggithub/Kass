@@ -88,4 +88,9 @@ module KassC {
         header "kdebug_private.h"
         export *
     }
+
+    module MachEventlink {
+        header "mach_eventlink.h"
+        export *
+    }
 }
