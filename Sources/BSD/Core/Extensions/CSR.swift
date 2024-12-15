@@ -23,7 +23,7 @@ extension BSD {
         /// All known options.
         public static let allCases: [Self] = [
             .allowUnrestrictedFS,
-            .allowTaskForPid,
+            .allowTaskForPID,
             .allowKernelDebugger,
             .allowAppleInternal,
             .allowUnrestrictedDTrace,
@@ -45,8 +45,8 @@ extension BSD {
             rawValue: csr_config_t(CSR_ALLOW_UNRESTRICTED_FS)
         )
 
-        public static let allowTaskForPid = Self(
-            name: "allowTaskForPid",
+        public static let allowTaskForPID = Self(
+            name: "allowTaskForPID",
             rawValue: csr_config_t(CSR_ALLOW_TASK_FOR_PID)
         )
 
