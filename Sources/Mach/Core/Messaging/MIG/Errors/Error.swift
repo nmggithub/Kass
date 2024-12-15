@@ -15,7 +15,7 @@ extension Mach {
 
         public static let replyMismatch = Self(rawValue: MIG_REPLY_MISMATCH)
         public static let remoteError = Self(rawValue: MIG_REMOTE_ERROR)
-        public static let badId = Self(rawValue: MIG_BAD_ID)
+        public static let badID = Self(rawValue: MIG_BAD_ID)
         public static let badArguments = Self(rawValue: MIG_BAD_ARGUMENTS)
         public static let noReply = Self(rawValue: MIG_NO_REPLY)
         public static let exception = Self(rawValue: MIG_EXCEPTION)

@@ -5,18 +5,18 @@ extension Mach {
     /// A client for MIG requests.
     open class MIGClient: Mach.Port {
         /// The base routine ID for the remote MIG subsystem.
-        public var baseRoutineId: mach_msg_id_t
+        public var baseRoutineID: mach_msg_id_t
 
         /// Represents an existing MIG server port.
-        public required init(named name: mach_port_name_t, baseRoutineId: mach_msg_id_t) {
-            self.baseRoutineId = baseRoutineId
+        public required init(named name: mach_port_name_t, baseRoutineID: mach_msg_id_t) {
+            self.baseRoutineID = baseRoutineID
             super.init(named: name)
         }
 
-        @available(*, unavailable, message: "Use `init(named:baseRoutineId:)` instead.")
+        @available(*, unavailable, message: "Use `init(named:baseRoutineID:)` instead.")
         public required init(named name: mach_port_name_t, inNameSpaceOf task: Mach.Task = .current)
         {
-            self.baseRoutineId = 0
+            self.baseRoutineID = 0
             super.init(named: name)
         }
 
@@ -43,8 +43,8 @@ extension Mach {
             replyPayloadType: ReplyPayload.Type = ReplyPayload.self,
             replyPort: Mach.Port? = nil
         ) throws -> Mach.MIGReply<ReplyPayload> {
-            let routineId = self.baseRoutineId + routineIndex
-            request.header.msgh_id = routineId
+            let routineID = self.baseRoutineID + routineIndex
+            request.header.msgh_id = routineID
             let reply = try Mach.Message.send(
                 request,
                 to: self, withDisposition: .copySend,  // make a copy of the send right so we can reuse the port
@@ -54,7 +54,7 @@ extension Mach {
             guard reply.header.msgh_id != MACH_NOTIFY_SEND_ONCE else {
                 throw Mach.MIGError(.serverDied)
             }  // the server deallocated the send-once right without using it, assume it died
-            guard reply.header.msgh_id == routineId + 100 else {
+            guard reply.header.msgh_id == routineID + 100 else {
                 throw Mach.MIGError(.replyMismatch)
             }  // the reply ID should be the request ID + 100
             guard reply.header.remotePort == Mach.Port.Nil else { throw Mach.MIGError(.typeError) }  // the reply should clear the remote port
@@ -75,8 +75,8 @@ extension Mach {
 
 extension Mach.PortInitializableByServiceName where Self: Mach.MIGClient {
     /// Obtains a MIG client for the given service.
-    public init(serviceName: String, baseRoutineId: mach_msg_id_t) throws {
+    public init(serviceName: String, baseRoutineID: mach_msg_id_t) throws {
         try self.init(serviceName: serviceName)
-        self.baseRoutineId = baseRoutineId
+        self.baseRoutineID = baseRoutineID
     }
 }

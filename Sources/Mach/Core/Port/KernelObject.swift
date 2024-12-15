@@ -165,7 +165,7 @@ extension ipc_kotype_t {
     public static let hypervisor = Self.IKOT_HYPERVISOR
 
     /// A task identity token.
-    public static let taskIdToken = Self.IKOT_TASK_ID_TOKEN
+    public static let taskIdentityToken = Self.IKOT_TASK_ID_TOKEN
 
     /// The port is a task fatal port.
     public static let taskFatal = Self.IKOT_TASK_FATAL

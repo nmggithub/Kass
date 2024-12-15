@@ -18,7 +18,7 @@
 - ``taskRead``
 - ``taskInspect``
 - ``taskName``
-- ``taskIdToken``
+- ``taskIdentityToken``
 - ``taskFatal``
 - ``taskResume``
 

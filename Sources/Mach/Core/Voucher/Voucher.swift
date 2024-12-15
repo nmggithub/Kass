@@ -145,7 +145,7 @@ extension Mach {
 
         /// All known bank actions.
         public static let allCases: [Self] = [
-            .originatorPid, .personaToken, .personaId, .personaAdoptAny, .originatorProximatePid,
+            .originatorPid, .personaToken, .personaID, .personaAdoptAny, .originatorProximatePid,
         ]
 
         public static let originatorPid = Self(
@@ -156,8 +156,8 @@ extension Mach {
             name: "personaToken", rawValue: bank_action_t(BANK_PERSONA_TOKEN)
         )
 
-        public static let personaId = Self(
-            name: "personaId", rawValue: bank_action_t(BANK_PERSONA_ID)
+        public static let personaID = Self(
+            name: "personaID", rawValue: bank_action_t(BANK_PERSONA_ID)
         )
 
         public static let personaAdoptAny = Self(
