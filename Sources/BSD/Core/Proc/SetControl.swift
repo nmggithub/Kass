@@ -54,7 +54,7 @@ extension BSD {
         public let rawValue: Int32
 
         /// All known states.
-        public static let allCases: [Self] = []
+        public static let allCases: [Self] = [.throttle, .suspend, .kill]
 
         public static let throttle = Self(
             name: "throttle", rawValue: P_PCTHROTTLE
