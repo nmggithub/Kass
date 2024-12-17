@@ -38,14 +38,11 @@ extension Mach {
 
     /// A thread info manager.
     public struct ThreadInfoManager: FlavoredDataGetter {
-        /// The thread port.
-        public let port: Mach.Thread
-
         /// The thread.
-        internal var thread: Mach.Thread { self.port }
+        internal let thread: Mach.Thread
 
         /// Creates a thread info manager.
-        public init(thread: Mach.Thread) { self.port = thread }
+        public init(thread: Mach.Thread) { self.thread = thread }
 
         /// Gets the thread's info.
         public func get<DataType>(

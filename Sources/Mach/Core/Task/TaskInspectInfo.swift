@@ -10,14 +10,11 @@ extension task_inspect_flavor: KassHelpers.OptionEnum, @unchecked @retroactive S
 extension Mach {
     /// A task inspect info manager.
     public struct TaskInspectInfoManager: FlavoredDataGetter {
-        /// The task port.
-        public let port: Task
-
         /// The task.
-        internal var task: Task { self.port }
+        internal let task: Task
 
         /// Creates a task inspect info manager.
-        public init(task: Task) { self.port = task }
+        public init(task: Task) { self.task = task }
 
         /// Gets the task's inspect info.
         public func get<DataType>(

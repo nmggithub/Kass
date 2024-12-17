@@ -19,14 +19,11 @@ extension Mach {
 
     /// A processor info manager.
     public struct ProcessorInfoManager: FlavoredDataGetter {
-        /// The processor port.
-        public let port: Mach.Processor
-
         /// The processor.
-        internal var processor: Mach.Processor { self.port }
+        internal let processor: Mach.Processor
 
         /// Creates a processor info manager.
-        public init(processor: Mach.Processor) { self.port = processor }
+        public init(processor: Mach.Processor) { self.processor = processor }
 
         /// Gets the processor's info.
         public func get<DataType>(

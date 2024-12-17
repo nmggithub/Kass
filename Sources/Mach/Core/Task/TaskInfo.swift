@@ -88,14 +88,11 @@ extension Mach {
 
     /// A task info manager.
     public struct TaskInfoManager: FlavoredDataGetter {
-        /// The task port.
-        public let port: Mach.Task
-
         /// The task.
-        internal var task: Mach.Task { self.port }
+        internal let task: Mach.Task
 
         /// Creates a task info manager.
-        public init(task: Mach.Task) { self.port = task }
+        public init(task: Mach.Task) { self.task = task }
 
         /// Gets the task's info.
         public func get<DataType: BitwiseCopyable>(

@@ -93,14 +93,11 @@ extension Mach {
 
     /// A thread state manager.
     public struct ThreadStateManager: FlavoredDataManager {
-        /// The thread port.
-        public let port: Mach.Thread
-
         /// The thread.
-        internal var thread: Mach.Thread { self.port }
+        internal let thread: Mach.Thread
 
         /// Creates a thread state manager.
-        public init(thread: Mach.Thread) { self.port = thread }
+        public init(thread: Mach.Thread) { self.thread = thread }
 
         /// Gets the state of the thread.
         public func get<DataType>(

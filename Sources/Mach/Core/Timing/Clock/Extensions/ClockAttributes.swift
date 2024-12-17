@@ -31,14 +31,11 @@ extension Mach {
 extension Mach {
     /// A clock attribute manager.
     public struct ClockAttributeManager: Mach.FlavoredDataGetter {
-        /// The clock port.
-        public let port: Mach.Clock
-
         /// The clock.
-        internal var clock: Mach.Clock { self.port }
+        internal let clock: Mach.Clock
 
         /// Creates a clock attribute manager.
-        public init(port: Mach.Clock) { self.port = port }
+        public init(clock: Mach.Clock) { self.clock = clock }
 
         /// Gets the value of a clock attribute.
         public func get<DataType: BitwiseCopyable>(
@@ -55,5 +52,5 @@ extension Mach {
 extension Mach.Clock {
     /// The clock attributes.
     /// - Note: This property is not named `attributes` to avoid conflicting with the `attributes` property of `Mach.Port`.
-    public var clockAttributes: Mach.ClockAttributeManager { .init(port: self) }
+    public var clockAttributes: Mach.ClockAttributeManager { .init(clock: self) }
 }

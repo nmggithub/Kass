@@ -15,14 +15,10 @@ extension Mach {
 
     /// A processor set info manager.
     public struct ProcessorSetInfoManager: FlavoredDataGetter {
-        /// The processor set port.
-        public let port: Mach.ProcessorSet
-
         /// The processor set.
-        internal var processorSet: Mach.ProcessorSet { self.port }
-
+        internal let processorSet: Mach.ProcessorSet
         /// Creates a processor set info manager.
-        public init(processorSet: Mach.ProcessorSet) { self.port = processorSet }
+        public init(processorSet: Mach.ProcessorSet) { self.processorSet = processorSet }
 
         /// Gets the processor set's info.
         public func get<DataType>(

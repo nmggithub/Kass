@@ -33,14 +33,11 @@ extension Mach {
 
     /// A host statistics manager.
     public struct HostStatisticsManager: FlavoredDataGetter {
-        /// The host port.
-        public let port: Mach.Host
-
         /// The host.
-        internal var host: Mach.Host { self.port }
+        internal let host: Mach.Host
 
         /// Creates a host statistics manager.
-        public init(host: Mach.Host) { self.port = host }
+        public init(host: Mach.Host) { self.host = host }
 
         /// Gets the host's statistics.
         public func get<DataType>(

@@ -42,14 +42,11 @@ extension Mach {
 
     /// A task policy manager.
     public struct TaskPolicyManager: FlavoredDataManager {
-        /// The task port.
-        public let port: Mach.Task
-
         /// The task.
-        internal var task: Mach.Task { self.port }
+        internal let task: Mach.Task
 
         /// Creates a task policy manager.
-        public init(task: Mach.Task) { self.port = task }
+        public init(task: Mach.Task) { self.task = task }
 
         /// Gets the task's policy.
         public func get<DataType: BitwiseCopyable>(
@@ -70,7 +67,7 @@ extension Mach {
         ) throws {
             try Mach.callWithCountIn(value: value) {
                 (array: task_policy_t, count) in
-                task_policy_set(self.port.name, flavor.rawValue, array, count)
+                task_policy_set(self.task.name, flavor.rawValue, array, count)
             }
         }
     }

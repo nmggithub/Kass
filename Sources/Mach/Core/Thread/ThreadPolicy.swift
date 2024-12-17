@@ -40,14 +40,11 @@ extension Mach {
 
     /// A thread policy manager.
     public struct ThreadPolicyManager: FlavoredDataManager {
-        /// The thread port.
-        public let port: Mach.Thread
-
         /// The thread.
-        internal var thread: Mach.Thread { self.port }
+        internal let thread: Mach.Thread
 
         /// Creates a thread policy manager.
-        public init(thread: Mach.Thread) { self.port = thread }
+        public init(thread: Mach.Thread) { self.thread = thread }
 
         /// Gets the thread's policy.
         public func get<DataType>(
