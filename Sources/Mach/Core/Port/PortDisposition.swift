@@ -47,9 +47,10 @@ extension Mach {
 }
 
 extension Mach.Port {
-    /// Extracts a right from the port and brings it into the current task's name space.
+    /// Extracts a right from the port and brings it into the a given task's name space.
     public func extractRight<PortType: Mach.Port>(
-        using disposition: Mach.PortDisposition
+        using disposition: Mach.PortDisposition,
+        intoNameSpaceOf receivingTask: Mach.Task
     ) throws -> PortType {
         var extractedRight = mach_port_name_t()
         // We have to pass this, but we ignore it. All it does it tell us what kind of right we got (which we should already know).
@@ -59,7 +60,7 @@ extension Mach.Port {
                 self.owningTask.name, self.name, disposition.rawValue, &extractedRight, &typeName
             )
         )
-        return PortType(named: extractedRight, inNameSpaceOf: self.owningTask)
+        return PortType(named: extractedRight, inNameSpaceOf: receivingTask)
     }
 
     /// Inserts a right from the port into the specified task's name space.
