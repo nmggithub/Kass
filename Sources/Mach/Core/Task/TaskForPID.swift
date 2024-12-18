@@ -19,9 +19,3 @@ extension Mach.Task {
         self.init(named: portName)
     }
 }
-
-extension Mach.TaskControl {
-    public convenience init(forPID pid: pid_t) throws {
-        try self.init(forPID: pid)
-    }
-}
