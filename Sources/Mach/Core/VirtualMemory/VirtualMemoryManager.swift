@@ -927,6 +927,11 @@ extension Mach.VirtualMemoryManager {
 
 // MARK: - Wire
 
+// The function is in the headers, but attempting to use it that way results in a linker
+// error. We need to dynamically load it instead.
+typealias task_wire_f = @convention(c) (vm_map_t, boolean_t) -> kern_return_t
+private let task_wire: task_wire_f = libSystem().get(symbol: "task_wire")!.cast()
+
 extension Mach.VirtualMemoryManager {
     /// Requires (or does not require) future allocations in the task's address space to be wired.
     @available(macOS, deprecated: 14.5)
@@ -968,6 +973,12 @@ extension Mach.VirtualMemoryManager {
 }
 
 // MARK: - Exec Lockdown
+
+// The function is in the headers, but attempting to use it that way results in a linker
+// error. We need to dynamically load it instead.
+typealias vm_map_exec_lockdown_f = @convention(c) (vm_map_t) -> kern_return_t
+private let vm_map_exec_lockdown: vm_map_exec_lockdown_f = libSystem()
+    .get(symbol: "vm_map_exec_lockdown")!.cast()
 
 extension Mach.VirtualMemoryManager {
     /// Disallows any new executable code in the task's address space.
