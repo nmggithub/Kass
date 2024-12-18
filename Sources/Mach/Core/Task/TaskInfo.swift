@@ -89,7 +89,7 @@ extension Mach {
     /// A task info manager.
     public struct TaskInfoManager: FlavoredDataGetter {
         /// The task.
-        internal let task: Mach.Task
+        public let task: Mach.Task
 
         /// Creates a task info manager.
         public init(task: Mach.Task) { self.task = task }

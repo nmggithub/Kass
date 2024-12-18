@@ -35,7 +35,7 @@
 - ``userRefs(for:)``
 - ``setUserRefs(for:to:)``
 - ``Mach/PortDisposition``
-- ``extractRight(using:)``
+- ``extractRight(using:intoNameSpaceOf:)``
 - ``insertRight(intoNameSpaceOf:using:)``
 - ``sendRightCount``
 - ``setMakeSendCount(to:)``

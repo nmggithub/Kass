@@ -17,7 +17,7 @@ extension Mach {
     /// A processor set statistics manager.
     public struct ProcessorSetStatisticsManager: FlavoredDataGetter {
         /// The processor set.
-        internal let processorSet: Mach.ProcessorSet
+        public let processorSet: Mach.ProcessorSet
 
         /// Creates a processor set statistics manager.
         public init(processorSet: Mach.ProcessorSet) { self.processorSet = processorSet }

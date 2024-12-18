@@ -139,7 +139,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 - ``bootstrapPort``
 - ``hostPort``
 - ``debugPort``
-- ``debugPortForPID(_:)``
+- ``debugPort(forPID:)``
 - ``controlPort``
 - ``readPort``
 - ``inspectPort``
@@ -162,17 +162,9 @@ It is possible to get a task port of a given flavor for a process with a given P
 
 - ``setPhysicalFootprintLimit(_:)``
 
-### Allocating Virtual Memory
+### Managing Virtual Memory
 
-- ``Mach/VMAllocationFlags``
-- ``allocateMemory(_:size:flags:)``
-- ``allocatePhysicallyContiguous(_:size:flags:)``
-
-### Wiring Virtual Memory
-
-- ``Mach/VMProtectionOptions``
-- ``wireMemory(_:size:options:)``
-- ``unwireMemory(_:size:)``
+- ``vm``
 
 ### Managing kernelcache Objects
 

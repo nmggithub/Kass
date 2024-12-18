@@ -45,7 +45,7 @@ extension Mach {
     /// A host info manager.
     public struct HostInfoManager: FlavoredDataGetter {
         /// The host.
-        internal let host: Mach.Host
+        public let host: Mach.Host
 
         /// Creates a host info manager.
         public init(host: Mach.Host) { self.host = host }

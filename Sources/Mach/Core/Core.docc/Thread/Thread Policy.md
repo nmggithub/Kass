@@ -5,7 +5,7 @@
 ### Creating a Thread Policy Manager
 
 - ``init(thread:)``
-- ``port``
+- ``thread``
 
 ### General Operations
 

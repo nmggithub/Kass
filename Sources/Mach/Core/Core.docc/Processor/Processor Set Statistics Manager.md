@@ -5,7 +5,7 @@
 ### Creating a Processor Set Statistics Manager
 
 - ``init(processorSet:)``
-- ``port``
+- ``processorSet``
 
 ### General Operations
 

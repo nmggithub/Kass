@@ -34,7 +34,7 @@ extension Mach {
     /// A host statistics manager.
     public struct HostStatisticsManager: FlavoredDataGetter {
         /// The host.
-        internal let host: Mach.Host
+        public let host: Mach.Host
 
         /// Creates a host statistics manager.
         public init(host: Mach.Host) { self.host = host }

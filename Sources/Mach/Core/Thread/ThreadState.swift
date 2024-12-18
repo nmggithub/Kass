@@ -94,7 +94,7 @@ extension Mach {
     /// A thread state manager.
     public struct ThreadStateManager: FlavoredDataManager {
         /// The thread.
-        internal let thread: Mach.Thread
+        public let thread: Mach.Thread
 
         /// Creates a thread state manager.
         public init(thread: Mach.Thread) { self.thread = thread }

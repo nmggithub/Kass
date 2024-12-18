@@ -29,7 +29,6 @@ When there are multiple routines in an IDL file, the compiler will often compile
 ### Error Types
 
 - ``Mach/MIGError``
-- ``Mach/MIGErrorReply``
 - ``Mach/MIGErrorCode``
 
 ### Payload Types

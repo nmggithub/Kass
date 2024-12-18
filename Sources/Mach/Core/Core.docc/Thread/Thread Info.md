@@ -5,7 +5,7 @@
 ### Creating a Thread Info Manager
 
 - ``init(thread:)``
-- ``port``
+- ``thread``
 
 ### Getting Info
 

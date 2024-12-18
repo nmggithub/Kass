@@ -7,7 +7,7 @@
 ### Creating a Thread State Manager
 
 - ``init(thread:)``
-- ``port``
+- ``thread``
 
 ### Managing General State
 

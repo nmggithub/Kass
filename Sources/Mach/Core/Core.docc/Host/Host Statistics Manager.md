@@ -5,7 +5,7 @@
 ### Creating a Host Statistics Manager
 
 - ``init(host:)``
-- ``port``
+- ``host``
 
 ### General Operations
 

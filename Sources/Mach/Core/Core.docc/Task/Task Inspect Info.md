@@ -5,7 +5,7 @@
 ### Creating a Task Inspect Info Manager
 
 - ``init(task:)``
-- ``port``
+- ``task``
 
 ### General Operations
 

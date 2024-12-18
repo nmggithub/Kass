@@ -5,7 +5,7 @@
 ### Creating a Processor Info Manager
 
 - ``init(processor:)``
-- ``port``
+- ``processor``
 
 ### General Operations
 

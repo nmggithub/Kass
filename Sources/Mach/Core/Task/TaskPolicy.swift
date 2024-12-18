@@ -43,7 +43,7 @@ extension Mach {
     /// A task policy manager.
     public struct TaskPolicyManager: FlavoredDataManager {
         /// The task.
-        internal let task: Mach.Task
+        public let task: Mach.Task
 
         /// Creates a task policy manager.
         public init(task: Mach.Task) { self.task = task }

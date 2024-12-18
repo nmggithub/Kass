@@ -39,7 +39,7 @@ extension Mach {
     /// A thread info manager.
     public struct ThreadInfoManager: FlavoredDataGetter {
         /// The thread.
-        internal let thread: Mach.Thread
+        public let thread: Mach.Thread
 
         /// Creates a thread info manager.
         public init(thread: Mach.Thread) { self.thread = thread }

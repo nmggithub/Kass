@@ -11,7 +11,7 @@ extension Mach {
     /// A task inspect info manager.
     public struct TaskInspectInfoManager: FlavoredDataGetter {
         /// The task.
-        internal let task: Task
+        public let task: Task
 
         /// Creates a task inspect info manager.
         public init(task: Task) { self.task = task }

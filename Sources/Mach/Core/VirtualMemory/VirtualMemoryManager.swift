@@ -8,9 +8,9 @@ import Linking
 
 extension Mach {
     /// A virtual memory manager.
-    /// - Warning: In some rare cases, the containing functions may simulate a kernel error. Please see the source code for more information.
+    /// - Warning: In some rare cases, the functions in this structure may simulate a kernel error. Please see the source code for more information.
     public struct VirtualMemoryManager {
-        /// The task to manage the memory of.
+        /// The task this manager is managing virtual memory for.
         public let task: Mach.Task
 
         /// Creates a new virtual memory manager.
@@ -542,7 +542,7 @@ extension Mach {
 extension Mach.VirtualMemoryManager {
     /// Synchronizes a virtual memory region in the task's address space.
     public func msync(
-        pointer: UnsafeRawPointer?,
+        _ pointer: UnsafeRawPointer?,
         size: mach_vm_size_t,
         flags: Mach.VMSyncFlags
     ) throws {
@@ -607,7 +607,7 @@ extension Mach {
 extension Mach.VirtualMemoryManager {
     /// Sets the paging behavior of a virtual memory region in the task's address space.
     public func setBehavior(
-        pointer: UnsafeRawPointer?,
+        _ pointer: UnsafeRawPointer?,
         size: mach_vm_size_t,
         behavior: Mach.VMBehavior
     ) throws {
@@ -616,9 +616,10 @@ extension Mach.VirtualMemoryManager {
     }
 }
 
-// MARK: - VM Region
+// MARK: - Region Information
 
 extension Mach {
+    /// A flavor of virtual memory region information.
     public struct VMRegionInfoFlavor: KassHelpers.NamedOptionEnum {
         /// The name of the flavor, if it can be determined.
         public var name: String?
@@ -654,7 +655,7 @@ extension Mach {
 extension Mach.VirtualMemoryManager {
     /// Gets information about a virtual memory region in the task's address space.
     public func region<DataType>(
-        pointer: inout UnsafeRawPointer?,
+        _ pointer: inout UnsafeRawPointer?,
         flavor: Mach.VMRegionInfoFlavor,
         as type: DataType.Type = DataType.self
     ) throws -> (data: DataType, size: mach_vm_size_t) where DataType: BitwiseCopyable {
@@ -673,32 +674,33 @@ extension Mach.VirtualMemoryManager {
         return (data: data, size: size)
     }
     /// Gets the size of a virtual memory region in the task's address space.
-    public func regionSize(pointer: inout UnsafeRawPointer?) throws -> mach_vm_size_t {
+    public func regionSize(_ pointer: inout UnsafeRawPointer?) throws -> mach_vm_size_t {
         // We have to get a flavor to get the size, so we'll just get the basic info and ignore it.
-        try self.region(pointer: &pointer, flavor: .basic, as: vm_region_basic_info_64.self).size
+        try self.region(&pointer, flavor: .basic, as: vm_region_basic_info_64.self).size
     }
 
     /// Gets basic information about a virtual memory region in the task's address space.
-    public func regionBasicInfo(pointer: inout UnsafeRawPointer?) throws -> vm_region_basic_info_64
+    public func regionBasicInfo(_ pointer: inout UnsafeRawPointer?) throws
+        -> vm_region_basic_info_64
     {
-        try self.region(pointer: &pointer, flavor: .basic).data
+        try self.region(&pointer, flavor: .basic).data
     }
 
     /// Gets extended information about a virtual memory region in the task's address space.
-    public func regionExtendedInfo(pointer: inout UnsafeRawPointer?) throws
+    public func regionExtendedInfo(_ pointer: inout UnsafeRawPointer?) throws
         -> vm_region_extended_info
     {
-        try self.region(pointer: &pointer, flavor: .extended).data
+        try self.region(&pointer, flavor: .extended).data
     }
 
     /// Gets top information about a virtual memory region in the task's address space.
-    public func regionTopInfo(pointer: inout UnsafeRawPointer?) throws -> vm_region_top_info {
-        try self.region(pointer: &pointer, flavor: .top).data
+    public func regionTopInfo(_ pointer: inout UnsafeRawPointer?) throws -> vm_region_top_info {
+        try self.region(&pointer, flavor: .top).data
     }
 
     /// Gets recursive information about a virtual memory region in the task's address space.
     public func regionRecurse(
-        pointer: inout UnsafeRawPointer?, depth: inout UInt32
+        _ pointer: inout UnsafeRawPointer?, depth: inout UInt32
     ) throws -> (data: vm_region_submap_info_64_t, size: mach_vm_size_t) {
         var address = try Mach.VirtualMemoryManager.unsafeRawPointerToMachVMAddress(pointer)
         var size: mach_vm_size_t = 0
@@ -716,20 +718,21 @@ extension Mach.VirtualMemoryManager {
 // MARK: - Purgeable Control
 
 extension Mach {
+    /// An operation for controlling purgeable objects.
     public struct VMPurgeable: KassHelpers.NamedOptionEnum {
-        /// The name of the option, if it can be determined.
+        /// The name of the operation, if it can be determined.
         public var name: String?
 
-        /// Represents a purgeable control option with an optional name.
+        /// Represents a purgeable control operation with an optional name.
         public init(name: String?, rawValue: Int32) {
             self.name = name
             self.rawValue = rawValue
         }
 
-        /// The raw value of the option.
+        /// The raw value of the operation.
         public let rawValue: Int32
 
-        /// All known purgeable control options.
+        /// All known purgeable control operations.
         public static let allCases: [Self] = [.getState, .setState, .purgeAll]
 
         public static let getState = VMPurgeable(name: "getState", rawValue: VM_PURGABLE_GET_STATE)
@@ -877,8 +880,8 @@ extension Mach {
 
 extension Mach.VirtualMemoryManager {
     /// Controls a purgeable object in the task's address space.
-    private func purgeableControl(
-        pointer: UnsafeRawPointer?,
+    public func purgeableControl(
+        _ pointer: UnsafeRawPointer?,
         control: Mach.VMPurgeable,
         state: inout Mach.VMPurgeableState
     ) throws {
@@ -889,23 +892,23 @@ extension Mach.VirtualMemoryManager {
     }
 
     /// Gets the purgeable state of a purgeable object in the task's address space
-    public func getPurgeableState(pointer: UnsafeRawPointer?) throws -> Mach.VMPurgeableState {
+    public func getPurgeableState(_ pointer: UnsafeRawPointer?) throws -> Mach.VMPurgeableState {
         var state = Mach.VMPurgeableState(rawValue: 0)
-        try self.purgeableControl(pointer: pointer, control: .getState, state: &state)
+        try self.purgeableControl(pointer, control: .getState, state: &state)
         return state
     }
 
     /// Sets the purgeable state of a purgeable object in the task's address space
     public func setPurgeableState(
-        pointer: UnsafeRawPointer?, to state: consuming Mach.VMPurgeableState
+        _ pointer: UnsafeRawPointer?, to state: consuming Mach.VMPurgeableState
     ) throws {
-        try self.purgeableControl(pointer: pointer, control: .setState, state: &state)
+        try self.purgeableControl(pointer, control: .setState, state: &state)
     }
 
     /// Purges all purgeable objects in the task's address space
     public func purgeAllPurgeableObjects() throws {
         var state = Mach.VMPurgeableState(rawValue: 0)  // We are purposely ignoring this.
-        try self.purgeableControl(pointer: nil, control: .purgeAll, state: &state)
+        try self.purgeableControl(nil, control: .purgeAll, state: &state)
     }
 }
 
@@ -913,7 +916,7 @@ extension Mach.VirtualMemoryManager {
 
 extension Mach.VirtualMemoryManager {
     /// Gets information about a virtual memory page in the task's address space.
-    public func pageInfo(pointer: UnsafeRawPointer?) throws -> vm_page_info_basic {
+    public func pageInfo(_ pointer: UnsafeRawPointer?) throws -> vm_page_info_basic {
         let address = try Mach.VirtualMemoryManager.unsafeRawPointerToMachVMAddress(pointer)
         return try Mach.callWithCountInOut(type: vm_page_info_basic.self) {
             array, count in
@@ -960,14 +963,14 @@ extension Mach.VirtualMemoryManager {
     /// - Warning: This function may make an additional kernel call. Errors from this
     /// call are also thrown. Please see the source code for more information.
     public func wire(
-        pointer: UnsafeRawPointer?,
+        _ pointer: UnsafeRawPointer?,
         size: mach_vm_size_t,
-        options: Mach.VMProtectionOptions
+        protection: Mach.VMProtectionOptions
     ) throws {
         let address = try Mach.VirtualMemoryManager.unsafeRawPointerToMachVMAddress(pointer)
         let host = try self.task.hostForWire
         try Mach.call(
-            mach_vm_wire(host.name, self.task.name, address, size, options.rawValue)
+            mach_vm_wire(host.name, self.task.name, address, size, protection.rawValue)
         )
     }
 }
@@ -1021,7 +1024,7 @@ typealias mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_f = @conv
 extension Mach.VirtualMemoryManager {
     /// Initializes a deferred reclamation buffer in the task's address space.
     public func deferredReclamationBufferInit(
-        pointer: inout UnsafeRawPointer?, size: mach_vm_size_t
+        _ pointer: inout UnsafeRawPointer?, size: mach_vm_size_t
     ) throws {
         var address = try Self.unsafeRawPointerToMachVMAddress(pointer)
         try Mach.call(mach_vm_deferred_reclamation_buffer_init(self.task.name, &address, size))
@@ -1040,7 +1043,7 @@ extension Mach.VirtualMemoryManager {
     }
 
     /// Updates the reclaimable bytes in the deferred reclamation buffer in the task's address space.
-    public func deferredReclamationBufferUpdateReclaimableBytes(
+    public func deferredReclamationBufferUpdate(
         reclaimableBytes: mach_vm_size_t
     ) throws {
         try Mach.call(

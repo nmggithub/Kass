@@ -5,7 +5,7 @@
 ### Creating a Host Info Manager
 
 - ``init(host:)``
-- ``port``
+- ``host``
 
 ### General Operations
 

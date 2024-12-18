@@ -20,7 +20,7 @@ extension Mach {
     /// A processor info manager.
     public struct ProcessorInfoManager: FlavoredDataGetter {
         /// The processor.
-        internal let processor: Mach.Processor
+        public let processor: Mach.Processor
 
         /// Creates a processor info manager.
         public init(processor: Mach.Processor) { self.processor = processor }

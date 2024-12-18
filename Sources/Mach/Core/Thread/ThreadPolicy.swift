@@ -41,7 +41,7 @@ extension Mach {
     /// A thread policy manager.
     public struct ThreadPolicyManager: FlavoredDataManager {
         /// The thread.
-        internal let thread: Mach.Thread
+        public let thread: Mach.Thread
 
         /// Creates a thread policy manager.
         public init(thread: Mach.Thread) { self.thread = thread }
