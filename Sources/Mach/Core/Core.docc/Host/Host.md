@@ -76,6 +76,11 @@
 
 - ``Darwin/mach_memory_info``
 - ``memoryInfos``
+- ``Darwin/mach_memory_info``
+- ``Mach/MemoryInfoType``
+- ``Mach/MemoryInfoFlags``
+- ``Mach/MemoryInfoCounterType``
+
 
 ### Managing Exceptions
 
