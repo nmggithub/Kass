@@ -395,7 +395,7 @@ extension Mach.VirtualMemoryManager {
 
 extension Mach {
 
-    /// A memory entry, expressed as a Mach port.
+    /// A memory entry represented by a Mach port.
     public class MemoryEntry: Mach.Port {
         /// A nil memory entry.
         public static override var Nil: MemoryEntry {
