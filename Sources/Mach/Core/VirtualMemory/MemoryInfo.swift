@@ -78,113 +78,6 @@ extension Mach {
         public static let kalloc = Self(name: "kalloc", rawValue: UInt32(VM_KERN_SITE_KALLOC))
     }
 
-    // MARK: - Tags
-    /// A tag for memory info.
-    public struct MemoryInfoTag: KassHelpers.NamedOptionEnum {
-        /// Represents a raw tag with an optional name.
-        public init(name: String?, rawValue: UInt16) {
-            self.name = name
-            self.rawValue = rawValue
-        }
-
-        /// The name of the tag, if it can be determined.
-        public var name: String?
-
-        /// The raw value of the tag.
-        public let rawValue: UInt16
-
-        /// All known tags.
-        public static let allCases: [Self] = [
-            none, osfmk, bsd, iokit, libkern, oskext, kext, ipc, stack, cpu, pmap, pte, zone,
-            kalloc, compressor, compressedData, phantomCache, waitq, diag, log, file, mbuf, ubc,
-            security, mlock, reason, skywalk, ltable, hv, kallocData, retired, kallocType, triage,
-            recount, exclaves,
-        ]
-
-        public static let none = Self(name: "none", rawValue: UInt16(VM_KERN_MEMORY_NONE))
-
-        public static let osfmk = Self(name: "osfmk", rawValue: UInt16(VM_KERN_MEMORY_OSFMK))
-
-        public static let bsd = Self(name: "bsd", rawValue: UInt16(VM_KERN_MEMORY_BSD))
-
-        public static let iokit = Self(name: "iokit", rawValue: UInt16(VM_KERN_MEMORY_IOKIT))
-
-        public static let libkern = Self(name: "libkern", rawValue: UInt16(VM_KERN_MEMORY_LIBKERN))
-
-        public static let oskext = Self(name: "oskext", rawValue: UInt16(VM_KERN_MEMORY_OSKEXT))
-
-        public static let kext = Self(name: "kext", rawValue: UInt16(VM_KERN_MEMORY_KEXT))
-
-        public static let ipc = Self(name: "ipc", rawValue: UInt16(VM_KERN_MEMORY_IPC))
-
-        public static let stack = Self(name: "stack", rawValue: UInt16(VM_KERN_MEMORY_STACK))
-
-        public static let cpu = Self(name: "cpu", rawValue: UInt16(VM_KERN_MEMORY_CPU))
-
-        public static let pmap = Self(name: "pmap", rawValue: UInt16(VM_KERN_MEMORY_PMAP))
-
-        public static let pte = Self(name: "pte", rawValue: UInt16(VM_KERN_MEMORY_PTE))
-
-        public static let zone = Self(name: "zone", rawValue: UInt16(VM_KERN_MEMORY_ZONE))
-
-        public static let kalloc = Self(name: "kalloc", rawValue: UInt16(VM_KERN_MEMORY_KALLOC))
-
-        public static let compressor = Self(
-            name: "compressor", rawValue: UInt16(VM_KERN_MEMORY_COMPRESSOR)
-        )
-
-        public static let compressedData = Self(
-            name: "compressedData", rawValue: UInt16(VM_KERN_MEMORY_COMPRESSED_DATA)
-        )
-
-        public static let phantomCache = Self(
-            name: "phantomCache", rawValue: UInt16(VM_KERN_MEMORY_PHANTOM_CACHE)
-        )
-
-        public static let waitq = Self(name: "waitq", rawValue: UInt16(VM_KERN_MEMORY_WAITQ))
-
-        public static let diag = Self(name: "diag", rawValue: UInt16(VM_KERN_MEMORY_DIAG))
-
-        public static let log = Self(name: "log", rawValue: UInt16(VM_KERN_MEMORY_LOG))
-
-        public static let file = Self(name: "file", rawValue: UInt16(VM_KERN_MEMORY_FILE))
-
-        public static let mbuf = Self(name: "mbuf", rawValue: UInt16(VM_KERN_MEMORY_MBUF))
-
-        public static let ubc = Self(name: "ubc", rawValue: UInt16(VM_KERN_MEMORY_UBC))
-
-        public static let security = Self(
-            name: "security", rawValue: UInt16(VM_KERN_MEMORY_SECURITY)
-        )
-
-        public static let mlock = Self(name: "mlock", rawValue: UInt16(VM_KERN_MEMORY_MLOCK))
-
-        public static let reason = Self(name: "reason", rawValue: UInt16(VM_KERN_MEMORY_REASON))
-
-        public static let skywalk = Self(name: "skywalk", rawValue: UInt16(VM_KERN_MEMORY_SKYWALK))
-
-        public static let ltable = Self(name: "ltable", rawValue: UInt16(VM_KERN_MEMORY_LTABLE))
-
-        public static let hv = Self(name: "hv", rawValue: UInt16(VM_KERN_MEMORY_HV))
-
-        public static let kallocData = Self(
-            name: "kallocData", rawValue: UInt16(VM_KERN_MEMORY_KALLOC_DATA)
-        )
-
-        public static let retired = Self(name: "retired", rawValue: UInt16(VM_KERN_MEMORY_RETIRED))
-
-        public static let kallocType = Self(
-            name: "kallocType", rawValue: UInt16(VM_KERN_MEMORY_KALLOC_TYPE))
-
-        public static let triage = Self(name: "triage", rawValue: UInt16(VM_KERN_MEMORY_TRIAGE))
-
-        public static let recount = Self(name: "recount", rawValue: UInt16(VM_KERN_MEMORY_RECOUNT))
-
-        public static let exclaves = Self(
-            name: "exclaves", rawValue: UInt16(VM_KERN_MEMORY_EXCLAVES)
-        )
-    }
-
     // MARK: - Counters
     /// A type of memory counter.
     public struct MemoryInfoCounterType: KassHelpers.NamedOptionEnum {
@@ -278,9 +171,9 @@ extension mach_memory_info {
     }
 
     /// The tag of the info, if it is a tag.
-    public var tagValue: Mach.MemoryInfoTag? {
+    public var tagValue: Mach.VMTag? {
         guard self.infoType == .tag else { return nil }
-        return Mach.MemoryInfoTag(rawValue: UInt16(self.tag))
+        return Mach.VMTag(rawValue: Int32(self.tag))
     }
 
     /// The type of counter, if the info is a counter.
