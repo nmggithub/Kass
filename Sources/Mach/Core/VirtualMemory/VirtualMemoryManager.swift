@@ -116,7 +116,7 @@ extension Mach {
 }
 // MARK: - Tags
 extension Mach {
-    // A tag for virtual memory.
+    /// A tag for virtual memory.
     public struct VMTag: KassHelpers.NamedOptionEnum {
         /// Represents a raw tag with an optional name.
         public init(name: String?, rawValue: Int32) {

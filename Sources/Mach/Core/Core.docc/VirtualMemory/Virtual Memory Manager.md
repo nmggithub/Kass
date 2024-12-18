@@ -2,6 +2,11 @@
 
 ## Topics
 
+### Flags and Tags
+
+- ``Mach/VMFlags``
+- ``Mach/VMTag``
+
 ### Creating a Virtual Memory Manager
 
 - ``init(task:)``
