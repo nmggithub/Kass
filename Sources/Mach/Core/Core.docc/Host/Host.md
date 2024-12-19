@@ -39,8 +39,7 @@
 
 ### Making Kext Requests
 
-- ``kextRequest(_:)``
-- ``kextRequestWithLogging(_:logSpec:)``
+- <doc:Kext-Requests>
 
 ### Getting Special Ports
 

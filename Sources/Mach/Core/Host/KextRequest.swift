@@ -63,6 +63,8 @@ private class PListParser {
 
 extension Mach.Host {
     /// Performs a kext request.
+    /// - Warning: This function is a very low-level around the `kext_request` function, and should only
+    /// be used if specific functionality is required. Otherwise, use the higher-level wrappers.
     public func kextRequest(
         _ request: UnsafeRawBufferPointer,
         logSpec: OSKextLogSpec = 0,
