@@ -2,7 +2,7 @@
  * Copyright (c) 2000-2021 Apple Inc. All rights reserved.
  *
  * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.41.3/bsd/sys/kdebug_private.h
- * No modifications have made from the original source code except for this line and the preceding one, some
+ * No modifications have been made from the original source code except for this line and the preceding one, some
  * formatting differences, and some tweaks to `KDBG_TYPEFILTER_BITMAP_SIZE` to help Swift compatibility.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@

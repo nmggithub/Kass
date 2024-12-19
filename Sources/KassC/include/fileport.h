@@ -2,7 +2,7 @@
  * Copyright (c) 2010 Apple Inc. All rights reserved.
  *
  * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.41.3/bsd/sys/fileport.h
- * No modifications have made from the original source code except for this line, the preceding one,
+ * No modifications have been made from the original source code except for this line, the preceding one,
  * and some formatting differences.
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@

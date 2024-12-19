@@ -2,7 +2,7 @@
  * Copyright (c) 2014 Apple Inc. All rights reserved.
  *
  * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.1.10/bsd/sys/csr.h
- * No modifications have made from the original source code except for this line and the preceding one, and some formatting differences.
+ * No modifications have been made from the original source code except for this line and the preceding one, and some formatting differences.
  * 
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
  *
