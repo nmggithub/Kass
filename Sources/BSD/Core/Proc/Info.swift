@@ -134,7 +134,7 @@ extension BSD {
         )
     }
 
-    // An extended ID for use with `proc_info_extended_id`.
+    /// An extended ID for use with `proc_info_extended_id`.
     public struct ProcInfoExtendedID {
         /// The flag for the extended ID.
         let flag: ProcInfoExtendedIDFlag

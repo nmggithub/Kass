@@ -62,7 +62,7 @@ extension BSD {
         /// The type of list.
         let type: ProcPIDListType
 
-        // The additional info for the list.
+        /// The additional info for the list.
         let info: UInt32?
 
         /// Creates a description of a list of PIDs.
