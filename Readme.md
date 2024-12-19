@@ -10,13 +10,17 @@ Note that while it may compile on older versions of macOS, this library is only 
 
 Hi! This is [nmggithub](https://github.com/nmggithub), the sole developer of this project. I tend to avoid using pronouns in general when it comes to documentation, but I realized I couldn't really avoid it here, so this section is going to be a lot more personal than any of the other documentation. Perhaps I may change my style in the future, but for now this is going to stand out, so I thought I'd address it.
 
-Anyway, this library is currently, as of writing on version 3.0.0. After months of work and multiple refactors, it's here. Kass 3.0.0 is a major upgrade from Kass 2.0.0, hence the major version change. But even now, it's still a library in transition. Hopefully not in the architecture department, but Kass 3.0.0 is still missing several features I wish I could have included.
+Kass 3.0.0 was a major upgrade from Kass 2.0.0, hence the major version change. But even now, it's still a library in transition. Hopefully not in the architecture department, but Kass 3.0.0 was still missing several features I wish I could have included.
 
-Going forward, I want to try and stick with [Semantic Versioning](https://semver.org/), but I don't think I can commit to that fully (especially with how often my mind changes). I honestly don't know how many (if anyone) is using this project, but I want 3.0 onward to be at least somewhat stable.
+Going forward, I want to try and stick with [Semantic Versioning](https://semver.org/), but I don't think I can commit to that fully (especially with how often my mind changes). I honestly don't know how many (if anyone) is using this project, but I wanted 3.0 onward to be at least somewhat stable.
 
 I consider the `MachCore` module to be mostly stable, so there will likely be little changes to it going forward (save for the addition of virtual memory API's). `BSDCore` is in its early stages, so a lot can change there. Finally, `Linking` will likely be folded into `BSDCore` at some point.
 
 I hope this library is of some use to you, and I look forward to more stable releases in the future. If you have any issues with it, feel free to [file an issue.](https://github.com/nmggithub/Kass/issues) If you'd like to contribute, go ahead and [open a PR.](https://github.com/nmggithub/Kass/pulls) I appreciate all the feedback and support.
+
+### Kass 4.0.0 update
+
+As of writing, Kass 4.0.0 has been released. Everything I have said above still stands. I will try to stick with SemVer, but I can't promise anything. There's still some API's I'd love to add more stability to, and more I'd like to add. The XNU kernel is a big project, and and I keep finding more and more interesting corners of it. Anyway, onward I go!
 
 ## On Licenses
 
