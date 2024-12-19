@@ -67,6 +67,7 @@ The core module for interacting with the Mach kernel.
 
 - <doc:Exceptions>
 - <doc:Vouchers>
+- ``Mach/Eventlink``
 
 ### Calling the Kernel
 
