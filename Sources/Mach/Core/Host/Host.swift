@@ -1,16 +1,6 @@
 import Darwin.Mach
 import Foundation
-import KassC.OSKextLibPrivate
 import KassHelpers
-
-/// Adds a failible initializer to convert a potentially-nil data pointer to a Swift `Data` object.
-// TODO: Determine if duplicating this from TaskDyldInfo.swift is an appropriate breaking of DRY.
-extension Data {
-    fileprivate init?(bytes: UnsafeRawPointer?, count: Int) {
-        guard let actualBytes = bytes else { return nil }
-        self.init(bytes: actualBytes, count: count)
-    }
-}
 
 extension Mach {
     /// A host.
@@ -94,58 +84,6 @@ extension Mach.Host {
         try Mach.call(host_reboot(self.name, option.rawValue))
     }
 }
-
-extension Mach.Host {
-    /// Performs a kext request and returns more information.
-    /// - Important: This function will not throw if the request fails. Instead, it will
-    /// return the error code and any log data that was generated through the process.
-    /// - Important: See the source code for more information on the `logSpec` parameter.
-    public func kextRequestWithLogging(_ request: Data, logSpec: OSKextLogSpec = 0) throws -> (
-        return: kern_return_t, logData: Data?, response: Data?
-    ) {
-        let dataCopy = request.withUnsafeBytes {
-            buffer in
-            let bufferCopy = UnsafeMutableRawBufferPointer.allocate(
-                byteCount: buffer.count, alignment: 1
-            )
-            bufferCopy.copyMemory(from: buffer)
-            return bufferCopy
-        }
-        defer { dataCopy.deallocate() }
-        var responseAddress = vm_offset_t()
-        var responseCount = mach_msg_type_number_t()
-        var actualReturn = kern_return_t()
-        var logDataPointer = vm_offset_t()
-        var logDataCount = mach_msg_type_number_t()
-        try Mach.call(
-            kext_request(
-                self.name,
-                logSpec,
-                vm_offset_t(bitPattern: dataCopy.baseAddress),
-                mach_msg_type_number_t(request.count),
-                &responseAddress, &responseCount,
-                &logDataPointer, &logDataCount, &actualReturn
-            )
-        )
-        let response = Data(
-            bytes: UnsafeRawPointer(bitPattern: responseAddress),
-            count: Int(responseCount)
-        )
-        let logData = Data(
-            bytes: UnsafeRawPointer(bitPattern: logDataPointer),
-            count: Int(logDataCount)
-        )
-        return (actualReturn, logData, response)
-    }
-
-    /// Performs a kext request.
-    public func kextRequest(_ request: Data) throws -> Data {
-        let (returnCode, _, data) = try self.kextRequestWithLogging(request)
-        try Mach.call(returnCode)
-        return data!  // Hopefully the above line will throw in cases where `data` is nil.
-    }
-}
-
 extension Mach {
     /// A memory manager.
     public class MemoryManager: Mach.Port {}

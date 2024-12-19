@@ -93,4 +93,9 @@ module KassC {
         header "mach_eventlink.h"
         export *
     }
+
+    module KextRequestKeys {
+        header "kext_request_keys.h"
+        export *
+    }
 }

@@ -27,22 +27,6 @@ extension dyld_aot_image_info {
     }
 }
 
-/// Adds a failible initializer to convert a potentially-nil C string to a Swift string.
-extension String {
-    fileprivate init?(cString: UnsafePointer<CChar>?) {
-        guard let actualCString = cString else { return nil }
-        self.init(cString: actualCString)
-    }
-}
-
-/// Adds a failible initializer to convert a potentially-nil data pointer to a Swift `Data` object.
-extension Data {
-    fileprivate init?(bytes: UnsafeRawPointer?, count: Int) {
-        guard let actualBytes = bytes else { return nil }
-        self.init(bytes: actualBytes, count: count)
-    }
-}
-
 /// Adds properties to make the `dyld_all_image_infos` struct more Swift-friendly.
 extension dyld_all_image_infos {  // Note: The availability constraints are based on comments in the original header file.
     public var infos: [dyld_image_info] {
@@ -53,18 +37,24 @@ extension dyld_all_image_infos {  // Note: The availability constraints are base
         self.notification(mode, UInt32(infos.count), infos)
     }
     @available(macOS, introduced: 10.6)
-    public var dyldVersionString: String? { String(cString: self.dyldVersion) }
+    public var dyldVersionString: String? {
+        guard let actualDyldVersion = self.dyldVersion else { return nil }
+        return String(cString: actualDyldVersion)
+    }
     @available(macOS, introduced: 10.6)
-    public var errorMessageString: String? { String(cString: self.errorMessage) }
+    public var errorMessageString: String? {
+        guard let actualErrorMessage = self.errorMessage else { return nil }
+        return String(cString: actualErrorMessage)
+    }
     @available(macOS, introduced: 10.6)
     public var uuids: [dyld_uuid_info] {
         guard let uuidArray = self.uuidArray else { return [] }
         return (0..<Int(self.uuidArrayCount)).map { index in uuidArray[index] }
     }
     @available(macOS, introduced: 10.13)
-    public var compactDyldImageInfo: Data? {
-        Data(
-            bytes: UnsafeRawPointer(bitPattern: self.compact_dyld_image_info_addr),
+    public var compactDyldImageInfo: UnsafeRawBufferPointer {
+        UnsafeRawBufferPointer(
+            start: UnsafeRawPointer(bitPattern: self.compact_dyld_image_info_addr),
             count: Int(self.compact_dyld_image_info_size)
         )
     }
