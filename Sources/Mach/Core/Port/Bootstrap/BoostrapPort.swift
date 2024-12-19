@@ -62,16 +62,6 @@ extension Mach {
             }
         }
 
-        /// Creates a new bootstrap port wherein dynamically registered services are only accessible through that bootstrap port.
-        /// - Note: While this is marked as deprecated to match the deprecation of the underlying function, it is still functional.
-        /// - Note: The `requestorPort` parameter must be a port that the calling task has a receive right for.
-        @available(macOS, deprecated: 10.10)
-        public func subset(requestorPort: Mach.Port) throws -> BootstrapPort {
-            var subsetPortName = mach_port_name_t()
-            try Self.call(bootstrap_subset(self.name, requestorPort.name, &subsetPortName))
-            return BootstrapPort(named: subsetPortName)
-        }
-
         /// Looks up a service by name.
         public func lookUp<PortType: Mach.Port>(serviceName: String) throws -> PortType {
             var portName = mach_port_name_t()
