@@ -19,7 +19,9 @@
 
 ### Setting Protection and Inheritance Properties of Memory
 
+- ``Mach/VMInherit``
 - ``inherit(_:size:inherit:)``
+- ``Mach/VMProtectionOptions``
 - ``protect(_:size:setMaximum:protection:)``
 
 ### Reading and Writing Memory

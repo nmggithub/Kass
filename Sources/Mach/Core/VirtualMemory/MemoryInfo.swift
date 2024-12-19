@@ -255,6 +255,7 @@ extension Mach {
         }
     }
 
+    /// Memory information of an unknown type.
     public struct UnknownMemoryInfo: MemoryInfo {
         public let rawValue: mach_memory_info
 

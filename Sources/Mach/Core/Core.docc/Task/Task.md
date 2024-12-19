@@ -165,6 +165,7 @@ It is possible to get a task port of a given flavor for a process with a given P
 ### Managing Virtual Memory
 
 - ``vm``
+- ``Mach/VirtualMemoryManager``
 
 ### Managing kernelcache Objects
 
