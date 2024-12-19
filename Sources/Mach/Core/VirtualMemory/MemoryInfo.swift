@@ -150,7 +150,8 @@ extension Mach {
     }
 }
 
-// MARK: - mach_memory_info
+// MARK: - Memory Info Structs
+
 /// Information about memory.
 extension mach_memory_info {
     /// The name of the info, if it can be determined.
@@ -170,34 +171,120 @@ extension mach_memory_info {
         Mach.MemoryInfoType(rawValue: UInt8(self.flags & UInt64(VM_KERN_SITE_TYPE)))
     }
 
-    /// The tag of the info, if it is a tag.
-    public var tagValue: Mach.VMTag? {
-        guard self.infoType == .tag else { return nil }
-        return Mach.VMTag(rawValue: Int32(self.tag))
-    }
-
-    /// The type of counter, if the info is a counter.
-    public var counterType: Mach.MemoryInfoCounterType? {
-        guard self.infoType == .counter else { return nil }
-        return Mach.MemoryInfoCounterType(rawValue: self.site)
-    }
-
-    /// The ID of the kernel module, if it is a kernel module.
-    public var kernelModuleID: UInt32? {
-        guard self.infoType == .kmod else { return nil }
-        return UInt32(self.site)
-    }
-
     /// The flags of the info.
     public var flagSet: Mach.MemoryInfoFlags {
         Mach.MemoryInfoFlags(rawValue: UInt32(self.flags))
     }
 }
 
+extension Mach {
+    /// A memory info.
+    public protocol MemoryInfo: RawRepresentable where RawValue == mach_memory_info {
+        var rawValue: mach_memory_info { get }
+    }
+
+    /// Memory information about a tag.
+    public struct TagMemoryInfo: MemoryInfo {
+        public let rawValue: mach_memory_info
+
+        public init?(rawValue: mach_memory_info) {
+            guard rawValue.infoType == .tag else { return nil }
+            self.rawValue = rawValue
+        }
+
+        /// The tag the information is about.
+        public var tag: VMTag {
+            Mach.VMTag(rawValue: Int32(self.rawValue.tag))
+        }
+
+        /// The name of the tag, if it can be determined.
+        public var tagName: String? {
+            // If the tag is a known tag, we can use the known name.
+            if let knownTagName = self.tag.name { return knownTagName }
+            // Otherwise, if the tag info is named, we can use that name.
+            if self.flags.contains(.named) { return self.rawValue.nameString }
+            // Beyond that, we cannot determine the name.
+            return nil
+        }
+    }
+
+    /// Memory information about a kernel module.
+    public struct KernelModuleMemoryInfo: MemoryInfo {
+        public let rawValue: mach_memory_info
+
+        public init?(rawValue: mach_memory_info) {
+            guard rawValue.infoType == .kmod else { return nil }
+            self.rawValue = rawValue
+        }
+
+        /// The ID of the kernel module the information is about.
+        public var kernelModuleID: UInt32 {
+            return UInt32(self.rawValue.site)
+        }
+    }
+
+    /// Memory information about the kernel.
+    public struct KernelMemoryInfo: MemoryInfo {
+        public let rawValue: mach_memory_info
+
+        public init?(rawValue: mach_memory_info) {
+            guard rawValue.infoType == .kernel else { return nil }
+            self.rawValue = rawValue
+        }
+
+        /// A pointer into the kernel the information is about.
+        public var pointer: UnsafeRawPointer? {
+            // If the address cannot be represented as a `UInt`, we cannot represent it as a pointer.
+            guard let siteAsUInt = UInt(exactly: self.rawValue.site) else { return nil }
+            return UnsafeRawPointer(bitPattern: siteAsUInt)
+        }
+    }
+
+    /// Memory information about a counter.
+    public struct CounterMemoryInfo: MemoryInfo {
+        public let rawValue: mach_memory_info
+
+        public init?(rawValue: mach_memory_info) {
+            guard rawValue.infoType == .counter else { return nil }
+            self.rawValue = rawValue
+        }
+
+        /// The type of the counter.
+        public var counterType: Mach.MemoryInfoCounterType {
+            Mach.MemoryInfoCounterType(rawValue: self.rawValue.site)
+        }
+    }
+
+    public struct UnknownMemoryInfo: MemoryInfo {
+        public let rawValue: mach_memory_info
+
+        public init(rawValue: mach_memory_info) {
+            self.rawValue = rawValue
+        }
+    }
+}
+
+extension Mach.MemoryInfo {
+    /// The name of the info, if it can be determined.
+    public var name: String? {
+        self.rawValue.nameString
+    }
+
+    /// The type of the memory info.
+    public var infoType: Mach.MemoryInfoType {
+        self.rawValue.infoType
+    }
+
+    /// The flags of the info.
+    public var flags: Mach.MemoryInfoFlags {
+        self.rawValue.flagSet
+    }
+}
+
 // MARK: - Memory Infos
 extension Mach.Host {
     /// The memory infos in the host.
-    public var memoryInfos: [mach_memory_info] {
+    public var memoryInfos: [any Mach.MemoryInfo] {
         get throws {
             // These are ignored by us, but required by the kernel call.
             var names: mach_zone_name_array_t?
@@ -213,7 +300,25 @@ extension Mach.Host {
                     &memoryInfos, &memoryInfoCount
                 )
             )
-            return (0..<Int(memoryInfoCount)).map { memoryInfos![$0] }
+            let rawInfos = (0..<Int(memoryInfoCount)).map { memoryInfos![$0] }
+            return rawInfos.map {
+                switch $0.infoType {
+                case .tag:
+                    return Mach.TagMemoryInfo(rawValue: $0)
+                        ?? Mach.UnknownMemoryInfo(rawValue: $0)
+                case .kmod:
+                    return Mach.KernelModuleMemoryInfo(rawValue: $0)
+                        ?? Mach.UnknownMemoryInfo(rawValue: $0)
+                case .kernel:
+                    return Mach.KernelMemoryInfo(rawValue: $0)
+                        ?? Mach.UnknownMemoryInfo(rawValue: $0)
+                case .counter:
+                    return Mach.CounterMemoryInfo(rawValue: $0)
+                        ?? Mach.UnknownMemoryInfo(rawValue: $0)
+                default:
+                    return Mach.UnknownMemoryInfo(rawValue: $0)
+                }
+            }
         }
     }
 }
