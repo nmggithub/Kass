@@ -1,7 +1,7 @@
 /// A structure representing an enumeration of options.
 @_documentation(visibility: private)
 public protocol OptionEnum: RawRepresentable, Equatable, Sendable
-where RawValue: BinaryInteger {}
+where RawValue: Equatable {}
 
 /// A structure representing an enumeration of options with names.
 @_documentation(visibility: private)
