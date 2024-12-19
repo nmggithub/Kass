@@ -125,6 +125,7 @@ extension Mach.Host {
         return PListParser().parsePlistElement(rootElement) as? [String: Any]
     }
 
+    /// A kext request predicate.
     public struct KextRequestPredicate: KassHelpers.NamedOptionEnum {
         /// The name of the predicate, if it can be determined.
         public var name: String?
@@ -210,12 +211,11 @@ extension Mach.Host {
         )
     }
 
+    /// Performs a kext request.
     public func kextRequest(
         predicate: Mach.Host.KextRequestPredicate,
         arguments: [String: Any] = [:]
-    )
-        throws -> [String: Any]?
-    {
+    ) throws -> [String: Any]? {
         try self.kextRequest([
             kKextRequestPredicateKey: predicate.rawValue,
             kKextRequestArgumentsKey: arguments,
