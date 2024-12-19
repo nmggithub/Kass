@@ -1,4 +1,5 @@
 import Foundation
+import KassC.KextRequestKeys
 import KassC.OSKextLibPrivate
 import KassHelpers
 
