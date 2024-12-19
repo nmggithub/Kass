@@ -44,7 +44,7 @@ extension Mach {
             }
         }
 
-        // The unprivileged bootstrap port.
+        /// The unprivileged bootstrap port.
         public var unprivilegedPort: Mach.Port {
             get throws {
                 var unprivilegedPortName = mach_port_name_t()
@@ -53,7 +53,7 @@ extension Mach {
             }
         }
 
-        // The root bootstrap port.
+        /// The root bootstrap port.
         public var rootPort: Mach.Port {
             get throws {
                 var rootPortName = mach_port_name_t()
