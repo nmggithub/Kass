@@ -40,7 +40,7 @@ extension BSD {
         )
 
         public static let bsdInfo = Self(
-            name: "bsdInfo", rawValue: PROC_PIDTASKINFO
+            name: "bsdInfo", rawValue: PROC_PIDTBSDINFO
         )
 
         public static let taskInfo = Self(
