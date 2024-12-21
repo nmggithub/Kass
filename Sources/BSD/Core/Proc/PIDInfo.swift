@@ -446,7 +446,7 @@ extension BSD {
         }
 
         /// The platform for the process.
-        public var getPlatform: UInt32 {
+        public var platform: UInt32 {
             get throws { try self.info(flavor: .platform) }
         }
 
