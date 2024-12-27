@@ -88,7 +88,7 @@ extension Mach {
                     {
                         // The `noReply` case is not actually an error, just the absence of
                         // a defined reply. We return early as if there was no error.
-                        if matchingMIGErrorCode != .noReply { return }
+                        if matchingMIGErrorCode == .noReply { return }
 
                         // Otherwise, we throw a MIG error.
                         throw Mach.MIGError(matchingMIGErrorCode)
