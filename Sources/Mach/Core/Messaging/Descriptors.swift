@@ -90,7 +90,7 @@ extension mach_msg_port_descriptor_t: Mach.MessageDescriptor {
     }
 
     /// Creates a new port descriptor.
-    public init(_ port: Mach.Port, disposition: Mach.PortDisposition) {
+    public init(port: Mach.Port, disposition: Mach.PortDisposition) {
         self.init(
             name: port.name,
             pad1: 0, pad2: 0,
@@ -137,7 +137,7 @@ extension mach_msg_guarded_port_descriptor_t: Mach.MessageDescriptor {
 
     /// Creates a new port descriptor.
     public init(
-        _ port: Mach.Port, disposition: Mach.PortDisposition, context: mach_port_context_t = 0,
+        port: Mach.Port, disposition: Mach.PortDisposition, context: mach_port_context_t = 0,
         guardFlags: Mach.MessagePortGuardFlags = []
     ) {
         self.init(
@@ -209,16 +209,27 @@ extension mach_msg_ool_descriptor_t: Mach.MessageDescriptor {
 
     /// Creates a new OOL descriptor.
     public init(
-        _ data: Data, copyOption: Mach.OOLDescriptorCopyOption = .virtual,
+        data: Data?, copyOption: Mach.OOLDescriptorCopyOption = .virtual,
         deallocateOnSend: Bool = false
     ) {
+        guard let actualData = data else {
+            self.init(
+                address: nil,
+                deallocate: deallocateOnSend ? 1 : 0,
+                copy: copyOption.rawValue,
+                pad1: 0,
+                type: Mach.MessageDescriptorType.ool.rawValue,
+                size: 0
+            )
+            return
+        }
         self.init(
-            address: UnsafeMutableRawPointer(mutating: (data as NSData).bytes),
+            address: UnsafeMutableRawPointer(mutating: (actualData as NSData).bytes),
             deallocate: deallocateOnSend ? 1 : 0,
             copy: copyOption.rawValue,
             pad1: 0,
             type: Mach.MessageDescriptorType.ool.rawValue,
-            size: mach_msg_size_t(data.count)
+            size: mach_msg_size_t(actualData.count)
         )
     }
 }
@@ -266,7 +277,7 @@ extension mach_msg_ool_ports_descriptor_t: Mach.MessageDescriptor {
 
     /// Creates a new OOL ports descriptor.
     public init(
-        _ ports: [Mach.Port], disposition: Mach.PortDisposition,
+        ports: [Mach.Port], disposition: Mach.PortDisposition,
         copyMethod: Mach.OOLDescriptorCopyOption,
         deallocateOnSend: Bool = false
     ) {
