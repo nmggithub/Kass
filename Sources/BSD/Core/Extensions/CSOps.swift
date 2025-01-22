@@ -374,7 +374,8 @@ extension BSD {
                 /// Gets the full blob.
                 dataIn: Data(repeating: 0, count: Int(actualLength))
             )
-            return dataOut
+            // Strip the header from the returned data.
+            return dataOut.subdata(in: self.blobHeaderSize..<dataOut.count)
         }
 
         /// Gets the entitlements blob (XML).
