@@ -17,6 +17,18 @@ extension Mach {
             self.init(named: thread)
         }
 
+        /// Creates a new thread in a given task with a given state.
+        public convenience init<DataType>(
+            inTask task: Task, runningWithState state: DataType,
+            flavored stateFlavor: ThreadStateFlavor
+        ) throws where DataType: BitwiseCopyable {
+            var thread = thread_act_t()
+            try Mach.callWithCountIn(value: state) { array, count in
+                thread_create_running(task.name, stateFlavor.rawValue, array, count, &thread)
+            }
+            self.init(named: thread)
+        }
+
         /// Suspends the thread.
         public func suspend() throws { try Mach.call(thread_suspend(self.name)) }
 
