@@ -10,7 +10,8 @@ extension Mach {
         }
 
         /// Creates a new thread in a given task.
-        /// - Warning: The initial execution state of the thread is undefined. Use ``Mach/Task/setDefaultThreadState(_:to:)`` to set initial state.
+        /// - Warning: The initial execution state of the thread is undefined. Use ``init(inTask:runningWithState:flavored:)``
+        /// to create a thread with a defined initial state.
         public convenience init(inTask task: Task) throws {
             var thread = thread_act_t()
             try Mach.call(thread_create(task.name, &thread))
