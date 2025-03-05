@@ -5,7 +5,7 @@ extension Mach {
     /// A client for MIG requests.
     open class MIGClient: Mach.Port {
         /// The base routine ID for the remote MIG subsystem.
-        public var baseRoutineID: mach_msg_id_t
+        open var baseRoutineID: mach_msg_id_t
 
         /// Represents an existing MIG server port.
         public required init(named name: mach_port_name_t, baseRoutineID: mach_msg_id_t) {
