@@ -18,7 +18,7 @@ extension Mach {
             self.init(named: thread)
         }
 
-        /// Creates a new thread in a given task with a given state.
+        /// Creates a new running thread in a given task with a given state.
         public convenience init<DataType>(
             inTask task: Task, runningWithState state: DataType,
             flavored stateFlavor: ThreadStateFlavor
