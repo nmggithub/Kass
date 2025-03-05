@@ -179,30 +179,46 @@ extension Mach.Task {
 }
 
 extension Mach.Task {
-    public var spaceInfos: [ipc_info_name_t] {
+    /// Information about the task's IPC space (name space), split into three parts.
+    private var ipcSpaceInfo: (ipc_info_space_t, [ipc_info_name_t], [ipc_info_tree_name_t]) {
         get throws {
-            let infoNameArrayPointer = UnsafeMutablePointer<ipc_info_name_array_t?>
-                .allocate(capacity: 1)
-            var infoNameCount = mach_msg_type_number_t.max
-
-            // These are all unused, but they are required by `mach_port_space_info`.
-            let infoTreeNameArrayPointer = UnsafeMutablePointer<ipc_info_tree_name_array_t?>
-                .allocate(capacity: 1)
-            var infoTreeNameCount = mach_msg_type_number_t.max
             var info: ipc_info_space_t = ipc_info_space_t()
-
+            var infoNameArray: ipc_info_name_array_t?
+            var infoNameCount = mach_msg_type_number_t.max
+            var infoTreeNameArray: ipc_info_tree_name_array_t?
+            var infoTreeNameCount = mach_msg_type_number_t.max
             try Mach.call(
                 mach_port_space_info(
                     self.name, &info,
-                    infoNameArrayPointer, &infoNameCount,
-                    infoTreeNameArrayPointer, &infoTreeNameCount
+                    &infoNameArray, &infoNameCount,
+                    &infoTreeNameArray, &infoTreeNameCount
                 )
             )
-
-            guard let array = infoNameArrayPointer.pointee else {
-                return []
-            }
-            return (0..<Int(infoNameCount)).map { array[$0] }
+            return (
+                info,
+                infoNameArray != nil
+                    ? Array(0..<Int(infoNameCount)).map { infoNameArray![$0] }
+                    : [],
+                infoTreeNameArray != nil
+                    ? Array(0..<Int(infoTreeNameCount)).map { infoTreeNameArray![$0] }
+                    : []
+            )
         }
+    }
+
+    /// Information about the task's name space.
+    public var nameSpaceInfo: ipc_info_space_t {
+        get throws { try self.ipcSpaceInfo.0 }
+    }
+
+    /// The task's name space table.
+    public var nameSpaceTable: [ipc_info_name_t] {
+        get throws { try self.ipcSpaceInfo.1 }
+    }
+
+    /// The task's name space tree.
+    /// - Note: This will likely be empty as the name space tree is not currently used.
+    public var nameSpaceTree: [ipc_info_tree_name_t] {
+        get throws { try self.ipcSpaceInfo.2 }
     }
 }
