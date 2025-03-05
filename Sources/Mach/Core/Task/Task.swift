@@ -177,3 +177,32 @@ extension Mach.Task {
         )
     }
 }
+
+extension Mach.Task {
+    public var spaceInfos: [ipc_info_name_t] {
+        get throws {
+            let infoNameArrayPointer = UnsafeMutablePointer<ipc_info_name_array_t?>
+                .allocate(capacity: 1)
+            var infoNameCount = mach_msg_type_number_t.max
+
+            // These are all unused, but they are required by `mach_port_space_info`.
+            let infoTreeNameArrayPointer = UnsafeMutablePointer<ipc_info_tree_name_array_t?>
+                .allocate(capacity: 1)
+            var infoTreeNameCount = mach_msg_type_number_t.max
+            var info: ipc_info_space_t = ipc_info_space_t()
+
+            try Mach.call(
+                mach_port_space_info(
+                    self.name, &info,
+                    infoNameArrayPointer, &infoNameCount,
+                    infoTreeNameArrayPointer, &infoTreeNameCount
+                )
+            )
+
+            guard let array = infoNameArrayPointer.pointee else {
+                return []
+            }
+            return (0..<Int(infoNameCount)).map { array[$0] }
+        }
+    }
+}
