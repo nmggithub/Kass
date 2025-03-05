@@ -58,7 +58,6 @@ extension dyld_all_image_infos {  // Note: The availability constraints are base
             count: Int(self.compact_dyld_image_info_size)
         )
     }
-
 }
 
 extension Mach.TaskInfoManager {

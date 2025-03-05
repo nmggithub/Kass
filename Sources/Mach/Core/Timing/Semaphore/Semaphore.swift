@@ -25,7 +25,6 @@ extension Mach {
         /// Last-in-first-out policy.
         public static let lifo = Self(name: "lifo", rawValue: SYNC_POLICY_LIFO)
     }
-
 }
 
 extension Mach {

@@ -6,7 +6,6 @@ import KassHelpers
 extension Mach {
     /// A descriptor for a message body.
     public protocol MessageDescriptor {}
-
 }
 
 extension Mach.MessageDescriptor {

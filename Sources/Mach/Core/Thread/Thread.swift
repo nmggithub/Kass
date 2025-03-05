@@ -52,7 +52,6 @@ extension Mach {
         public func unwire(in host: Mach.Host = .current) throws {
             try Mach.call(thread_wire(host.name, self.name, 0))
         }
-
     }
 }
 

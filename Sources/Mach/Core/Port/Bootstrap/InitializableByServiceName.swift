@@ -6,7 +6,6 @@ extension Mach {
         /// Initializes a port by looking up a service name.
         init(serviceName: String) throws
     }
-
 }
 
 extension Mach.PortInitializableByServiceName {

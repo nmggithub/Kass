@@ -74,7 +74,6 @@ extension BSD {
             self.info = info
         }
     }
-
 }
 
 extension BSD.Proc {

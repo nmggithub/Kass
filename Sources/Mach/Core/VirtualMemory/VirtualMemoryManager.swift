@@ -304,7 +304,6 @@ extension Mach {
         public static var write: Self { Self(name: "write", rawValue: VM_PROT_WRITE) }
 
         public static var execute: Self { Self(name: "execute", rawValue: VM_PROT_EXECUTE) }
-
     }
 }
 
@@ -388,7 +387,6 @@ extension Mach.VirtualMemoryManager {
             )
         )
     }
-
 }
 
 // MARK: - Copying / Mapping
