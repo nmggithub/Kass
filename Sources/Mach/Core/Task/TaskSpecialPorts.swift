@@ -56,7 +56,6 @@ extension Mach {
         /// The task's debug port.
         public static let debug = Self(rawValue: TASK_DEBUG_CONTROL_PORT)
     }
-
 }
 
 extension Mach.Task: Mach.PortWithSpecialPorts {
