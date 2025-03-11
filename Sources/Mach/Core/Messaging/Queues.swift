@@ -5,7 +5,7 @@ extension Mach {
     /// A message queue.
     /// - Important: This does not support a combined send and receive operation. For such an operation, instead use the
     /// ``Mach/Message/send(_:to:withDisposition:receiving:ofMaxSize:from:withDisposition:options:timeout:)`` function.
-    public class MessageQueue: Mach.Port {
+    open class MessageQueue: Mach.Port {
         /// Sends a message to the queue.
         public func enqueue(
             _ message: Mach.Message, options: Mach.MessageOptions = [],
@@ -29,7 +29,7 @@ extension Mach {
 // MARK: - Message Client
 extension Mach {
     /// A message client for enqueuing messages.
-    public class MessageClient: Mach.MessageQueue {
+    open class MessageClient: Mach.MessageQueue {
         @available(*, unavailable, message: "Clients can only enqueue messages.")
         override public func dequeue<ReceiveMessage: Mach.Message>(
             _ messageType: ReceiveMessage.Type = Mach.Message.self,
@@ -45,7 +45,7 @@ extension Mach {
 // MARK: - Message Server
 extension Mach {
     /// A message server for dequeuing messages.
-    public class MessageServer: Mach.MessageQueue {
+    open class MessageServer: Mach.MessageQueue {
         @available(*, unavailable, message: "Servers can only dequeue messages.")
         override public func enqueue(
             _ message: Mach.Message, options: Mach.MessageOptions = [],
