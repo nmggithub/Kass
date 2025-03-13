@@ -34,11 +34,11 @@ This is merely a namespace "module". It can be used to access the the `MachCore`
 
 ### [`MachCore`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/machcore/)
 
-This module provides facilities for interacting with the Mach portion of the XNU kernel. Most Mach API's are provided, although some are intentionally left in specific cases. Virtual memory API's are largely left out but are planned for a later release. This module should be considered the most stable, as it has had the most work put into it.
+This module provides facilities for interacting with the Mach portion of the XNU kernel. Most Mach API's are provided. This module should be considered the most stable, as it has had the most work put into it.
 
 ### [`BSDCore`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/bsdcore/)
 
-This module provides facilities for interacting with the Mach portion of the XNU kernel. It is very much a work-in-progress and should not be considered very stable as it may be subject to change.
+This module provides facilities for interacting with the BSD portion of the XNU kernel. It is very much a work-in-progress and should not be considered very stable as it may be subject to change.
 
 ### [`Linking`](https://swiftpackageindex.com/nmggithub/Kass/main/documentation/linking/)
 
