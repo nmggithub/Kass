@@ -256,7 +256,7 @@ extension BSD {
             get throws { try self.info(flavor: .bsdInfo) }
         }
 
-        /// Information about a task for thr process.
+        /// Information about a task for the process.
         public var taskInfo: proc_taskinfo {
             get throws { try self.info(flavor: .taskInfo) }
         }
