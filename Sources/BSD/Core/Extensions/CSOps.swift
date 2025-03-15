@@ -351,7 +351,7 @@ extension BSD {
         /// The size of the header of a code signing blob.
         private static let blobHeaderSize = MemoryLayout<__SC_GenericBlob>.size
 
-        /// Getss a blob through a code signing operation.
+        /// Gets a blob through a code signing operation.
         private static func getBlob(
             _ operation: CSOperation,
             forPID pid: pid_t, auditToken: audit_token_t? = nil
