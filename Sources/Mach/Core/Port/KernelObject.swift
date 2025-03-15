@@ -41,13 +41,16 @@ extension ipc_kotype_t {
     /// A memory object.
     public static let memoryObject = Self.IKOT_MEMORY_OBJECT
 
-    // It's unclear what these even are/were, or if they were ever used. But they definitely aren't used now.
-
-    @available(macOS, unavailable)
+    /// A XMM pager.
+    @available(macOS, obsoleted: 12.0.1)
     public static let xmmPager = Self.IKOT_XMM_PAGER
-    @available(macOS, unavailable)
+
+    /// A XMM kernel.
+    @available(macOS, obsoleted: 12.0.1)
     public static let xmmKernel = Self.IKOT_XMM_KERNEL
-    @available(macOS, unavailable)
+
+    /// A XMM reply.
+    @available(macOS, obsoleted: 12.0.1)
     public static let xmmReply = Self.IKOT_XMM_REPLY
 
     /// A user-notification daemon reply.
@@ -72,17 +75,18 @@ extension ipc_kotype_t {
     public static let taskName = Self.IKOT_TASK_NAME
 
     /// A subsystem.
-    @available(macOS, unavailable)
+    @available(macOS, obsoleted: 12.0.1)
     public static let subsystem = Self.IKOT_SUBSYSTEM
 
-    @available(macOS, unavailable)
+    /// An IOKit done queue.
+    @available(macOS, obsoleted: 12.0.1)
     public static let ioDoneQueue = Self.IKOT_IO_DONE_QUEUE
 
     /// A semaphore.
     public static let semaphore = Self.IKOT_SEMAPHORE
 
     /// A lock set.
-    @available(macOS, unavailable)
+    @available(macOS, obsoleted: 12.0.1)
     public static let lockSet = Self.IKOT_LOCK_SET
 
     /// The port is a clock port.
@@ -178,6 +182,68 @@ extension ipc_kotype_t {
 
     /// The type of the kernel object is unknown.
     public static let unknown = Self.IKOT_UNKNOWN
+}
+
+extension ipc_kotype_t: @retroactive CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .none: return "None"
+        case .threadControl: return "Thread Control"
+        case .taskControl: return "Task Control"
+        case .host: return "Host"
+        case .hostPriv: return "Privileged Host"
+        case .processor: return "Processor"
+        case .pset: return "Processor Set Control"
+        case .psetName: return "Processor Set Name"
+        case .timer: return "Timer"
+        case .substituteOnce: return "Substitute-Once Port"
+        case .mig: return "MIG"
+        case .memoryObject: return "Memory Object"
+        case .xmmPager: return "XMM Pager"
+        case .xmmKernel: return "XMM Kernel"
+        case .xmmReply: return "XMM Reply"
+        case .undReply: return "User-Notification Daemon Reply"
+        case .hostNotify: return "Host Notification"
+        case .hostSecurity: return "Host Security"
+        case .ledger: return "Ledger"
+        case .mainDevice: return "Main Device"
+        case .taskName: return "Task Name"
+        case .subsystem: return "Subsystem"
+        case .ioDoneQueue: return "IOKit Done Queue"
+        case .semaphore: return "Semaphore"
+        case .lockSet: return "Lock Set"
+        case .clock: return "Clock"
+        case .clockCtrl: return "Clock Control"
+        case .iokitIdent: return "IOKit Check-In Token"
+        case .memoryEntry: return "Memory Entry"
+        case .iokitConnect: return "IOKit Connection"
+        case .iokitObject: return "IOKit Object"
+        case .upl: return "Universal Page List"
+        case .memObjControl: return "Memory Object Control"
+        case .auditSession: return "Audit Session"
+        case .fileport: return "Fileport"
+        case .taskResume: return "Task Resume"
+        case .voucher: return "Voucher"
+        case .voucherAttrControl: return "Voucher Attribute Control"
+        case .workInterval: return "Work Interval"
+        case .uxHandler: return "User Exception Handler"
+        case .uextObject: return "UEXT Object"
+        case .arcadeRegister: return "Arcade Register"
+        case .eventlink: return "Event Link"
+        case .taskInspect: return "Task Inspect"
+        case .taskRead: return "Task Read"
+        case .threadInspect: return "Thread Inspect"
+        case .threadRead: return "Thread Read"
+        case .setuidCredential: return "Setuid Credential"
+        case .hypervisor: return "Hypervisor"
+        case .taskIdentityToken: return "Task Identity Token"
+        case .taskFatal: return "Task Fatal"
+        case .kcdata: return "Kernelcache Data"
+        case .exclavesResource: return "Exclaves Resource"
+        case .unknown: return "Unknown"
+        default: return "Unknown"
+        }
+    }
 }
 
 extension Mach {
