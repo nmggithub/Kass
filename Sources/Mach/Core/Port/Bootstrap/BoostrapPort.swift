@@ -35,6 +35,7 @@ extension Mach {
                 )
             }
         }
+
         /// The parent bootstrap port.
         public var parentPort: BootstrapPort? {
             get throws {
@@ -77,6 +78,18 @@ extension Mach {
                 serviceNameChars[i] = serviceName.utf8CString[i]
             }
             try Self.call(bootstrap_register_(self.name, &serviceNameChars, port.name))
+        }
+
+        /// Checks in for a service with the bootstrap server.
+        // - Warning: This function will truncate the service name if it is longer than `BOOTSTRAP_MAX_NAME_LEN`.
+        public func checkIn(serviceName: String) throws -> Mach.Port {
+            var serviceNameChars = [CChar](repeating: 0, count: Int(BOOTSTRAP_MAX_NAME_LEN))
+            for i in 0..<min(serviceName.count, Int(BOOTSTRAP_MAX_NAME_LEN)) {
+                serviceNameChars[i] = serviceName.utf8CString[i]
+            }
+            var receiveRight = mach_port_t(MACH_PORT_NULL)
+            try Self.call(bootstrap_check_in(self.name, &serviceNameChars, &receiveRight))
+            return Mach.Port(named: receiveRight)
         }
     }
 }
