@@ -2,7 +2,7 @@
  * Copyright (c) 2006-2018 Apple Inc. All rights reserved.
  *
  * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.41.3/libsyscall/wrappers/libproc/libproc.c
- * Only the sycall wrapper definitons have been included in this file.
+ * Only the syscall wrapper definitons have been included in this file.
  *
  * @APPLE_LICENSE_HEADER_START@
  *

@@ -3,7 +3,7 @@
  *
  * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.1.10/osfmk/kern/ipc_kobject.h
  * No modifications have been made from the original source code except for these lines, some
- * formatting differences, and the uncommenting of older kernel object types.
+ * 	formatting differences, and the uncommenting of older kernel object types.
  * 
  * @APPLE_OSREFERENCE_LICENSE_HEADER_START@
  *
