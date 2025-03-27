@@ -49,8 +49,13 @@ extension Mach.TrivialMessagePayload {
     }
 
     public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
-        return withUnsafeBytes(of: self) {
-            UnsafeRawBufferPointer(start: $0.baseAddress, count: $0.count)
+        return withUnsafeBytes(of: self) { bytes in
+            let newBuffer = UnsafeMutableRawBufferPointer.allocate(
+                byteCount: MemoryLayout<Self>.size,
+                alignment: MemoryLayout<Self>.alignment
+            )
+            newBuffer.copyMemory(from: bytes)
+            return UnsafeRawBufferPointer(newBuffer)
         }
     }
 }
