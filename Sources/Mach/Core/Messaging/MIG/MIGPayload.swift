@@ -17,53 +17,65 @@ extension Mach {
         public var NDR: NDR_record_t
     }
 
-    /// A payload for a MIG message containing a variable-length string.
-    public struct MIGPayloadWithVariableLengthString<
-        Before: BitwiseCopyable, After: BitwiseCopyable
-    >: Mach.MessagePayload, Mach.MIGPayload {
-        /// The part of the payload before the string.
-        public let before: Before
-
-        /// The string itself.
-        public let string: String
-
-        /// The part of the payload after the string.
-        public let after: After
-
-        /// Initializes a payload with the given parts.
-        public init(before: Before, string: String, after: After) {
-            self.before = before
-            self.string = string
-            self.after = after
+    /// A payload for a MIG message containing multiple contiguous sub-payloads.
+    /// - Warning: This cannot be used for received messages, as the sub-payloads are not easily recoverable.
+    public struct MIGPayloadWithMultipleContiguousSubPayloads: Mach.MIGPayload {
+        public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer)
+            -> Mach.MIGPayloadWithMultipleContiguousSubPayloads?
+        {
+            // It's not really possible to recover the sub-payloads from the buffer, as they could be anything.
+            return nil
         }
 
-        public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer)
-            -> MIGPayloadWithVariableLengthString?
+        public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
+            let buffers = subPayloads.map { $0.toRawPayloadBuffer() }
+            let resultBuffer = UnsafeMutableRawBufferPointer.allocate(
+                byteCount: buffers.reduce(0) { $0 + ($1.count + 3) & ~3 },
+                alignment: 4
+            )
+            var offset = 0
+            for buffer in buffers {
+                resultBuffer.baseAddress!.advanced(by: offset).copyMemory(
+                    from: buffer.baseAddress!,
+                    byteCount: buffer.count
+                )
+                offset += (buffer.count + 3) & ~3
+            }
+            return UnsafeRawBufferPointer(resultBuffer)
+        }
+
+        public let subPayloads: [Mach.MIGPayload]
+
+        public init(_ payloads: [Mach.MIGPayload]) {
+            self.subPayloads = payloads
+        }
+    }
+
+    public struct MIGPayloadWithVariableLengthCString: Mach.MIGPayload {
+        /// The string.
+        public let string: String
+
+        /// Initializes a payload with the given string.
+        public init(string: String) {
+            self.string = string
+        }
+
+        public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Mach
+            .MIGPayloadWithVariableLengthCString?
         {
             guard let baseAddress = buffer.baseAddress else { return nil }
-            let recoveredBefore = baseAddress.load(as: Before.self)
-            let stringStart = baseAddress.advanced(by: MemoryLayout<Before>.size)
             let recoveredString = String(
-                cString: stringStart.bindMemory(to: CChar.self, capacity: 1))
-            let afterString = stringStart.advanced(by: (recoveredString.count + 3) & ~3)
-            let recoveredAfter = afterString.load(as: After.self)
-            return MIGPayloadWithVariableLengthString(
-                before: recoveredBefore, string: recoveredString, after: recoveredAfter
+                cString: baseAddress.bindMemory(to: CChar.self, capacity: buffer.count)
             )
+            return MIGPayloadWithVariableLengthCString(string: recoveredString)
         }
 
         public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
             let stringCString = string.cString(using: .utf8)!
             let buffer = UnsafeMutableRawBufferPointer.allocate(
-                byteCount: MemoryLayout<Before>.size + stringCString.count
-                    + MemoryLayout<After>.size,
-                alignment: 4
+                byteCount: stringCString.count, alignment: 4
             )
-            buffer.baseAddress!.storeBytes(of: before, as: Before.self)
-            let stringStart = buffer.baseAddress!.advanced(by: MemoryLayout<Before>.size)
-            stringStart.copyMemory(from: stringCString, byteCount: stringCString.count)
-            let afterString = stringStart.advanced(by: (stringCString.count + 3) & ~3)
-            afterString.storeBytes(of: after, as: After.self)
+            buffer.baseAddress!.copyMemory(from: stringCString, byteCount: stringCString.count)
             return UnsafeRawBufferPointer(buffer)
         }
     }
