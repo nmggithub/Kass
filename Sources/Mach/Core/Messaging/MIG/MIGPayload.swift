@@ -26,3 +26,6 @@ extension Data: Mach.MIGPayload {}
 
 /// A non-existent MIG payload.
 extension Never: Mach.MIGPayload {}
+
+/// A message payload with segments as a MIG payload.
+extension Mach.MessagePayloadWithSegments: Mach.MIGPayload {}
