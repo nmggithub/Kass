@@ -15,6 +15,9 @@ extension Mach {
     /// A payload for a MIG message containing only an NDR record.
     public struct MIGPayloadWithOnlyNDR: Mach.MIGPayloadWithNDR {
         public var NDR: NDR_record_t
+        public init(NDR: NDR_record_t) {
+            self.NDR = NDR
+        }
     }
 }
 
