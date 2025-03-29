@@ -51,6 +51,9 @@ let modules: [Module] = [
     BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
+        targetName: "OSCore", path: "Sources/OS/Core", dependencies: ["KassHelpers", "KassC"]
+    ),
+    BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["KassHelpers", "KassC", "Linking"]
     ),

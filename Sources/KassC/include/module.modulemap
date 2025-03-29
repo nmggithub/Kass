@@ -98,4 +98,9 @@ module KassC {
         header "kext_request_keys.h"
         export *
     }
+
+    module VariantPrivate {
+        header "variant_private.h"
+        export *
+    }
 }
