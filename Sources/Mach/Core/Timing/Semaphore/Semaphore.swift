@@ -47,7 +47,7 @@ extension Mach {
             super.init(named: semaphore)
         }
 
-        @available(*, unavailable, message: "Use `init(in:policy:value:)` instead")
+        @available(*, unavailable, message: "Use `init(inTask:policy:value:)` instead")
         required init(named name: mach_port_name_t, inNameSpaceOf task: Task = .current) {
             self.semaphoreOwningTask = Mach.Task.current
             self.policy = .init(rawValue: -1)
