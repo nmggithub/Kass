@@ -37,7 +37,9 @@ extension Mach {
         public let policy: Mach.SemaphorePolicy
 
         /// Creates a new semaphore in the given task.
-        public init(inTask task: Mach.Task, policy: Mach.SemaphorePolicy, value: Int32) throws {
+        public init(
+            inTask task: Mach.Task = .current, policy: Mach.SemaphorePolicy, value: Int32
+        ) throws {
             self.semaphoreOwningTask = task  // store the owning task so we use it to destroy the semaphore
             self.policy = policy  // store the policy so we can refer to it later
             var semaphore = semaphore_t()
