@@ -53,6 +53,7 @@ extension Mach {
             self.policy = .init(rawValue: -1)
             super.init(named: name, inNameSpaceOf: task)
         }
+
         /// Destroys the semaphore.
         public override func destroy() throws {
             try Mach.call(semaphore_destroy(semaphoreOwningTask.name, name))
