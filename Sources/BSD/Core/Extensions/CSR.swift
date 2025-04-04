@@ -99,14 +99,14 @@ extension BSD {
     /// Checks if the system is configured with the specified CSR options.
     /// - Warning: This function will throw an EPERM error if any of the specified options are not configured.
     public static func csrCheck(_ options: CSRConfigOptions) throws {
-        try BSD.syscall(csr_check(options.rawValue))
+        try BSD.call(csr_check(options.rawValue))
     }
 
     /// The active configuration for Configurable Security Restrictions (CSR).
     public static var activeCSRConfig: CSRConfigOptions {
         get throws {
             var flags: csr_config_t = 0
-            try BSD.syscall(csr_get_active_config(&flags))
+            try BSD.call(csr_get_active_config(&flags))
             return CSRConfigOptions(rawValue: flags)
         }
     }

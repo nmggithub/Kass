@@ -4,9 +4,9 @@ import KassHelpers
 
 /// The BSD kernel.
 public struct BSD: KassHelpers.Namespace {
-    /// Executes a system call and throw an error if it fails.
+    /// Executes a closure that returns a POSIX error code and throw an error if it fails.
     @discardableResult  // Most of the time, users won't care about the return value, but we still want it to be available.
-    public static func syscall<ReturnType: BinaryInteger>(_ syscall: @autoclosure () -> ReturnType)
+    public static func call<ReturnType: BinaryInteger>(_ syscall: @autoclosure () -> ReturnType)
         throws -> ReturnType
     {
         let ret = syscall()

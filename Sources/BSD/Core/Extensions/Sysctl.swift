@@ -9,7 +9,7 @@ extension BSD {
     ) throws -> [DataType] {
         // We make an initial call to get the expected size of the buffer.
         var length = size_t()
-        try BSD.syscall(
+        try BSD.call(
             Darwin.sysctl(&mibNameArray, UInt32(mibNameArray.count), nil, &length, nil, 0)
         )
         let rawPointer = UnsafeMutableRawPointer.allocate(
@@ -20,7 +20,7 @@ extension BSD {
 
         // Now we get the actual data, hoping that the length hasn't changed to be larger.
         let oldLength = length
-        try BSD.syscall(
+        try BSD.call(
             Darwin.sysctl(&mibNameArray, UInt32(mibNameArray.count), rawPointer, &length, nil, 0)
         )
         // We simulate a kernel error instead of using `fatalError`, so that this failure state is recoverable.
@@ -38,9 +38,9 @@ extension BSD {
         asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
         var mibNameArrayLength = size_t()
-        try BSD.syscall(sysctlnametomib(mibName, nil, &mibNameArrayLength))
+        try BSD.call(sysctlnametomib(mibName, nil, &mibNameArrayLength))
         var mibNameArray = [Int32](repeating: 0, count: Int(mibNameArrayLength))
-        try BSD.syscall(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
+        try BSD.call(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
         return try BSD.sysctl(mibNameArray, asArrayOf: type)
     }
 
@@ -54,7 +54,7 @@ extension BSD {
         for (index, element) in value.enumerated() {
             valuePointer.advanced(by: index).initialize(to: element)
         }
-        try BSD.syscall(
+        try BSD.call(
             Darwin.sysctl(
                 &mibNameArray, UInt32(mibNameArray.count), nil, nil, valuePointer, value.count
             )
@@ -67,9 +67,9 @@ extension BSD {
         setTo value: consuming [DataType]
     ) throws {
         var mibNameArrayLength = size_t()
-        try BSD.syscall(sysctlnametomib(mibName, nil, &mibNameArrayLength))
+        try BSD.call(sysctlnametomib(mibName, nil, &mibNameArrayLength))
         var mibNameArray = [Int32](repeating: 0, count: Int(mibNameArrayLength))
-        try BSD.syscall(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
+        try BSD.call(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
         try BSD.sysctl(mibNameArray, setTo: value)
     }
 }

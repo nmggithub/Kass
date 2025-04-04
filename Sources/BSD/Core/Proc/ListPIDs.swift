@@ -85,7 +85,7 @@ extension BSD.Proc {
             .withUnsafeBytes { $0.load(as: Int32.self) }
         let pidBuffer = UnsafeMutableBufferPointer<pid_t>.allocate(capacity: Int(maxPIDs))
         defer { pidBuffer.deallocate() }
-        let returnedBufferSize = try BSDCore.BSD.syscall(
+        let returnedBufferSize = try BSDCore.BSD.call(
             proc_listpids(
                 list.type.rawValue,
                 list.info ?? 0,  // Some types don't require info, but we can't pass nil.

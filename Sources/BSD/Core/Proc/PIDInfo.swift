@@ -181,7 +181,7 @@ extension BSD {
             arg: UInt64 = 0,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
-            return try BSD.syscall(
+            return try BSD.call(
                 proc_pidinfo(
                     self.pid, flavor.rawValue, arg,
                     bufferPointer.baseAddress, Int32(bufferPointer.count)

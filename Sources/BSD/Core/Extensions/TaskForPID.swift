@@ -21,7 +21,7 @@ extension Mach.TaskRead {
     convenience init(forPID pid: pid_t) throws {
         var portName = mach_port_name_t()
         // The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
-        try BSD.syscall(task_read_for_pid(Mach.Task.current.name, pid, &portName))
+        try BSD.call(task_read_for_pid(Mach.Task.current.name, pid, &portName))
         self.init(named: portName)
     }
 }
@@ -30,7 +30,7 @@ extension Mach.TaskInspect {
     convenience init(forPID pid: pid_t) throws {
         var portName = mach_port_name_t()
         // The first parameter doesn't seem to be used anymore, but we pass in the current task port name for historical reasons.
-        try BSD.syscall(task_inspect_for_pid(Mach.Task.current.name, pid, &portName))
+        try BSD.call(task_inspect_for_pid(Mach.Task.current.name, pid, &portName))
         self.init(named: portName)
     }
 }

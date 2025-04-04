@@ -17,7 +17,7 @@ extension BSD {
         /// Initializes a fileport from a file descriptor.
         public convenience init(fd: Int32) throws {
             var portName = mach_port_name_t()
-            try BSD.syscall(fileport_makeport(fd, &portName))
+            try BSD.call(fileport_makeport(fd, &portName))
             self.init(named: portName)
         }
 
@@ -25,13 +25,13 @@ extension BSD {
         /// - Note: This function will create a new file descriptor each time it is called.
         @available(macOS 11.0, *)
         func makeFD() throws -> FileDescriptor {
-            return FileDescriptor(rawValue: try BSD.syscall(fileport_makefd(self.name)))
+            return FileDescriptor(rawValue: try BSD.call(fileport_makefd(self.name)))
         }
 
         /// Makes a file descriptor from a fileport.
         /// - Note: This function will create a new file descriptor each time it is called.
         func makeFD() throws -> Int32 {
-            return try BSD.syscall(fileport_makefd(self.name))
+            return try BSD.call(fileport_makefd(self.name))
         }
     }
 }

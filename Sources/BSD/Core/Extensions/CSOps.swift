@@ -279,11 +279,11 @@ extension BSD {
             var inBytes = [UInt8](dataIn)
             call: do {
                 if var token = auditToken {
-                    try BSD.syscall(
+                    try BSD.call(
                         csops_audittoken(pid, ops.rawValue, &inBytes, inBytes.count, &token)
                     )
                 } else {
-                    try BSD.syscall(csops(pid, ops.rawValue, &inBytes, inBytes.count))
+                    try BSD.call(csops(pid, ops.rawValue, &inBytes, inBytes.count))
                 }
             } catch {
                 if let posixError = error as? POSIXError,

@@ -62,7 +62,7 @@ extension attrlist {
         let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
         let listPointer = UnsafeMutablePointer<attrlist>.allocate(capacity: 1)
         listPointer.pointee = self  // copy the raw list to the pointer for reuse
-        try BSD.syscall(
+        try BSD.call(
             getattrlist(
                 path.description.cString(using: .utf8),
                 UnsafeMutableRawPointer(listPointer),
@@ -75,7 +75,7 @@ extension attrlist {
             byteCount: Int(lengthPointer.pointee), alignment: 4
         )
         // now get the actual attributes
-        try BSD.syscall(
+        try BSD.call(
             getattrlist(
                 path.description.cString(using: .utf8),
                 UnsafeMutableRawPointer(listPointer),

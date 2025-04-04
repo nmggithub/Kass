@@ -81,7 +81,7 @@ extension BSD {
             flavor: BSD.ProcPIDFDInfoFlavor,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
-            try BSD.syscall(
+            try BSD.call(
                 proc_pidfdinfo(
                     self.pid, self.fd, flavor.rawValue,
                     bufferPointer.baseAddress, Int32(bufferPointer.count)

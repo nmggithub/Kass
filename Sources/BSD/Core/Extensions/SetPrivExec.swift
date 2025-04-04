@@ -7,7 +7,7 @@ extension BSD {
     /// Allows or disallows the current process the be a debugger.
     /// - Note: The flag that this sets appears to be mostly unused in the kernel proper.
     public func setPrivExec(_ state: Bool) throws {
-        try BSD.syscall(
+        try BSD.call(
             setprivexec(state ? 1 : 0)
         )
     }

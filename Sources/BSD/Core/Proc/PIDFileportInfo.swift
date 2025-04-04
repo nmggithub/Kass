@@ -53,7 +53,7 @@ extension BSD {
             flavor: BSD.ProcPIDFileportInfoFlavor,
             bufferPointer: UnsafeMutableRawBufferPointer
         ) throws -> Int32 {
-            try BSD.syscall(
+            try BSD.call(
                 proc_pidfileportinfo(
                     self.pid, self.fileport.name, flavor.rawValue,
                     bufferPointer.baseAddress, Int32(bufferPointer.count)
