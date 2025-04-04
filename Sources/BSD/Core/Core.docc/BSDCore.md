@@ -24,7 +24,7 @@ The core module for interacting with the BSD kernel.
 
 ### Calling The Kernel
 
-- ``BSD/syscall(_:)``
+- ``BSD/call(_:)``
 
 ### Managing Kernel State
 
