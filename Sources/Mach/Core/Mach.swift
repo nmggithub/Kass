@@ -4,7 +4,7 @@ import KassHelpers
 
 /// The Mach kernel.
 public struct Mach: KassHelpers.Namespace {
-    /// Calls the kernel and throws an error if the call fails.
+    /// Executes a closure that returns a Mach error code and throw an error if it fails.
     public static func call(_ call: @autoclosure () -> kern_return_t) throws {
         let kr = call()
         guard kr == KERN_SUCCESS else {
