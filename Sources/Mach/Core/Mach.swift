@@ -5,6 +5,11 @@ import KassHelpers
 /// The Mach kernel.
 public struct Mach: KassHelpers.Namespace {
     /// Executes a function that returns a Mach error code and throw an error if it fails.
+    // This honestly may not need to be `@autoclosure`, as it immediately evaluates the call, but it's been
+    //  this way since the beginning, so let's keep it that way for now. Additionally, if we were to remove
+    //  the `@autoclosure`, the semantics would change and make "call" not really make sense as a name, and
+    //  we don't really want to have to change the name of this function. It is succinct and it matches the
+    //  the name of the similar kernel-calling function in BSDCore.
     public static func call(_ call: @autoclosure () -> kern_return_t) throws {
         let kr = call()
         guard kr == KERN_SUCCESS else {
