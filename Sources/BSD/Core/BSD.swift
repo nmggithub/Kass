@@ -12,6 +12,7 @@ public struct BSD: KassHelpers.Namespace {
         let ret = call()
         guard ret != -1 else {
             let currentErrno = copy errno  // Make a copy to avoid potential race conditions.
+            if currentErrno == 0 { return ret }  // There's actually no error, just return the value.
             guard let posixCode = POSIXError.Code(rawValue: currentErrno) else {
                 // Let's try again with an `NSError`. We use `NSPOSIXErrorDomain` because this is still a POSIX error (we hope).
                 throw NSError(domain: NSPOSIXErrorDomain, code: Int(currentErrno))
