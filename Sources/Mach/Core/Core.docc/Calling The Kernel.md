@@ -2,7 +2,7 @@
 
 ## Basic Kernel Calls
 
-Mach kernel calls do not (and actually cannot) throw errors, instead opting to use return codes. These kernel calls can be made error-safe through the use of the ``Mach/call(_:)`` function, which simply wraps any kernel call. 
+Functions in Mach that call the kernel, like those in POSIX operating systems, often use the return value for error codes. These functions, or kernel calls (to give them a name), can be made error-safe through the use of the ``Mach/call(_:)`` function, which simply wraps any function that returns a Mach error code.
 
 ```swift
 try Mach.call(some_mach_kernel_call())
@@ -14,16 +14,9 @@ The ``Mach/call(_:)`` function does not handle error return codes and will inste
 
 - Note: This library makes extensive use of the ``Mach/call(_:)`` function. In general, this library does **not** handle any errors, but instead surfaces these errors to the caller. It also doesn't generally throw any custom errors. Thus, any throwing functions that are part of this library should be assumed to work as above unless otherwise noted.
 
-#### Inside Mach Kernel Calls
-
-The reason this function is called "call" and not "syscall" is that the vast majority of kernel calls in Mach are **not** system calls. More specifically, they do not interface with the CPU to enter "kernel mode", at least not directly. Instead, they send **Mach messages** to the kernel. When the kernel receives such a message, it will execute the requested call and return the result in a reply message.
-
-Due to this additional factor, these kernel calls can sometimes return an error code from an extended set of messaging return codes. This usually happens if something goes wrong in the messaging layer. These codes are not representable with [MachError](https://developer.apple.com/documentation/foundation/macherror), so this is a case where the library will throw an [NSError](https://developer.apple.com/documentation/foundation/nserror) instead. Again, both of these cases should be accounted for to ensure safe usage of these kernel calls.
-
-Technically, the functions these calls use to send the messages *do* eventually make a system call through what is called a **Mach trap**. However, the underlying Mach trap is conceptually different enough from the kernel calls that utilize it that the latter are better described as "kernel calls" instead of "system calls". The execution only drops into kernel mode to send the message, and the execution of the requested kernel call happens separately.
-
-
 ## Advanced Kernel Calls
+
+- Note: The information below is mainly relevant for those wishing to understand how Mach works, or to wrap kernel calls that this library does not already provide wrappers for. Most users will not need to use these advanced API's.
 
 Due to their low-level nature, Mach kernel calls do not natively support arrays (at least not with a single parameter). For kernel calls that work with arrays, two parameters are required: an array pointer and a count (or a pointer to a count if the array is being output by the call). In some cases, the array is not actually an array but rather an arbitrarily-sized block of data. In any case, these two parameters are needed for these kinds of kernel calls.
 
