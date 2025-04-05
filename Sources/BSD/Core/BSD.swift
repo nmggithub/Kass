@@ -6,15 +6,13 @@ import KassHelpers
 public struct BSD: KassHelpers.Namespace {
     /// Executes a function that returns a POSIX error code and throw an error if it fails.
     @discardableResult  // Most of the time, users won't care about the return value, but we still want it to be available.
-    public static func call<ReturnType: BinaryInteger>(
-        _ call: @autoclosure () -> ReturnType, resettingErrno: Bool = false
-    )
+    public static func call<ReturnType: BinaryInteger>(_ call: @autoclosure () -> ReturnType)
         throws -> ReturnType
     {
-        if resettingErrno { errno = 0 }  // Reset errno to 0 before calling the function, as -1 might be a valid return value.
+        errno = 0  // Reset errno to 0 before calling the function, as -1 might be a valid return value.
         let ret = call()
         guard ret != -1 else {
-            let currentErrno = copy errno  // Make a copy to avoid potential race conditions.
+            let currentErrno = errno  // Make a copy to avoid potential race conditions.
             if currentErrno == 0 { return ret }  // There's actually no error, just return the value.
             guard let posixCode = POSIXError.Code(rawValue: currentErrno) else {
                 // Let's try again with an `NSError`. We use `NSPOSIXErrorDomain` because this is still a POSIX error (we hope).
