@@ -123,4 +123,9 @@ module KassC {
         header "resource_private.h"
         export *
     }
+
+    module Syscall {
+        header "syscall.h"
+        export *
+    }
 }
