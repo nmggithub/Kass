@@ -103,4 +103,24 @@ module KassC {
         header "variant_private.h"
         export *
     }
+
+    module SpawnPrivate {
+        header "spawn_private.h"
+        export *
+    }
+
+    module SpawnInternal {
+        header "spawn_internal.h"
+        export *
+    }
+
+    module Coalition {
+        header "coalition.h"
+        export *
+    }
+
+    module ResourcePrivate {
+        header "resource_private.h"
+        export *
+    }
 }
