@@ -3,7 +3,7 @@ import Foundation
 
 extension BSD {
     /// Gets kernel state.
-    public static func sysctl<DataType>(
+    public static func sysctl<DataType: BitwiseCopyable>(
         _ mibNameArray: consuming [Int32],
         asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
@@ -33,7 +33,15 @@ extension BSD {
     }
 
     /// Gets kernel state.
-    public static func sysctl<DataType>(
+    public static func sysctl<DataType: BitwiseCopyable>(
+        _ mibNameArray: consuming [Int32],
+        as type: DataType.Type = DataType.self
+    ) throws -> DataType {
+        return try BSD.sysctl(mibNameArray).withUnsafeBytes { $0.load(as: type) }
+    }
+
+    /// Gets kernel state.
+    public static func sysctl<DataType: BitwiseCopyable>(
         _ mibName: String,
         asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
@@ -44,10 +52,18 @@ extension BSD {
         return try BSD.sysctl(mibNameArray, asArrayOf: type)
     }
 
+    /// Gets kernel state.
+    public static func sysctl<DataType: BitwiseCopyable>(
+        _ mibName: String,
+        as type: DataType.Type = DataType.self
+    ) throws -> DataType {
+        return try BSD.sysctl(mibName).withUnsafeBytes { $0.load(as: type) }
+    }
+
     /// Sets kernel state.
-    public static func sysctl<DataType>(
+    public static func sysctl<DataType: BitwiseCopyable>(
         _ mibNameArray: consuming [Int32],
-        setTo value: consuming [DataType]
+        setToArray value: consuming [DataType]
     ) throws {
         let valuePointer = UnsafeMutablePointer<DataType>.allocate(capacity: value.count)
         defer { valuePointer.deallocate() }
@@ -62,14 +78,34 @@ extension BSD {
     }
 
     /// Sets kernel state.
-    public static func sysctl<DataType>(
+    public static func sysctl(
+        _ mibNameArray: [Int32],
+        setTo value: consuming BitwiseCopyable
+    ) throws {
+        try withUnsafeBytes(of: &value) { bytes in
+            try BSD.sysctl(mibNameArray, setToArray: Array(bytes))
+        }
+    }
+
+    /// Sets kernel state.
+    public static func sysctl<DataType: BitwiseCopyable>(
         _ mibName: String,
-        setTo value: consuming [DataType]
+        setToArray value: consuming [DataType]
     ) throws {
         var mibNameArrayLength = size_t()
         try BSD.call(sysctlnametomib(mibName, nil, &mibNameArrayLength))
         var mibNameArray = [Int32](repeating: 0, count: Int(mibNameArrayLength))
         try BSD.call(sysctlnametomib(mibName, &mibNameArray, &mibNameArrayLength))
-        try BSD.sysctl(mibNameArray, setTo: value)
+        try BSD.sysctl(mibNameArray, setToArray: value)
+    }
+
+    /// Sets kernel state.
+    public static func sysctl(
+        _ mibName: String,
+        setTo value: consuming BitwiseCopyable
+    ) throws {
+        try withUnsafeBytes(of: &value) { bytes in
+            try BSD.sysctl(mibName, setToArray: Array(bytes))
+        }
     }
 }
