@@ -32,6 +32,7 @@ extension BSD {
                         args[0], args[1], args[2], args[3],
                         args[4], args[5], args[6], args[7]
                     )
+                // This should never happen, but just in case.
                 default: throw POSIXError(.EINVAL)
                 }
             }()
