@@ -1,5 +1,5 @@
 import Foundation
-import KassC.Syscall
+import KassC.SyscallBridge
 
 extension BSD {
     /// Makes a system call with no arguments.

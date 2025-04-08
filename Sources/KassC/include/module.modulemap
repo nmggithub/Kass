@@ -124,8 +124,8 @@ module KassC {
         export *
     }
 
-    module Syscall {
-        header "syscall.h"
+    module SyscallBridge {
+        header "syscall_bridge.h"
         export *
     }
 }
