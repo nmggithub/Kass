@@ -14,21 +14,21 @@ extension BSD {
         return try BSDCore.BSD.call(
             {
                 switch args.count {
-                case 0: syscall0(Int64(number))
-                case 1: syscall1(Int64(number), args[0])
-                case 2: syscall2(Int64(number), args[0], args[1])
-                case 3: syscall3(Int64(number), args[0], args[1], args[2])
-                case 4: syscall4(Int64(number), args[0], args[1], args[2], args[3])
-                case 5: syscall5(Int64(number), args[0], args[1], args[2], args[3], args[4])
+                case 0: syscall0(number)
+                case 1: syscall1(number, args[0])
+                case 2: syscall2(number, args[0], args[1])
+                case 3: syscall3(number, args[0], args[1], args[2])
+                case 4: syscall4(number, args[0], args[1], args[2], args[3])
+                case 5: syscall5(number, args[0], args[1], args[2], args[3], args[4])
                 case 6:
-                    syscall6(Int64(number), args[0], args[1], args[2], args[3], args[4], args[5])
+                    syscall6(number, args[0], args[1], args[2], args[3], args[4], args[5])
                 case 7:
                     syscall7(
-                        Int64(number), args[0], args[1], args[2], args[3], args[4], args[5], args[6]
+                        number, args[0], args[1], args[2], args[3], args[4], args[5], args[6]
                     )
                 case 8:
                     syscall8(
-                        Int64(number),
+                        number,
                         args[0], args[1], args[2], args[3],
                         args[4], args[5], args[6], args[7]
                     )
