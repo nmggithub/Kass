@@ -3,7 +3,7 @@ import Foundation
 
 extension BSD {
     /// Gets kernel state.
-    public static func sysctl<DataType: BitwiseCopyable>(
+    public static func sysctl<DataType: Copyable>(
         _ mibNameArray: consuming [Int32],
         asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
@@ -33,7 +33,7 @@ extension BSD {
     }
 
     /// Gets kernel state.
-    public static func sysctl<DataType: BitwiseCopyable>(
+    public static func sysctl<DataType: Copyable>(
         _ mibNameArray: consuming [Int32],
         as type: DataType.Type = DataType.self
     ) throws -> DataType {
@@ -41,7 +41,7 @@ extension BSD {
     }
 
     /// Gets kernel state.
-    public static func sysctl<DataType: BitwiseCopyable>(
+    public static func sysctl<DataType: Copyable>(
         _ mibName: String,
         asArrayOf type: DataType.Type = UInt8.self
     ) throws -> [DataType] {
@@ -53,7 +53,7 @@ extension BSD {
     }
 
     /// Gets kernel state.
-    public static func sysctl<DataType: BitwiseCopyable>(
+    public static func sysctl<DataType: Copyable>(
         _ mibName: String,
         as type: DataType.Type = DataType.self
     ) throws -> DataType {
@@ -61,7 +61,7 @@ extension BSD {
     }
 
     /// Sets kernel state.
-    public static func sysctl<DataType: BitwiseCopyable>(
+    public static func sysctl<DataType: Copyable>(
         _ mibNameArray: consuming [Int32],
         setToArray value: consuming [DataType]
     ) throws {
@@ -80,7 +80,7 @@ extension BSD {
     /// Sets kernel state.
     public static func sysctl(
         _ mibNameArray: [Int32],
-        setTo value: consuming BitwiseCopyable
+        setTo value: consuming Copyable
     ) throws {
         try withUnsafeBytes(of: &value) { bytes in
             try BSD.sysctl(mibNameArray, setToArray: Array(bytes))
@@ -88,7 +88,7 @@ extension BSD {
     }
 
     /// Sets kernel state.
-    public static func sysctl<DataType: BitwiseCopyable>(
+    public static func sysctl<DataType: Copyable>(
         _ mibName: String,
         setToArray value: consuming [DataType]
     ) throws {
@@ -102,7 +102,7 @@ extension BSD {
     /// Sets kernel state.
     public static func sysctl(
         _ mibName: String,
-        setTo value: consuming BitwiseCopyable
+        setTo value: consuming Copyable
     ) throws {
         try withUnsafeBytes(of: &value) { bytes in
             try BSD.sysctl(mibName, setToArray: Array(bytes))
