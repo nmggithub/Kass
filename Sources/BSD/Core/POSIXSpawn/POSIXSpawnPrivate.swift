@@ -158,7 +158,26 @@ extension BSD.POSIXSpawnAttributes {
         try BSDCore.BSD.call(posix_spawnattr_setcpumonitor_default(self.rawValue))
     }
 
-    // TODO: Add Jetsam support
+    /// Sets the jetsam settings for the spawned process.
+    public func setJetsam(
+        flags: Int16, priority: Int32, memoryLimits: (active: Int32, inactive: Int32)
+    ) throws {
+        try BSDCore.BSD.call(
+            posix_spawnattr_setjetsam_ext(
+                self.rawValue, flags, priority, memoryLimits.active, memoryLimits.inactive
+            )
+        )
+    }
+
+    /// Sets the jetsam TTRs for the spawned process.
+    @available(macOS 10.15, *)
+    public func setJetsamTTRs(_ ttrs: consuming [UInt32]) throws {
+        try BSDCore.BSD.call(
+            posix_spawnattr_set_jetsam_ttr_np(
+                self.rawValue, UInt32(ttrs.count), &ttrs
+            )
+        )
+    }
 
     /// Sets the thread limit for the spawned process.
     @available(macOS 10.14, *)
@@ -166,7 +185,11 @@ extension BSD.POSIXSpawnAttributes {
         try BSDCore.BSD.call(posix_spawnattr_set_threadlimit_ext(self.rawValue, threadLimit))
     }
 
-    // TODO: Implement `posix_spawnattr_set_kqworklooplimit_ext`
+    /// Sets the kqueue workloop limits for the spawned process.
+    @available(macOS 14.3, *)
+    public func setKQueueWorkloopLimits(soft: UInt32, hard: UInt32) throws {
+        try BSDCore.BSD.call(posix_spawnattr_set_kqworklooplimit_ext(self.rawValue, soft, hard))
+    }
 
     /// Sets the importance watch ports for the spawned process.
     public func setImportanceWatchPorts(_ ports: [MachCore.Mach.Port]) throws {
