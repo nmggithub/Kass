@@ -38,7 +38,7 @@
 #include <mach/message.h>
 #include <stdint.h>
 #include <sys/cdefs.h>
-// #include <sys/event_private.h>
+#include "event_private.h"
 #include <sys/proc_info.h>
 #include <sys/types.h>
 #include <uuid/uuid.h>
@@ -46,21 +46,6 @@
 // Taken from `coalition.h` in the XNU kernel source code.
 #define COALITION_TYPE_MAX (1)
 #define COALITION_NUM_TYPES (COALITION_TYPE_MAX + 1)
-
-// Taken from `event_private.h` in the XNU kernel source code.
-struct kevent_qos_s
-{
-	uint64_t ident;	 /* identifier for this event */
-	int16_t filter;	 /* filter for event */
-	uint16_t flags;	 /* general flags */
-	int32_t qos;	 /* quality of service */
-	uint64_t udata;	 /* opaque user data identifier */
-	uint32_t fflags; /* filter-specific flags */
-	uint32_t xflags; /* extra filter-specific flags */
-	int64_t data;	 /* filter-specific data */
-	uint64_t ext[4]; /* filter-specific extensions */
-};
-typedef uint64_t kqueue_id_t;
 
 // Taken from `vm_types.h` in the XNU kernel source code.
 typedef struct

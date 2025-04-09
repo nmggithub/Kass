@@ -128,4 +128,9 @@ module KassC {
         header "syscall_bridge.h"
         export *
     }
+
+    module EventPrivate {
+        header "event_private.h"
+        export *
+    }
 }

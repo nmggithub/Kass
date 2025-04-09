@@ -22,7 +22,7 @@ extension BSD {
         public static let allCases: [Self] = [
             .listPIDs, .pidInfo, .pidFDInfo, .getKernelMessageBuffer, .setControl, .pidFileportInfo,
             .terminate, .dirtyControl, .pidResourceUsage, .pidOriginatorInfo, .listCoalitions,
-            .canUseForegroundHardware, .pidDynamicKernelQueueInfo, .userDataInfo, .setDyldImages,
+            .canUseForegroundHardware, .pidDynamicKQueueInfo, .userDataInfo, .setDyldImages,
             .terminateRSR, .signalAuditToken, .terminateAuditToken, .delegateSignal,
             .delegateTerminate,
         ]
@@ -75,7 +75,7 @@ extension BSD {
             name: "canUseForegroundHardware", rawValue: PROC_INFO_CALL_CANUSEFGHW
         )
 
-        public static let pidDynamicKernelQueueInfo = Self(
+        public static let pidDynamicKQueueInfo = Self(
             name: "pidDynamicQueueInfo", rawValue: PROC_INFO_CALL_PIDDYNKQUEUEINFO
         )
 
