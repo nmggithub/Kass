@@ -71,14 +71,22 @@ extension BSD {
 
     /// Flags for a kevent.
     public struct KEventFlags: OptionSet, KassHelpers.NamedOptionEnum {
+        /// The name of the flag, if it can be determined.
         public var name: String?
+
+        /// The raw value of the flag.
         public let rawValue: UInt16
 
+        /// Initializes a kevent flag with the given name and raw value.
         public init(name: String?, rawValue: UInt16) {
             self.name = name
             self.rawValue = rawValue
         }
 
+        /// The individual flags in the collection.
+        public var flags: [Self] { Self.allCases.filter { self.contains($0) } }
+
+        /// All known kevent flags.
         public static let allCases: [Self] = [
             .add,
             .delete,
@@ -153,6 +161,21 @@ extension kevent {
     }
 }
 
+extension kevent: @retroactive CustomStringConvertible {
+    public var description: String {
+        """
+        kevent(
+            ident: \(ident),
+            filter: \(BSD.KEventFilterType(rawValue: filter)),
+            flags: \(BSD.KEventFlags(rawValue: flags).flags),
+            fflags: \(fflags),
+            data: \(data),
+            udata: \(String(describing: udata))
+        )
+        """
+    }
+}
+
 extension kevent64_s {
     /// Initializes a kevent64_s with the given parameters.
     public init(
@@ -173,6 +196,21 @@ extension kevent64_s {
             udata: UInt64(UInt(bitPattern: userData)),
             ext: extensions
         )
+    }
+}
+
+extension kevent64_s: @retroactive CustomStringConvertible {
+    public var description: String {
+        """
+        kevent64_s(
+            ident: \(ident),
+            filter: \(BSD.KEventFilterType(rawValue: filter)),
+            flags: \(BSD.KEventFlags(rawValue: flags).flags),
+            fflags: \(fflags),
+            data: \(data),
+            udata: \(String(describing: udata))
+        )
+        """
     }
 }
 
@@ -200,6 +238,23 @@ extension kevent_qos_s {
             data: filterData,
             ext: extensions
         )
+    }
+}
+
+extension kevent_qos_s: @retroactive CustomStringConvertible {
+    public var description: String {
+        """
+        kevent_qos_s(
+            ident: \(ident),
+            filter: \(BSD.KEventFilterType(rawValue: filter)),
+            flags: \(BSD.KEventFlags(rawValue: flags).flags),
+            qos: \(qos),
+            fflags: \(fflags),
+            xflags: \(xflags),
+            data: \(data),
+            udata: \(String(describing: udata))
+        )
+        """
     }
 }
 
