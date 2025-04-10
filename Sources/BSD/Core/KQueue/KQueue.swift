@@ -278,12 +278,14 @@ extension BSD {
 
         /// Registers and/or retrieves events for the kqueue.
         @discardableResult
-        public func registerEvents(
-            _ changes: [kevent]? = nil,
+        public func event(
+            registeringEvents changes: [kevent]? = nil,
             retrievingEventsOfCount requestedRetrieveCount: Int32 = 0,
             timeout: timespec? = nil
         ) throws -> [kevent]? {
-            var events: [kevent] = .init(repeating: kevent(), count: Int(requestedRetrieveCount))
+            var events: [kevent] = .init(
+                repeating: Darwin.kevent(), count: Int(requestedRetrieveCount)
+            )
             let timeoutPointer: UnsafeMutablePointer<timespec>? =
                 timeout != nil
                 ? {
@@ -307,7 +309,7 @@ extension BSD {
 
         /// Registers and/or retrieves events for the kqueue.
         @discardableResult
-        public func registerEvents(
+        public func event64(
             _ changes: [kevent64_s]? = nil,
             retrievingEventsOfCount requestedRetrieveCount: Int32 = 0,
             flags: UInt32 = 0,
@@ -339,7 +341,7 @@ extension BSD {
 
         /// Registers and/or retrieves events for the kqueue.
         @discardableResult
-        public func registerEvents(
+        public func eventQOS(
             _ changes: [kevent_qos_s]? = nil,
             retrievingEventsOfCount requestedRetrieveCount: Int32 = 0,
             flags: UInt32 = 0
@@ -373,7 +375,7 @@ extension BSD {
 
         /// Registers and/or retrieves events for the kqueue with a given ID.
         @discardableResult
-        public static func registerEvents(
+        public static func eventID(
             _ changes: [kevent_qos_s]? = nil,
             forKQueueWithID id: kqueue_id_t,
             retrievingEventsOfCount retrieveCount: Int32 = 0,
