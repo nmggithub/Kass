@@ -2,6 +2,58 @@ import Darwin.Mach
 import Foundation
 
 extension Mach {
+    /// An error reply payload for a MIG routine.
+    private struct MIGErrorReplyPayload: Mach.MIGPayloadWithNDR {
+        let NDR = NDR_record_t()
+        var returnCode: kern_return_t
+    }
+
+    /// A handler for a MIG server routine.
+    public struct MIGServerRoutineHandler {
+        /// The handler with untyped messages.
+        let untypedHandler: (Mach.Message) -> Mach.Message
+
+        /// Initializes a new routine handler.
+        public init<RequestPayload: Mach.MIGPayload, ReplyPayload: Mach.MIGPayload>(
+            expectingDescriptorTypes: [any Mach.MessageDescriptor.Type]? = nil,
+            expectingAdditionalPredicate:
+                ((Mach.MIGRequest<RequestPayload>) -> Bool)? = nil,
+            _ typedHandler:
+                @escaping (Mach.MIGRequest<RequestPayload>) -> Mach.MIGReply<ReplyPayload>
+        ) {
+            self.untypedHandler = { incomingMessage in
+                let typedMessage = Mach.MIGRequest<RequestPayload>.init(
+                    headerPointer: incomingMessage.serialize()
+                )
+                guard
+                    // If the payload type is not Never, it should have been recovered
+                    //  from the above initializer. If it is Never, it should be nil.
+                    ((RequestPayload.self != Never.self) == (typedMessage.typedPayload != nil))
+                        // We need to check if the descriptors are of the expected types.
+                        && (typedMessage.body?.descriptors.enumerated()
+                            .allSatisfy {
+                                index, descriptor in
+                                type(of: descriptor) == expectingDescriptorTypes?[index]
+                            }
+                            // If we're short-circuiting here, there were no descriptors, so we
+                            //  now need to check if that's what we were expecting.
+                            ?? (expectingDescriptorTypes == nil))
+                        // We need to check if the additional predicate is satisfied.
+                        && ((expectingAdditionalPredicate?(typedMessage) ?? true) == true)
+
+                else {
+                    // If any of the above checks fail, we tell the
+                    //  client that their arguments were invalid.
+                    return Mach.MIGReply(
+                        payload: Mach.MIGErrorReplyPayload(returnCode: MIG_BAD_ARGUMENTS)
+                    )
+
+                }
+                return typedHandler(typedMessage)
+            }
+        }
+    }
+
     /// A server for MIG requests.
     open class MIGServer: Mach.Port {
         /// The base routine ID for the local MIG subsystem.
@@ -9,12 +61,12 @@ extension Mach {
 
         /// The handlers for the routines.
         /// - Important: These should be ordered by the routine ID.
-        open var routinesHandlers: [((Mach.Message) -> Mach.Message)?]
+        open var routinesHandlers: [MIGServerRoutineHandler?]
 
         /// Represents an existing MIG server port.
         public required init(
             named name: mach_port_name_t, baseRoutineID: mach_msg_id_t,
-            routinesHandlers: [((Mach.Message) -> Mach.Message)?] = []
+            routinesHandlers: [MIGServerRoutineHandler?] = []
         ) {
             self.routinesHandlers = routinesHandlers
             self.baseRoutineID = baseRoutineID
@@ -31,10 +83,6 @@ extension Mach {
 
         /// Gets the reply for an incoming message.
         private func getReplyFor(incomingMessage: Mach.Message) -> Mach.Message {
-            struct ErrorReply: Mach.MIGPayloadWithNDR {
-                let NDR = NDR_record_t()
-                var returnCode: kern_return_t
-            }
             let routineIndex = incomingMessage.header.msgh_id - self.baseRoutineID
             guard
                 self.routinesHandlers.indices.contains(Int(routineIndex)),
@@ -42,9 +90,9 @@ extension Mach {
             else {
                 // If we don't have a handler for the routine, we tell
                 //  the client that their routine ID was invalid.
-                return Mach.MIGReply<ErrorReply>(payload: ErrorReply(returnCode: MIG_BAD_ID))
+                return Mach.MIGReply(payload: MIGErrorReplyPayload(returnCode: MIG_BAD_ID))
             }
-            return routineHandler(incomingMessage)
+            return routineHandler.untypedHandler(incomingMessage)
         }
 
         /// Replies to an incoming message.
@@ -86,7 +134,7 @@ extension Mach {
 
         /// Starts listening for incoming messages and returns the listener thread.
         /// - Important: Errors passed to the handler may originate in either
-        ///      the receiving of a message or the generation of a reply.
+        ///      the receiving of a message or the sending of a reply.
         public func startListening(_ errorHandler: ((Error) -> Void)? = nil) -> Foundation.Thread {
             let listenerThread = MIGServerThread(
                 server: self,
