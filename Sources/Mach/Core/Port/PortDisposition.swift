@@ -3,45 +3,60 @@ import KassHelpers
 
 extension Mach {
     /// Processing to perform on a port.
-    public struct PortDisposition: KassHelpers.OptionEnum {
+    public struct PortDisposition: KassHelpers.NamedOptionEnum {
+        /// The name of the disposition, if it can be determined.
+        public var name: String?
 
-        public let rawValue: mach_msg_type_name_t
-        public init(rawValue: mach_msg_type_name_t) { self.rawValue = rawValue }
+        /// Represents a port disposition with an optional name.
+        public init(name: String?, rawValue: UInt32) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the disposition.
+        public let rawValue: UInt32
+
+        // All known port dispositions.
+        public static let allCases: [Self] = [
+            .moveReceive, .moveSend, .moveSendOnce,
+            .copySend, .makeSend, .makeSendOnce,
+            .copyReceive,
+        ]
 
         /// Move the receive right.
         public static let moveReceive = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_RECEIVE)
+            name: "moveReceive", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_RECEIVE)
         )
 
         /// Move the send right.
         public static let moveSend = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_SEND)
+            name: "moveSend", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_SEND)
         )
 
         /// Move the send-once right.
         public static let moveSendOnce = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_SEND_ONCE)
+            name: "moveSendOnce", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MOVE_SEND_ONCE)
         )
 
         /// Copy the send right.
         public static let copySend = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_COPY_SEND)
+            name: "copySend", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_COPY_SEND)
         )
 
         /// Make a send right.
         public static let makeSend = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MAKE_SEND)
+            name: "makeSend", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MAKE_SEND)
         )
 
         /// Make a send-once right.
         public static let makeSendOnce = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MAKE_SEND_ONCE)
+            name: "makeSendOnce", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_MAKE_SEND_ONCE)
         )
 
         /// Copy the receive right.
         /// - Warning: A receive right can actually never be copied. This is just here for completeness.
         public static let copyReceive = Self(
-            rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_COPY_RECEIVE)
+            name: "copyReceive", rawValue: mach_msg_type_name_t(MACH_MSG_TYPE_COPY_RECEIVE)
         )
     }
 }
