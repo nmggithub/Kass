@@ -1,6 +1,6 @@
 # ``Mach/PortInitializableByServiceName``
 
-Conformance to this protocol allows a custom port class to represent a specific service from the bootstrap server like so:
+Conformance to this protocol allows a custom port class to represent a specific service name:
 
 ```swift
 class CustomPort: Mach.PortInitializableByServiceName {
@@ -10,6 +10,6 @@ class CustomPort: Mach.PortInitializableByServiceName {
 }
 ```
 
-The ``init(serviceName:)`` initializer has a default implementation that uses the bootstrap server to look up the given service name and obtain a send right to it, placing the name of the send right into the ``Mach/Port/name`` property. Therefore, an instance of `CustomPort` above can be used to send messages to the service named `some.service.name`.
+The protocols ``Mach/ClientInitializableByServiceName`` and ``Mach/ServerInitializableByServiceName`` include default implementations to respectively look-up and register ports with the bootstrap port.
 
-- Warning: This functionality documented above is dependant on the default implementation of ``init(serviceName:)``. To avoid unexpected behavior, it is not recommended to override this default implementation.
+- Warning: This functionality documented above is dependant on the default implementations of ``init(serviceName:)``. To avoid unexpected behavior, it is not recommended to override the default implementations.

@@ -7,7 +7,7 @@ extension Mach {
         /// The base routine ID for the remote MIG subsystem.
         open var baseRoutineID: mach_msg_id_t
 
-        /// Represents an existing MIG server port.
+        /// Represents an existing MIG client port.
         public required init(named name: mach_port_name_t, baseRoutineID: mach_msg_id_t) {
             self.baseRoutineID = baseRoutineID
             super.init(named: name)
@@ -106,7 +106,7 @@ extension Mach {
     }
 }
 
-extension Mach.PortInitializableByServiceName where Self: Mach.MIGClient {
+extension Mach.ClientInitializableByServiceName where Self: Mach.MIGClient {
     /// Obtains a MIG client for the given service.
     public init(serviceName: String, baseRoutineID: mach_msg_id_t) throws {
         try self.init(serviceName: serviceName)
