@@ -76,8 +76,8 @@ extension Mach {
         @available(*, unavailable, message: "Use `init(named:baseRoutineID:)` instead.")
         public required init(named name: mach_port_name_t, inNameSpaceOf task: Mach.Task = .current)
         {
-            self.routinesHandlers = []
             self.baseRoutineID = 0
+            self.routinesHandlers = []
             super.init(named: name)
         }
 
@@ -119,19 +119,25 @@ extension Mach {
             /// The error handler to call on errors.
             private let errorHandler: ((Error) -> Void)?
 
+            /// The options for receiving messages.
+            private let receiveOptions: Mach.MessageOptions
+
             /// Initializes the server thread.
-            init(server: Mach.MIGServer, errorHandler: ((Error) -> Void)?) {
+            init(
+                server: Mach.MIGServer, errorHandler: ((Error) -> Void)?,
+                receiveOptions: Mach.MessageOptions
+            ) {
                 self.server = server
                 self.errorHandler = errorHandler
+                self.receiveOptions = receiveOptions
             }
 
             /// Listens for incoming messages and replies to them.
             override func main() {
                 while true {
                     do {
-                        print("Waiting for incoming message...")
-                        let incomingMessage = try Mach.Message.receive(from: server)
-                        print("Got incoming message: \(incomingMessage)")
+                        let incomingMessage =
+                            try Mach.Message.receive(from: server, options: receiveOptions)
                         try server.replyTo(incomingMessage: incomingMessage)
                     } catch { errorHandler?(error) }
                 }
@@ -141,10 +147,14 @@ extension Mach {
         /// Starts listening for incoming messages and returns the listener thread.
         /// - Important: Errors passed to the handler may originate in either
         ///      the receiving of a message or the sending of a reply.
-        public func startListening(_ errorHandler: ((Error) -> Void)? = nil) -> Foundation.Thread {
+        public func startListening(
+            _ errorHandler: ((Error) -> Void)? = nil,
+            receiveOptions: Mach.MessageOptions = []
+        ) -> Foundation.Thread {
             let listenerThread = MIGServerThread(
                 server: self,
-                errorHandler: errorHandler
+                errorHandler: errorHandler,
+                receiveOptions: receiveOptions
             )
             listenerThread.start()
             return listenerThread
