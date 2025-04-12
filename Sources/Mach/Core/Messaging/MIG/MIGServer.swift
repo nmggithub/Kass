@@ -11,7 +11,7 @@ extension Mach {
     /// A handler for a MIG server routine.
     public struct MIGServerRoutineHandler {
         /// The handler with untyped messages.
-        let untypedHandler: (Mach.Message) -> Mach.Message
+        let untypedHandler: (Mach.Message) throws -> Mach.Message
 
         /// Initializes a new routine handler.
         public init<RequestPayload: Mach.MIGPayload, ReplyPayload: Mach.MIGPayload>(
@@ -19,7 +19,7 @@ extension Mach {
             expectingAdditionalPredicate:
                 ((Mach.MIGRequest<RequestPayload>) -> Bool)? = nil,
             _ typedHandler:
-                @escaping (Mach.MIGRequest<RequestPayload>) -> Mach.MIGReply<ReplyPayload>
+                @escaping (Mach.MIGRequest<RequestPayload>) throws -> Mach.MIGReply<ReplyPayload>
         ) {
             self.untypedHandler = { incomingMessage in
                 let typedMessage = Mach.MIGRequest<RequestPayload>.init(
@@ -49,7 +49,7 @@ extension Mach {
                     )
 
                 }
-                return typedHandler(typedMessage)
+                return try typedHandler(typedMessage)
             }
         }
     }
@@ -92,7 +92,10 @@ extension Mach {
                 //  the client that their routine ID was invalid.
                 return Mach.MIGReply(payload: MIGErrorReplyPayload(returnCode: MIG_BAD_ID))
             }
-            return routineHandler.untypedHandler(incomingMessage)
+            do { return try routineHandler.untypedHandler(incomingMessage) } catch {
+                let errorCode = (error as NSError).code
+                return Mach.MIGReply(payload: MIGErrorReplyPayload(returnCode: Int32(errorCode)))
+            }
         }
 
         /// Replies to an incoming message.
@@ -126,7 +129,10 @@ extension Mach {
             override func main() {
                 while true {
                     do {
-                        try server.replyTo(incomingMessage: try Mach.Message.receive(from: server))
+                        print("Waiting for incoming message...")
+                        let incomingMessage = try Mach.Message.receive(from: server)
+                        print("Got incoming message: \(incomingMessage)")
+                        try server.replyTo(incomingMessage: incomingMessage)
                     } catch { errorHandler?(error) }
                 }
             }
