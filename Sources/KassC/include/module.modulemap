@@ -133,4 +133,9 @@ module KassC {
         header "event_private.h"
         export *
     }
+
+    module i386ThreadStatus {
+        header "i386_thread_status.h"
+        export *
+    }
 }

@@ -1,3 +1,4 @@
+import Darwin
 import KassHelpers
 
 extension Mach {
@@ -23,4 +24,22 @@ extension Mach {
 
     /// A data operator that can get and set flavored data.
     public protocol FlavoredDataManager: FlavoredDataGetter, FlavoredDataSetter {}
+}
+
+extension Mach {
+    protocol FlavorWithOptionalData {
+        /// The data type for the flavored data.
+        associatedtype DataType: BitwiseCopyable
+
+        associatedtype FlavorKeyType: BinaryInteger
+
+        /// The key for the flavored data.
+        var flavorKey: FlavorKeyType { get }
+
+        /// The flavored data.
+        var data: DataType? { get }
+
+        /// Initializes a representation of a flavor, optionally with paired data.
+        init(flavorKey: FlavorKeyType, data: DataType?)
+    }
 }

@@ -51,8 +51,8 @@ extension Mach.ExceptionPort {
                     behavior: Mach.ExceptionBehavior(
                         rawValue: behaviors[i]
                     ),
-                    threadStateFlavor: Mach.ThreadStateFlavor(
-                        rawValue: flavors[i]
+                    threadStateFlavor: Mach.ThreadState<Never>(
+                        flavorKey: flavors[i]
                     )
                 )
             )
@@ -94,7 +94,7 @@ extension Mach.ExceptionPort {
         try Mach.call(
             setExceptionPortsCall(
                 port.name, exceptionPort.mask.rawValue, exceptionPort.name,
-                exceptionPort.behavior.rawValue, exceptionPort.threadStateFlavor.rawValue
+                exceptionPort.behavior.rawValue, exceptionPort.threadStateFlavor
             )
         )
     }
@@ -153,7 +153,7 @@ extension Mach.ExceptionPort {
         try Mach.call(
             setExceptionPortsCall(
                 port.name, exceptionPort.mask.rawValue, exceptionPort.name,
-                exceptionPort.behavior.rawValue, exceptionPort.threadStateFlavor.rawValue,
+                exceptionPort.behavior.rawValue, exceptionPort.threadStateFlavor,
                 masks, &count, handlers, behaviors, flavors
             )
         )
@@ -169,8 +169,8 @@ extension Mach.ExceptionPort {
                     behavior: Mach.ExceptionBehavior(
                         rawValue: behaviors[i]
                     ),
-                    threadStateFlavor: Mach.ThreadStateFlavor(
-                        rawValue: flavors[i]
+                    threadStateFlavor: Mach.ThreadState<Never>(
+                        flavorKey: flavors[i]
                     )
                 )
             )
@@ -277,7 +277,7 @@ extension Mach.Task {
                 self.name, signedPCKey,
                 exceptionPort.mask.rawValue,
                 exceptionPort.behavior.rawValue,
-                exceptionPort.threadStateFlavor.rawValue,
+                exceptionPort.threadStateFlavor,
                 exceptionPort.name
             )
         )

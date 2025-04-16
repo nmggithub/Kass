@@ -364,7 +364,7 @@ extension BSD {
                 posix_spawnattr_setexceptionports_np(
                     self.rawValue, port.mask.rawValue, port.name,
                     port.behavior.rawValue,
-                    port.threadStateFlavor.rawValue
+                    port.threadStateFlavor
                 )
             )
         }

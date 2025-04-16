@@ -10,7 +10,7 @@ extension Mach {
         }
 
         /// Creates a new thread in a given task.
-        /// - Warning: The initial execution state of the thread is undefined. Use ``init(inTask:runningWithState:flavored:)``
+        /// - Warning: The initial execution state of the thread is undefined. Use ``init(inTask:runningWithState:)``
         /// to create a thread with a defined initial state.
         public convenience init(inTask task: Task) throws {
             var thread = thread_act_t()
@@ -20,12 +20,11 @@ extension Mach {
 
         /// Creates a new running thread in a given task with a given state.
         public convenience init<DataType>(
-            inTask task: Task, runningWithState state: DataType,
-            flavored stateFlavor: ThreadStateFlavor
+            inTask task: Task, runningWithState state: ThreadState<DataType>
         ) throws where DataType: BitwiseCopyable {
             var thread = thread_act_t()
-            try Mach.callWithCountIn(value: state) { array, count in
-                thread_create_running(task.name, stateFlavor.rawValue, array, count, &thread)
+            try Mach.callWithCountIn(value: state.data) { array, count in
+                thread_create_running(task.name, state.flavorKey, array, count, &thread)
             }
             self.init(named: thread)
         }

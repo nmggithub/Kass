@@ -4,7 +4,7 @@ import KassHelpers
 
 extension Mach {
     /// A direction for converting thread states.
-    public struct ThreadStateConvertDirection: KassHelpers.OptionEnum {
+    public struct ThreadStateConversionDirection: KassHelpers.OptionEnum {
         /// The raw value of the direction.
         public let rawValue: Int32
 
@@ -19,27 +19,22 @@ extension Mach {
     }
 }
 
-extension Mach.ThreadStateManager {
+extension Mach.ThreadState {
     /// Converts a thread state either to or from the current thread.
-    /// - Note: When getting state from ARM threads, what is often returned by the kernel is a
-    /// thread-specific **user space form** of the state. This function can be used to convert
-    /// state from the current thread to work with another, or vice versa.
-    /// - Note: On x86 threads, this function does nothing but return the same state that was passed in.
-    public static func convert<DataType: BitwiseCopyable>(
-        _ state: DataType, withFlavor flavor: Mach.ThreadStateFlavor,
-        thread: Mach.Thread, direction: Mach.ThreadStateConvertDirection
-    ) throws -> DataType {
+    public func convert(thread: Mach.Thread, direction: Mach.ThreadStateConversionDirection) throws
+        -> DataType
+    {
         try Mach.callWithCountInOut(type: DataType.self) {
             (array: thread_state_t, count) in
             do {
                 // Nesting "calls" like this isn't pretty, but this **one** kernel call uses both the count-in and
                 // count-in-out patterns. That's not enough to justify a new function, so we'll just do this.
-                try Mach.callWithCountIn(value: state) {
+                try Mach.callWithCountIn(value: self.data) {
                     arrayInner, countInner in
                     thread_convert_thread_state(
                         thread.name,
                         direction.rawValue,
-                        flavor.rawValue,
+                        self.flavorKey,
                         arrayInner,
                         countInner,
                         array,
@@ -58,20 +53,12 @@ extension Mach.ThreadStateManager {
     }
 
     /// Converts a thread state from the current thread to another thread.
-    /// - Note: See ``convert(_:withFlavor:thread:direction:)`` for more information.
-    public static func convert<DataType: BitwiseCopyable>(
-        _ state: DataType, withFlavor flavor: Mach.ThreadStateFlavor,
-        toThread: Mach.Thread
-    ) throws -> DataType {
-        try self.convert(state, withFlavor: flavor, thread: toThread, direction: .fromSelf)
-    }
+    public func convert(toThread thread: Mach.Thread) throws
+        -> DataType
+    { try self.convert(thread: thread, direction: .fromSelf) }
 
     /// Converts a thread state from another thread to the current thread.
-    /// - Note: See ``convert(_:withFlavor:thread:direction:)`` for more information.
-    public static func convert<DataType: BitwiseCopyable>(
-        _ state: DataType, withFlavor flavor: Mach.ThreadStateFlavor,
-        fromThread: Mach.Thread
-    ) throws -> DataType {
-        try self.convert(state, withFlavor: flavor, thread: fromThread, direction: .toSelf)
-    }
+    public func convert(fromThread thread: Mach.Thread) throws
+        -> DataType
+    { try self.convert(thread: thread, direction: .toSelf) }
 }

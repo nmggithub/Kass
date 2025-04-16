@@ -206,18 +206,18 @@ extension Mach {
         public let behavior: Mach.ExceptionBehavior
 
         /// The flavor of the thread state to send with exception messages.
-        public let threadStateFlavor: Mach.ThreadStateFlavor
+        public let threadStateFlavor: thread_state_flavor_t
 
         /// Creates an exception port.
         public init(
             named name: mach_port_name_t,
             mask: Mach.ExceptionMask = .all,
             behavior: Mach.ExceptionBehavior = .default,
-            threadStateFlavor: Mach.ThreadStateFlavor = .none
+            threadStateFlavor: Mach.ThreadState<some BitwiseCopyable> = .none()
         ) {
             self.mask = mask
             self.behavior = behavior
-            self.threadStateFlavor = threadStateFlavor
+            self.threadStateFlavor = threadStateFlavor.flavorKey
             super.init(named: name)
         }
 
@@ -225,7 +225,7 @@ extension Mach {
         public required init(named name: mach_port_name_t, inNameSpaceOf task: Task = .current) {
             self.mask = .all
             self.behavior = .default
-            self.threadStateFlavor = .none
+            self.threadStateFlavor = THREAD_STATE_NONE
             super.init(named: name)
         }
 
@@ -254,7 +254,7 @@ extension Mach {
                 )
                 break
             case .state:
-                var flavor = self.threadStateFlavor.rawValue
+                var flavor = self.threadStateFlavor
                 var oldStateCount = mach_msg_type_number_t(THREAD_STATE_MAX)
                 let oldState = thread_state_t.allocate(capacity: Int(oldStateCount))
                 try Mach.call(thread_get_state(thread.name, flavor, oldState, &oldStateCount))
@@ -270,7 +270,7 @@ extension Mach {
                 try Mach.call(thread_set_state(thread.name, flavor, newState, newStateCount))
                 break
             case .stateIdentity:
-                var flavor = self.threadStateFlavor.rawValue
+                var flavor = self.threadStateFlavor
                 var oldStateCount = mach_msg_type_number_t(THREAD_STATE_MAX)
                 let oldState = thread_state_t.allocate(capacity: Int(oldStateCount))
                 try Mach.call(thread_get_state(thread.name, flavor, oldState, &oldStateCount))
