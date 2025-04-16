@@ -8,10 +8,10 @@ extension Mach {
         public typealias DataType = StateDataType
 
         /// The thread state flavor key.
-        var flavorKey: thread_state_flavor_t
+        public var flavorKey: thread_state_flavor_t
 
         /// The optional state data.
-        var data: DataType?
+        public var data: DataType?
 
         /// Compares a raw flavor key with an instance of ``Mach/ThreadState``.
         /// - Important: This only returns true if the flavor key matches and there is no paired data.
