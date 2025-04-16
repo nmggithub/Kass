@@ -213,7 +213,7 @@ extension Mach {
             named name: mach_port_name_t,
             mask: Mach.ExceptionMask = .all,
             behavior: Mach.ExceptionBehavior = .default,
-            threadStateFlavor: Mach.ThreadState<some BitwiseCopyable> = .none()
+            threadStateFlavor: Mach.ThreadState<some BitwiseCopyable> = .none
         ) {
             self.mask = mask
             self.behavior = behavior
