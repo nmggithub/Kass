@@ -6,18 +6,28 @@ import KassHelpers
 import MachCore
 
 extension Mach.Task {
-    /// Injects shellcode into the target task and sets up a bare Mach thread to execute it.
+    /// Injects shellcode into the target task, using the given thread, or
+    ///      sets up a new bare Mach thread to execute it.
     /// - Warning: A bare Mach cannot do much without an associated POSIX thread. It is up
-    //      to the caller to create and associate a POSIX thread to the Mach thread.
+    ///      to the caller to create and associate a POSIX thread to the Mach thread.
+    /// - Warning: Injecting into a running thread may cause unexpected behavior.
     public func inject(
         shellcode: [UInt8],
         stackSize: mach_vm_size_t = 1024 * 1024,
+        intoThread thread: Mach.Thread? = nil,
         withInitialState initialState: Mach.ThreadState<some BitwiseCopyable> = .none
     ) throws -> (
         shellcodePointer: UnsafeRawPointer?,
         stackPointer: UnsafeRawPointer?,
         thread: Mach.Thread?
     ) {
+        if let targetThread = thread {
+            // Check if the target thread belongs to the target task.
+            guard targetThread.owningTask == self else {
+                // We simulate a kernel error here, because we don't want to implement our own error types.
+                throw POSIXError(.EINVAL)
+            }
+        }
         // Set up shellcode info.
         var shellcodePointer: UnsafeRawPointer? = nil
         let shellcodeSize = mach_vm_size_t(shellcode.count)
@@ -67,10 +77,21 @@ extension Mach.Task {
             throw POSIXError(.ENOTSUP)  // We simulate a kernel error here, because we don't want to implement our own error types.
         #endif
 
-        // Create a new thread in the target task with the specified thread state.
-        let thread = try Mach.Thread(inTask: self, runningWithState: state)
+        if let targetThread = thread {
+            // Set the thread state for the target thread.
+            try targetThread.set(state: state)
 
-        // Return the shellcode pointer, stack pointer, and thread.
-        return (shellcodePointer, stackPointer, thread)
+            // Return the shellcode pointer, stack pointer, and thread.
+            return (shellcodePointer, stackPointer, targetThread)
+        } else {
+            // Create a new thread in the target task with the specified thread state.
+            let newThread = try Mach.Thread(inTask: self, runningWithState: state)
+
+            // Set the thread state for the new thread.
+            try newThread.set(state: state)
+
+            // Return the shellcode pointer, stack pointer, and thread.
+            return (shellcodePointer, stackPointer, newThread)
+        }
     }
 }
