@@ -23,7 +23,7 @@ extension Mach.Task {
     ) {
         if let targetThread = thread {
             // Check if the target thread belongs to the target task.
-            guard targetThread.owningTask == self else {
+            guard try self.threads.contains(targetThread) else {
                 // We simulate a kernel error here, because we don't want to implement our own error types.
                 throw POSIXError(.EINVAL)
             }
