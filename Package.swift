@@ -64,6 +64,9 @@ let modules: [Module] = [
     BasicModule.init(
         targetName: "LibNotify", dependencies: ["KassHelpers", "BSDCore", "MachCore"]
     ),
+    BasicModule.init(
+        targetName: "Shellcode", dependencies: ["KassHelpers", "MachCore"]
+    ),
     BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "BSDCore", "MachCore"]),
 
 ]
