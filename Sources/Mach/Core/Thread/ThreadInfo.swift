@@ -95,3 +95,57 @@ extension Mach.ThreadInfoManager {
         get throws { try self.get(.roundRobin) }
     }
 }
+
+extension Mach {
+    /// A run state of a thread.
+    public struct ThreadRunState: KassHelpers.NamedOptionEnum {
+        /// The name of the run state, if it can be determined.
+        public var name: String?
+
+        // Represents a run state with an optional name.
+        public init(name: String?, rawValue: integer_t) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The raw value of the run state.
+        public let rawValue: integer_t
+
+        /// All known run states.
+        public static let allCases: [ThreadRunState] =
+            [.running, stopped, waiting, uninterruptible, halted]
+
+        /// The thread is running normally.
+        public static let running = Self(
+            name: "running", rawValue: TH_STATE_RUNNING
+        )
+
+        /// The thread is stopped.
+        public static let stopped = Self(
+            name: "stopped", rawValue: TH_STATE_STOPPED
+        )
+
+        /// The thread is waiting normally.
+        public static let waiting = Self(
+            name: "waiting", rawValue: TH_STATE_WAITING
+        )
+
+        /// The thread is in an uninterruptible wait.
+        public static let uninterruptible = Self(
+            name: "uninterruptible", rawValue: TH_STATE_UNINTERRUPTIBLE
+        )
+
+        /// The thread is halted at a clean point.
+        public static let halted = Self(
+            name: "halted", rawValue: TH_STATE_HALTED
+        )
+
+    }
+}
+
+extension thread_basic_info {
+    /// The thread's run state.
+    public var runState: Mach.ThreadRunState {
+        Mach.ThreadRunState(rawValue: self.run_state)
+    }
+}
