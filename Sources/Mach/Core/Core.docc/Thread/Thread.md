@@ -48,10 +48,11 @@
 ### Managing State
 
 - ``Mach/ThreadState``
-- ``get(state:)``
-- ``set(state:)``
-- ``Mach/Task/get(defaultThreadState:)``
-- ``Mach/Task/set(defaultThreadState:)``
+- ``getState(_:)``
+- ``setState(_:)``
+- ``Mach/Task/getDefaultThreadState(_:)``
+- ``Mach/Task/setDefaultThreadState(_:)``
+- ``Mach/Task/clearDefaultThreadState()``
 
 ### Managing Policy
 

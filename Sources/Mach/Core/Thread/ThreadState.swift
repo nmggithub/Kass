@@ -284,7 +284,7 @@ extension Mach {
 extension Mach.Thread {
     /// Gets state for the thread.
     /// - Warning: This call will fail if data is included in the state argument.
-    public func get<DataType>(state: Mach.ThreadState<DataType>) throws -> DataType {
+    public func getState<DataType>(_ state: Mach.ThreadState<DataType>) throws -> DataType {
         guard state.data == nil else { throw MachError(.invalidArgument) }
         return try Mach.callWithCountInOut(type: DataType.self) {
             (array: thread_state_t, count) in
@@ -294,7 +294,7 @@ extension Mach.Thread {
 
     /// Sets state for the thread.
     /// - Warning: This call will fail if data is not included in the state argument.
-    public func set<DataType>(state: Mach.ThreadState<DataType>) throws {
+    public func setState<DataType>(_ state: Mach.ThreadState<DataType>) throws {
         guard let value = state.data else { throw MachError(.invalidArgument) }
         try Mach.callWithCountIn(value: value) {
             (array: thread_state_t, count) in
@@ -306,7 +306,7 @@ extension Mach.Thread {
 extension Mach.Task {
     /// Gets the default state for new threads in the task.
     /// - Warning: This call will fail if data is included in the state argument.
-    public func get<DataType>(defaultThreadState threadState: Mach.ThreadState<DataType>)
+    public func getDefaultThreadState<DataType>(_ threadState: Mach.ThreadState<DataType>)
         throws -> DataType
     {
         guard threadState.data == nil else { throw MachError(.invalidArgument) }
@@ -318,7 +318,7 @@ extension Mach.Task {
 
     /// Sets the default state for new threads in the task.
     /// - Warning: This call will fail if data is not included in the state argument.
-    public func set<DataType>(defaultThreadState threadState: Mach.ThreadState<DataType>) throws {
+    public func setDefaultThreadState<DataType>(_ threadState: Mach.ThreadState<DataType>) throws {
         guard let value = threadState.data else { throw MachError(.invalidArgument) }
         try Mach.callWithCountIn(value: value) {
             (array: thread_state_t, count) in
