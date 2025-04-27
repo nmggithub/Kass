@@ -47,9 +47,11 @@
 
 ### Managing State
 
-- ``Mach/ThreadStateManager``
-- ``Mach/ThreadStateFlavor``
-- ``state``
+- ``Mach/ThreadState``
+- ``get(state:)``
+- ``set(state:)``
+- ``Mach/Task/get(defaultThreadState:)``
+- ``Mach/Task/set(defaultThreadState:)``
 
 ### Managing Policy
 

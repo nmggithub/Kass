@@ -32,8 +32,8 @@ Alternatively, for the ``getSpecialPort(_:as:)`` API can be used. Please the doc
 |  ``suspend()`` / ``resume()`` / ``terminate()`` / ``suspend2()`` / ``resume2(token:)``  | ✅ Yes | ✅ Yes | ❌ No | ❌ No |
 | Thread Management      |||||
 | ``threads`` | ✅ Yes | ✅ Yes  | ✅ Yes  | ❌ No |
-| ``getDefaultThreadState(_:as:)`` | ✅ Yes | ✅ Yes  | ❌ No  | ❌ No |
-| ``setDefaultThreadState(_:to:)`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
+| ``get(defaultThreadState:)`` | ✅ Yes | ✅ Yes  | ❌ No  | ❌ No |
+| ``set(defaultThreadState:)`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
 | ``clearDefaultThreadState()`` | ✅ Yes | ❌ No  | ❌ No  | ❌ No |
 | Managing Special Ports       |||||
 | ``bootstrapPort`` | ✅ Yes | ❌ No | ❌ No | ❌ No |
@@ -154,8 +154,8 @@ It is possible to get a task port of a given flavor for a process with a given P
 ### Thread Management
 
 - ``threads``
-- ``getDefaultThreadState(_:as:)``
-- ``setDefaultThreadState(_:to:)``
+- ``get(defaultThreadState:)``
+- ``set(defaultThreadState:)``
 - ``clearDefaultThreadState()``
 
 ### Managing Memory Limits
