@@ -57,6 +57,17 @@ extension attrlist {
     public func get(
         for path: FilePath, options: consuming BSD.FSOptions
     ) throws -> BSD.FSAttributeBuffer {
+        return try self.get(
+            for: path.description,
+            options: options
+        )
+    }
+
+    /// Gets the attributes for a file or directory.
+    @available(macOS 11.0, *)
+    public func get(
+        for path: String, options: consuming BSD.FSOptions
+    ) throws -> BSD.FSAttributeBuffer {
         if !self.commonExtendedAttributes.isEmpty { options.insert(.useExtendedCommonAttributes) }
         // `getattrlist` truncates, so only get the length field first
         let lengthPointer = UnsafeMutablePointer<UInt32>.allocate(capacity: 1)
@@ -64,7 +75,7 @@ extension attrlist {
         listPointer.pointee = self  // copy the raw list to the pointer for reuse
         try BSD.call(
             getattrlist(
-                path.description.cString(using: .utf8),
+                path.cString(using: .utf8),
                 UnsafeMutableRawPointer(listPointer),
                 lengthPointer,
                 MemoryLayout<UInt32>.size,
@@ -77,7 +88,7 @@ extension attrlist {
         // now get the actual attributes
         try BSD.call(
             getattrlist(
-                path.description.cString(using: .utf8),
+                path.cString(using: .utf8),
                 UnsafeMutableRawPointer(listPointer),
                 buffer,
                 Int(lengthPointer.pointee),
