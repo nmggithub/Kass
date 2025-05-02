@@ -64,7 +64,6 @@ extension attrlist {
     }
 
     /// Gets the attributes for a file or directory.
-    @available(macOS 11.0, *)
     public func get(
         for path: String, options: consuming BSD.FSOptions
     ) throws -> BSD.FSAttributeBuffer {
