@@ -405,6 +405,23 @@ extension Mach.VirtualMemoryManager {
     }
 }
 
+extension Mach.VirtualMemoryManager {
+    /// Reads a null-terminated string from a virtual memory region in the task's address space.
+    public func readNullTerminatedString(
+        from pointer: UnsafePointer<Int8>, encoding: String.Encoding
+    ) throws -> String? {
+        var walkingPointer = pointer
+        var resultData = Data()
+        while true {
+            let byte = try self.read(from: walkingPointer)
+            if byte == Int8(0) { break }
+            resultData.append(UInt8(byte))
+            walkingPointer = walkingPointer.advanced(by: 1)
+        }
+        return String(data: resultData, encoding: encoding)
+    }
+}
+
 // MARK: - Copying / Mapping
 
 extension Mach {
