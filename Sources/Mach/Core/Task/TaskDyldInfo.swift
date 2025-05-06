@@ -18,7 +18,7 @@ extension dyld_image_mode {
 extension Mach.TaskInfoManager {
     /// Information about `dyld` images in the task.
     /// - Warning: All pointers in this structure are valid only in the target task's address space. If the target
-    ///     task is not the current task, you should use the virtual memory API to read the data at such pointers.
+    ///     task is not the current task, the virtual memory API should be used to read the data at such pointers.
     public var dyldInfo: dyld_all_image_infos {
         get throws {
             let dyldInfo: task_dyld_info = try self.get(.dyld)
