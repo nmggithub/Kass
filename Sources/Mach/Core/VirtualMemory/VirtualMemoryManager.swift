@@ -397,7 +397,23 @@ extension Mach.VirtualMemoryManager {
     }
 
     /// Writes a value into a virtual memory region in the task's address space.
-    public func write<T: BitwiseCopyable>(_ value: T, to pointer: UnsafeRawPointer?) throws
+    public func write<T: BitwiseCopyable>(_ value: T, to pointer: UnsafeMutableRawPointer?) throws
+    where T: BitwiseCopyable {
+        try withUnsafeBytes(of: value) { valueBytes in
+            try self.write(to: pointer, from: valueBytes)
+        }
+    }
+}
+
+extension Mach.VirtualMemoryManager {
+    /// Reads a value from a virtual memory region in the task's address space.
+    public func read<T: BitwiseCopyable>(from inPointer: UnsafePointer<T>?) throws -> T {
+        return try self.read(from: inPointer, size: mach_vm_size_t(MemoryLayout<T>.size))
+            .load(as: T.self)
+    }
+
+    /// Writes a value into a virtual memory region in the task's address space.
+    public func write<T: BitwiseCopyable>(_ value: T, to pointer: UnsafeMutablePointer<T>?) throws
     where T: BitwiseCopyable {
         try withUnsafeBytes(of: value) { valueBytes in
             try self.write(to: pointer, from: valueBytes)
