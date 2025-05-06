@@ -79,7 +79,7 @@ extension Mach.Task {
 
         if let targetThread = thread {
             // Set the thread state for the target thread.
-            try targetThread.set(state: state)
+            try targetThread.setState(state)
 
             // Return the shellcode pointer, stack pointer, and thread.
             return (shellcodePointer, stackPointer, targetThread)
@@ -88,7 +88,7 @@ extension Mach.Task {
             let newThread = try Mach.Thread(inTask: self, runningWithState: state)
 
             // Set the thread state for the new thread.
-            try newThread.set(state: state)
+            try newThread.setState(state)
 
             // Return the shellcode pointer, stack pointer, and thread.
             return (shellcodePointer, stackPointer, newThread)
