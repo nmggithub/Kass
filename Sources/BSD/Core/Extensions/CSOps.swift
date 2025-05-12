@@ -374,6 +374,14 @@ extension BSD {
                 /// Gets the full blob.
                 dataIn: Data(repeating: 0, count: Int(actualLength))
             )
+            if dataOut.count < self.blobHeaderSize {
+                if dataOut.count > 0 {
+                    // The result is something, but it's not enough for a blob.
+                    throw POSIXError(.EFTYPE)  // This is a simulated kernel error, as we don't want to implement our own error codes.
+                }
+                /// The blob is empty, so return an empty data object.
+                return Data()
+            }
             // Strip the header from the returned data.
             return dataOut.subdata(in: self.blobHeaderSize..<dataOut.count)
         }
