@@ -352,7 +352,7 @@ extension OS {
         public struct IOConnectMethodOperands {
             let scalars: [UInt64]?
             let structure: UnsafeRawBufferPointer?
-            init(
+            public init(
                 scalars: [UInt64]? = nil,
                 structure: UnsafeRawBufferPointer? = nil
             ) {
