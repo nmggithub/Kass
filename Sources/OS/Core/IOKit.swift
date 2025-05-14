@@ -364,7 +364,7 @@ extension OS {
         /// Calls a method on the connection with the given selector and operands.
         public func callMethod(
             selector: UInt32,
-            operands: IOConnectMethodOperands,
+            operands: IOConnectMethodOperands = .init(),
             expectedOutputScalarsCount: UInt32 = 0,
             expectedOutputStructureSize: Int = 0
         ) throws -> IOConnectMethodOperands {
@@ -405,7 +405,7 @@ extension OS {
             selector: UInt32,
             wakePort: MachCore.Mach.Port,
             references: [UnsafeMutableRawPointer?] = [],
-            operands: IOConnectMethodOperands,
+            operands: IOConnectMethodOperands = .init(),
             expectedOutputScalarsCount: UInt32 = 0,
             expectedOutputStructureSize: Int = 0
         ) throws -> IOConnectMethodOperands {
