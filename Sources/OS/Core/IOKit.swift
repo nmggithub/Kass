@@ -547,10 +547,10 @@ extension OS {
         }
 
         /// Gets the registry entry with the given path using the given main port.
-        public static func getEntry(
+        public convenience init?(
             fromPath path: String,
             usingMainPort mainPort: IOKitMainPort = .init()
-        ) -> Self? {
+        ) {
             let entry =
                 path.count <= MemoryLayout<io_string_t>.size
                 ? IORegistryEntryFromPath(
@@ -562,7 +562,7 @@ extension OS {
                     path as CFString
                 )
             guard entry != IO_OBJECT_NULL else { return nil }
-            return self.init(named: entry)
+            self.init(named: entry)
         }
 
         /// Gets the name of the entry, optionally within the given plane.
