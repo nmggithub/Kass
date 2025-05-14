@@ -137,12 +137,12 @@ extension OS {
         }
 
         /// Returns a matching dictionary to match against a IOService class name.
-        public static func matching(_ name: String) -> CFMutableDictionary? {
+        public static func matching(_ name: String) -> CFMutableDictionary {
             return IOServiceMatching(name)
         }
 
         /// Returns a matching dictionary to match against a IOService name.
-        public static func nameMatching(_ name: String) -> CFMutableDictionary? {
+        public static func nameMatching(_ name: String) -> CFMutableDictionary {
             return IOServiceNameMatching(name)
         }
 
