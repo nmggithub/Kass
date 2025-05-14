@@ -645,7 +645,7 @@ extension OS {
 
         /// Creates a dictionary representing the properties of the entry.
         public func createCFProperties(
-            withAllocator allocator: CFAllocator = kCFAllocatorDefault,
+            withAllocator allocator: CFAllocator? = kCFAllocatorDefault,
             options: IOOptionBits = 0
         ) throws -> CFMutableDictionary? {
             let propertiesPointer =
@@ -668,7 +668,7 @@ extension OS {
         ///     the given key, using the given allocator.
         public func createCFProperty(
             withKey key: CFString,
-            allocator: CFAllocator = kCFAllocatorDefault,
+            allocator: CFAllocator? = kCFAllocatorDefault,
             options: IOOptionBits = 0
         ) throws -> CFTypeRef? {
             let unmanagedProperty =
@@ -686,7 +686,7 @@ extension OS {
         public func searchCFProperty(
             inPlane plane: String,
             withKey key: CFString,
-            allocator: CFAllocator = kCFAllocatorDefault,
+            allocator: CFAllocator? = kCFAllocatorDefault,
             options: IORegistryIterationOptions
         ) throws -> CFTypeRef? {
             return IORegistryEntrySearchCFProperty(
