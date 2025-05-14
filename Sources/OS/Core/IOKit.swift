@@ -624,7 +624,7 @@ extension OS {
             return IORegistryEntryCopyPath(
                 self.name,
                 String(plane.prefix(MemoryLayout<io_name_t>.size)),
-            ).takeRetainedValue() as String?
+            )?.takeRetainedValue() as String?
         }
 
         /// The registry entry ID of the entry.
