@@ -42,6 +42,7 @@ extension Mach {
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
             replyPayloadType: ReplyPayload.Type = ReplyPayload.self,
+            maxReplySize: Int = Mach.Message.defaultMaxReceiveSize,
             replyPort: Mach.Port? = nil,
             serverErrorDomain: String? = nil
         ) throws -> Mach.MIGReply<ReplyPayload> {
@@ -51,7 +52,7 @@ extension Mach {
                 request,
                 // We make a copy of the send right so we can reuse the port.
                 to: self, withDisposition: .copySend,
-                receiving: Mach.MIGReply<ReplyPayload>.self,
+                receiving: Mach.MIGReply<ReplyPayload>.self, ofMaxSize: maxReplySize,
                 // We make a send-once right so we can receive the reply.
                 from: replyPort ?? Mach.MIGReplyPort(), withDisposition: .makeSendOnce
             )
