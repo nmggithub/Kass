@@ -366,15 +366,25 @@ extension OS {
             selector: UInt32,
             operands: IOConnectMethodOperands = .init(),
             expectedOutputScalarsCount: UInt32 = 0,
-            expectedOutputStructureSize: Int = 0
+            expectedOutputStructureSize: Int = 0,
+            expectedStructureAlignment: Int = 1  // Just use the smallest alignment if we don't know.
         ) throws -> IOConnectMethodOperands {
             let input = operands
-            let outputScalarsPointer: UnsafeMutablePointer<UInt64>? = nil
-            let outputStructurePointer: UnsafeMutableRawPointer? = nil
             // For methods with fixed output operand counts/sizes, IOKit will check if the
             //  values we passed in match those fixed values, so we need to pass those in.
             var outputScalarsCount: UInt32 = expectedOutputScalarsCount
             var outputStructureSize = expectedOutputStructureSize
+            let outputScalarsPointer: UnsafeMutablePointer<UInt64>? =
+                expectedOutputScalarsCount > 0
+                ? UnsafeMutablePointer<UInt64>.allocate(capacity: Int(expectedOutputScalarsCount))
+                : nil
+            let outputStructurePointer: UnsafeMutableRawPointer? =
+                expectedOutputStructureSize > 0
+                ? UnsafeMutableRawPointer.allocate(
+                    byteCount: expectedOutputStructureSize,
+                    alignment: expectedStructureAlignment
+                )
+                : nil
             try Mach.call(
                 IOConnectCallMethod(
                     self.name,
@@ -407,15 +417,25 @@ extension OS {
             references: [UnsafeMutableRawPointer?] = [],
             operands: IOConnectMethodOperands = .init(),
             expectedOutputScalarsCount: UInt32 = 0,
-            expectedOutputStructureSize: Int = 0
+            expectedOutputStructureSize: Int = 0,
+            expectedStructureAlignment: Int = 1  // Just use the smallest alignment if we don't know.
         ) throws -> IOConnectMethodOperands {
             let input = operands
-            let outputScalarsPointer: UnsafeMutablePointer<UInt64>? = nil
-            let outputStructurePointer: UnsafeMutableRawPointer? = nil
             // For methods with fixed output operand counts/sizes, IOKit will check if the
             //  values we passed in match those fixed values, so we need to pass those in.
             var outputScalarsCount: UInt32 = expectedOutputScalarsCount
             var outputStructureSize = expectedOutputStructureSize
+            let outputScalarsPointer: UnsafeMutablePointer<UInt64>? =
+                expectedOutputScalarsCount > 0
+                ? UnsafeMutablePointer<UInt64>.allocate(capacity: Int(expectedOutputScalarsCount))
+                : nil
+            let outputStructurePointer: UnsafeMutableRawPointer? =
+                expectedOutputStructureSize > 0
+                ? UnsafeMutableRawPointer.allocate(
+                    byteCount: expectedOutputStructureSize,
+                    alignment: expectedStructureAlignment
+                )
+                : nil
             var referenceArgs = references.map { UInt64(UInt(bitPattern: $0)) }
             try Mach.call(
                 IOConnectCallAsyncMethod(
