@@ -109,10 +109,10 @@ extension OS {
         public static func getMatchingServices(
             usingMainPort mainPort: IOKitMainPort = .init(),
             matching: CFDictionary
-        ) -> IOIterator<IOService>? {
+        ) throws -> IOIterator<IOService>? {
             var iterator: io_iterator_t = IO_OBJECT_NULL
-            let service = IOServiceGetMatchingServices(mainPort.name, matching, &iterator)
-            guard service != IO_OBJECT_NULL else { return nil }
+            try Mach.call(IOServiceGetMatchingServices(mainPort.name, matching, &iterator))
+            guard iterator != IO_OBJECT_NULL else { return nil }
             return IOIterator(named: iterator)
         }
 
@@ -748,7 +748,7 @@ extension OS {
             withKey key: CFString,
             allocator: CFAllocator? = kCFAllocatorDefault,
             options: IOOptionBits = 0
-        ) throws -> CFTypeRef? {
+        ) -> CFTypeRef? {
             let unmanagedProperty =
                 IORegistryEntryCreateCFProperty(
                     self.name,
