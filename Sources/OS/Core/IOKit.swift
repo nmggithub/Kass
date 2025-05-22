@@ -11,6 +11,59 @@ extension OS {
         override public class var Nil: IOObject {
             return IOObject(named: IO_OBJECT_NULL)
         }
+
+        /// Copies the superclass name for the given class name.
+        public static func copySuperclass(forClass className: CFString) -> CFString? {
+            return IOObjectCopySuperclassForClass(className).takeRetainedValue()
+        }
+
+        /// Copies the bundler identifier for the given class name.
+        public static func copyBundleIdentifier(forClass className: CFString) -> CFString? {
+            return IOObjectCopyBundleIdentifierForClass(className).takeRetainedValue()
+        }
+
+        /// The class name of the object.
+        public var className: String {
+            get throws {
+                let namePointer =
+                    UnsafeMutablePointer<CChar>.allocate(capacity: MemoryLayout<io_name_t>.size)
+                defer { namePointer.deallocate() }
+                try Mach.call(IOObjectGetClass(self.name, namePointer))
+                return String(cString: namePointer)
+            }
+        }
+
+        /// Copies the class name of the object.
+        public func copyClassName() -> CFString? {
+            return IOObjectCopyClass(self.name).takeUnretainedValue()
+        }
+
+        /// Returns if the object conforms to the given class name.
+        public func conforms(to className: String) -> Bool {
+            let classNamePointer =
+                UnsafeMutablePointer<CChar>.allocate(capacity: MemoryLayout<io_name_t>.size)
+            return IOObjectConformsTo(self.name, classNamePointer) != 0
+        }
+
+        /// Compares two IOKit objects.
+        static func == (lhs: IOObject, rhs: IOObject) -> Bool {
+            return IOObjectIsEqualTo(lhs.name, rhs.name) != 0
+        }
+
+        /// The kernel-level retain count of the object.
+        var kernelRetainCount: UInt32 {
+            IOObjectGetKernelRetainCount(self.name)
+        }
+
+        /// The user-level retain count of the object.
+        var userRetainCount: UInt32 {
+            IOObjectGetUserRetainCount(self.name)
+        }
+
+        /// The retain count of the object.
+        var retainCount: UInt32 {
+            IOObjectGetRetainCount(self.name)
+        }
     }
 
     /// A main port for IOKit.
