@@ -264,6 +264,11 @@ extension OS {
             try Mach.call(IOServiceOpen(self.name, owningTask.name, type, &connect))
             return IOConnect(named: connect)
         }
+
+        /// Requests a probe for the service using the given options.
+        public func requestProbe(withOptions options: UInt32) throws {
+            try Mach.call(IOServiceRequestProbe(self.name, options))
+        }
     }
 
     /// A notification port for IOKit.
