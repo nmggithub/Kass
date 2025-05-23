@@ -51,15 +51,16 @@ let modules: [Module] = [
     BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
-        targetName: "OSCore", path: "Sources/OS/Core", dependencies: ["KassHelpers", "KassC"]
-    ),
-    BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
         dependencies: ["KassHelpers", "KassC", "Linking"]
     ),
     BasicModule.init(
         targetName: "BSDCore", path: "Sources/BSD/Core",
         dependencies: ["KassHelpers", "MachCore", "KassC", "Linking"]
+    ),
+    BasicModule.init(
+        targetName: "OSCore", path: "Sources/OS/Core",
+        dependencies: ["KassHelpers", "KassC", "BSDCore", "MachCore"]
     ),
     BasicModule.init(
         targetName: "LibNotify", dependencies: ["KassHelpers", "BSDCore", "MachCore"]
