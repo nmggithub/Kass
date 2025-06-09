@@ -1,5 +1,6 @@
 import Darwin.Mach
 import Foundation
+import KassC.Compat
 import KassHelpers
 
 extension Mach {
@@ -10,17 +11,17 @@ extension Mach {
         public let name: String?
 
         /// Represents a flag with an optional name.
-        public init(name: String?, rawValue: Int32) {
+        public init(name: String?, rawValue: UInt32) {
             self.name = name
             self.rawValue = rawValue
         }
 
         /// The raw value of the flags.
-        public let rawValue: Int32
+        public let rawValue: UInt32
 
         /// All known port construction flags.
         public static var allCases: [Self] {
-            var allGeneralFlags: [Self] =
+            var allFlags: [Self] =
                 [
                     .contextAsGuard, .queueLimit, .tempOwner, .importanceReceiver, .insertSendRight,
                     .strict, .denapReceiver, .immovableReceive, .filterMsg,
@@ -29,64 +30,71 @@ extension Mach {
                     .provisionalReplyPort,
                 ]
             if #available(macOS 15, *) {
-                allGeneralFlags.append(.exceptionPort)
+                allFlags.append(.exceptionPort)
+            } else if #available(macOS 26, *) {
+                allFlags.append(.portWithPortArray)
             }
-            return allGeneralFlags
+            return allFlags
         }
 
         /// Use the passed context as a guard.
         public static let contextAsGuard = Self(
-            name: "contextAsGuard", rawValue: MPO_CONTEXT_AS_GUARD
+            name: "contextAsGuard", rawValue: UInt32(MPO_CONTEXT_AS_GUARD)
         )
 
         /// Use the passed queue limit.
-        public static let queueLimit = Self(name: "queueLimit", rawValue: MPO_QLIMIT)
+        public static let queueLimit = Self(name: "queueLimit", rawValue: UInt32(MPO_QLIMIT))
 
         /// Set the tempower bit on the port.
-        public static let tempOwner = Self(name: "tempOwner", rawValue: MPO_TEMPOWNER)
+        public static let tempOwner = Self(name: "tempOwner", rawValue: UInt32(MPO_TEMPOWNER))
 
         /// Mark the port as an importance receiver.
         public static let importanceReceiver = Self(
-            name: "importanceReceiver", rawValue: MPO_IMPORTANCE_RECEIVER
+            name: "importanceReceiver", rawValue: UInt32(MPO_IMPORTANCE_RECEIVER)
         )
 
         /// Insert a send right in addition to the allocated receive right.
         public static let insertSendRight = Self(
-            name: "insertSendRight", rawValue: MPO_INSERT_SEND_RIGHT
+            name: "insertSendRight", rawValue: UInt32(MPO_INSERT_SEND_RIGHT)
         )
 
         /// Use strict guarding.
         /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
-        public static let strict = Self(name: "strict", rawValue: MPO_STRICT)
+        public static let strict = Self(name: "strict", rawValue: UInt32(MPO_STRICT))
 
         /// Mark the port as a De-Nap receiver.
-        public static let denapReceiver = Self(name: "denapReceiver", rawValue: MPO_DENAP_RECEIVER)
+        public static let denapReceiver = Self(
+            name: "denapReceiver", rawValue: UInt32(MPO_DENAP_RECEIVER))
 
         /// Mark the receive right as immovable, protected by the guard.
         /// - Important: This flag is ignored if the ``contextAsGuard`` flag is not passed.
         public static let immovableReceive = Self(
-            name: "immovableReceive", rawValue: MPO_IMMOVABLE_RECEIVE
+            name: "immovableReceive", rawValue: UInt32(MPO_IMMOVABLE_RECEIVE)
         )
 
         /// Enable message filtering.
-        public static let filterMsg = Self(name: "filterMsg", rawValue: MPO_FILTER_MSG)
+        public static let filterMsg = Self(name: "filterMsg", rawValue: UInt32(MPO_FILTER_MSG))
 
         /// Enable tracking of thread group blocking.
         public static let trackThreadGroupBlocking = Self(
-            name: "trackThreadGroupBlocking", rawValue: MPO_TG_BLOCK_TRACKING
+            name: "trackThreadGroupBlocking", rawValue: UInt32(MPO_TG_BLOCK_TRACKING)
         )
 
         /// Construct a service port.
         /// - Important: This is only allowed for the init system.
-        public static let servicePort = Self(name: "servicePort", rawValue: MPO_SERVICE_PORT)
+        public static let servicePort = Self(
+            name: "servicePort", rawValue: get_mpo_service_port_value()
+        )
 
         /// Construct a connection port.
         public static let connectionPort = Self(
-            name: "connectionPort", rawValue: MPO_CONNECTION_PORT
+            name: "connectionPort", rawValue: get_mpo_connection_port_value()
         )
 
         /// Mark the port as a reply port.
-        public static let replyPort = Self(name: "replyPort", rawValue: MPO_REPLY_PORT)
+        public static let replyPort = Self(
+            name: "replyPort", rawValue: get_mpo_reply_port_value()
+        )
 
         /// Enforce reply port semantics.
         ///
@@ -94,13 +102,13 @@ extension Mach {
         /// must indicate a reply port as the local port in the message header.
         public static let enforceReplyPortSemantics = Self(
             name: "enforceReplyPortSemantics",
-            rawValue: MPO_ENFORCE_REPLY_PORT_SEMANTICS
+            rawValue: UInt32(MPO_ENFORCE_REPLY_PORT_SEMANTICS)
         )
 
         /// Mark the port as a provisional reply port.
         public static let provisionalReplyPort = Self(
             name: "provisionalReplyPort",
-            rawValue: MPO_PROVISIONAL_REPLY_PORT
+            rawValue: get_mpo_provisional_reply_port_value()
         )
 
         /// Mark the port as an exception port.
@@ -111,7 +119,14 @@ extension Mach {
         // seem to do something. The previous flag will not be included in this library.
         public static let exceptionPort = Self(
             name: "exceptionPort",
-            rawValue: MPO_EXCEPTION_PORT
+            rawValue: get_mpo_exception_port_value()
+        )
+
+        /// Mark the port as a port with a port array.
+        @available(macOS, introduced: 26)
+        public static let portWithPortArray = Self(
+            name: "portWithPortArray",
+            rawValue: get_mpo_connection_port_with_port_array_value()
         )
     }
 }

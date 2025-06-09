@@ -34,12 +34,12 @@ extension Mach.Port {
         if context != nil {
             // We enforce adding this flag if a context is passed, even if the user didn't
             // specify it. The context is ignored otherwise.
-            options.flags |= UInt32(Mach.PortConstructFlags.contextAsGuard.rawValue)
+            options.flags |= Mach.PortConstructFlags.contextAsGuard.rawValue
         }
         if options.mpl.mpl_qlimit != 0 {
             // We enforce adding this flag is a limit is passed, even if the user didn't
             // specify it. The limit is ignored otherwise.
-            options.flags |= UInt32(Mach.PortConstructFlags.queueLimit.rawValue)
+            options.flags |= Mach.PortConstructFlags.queueLimit.rawValue
         }
         let actualContext = context ?? mach_port_context_t()
         try Mach.call(

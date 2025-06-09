@@ -1,4 +1,5 @@
 import Darwin.Mach
+import KassC.Compat
 import KassC.IPCKobject
 
 /// A type of kernel object.
@@ -267,7 +268,7 @@ extension Mach {
                 capacity: Int(KOBJECT_DESCRIPTION_LENGTH)
             )
             try Mach.call(
-                mach_port_kobject_description(
+                mach_port_kobject_description_compat(
                     port.owningTask.name, port.name, &type, &objectAddress, descriptionPointer
                 )
             )

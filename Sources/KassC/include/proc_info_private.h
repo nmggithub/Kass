@@ -43,6 +43,8 @@
 #include <sys/types.h>
 #include <uuid/uuid.h>
 
+#include <Availability.h>
+
 // Taken from `coalition.h` in the XNU kernel source code.
 #define COALITION_TYPE_MAX (1)
 #define COALITION_NUM_TYPES (COALITION_TYPE_MAX + 1)
@@ -78,11 +80,14 @@ struct proc_bsdinfowithuniqid
 	struct proc_uniqidentifierinfo p_uniqidentifier;
 };
 
+// // This was added to the public SDK in macOS 26, so we don't need to include when building for macOS 26 or later.
+#if __MAC_OS_X_VERSION_MAX_ALLOWED < 260000
 struct proc_archinfo
 {
 	cpu_type_t p_cputype;
 	cpu_subtype_t p_cpusubtype;
 };
+#endif // __MAC_OS_X_VERSION_MAX_ALLOWED < 260000
 
 struct proc_pidcoalitioninfo
 {

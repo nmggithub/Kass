@@ -138,4 +138,9 @@ module KassC {
         header "i386_thread_status.h"
         export *
     }
+
+    module Compat {
+        header "compat.h"
+        export *
+    }
 }
