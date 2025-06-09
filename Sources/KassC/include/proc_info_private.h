@@ -87,7 +87,7 @@ struct proc_archinfo
 	cpu_type_t p_cputype;
 	cpu_subtype_t p_cpusubtype;
 };
-#endif // __MAC_OS_X_VERSION_MAX_ALLOWED < 260000
+#endif
 
 struct proc_pidcoalitioninfo
 {

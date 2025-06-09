@@ -49,5 +49,12 @@ kern_return_t mach_port_kobject_description_compat(
     kobject_description_t description)
 {
     return mach_port_kobject_description(
-        task, name, (ipc_info_object_type_t *)object_type, object_addr, description);
+        task,
+        name,
+#if __MAC_OS_X_VERSION_MAX_ALLOWED < 260000
+        object_type,
+#else
+        (ipc_info_object_type_t *)object_type,
+#endif
+        object_addr, description);
 }
