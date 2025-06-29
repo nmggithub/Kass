@@ -408,8 +408,8 @@ extension OS {
 
         /// An set of operands representing either the input or output of a method.
         public struct IOConnectMethodOperands {
-            let scalars: [UInt64]?
-            let structure: UnsafeRawBufferPointer?
+            public let scalars: [UInt64]?
+            public let structure: UnsafeRawBufferPointer?
             public init(
                 scalars: [UInt64]? = nil,
                 structure: UnsafeRawBufferPointer? = nil
