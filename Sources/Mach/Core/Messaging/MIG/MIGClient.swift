@@ -13,6 +13,7 @@ extension Mach {
             super.init(named: name)
         }
 
+        @available(*, unavailable, message: "Use `init(named:baseRoutineID:)` instead.")
         public required init(named name: mach_port_name_t, inNameSpaceOf task: Mach.Task = .current)
         {
             self.baseRoutineID = 0
