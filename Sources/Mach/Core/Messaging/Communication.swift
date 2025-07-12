@@ -94,7 +94,7 @@ extension Mach.Message {
         from receivePort: Mach.Port? = nil,
         withDisposition localDisposition: Mach.PortDisposition? = nil,
         options: consuming Mach.MessageOptions = [],
-        timeout: mach_msg_timeout_t = 0
+        timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
     ) throws -> ReceiveMessage {
         options.insert(.send)
         options.insert(.receive)
