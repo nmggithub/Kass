@@ -143,4 +143,14 @@ module KassC {
         header "compat.h"
         export *
     }
+
+    module OncePrivate {
+        header "once_private.h"
+        export *
+    }
+    
+    module AllocOnceImpl {
+        header "alloc_once_impl.h"
+        export *
+    }
 }
