@@ -23,7 +23,7 @@ extension BSD {
         public let rawValue: Int16
 
         /// The individual flags in the collection.
-        public var flags: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var flags: [Self] { self.values }
 
         /// All known POSIX spawn flags.
         public static let allCases: [Self] = [
@@ -109,7 +109,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual flags in the collection.
-        public var flags: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var flags: [Self] { self.values }
 
         /// All known CPU security mitigation flags.
         public static let allCases: [Self] = [

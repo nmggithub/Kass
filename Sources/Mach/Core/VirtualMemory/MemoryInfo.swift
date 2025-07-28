@@ -51,7 +51,7 @@ extension Mach {
 
         /// The flags that are included in the set.
         public var flags: [Self] {
-            Self.allCases.filter { self.contains($0) }
+            self.values
         }
 
         /// All known flags.

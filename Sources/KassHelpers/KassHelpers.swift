@@ -29,11 +29,26 @@ extension Namespace {
 }
 
 extension NamedOptionEnum {
-    /// The description of the option.
-    public var description: String {
+    private var singularDescription: String {
         let className = String(describing: Self.self)
         let caseName = "\(name ?? "unknown") (\(rawValue))"
         return "\(className): \(caseName)"
+    }
+}
+
+extension NamedOptionEnum where Self: OptionSet, Self.Element == Self {
+    public var values: [Self] { Self.allCases.filter { self.contains($0) } }
+    public var description: String {
+        let className = String(describing: Self.self)
+        let caseNames = values.map { $0.singularDescription }.joined(separator: ", ")
+        return "\(className): [\(caseNames)]"
+    }
+}
+
+extension NamedOptionEnum {
+    /// The description of the option.
+    public var description: String {
+        return singularDescription
     }
 
     /// Represents an option with a raw value, taking one of the known cases if the raw value matches one.

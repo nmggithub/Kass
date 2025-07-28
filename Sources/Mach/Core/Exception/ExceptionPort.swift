@@ -160,7 +160,7 @@ extension Mach {
         }
 
         /// The individual masks that are contained in the mask.
-        public var masks: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var masks: [Self] { self.values }
 
         public static let badAccess = Self(name: "badAccess", rawValue: UInt32(EXC_MASK_BAD_ACCESS))
 

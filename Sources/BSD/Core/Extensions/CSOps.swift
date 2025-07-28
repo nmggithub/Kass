@@ -20,7 +20,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual flags in the collection.
-        public var flags: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var flags: [Self] { self.values }
 
         /// All known code signing flags.
         public static let allCases: [Self] = [

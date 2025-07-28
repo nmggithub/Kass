@@ -33,7 +33,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual common attributes in the collection.
-        public var attributes: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var attributes: [Self] { self.values }
 
         /// All known common attributes.
         public static let allCases: [Self] = [
@@ -199,7 +199,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual volume attributes in the collection.
-        public var attributes: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var attributes: [Self] { self.values }
 
         /// All known volume attributes.
         public static let allCases: [Self] = [
@@ -347,7 +347,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual directory attributes in the collection.
-        public var attributes: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var attributes: [Self] { self.values }
 
         /// All known directory attributes.
         public static let allCases: [Self] = [
@@ -400,7 +400,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual file attributes in the collection.
-        public var attributes: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var attributes: [Self] { self.values }
 
         /// All known file attributes.
         public static let allCases: [Self] = [
@@ -483,7 +483,7 @@ extension BSD {
         public let rawValue: UInt32
 
         /// The individual extended common attributes in the collection.
-        public var attributes: [Self] { Self.allCases.filter { self.contains($0) } }
+        public var attributes: [Self] { self.values }
 
         /// All known extended common attributes.
         public static let allCases: [Self] = [
