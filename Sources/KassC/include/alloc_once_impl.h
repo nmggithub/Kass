@@ -51,7 +51,7 @@ struct _os_alloc_once_s {
 };
 
 __OSX_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_6_0)
-extern struct _os_alloc_once_s _os_alloc_once_table[];
+struct _os_alloc_once_s _os_alloc_once_table[OS_ALLOC_ONCE_KEY_MAX];
 
 __OSX_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_6_0)
 OS_EXPORT OS_NONNULL1 void *_os_alloc_once(struct _os_alloc_once_s *slot,
