@@ -157,7 +157,7 @@ extension OS {
                 guard
                     key.rawValue < AllocOnceKey.max.rawValue,
                     let tableAsPointer =
-                        ptr.baseAddress?.assumingMemoryBound(to: _AllocOnceSlot?.self)
+                        ptr.baseAddress?.assumingMemoryBound(to: _AllocOnceSlot.self)
                 else { return nil }
                 return tableAsPointer[Int(key.rawValue)]
             }
