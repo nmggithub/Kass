@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2012-2013 Apple Inc. All rights reserved.
+ *
  * Original:
  * https://github.com/apple-oss-distributions/Libplatform/blob/libplatform-161/private/os/alloc_once_impl.h
  * No modifications have been made from the original source code except for
@@ -51,7 +52,7 @@ struct _os_alloc_once_s {
 };
 
 __OSX_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_6_0)
-struct _os_alloc_once_s _os_alloc_once_table[OS_ALLOC_ONCE_KEY_MAX];
+extern struct _os_alloc_once_s _os_alloc_once_table[OS_ALLOC_ONCE_KEY_MAX];
 
 __OSX_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_6_0)
 OS_EXPORT OS_NONNULL1 void *_os_alloc_once(struct _os_alloc_once_s *slot,
