@@ -12,11 +12,11 @@ extension OS {
 
     /// Allocates memory once, optionally initializing it with a function.
     public static func _allocOnce(
-        _ slot: inout _AllocOnceSlot,
+        _ slot: UnsafeMutablePointer<_AllocOnceSlot>,
         size: size_t,
         initFunction: Function? = nil
     ) -> UnsafeMutableRawPointer? {
-        return _os_alloc_once(&slot, size, initFunction)
+        return _os_alloc_once(slot, size, initFunction)
     }
 }
 
@@ -152,7 +152,7 @@ extension OS {
     public struct _AllocOnceTable {
         public static var rawTable = _os_alloc_once_table
 
-        /// Returns a pointer to the allocation slot for the given key.
+        /// Returns an allocation slot (pointer) for the given key.
         public static subscript(key: AllocOnceKey) -> UnsafeMutablePointer<_AllocOnceSlot>? {
             withUnsafeMutableBytes(of: &rawTable) { (ptr: UnsafeMutableRawBufferPointer) in
                 guard
