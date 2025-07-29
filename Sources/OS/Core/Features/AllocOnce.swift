@@ -152,7 +152,7 @@ extension OS {
         public static let rawTable = _os_alloc_once_table
 
         /// Returns the allocation slot for the given key.
-        static subscript(key: AllocOnceKey) -> _AllocOnceSlot? {
+        public static subscript(key: AllocOnceKey) -> _AllocOnceSlot? {
             withUnsafeBytes(of: rawTable) { ptr in
                 guard
                     key.rawValue < AllocOnceKey.max.rawValue,
