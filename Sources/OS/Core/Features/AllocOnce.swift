@@ -148,18 +148,21 @@ extension OS {
     }
 
     /// A table of once-allocated memory.
+    @MainActor
     public struct _AllocOnceTable {
-        public static let rawTable = _os_alloc_once_table
+        public static var rawTable = _os_alloc_once_table
 
-        /// Returns the allocation slot for the given key.
-        public static subscript(key: AllocOnceKey) -> _AllocOnceSlot? {
-            withUnsafeBytes(of: rawTable) { ptr in
+        /// Returns a pointer to the allocation slot for the given key.
+        public static subscript(key: AllocOnceKey) -> UnsafeMutablePointer<_AllocOnceSlot>? {
+            withUnsafeMutableBytes(of: &rawTable) { (ptr: UnsafeMutableRawBufferPointer) in
                 guard
                     key.rawValue < AllocOnceKey.max.rawValue,
                     let tableAsPointer =
                         ptr.baseAddress?.assumingMemoryBound(to: _AllocOnceSlot.self)
                 else { return nil }
-                return tableAsPointer[Int(key.rawValue)]
+                return
+                    tableAsPointer
+                    .advanced(by: Int(key.rawValue))
             }
         }
     }
