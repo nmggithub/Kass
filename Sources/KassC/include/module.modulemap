@@ -153,4 +153,9 @@ module KassC {
         header "alloc_once_impl.h"
         export *
     }
+
+    module AllocOncePrivate {
+        header "alloc_once_private.h"
+        export *
+    }
 }
