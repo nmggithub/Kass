@@ -1,7 +1,28 @@
-import Bootstrap
 import Darwin.Mach
 import Foundation.NSError
 import Linking
+
+#if canImport(Bootstrap)
+    import Bootstrap
+#else
+    private let bootstrap_strerror: @convention(c) (kern_return_t) -> UnsafeMutablePointer<CChar>? =
+        libSystem().get(symbol: "bootstrap_strerror")!.cast()
+    private let bootstrap_parent:
+        @convention(c) (mach_port_t, UnsafeMutablePointer<mach_port_name_t>) -> kern_return_t =
+            libSystem().get(symbol: "bootstrap_parent")!.cast()
+    private let bootstrap_look_up:
+        @convention(c) (mach_port_t, UnsafePointer<CChar>, UnsafeMutablePointer<mach_port_name_t>)
+            -> kern_return_t =
+            libSystem().get(symbol: "bootstrap_look_up")!.cast()
+    private let bootstrap_check_in:
+        @convention(c) (mach_port_t, UnsafePointer<CChar>, UnsafeMutablePointer<mach_port_name_t>)
+            -> kern_return_t =
+            libSystem().get(symbol: "bootstrap_check_in")!.cast()
+    private let bootstrap_register:
+        @convention(c) (mach_port_t, UnsafePointer<CChar>, mach_port_t) -> kern_return_t =
+            libSystem().get(symbol: "bootstrap_register")!.cast()
+    private let BOOTSTRAP_MAX_NAME_LEN: Int32 = 128
+#endif  // canImport(Bootstrap)
 
 private let bootstrap_get_root_:
     @convention(c) (mach_port_t, UnsafeMutablePointer<mach_port_name_t>) -> kern_return_t =

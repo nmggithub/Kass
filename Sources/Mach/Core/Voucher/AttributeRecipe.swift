@@ -49,39 +49,41 @@ extension Mach {
         public static let redeem = Self(name: "redeem", rawValue: MACH_VOUCHER_ATTR_REDEEM)
     }
 
-    // MARK: - ATM Command
-    /// An ATM voucher attribute recipe command.
-    @available(macOS, obsoleted: 11.0.1)
-    public struct VoucherATMAttributeRecipeCommand: VoucherAttributeRecipeCommand {
-        /// The name of the ATM command, if it can be determined.
-        public let name: String?
+    #if os(macOS)
+        // MARK: - ATM Command
+        /// An ATM voucher attribute recipe command.
+        @available(macOS, obsoleted: 11.0.1)
+        public struct VoucherATMAttributeRecipeCommand: VoucherAttributeRecipeCommand {
+            /// The name of the ATM command, if it can be determined.
+            public let name: String?
 
-        /// Represents an ATM command with an optional name.
-        public init(name: String?, rawValue: mach_voucher_attr_recipe_command_t) {
-            self.name = name
-            self.rawValue = rawValue
+            /// Represents an ATM command with an optional name.
+            public init(name: String?, rawValue: mach_voucher_attr_recipe_command_t) {
+                self.name = name
+                self.rawValue = rawValue
+            }
+
+            /// The raw value of the ATM command.
+            public let rawValue: mach_voucher_attr_recipe_command_t
+
+            /// All known ATM commands.
+            public static let allCases: [Self] = [
+                .null, .create, .register,
+            ]
+
+            public static let null = Self(
+                name: "null", rawValue: MACH_VOUCHER_ATTR_ATM_NULL
+            )
+
+            public static let create = Self(
+                name: "create", rawValue: MACH_VOUCHER_ATTR_ATM_CREATE
+            )
+
+            public static let register = Self(
+                name: "register", rawValue: MACH_VOUCHER_ATTR_ATM_REGISTER
+            )
         }
-
-        /// The raw value of the ATM command.
-        public let rawValue: mach_voucher_attr_recipe_command_t
-
-        /// All known ATM commands.
-        public static let allCases: [Self] = [
-            .null, .create, .register,
-        ]
-
-        public static let null = Self(
-            name: "null", rawValue: MACH_VOUCHER_ATTR_ATM_NULL
-        )
-
-        public static let create = Self(
-            name: "create", rawValue: MACH_VOUCHER_ATTR_ATM_CREATE
-        )
-
-        public static let register = Self(
-            name: "register", rawValue: MACH_VOUCHER_ATTR_ATM_REGISTER
-        )
-    }
+    #endif  // os(macOS)
 
     // MARK: - Importance Command
     /// An importance voucher attribute recipe command.
@@ -266,16 +268,18 @@ extension Mach {
             )
         }
 
-        /// Creates a new voucher attribute recipe for an ATM command.
-        public init(
-            atmCommand: Mach.VoucherATMAttributeRecipeCommand,
-            previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
-        ) {
-            self.init(
-                key: .atm, command: atmCommand,
-                previousVoucher: previousVoucher, content: content
-            )
-        }
+        #if os(macOS)
+            /// Creates a new voucher attribute recipe for an ATM command.
+            public init(
+                atmCommand: Mach.VoucherATMAttributeRecipeCommand,
+                previousVoucher: Mach.Voucher = Mach.Voucher.Nil, content: Data? = nil
+            ) {
+                self.init(
+                    key: .atm, command: atmCommand,
+                    previousVoucher: previousVoucher, content: content
+                )
+            }
+        #endif  // os(macOS)
 
         /// Creates a new voucher attribute recipe for a bank command.
         public init(
@@ -317,13 +321,16 @@ extension Mach {
 
         /// The command in the recipe.
         public var command: any Mach.VoucherAttributeRecipeCommand {
-            for commandType: any Mach.VoucherAttributeRecipeCommand.Type in [
+            var commandTypes: [any Mach.VoucherAttributeRecipeCommand.Type] = [
                 Mach.VoucherBaseAttributeRecipeCommand.self,
                 Mach.VoucherImportanceAttributeRecipeCommand.self,
-                Mach.VoucherATMAttributeRecipeCommand.self,
                 Mach.VoucherBankAttributeRecipeCommand.self,
                 Mach.VoucherPthreadPriorityAttributeRecipeCommand.self,
-            ] {
+            ]
+            #if os(macOS)
+                commandTypes.append(Mach.VoucherATMAttributeRecipeCommand.self)
+            #endif  // os(macOS)
+            for commandType: any Mach.VoucherAttributeRecipeCommand.Type in commandTypes {
                 let command = commandType.init(rawValue: self.typedValue.pointee.command)
                 // Known commands should have a name, so we can use the existence of
                 // a name as a proxy for whether the command is known or not.

@@ -95,7 +95,8 @@ let moduleProducts = modules.map {
 let package = Package(
     name: name,
     platforms: [
-        .macOS(.v10_13)
+        .macOS(.v10_13),
+        .iOS(.v12),
     ],
     products: moduleProducts,
     dependencies: [

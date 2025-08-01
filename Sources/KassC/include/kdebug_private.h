@@ -30,6 +30,8 @@
  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
  */
 
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+
 #ifndef BSD_KDEBUG_PRIVATE_H
 #define BSD_KDEBUG_PRIVATE_H
 
@@ -560,3 +562,5 @@ do {                                                                 \
 __END_DECLS
 
 #endif // !defined(BSD_KDEBUG_PRIVATE_H)
+
+#endif

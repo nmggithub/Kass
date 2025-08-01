@@ -9,7 +9,7 @@ extension BSD {
     public class Fileport: MachCore.Mach.Port {
 
         /// Initializes a fileport from a file descriptor.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public convenience init(fd: FileDescriptor) throws {
             try self.init(fd: Int32(fd.rawValue))
         }
@@ -23,7 +23,7 @@ extension BSD {
 
         /// Makes a file descriptor from a fileport.
         /// - Note: This function will create a new file descriptor each time it is called.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         func makeFD() throws -> FileDescriptor {
             return FileDescriptor(rawValue: try BSD.call(fileport_makefd(self.name)))
         }

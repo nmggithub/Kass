@@ -29,6 +29,7 @@
  *
  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
  */
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
 
 #ifndef _SYS_PROC_INFO_PRIVATE_H
 #define _SYS_PROC_INFO_PRIVATE_H
@@ -368,3 +369,5 @@ extern uint64_t workqueue_get_task_ss_flags_from_pwq_state_kdp(void *proc);
 __END_DECLS
 
 #endif /*_SYS_PROC_INFO_PRIVATE_H */
+
+#endif

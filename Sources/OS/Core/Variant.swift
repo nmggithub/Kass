@@ -28,49 +28,52 @@ extension OS {
         }
 
         /// Wether or not the variant has factory content.
-        @available(macOS 10.14.4, *)
+        @available(macOS 10.14.4, iOS 12.2, *)
         public var hasFactoryContent: Bool {
             os_variant_has_factory_content(self.subsystem)
         }
 
         /// Wether or not the variant is a darwinOS variant.
-        @available(macOS 10.15, *)
+        @available(macOS 10.15, iOS 13.0, *)
         public var isDarwinOS: Bool {
             os_variant_is_darwinos(self.subsystem)
         }
 
         /// Wether or not the variant uses ephemeral storage.
-        @available(macOS 10.15, *)
+        @available(macOS 10.15, iOS 13.0, *)
         public var usesEphemeralStorage: Bool {
             os_variant_uses_ephemeral_storage(self.subsystem)
         }
 
         /// Wether or not the variant allows security research.
-        @available(macOS 12.0, *)
+        @available(macOS 12.0, iOS 15.0, *)
         public var allowsSecurityResearch: Bool {
             os_variant_allows_security_research(self.subsystem)
         }
 
-        /// Wether or not the variant is the macOS BaseSystem.
-        @available(macOS 11.0, *)
-        public var isBaseSystem: Bool {
-            os_variant_is_basesystem(self.subsystem)
-        }
+        #if os(macOS)
+            /// Wether or not the variant is the macOS BaseSystem.
+            @available(macOS 11.0, *)
+            @available(iOS, unavailable)
+            public var isBaseSystem: Bool {
+                os_variant_is_basesystem(self.subsystem)
+            }
+        #endif
 
         /// Wether or not the variant is a recoveryOS.
-        @available(macOS 10.15, *)
+        @available(macOS 10.15, iOS 13.0, *)
         public var isRecovery: Bool {
             os_variant_is_recovery(self.subsystem)
         }
 
         /// Checks if the system is the given variant.
-        @available(macOS 10.15, *)
+        @available(macOS 10.15, iOS 13.0, *)
         func check(_ variant: String) -> Bool {
             os_variant_check(self.subsystem, variant)
         }
 
         /// A string representation of the variant.
-        @available(macOS 11, *)
+        @available(macOS 11, iOS 14.0, *)
         public var description: String {
             get throws {
                 guard let descriptionPointer = os_variant_copy_description(self.subsystem) else {

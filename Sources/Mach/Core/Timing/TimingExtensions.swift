@@ -1,6 +1,6 @@
 import Foundation
 
-@available(macOS 13.0, *)
+@available(macOS 13.0, iOS 16.0, *)
 extension Duration {
     /// The duration as a `mach_timespec_t`.
     public var machTimespec: mach_timespec_t {

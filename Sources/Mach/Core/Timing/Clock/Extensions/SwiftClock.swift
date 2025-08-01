@@ -141,6 +141,7 @@ extension Mach.Clock: Clock, @unchecked Sendable {
     /// ***Unsafe.*** Sleeps until a given time.
     /// - Warning: This function will crash the program if the kernel call fails.
     /// - Important: The `tolerance` parameter is ignored.
+    @available(iOS 13.0, *)
     public func sleep(until time: Instant, tolerance: Duration?) async {
         try! self.sleep(until: time.value)
     }

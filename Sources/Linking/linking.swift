@@ -150,7 +150,7 @@ public class Framework: Library, @unchecked Sendable {
     ///   - path: The directory containing the framework.
     /// - Returns: The path to the framework.
     private static func frameworkPath(for name: String, inPath path: URL) -> String {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 13.0, iOS 16.0, *) {
             return path.appending(component: "\(name).framework/\(name)").path
         } else {
             return path.appendingPathComponent("\(name).framework/\(name)", isDirectory: true).path
@@ -179,7 +179,7 @@ public class Framework: Library, @unchecked Sendable {
     /// - Parameter subFramework: The name of the sub-framework.
     /// - Returns: A handle to the sub-framework, or `nil` if the sub-framework could not be found.
     public func get(subFramework: String) -> Framework? {
-        if #available(macOS 13.0, *) {
+        if #available(macOS 13.0, iOS 16.0, *) {
             let subFrameworksPath = self.pathURL.deletingLastPathComponent()
                 .appending(component: "Frameworks")
             return Framework(

@@ -65,33 +65,35 @@ extension Mach {
     public protocol VoucherAttributeCommand: KassHelpers.NamedOptionEnum
     where RawValue == mach_voucher_attr_command_t {}
 
-    // MARK: - ATM Action
-    /// A voucher attribute command for the ``Mach/VoucherAttributeKey/atm`` key.
-    @available(macOS, obsoleted: 11.0.1)
-    public struct VoucherATMAction: VoucherAttributeCommand {
-        /// The name of the ATM action, if it can be determined.
-        public var name: String?
+    #if os(macOS)
+        // MARK: - ATM Action
+        /// A voucher attribute command for the ``Mach/VoucherAttributeKey/atm`` key.
+        @available(macOS, obsoleted: 11.0.1)
+        public struct VoucherATMAction: VoucherAttributeCommand {
+            /// The name of the ATM action, if it can be determined.
+            public var name: String?
 
-        /// Represents an ATM action with an optional name.
-        public init(name: String?, rawValue: atm_action_t) {
-            self.name = name
-            self.rawValue = rawValue
+            /// Represents an ATM action with an optional name.
+            public init(name: String?, rawValue: atm_action_t) {
+                self.name = name
+                self.rawValue = rawValue
+            }
+
+            /// The raw value of the ATM action.
+            public let rawValue: atm_action_t
+
+            /// All known ATM actions.
+            public static let allCases: [Self] = [.atmCreate, .register]
+
+            public static let atmCreate = Self(
+                name: "atmCreate", rawValue: atm_action_t(MACH_VOUCHER_ATTR_ATM_CREATE)
+            )
+
+            public static let register = Self(
+                name: "register", rawValue: atm_action_t(MACH_VOUCHER_ATTR_ATM_REGISTER)
+            )
         }
-
-        /// The raw value of the ATM action.
-        public let rawValue: atm_action_t
-
-        /// All known ATM actions.
-        public static let allCases: [Self] = [.atmCreate, .register]
-
-        public static let atmCreate = Self(
-            name: "atmCreate", rawValue: atm_action_t(MACH_VOUCHER_ATTR_ATM_CREATE)
-        )
-
-        public static let register = Self(
-            name: "register", rawValue: atm_action_t(MACH_VOUCHER_ATTR_ATM_REGISTER)
-        )
-    }
+    #endif  // os(macOS)
 
     // MARK: - Importance Action
     /// A voucher attribute command for the ``Mach/VoucherAttributeKey/importance`` key.

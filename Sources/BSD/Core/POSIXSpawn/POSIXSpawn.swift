@@ -272,7 +272,7 @@ extension BSD {
         }
 
         // Gets the binary preferences.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public func getBinaryPreferences() throws -> [(
             cpuType: cpu_type_t, cpuSubType: cpu_subtype_t
         )] {
@@ -313,7 +313,7 @@ extension BSD {
         }
 
         /// Sets the binary preferences.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public func setBinaryPreferences(
             _ binaryPreferences: [(cpuType: cpu_type_t, cpuSubType: cpu_subtype_t)]
         ) throws {
@@ -379,7 +379,7 @@ extension BSD {
         }
 
         /// Sets the CPU security mitigations for the spawned process.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public func setCPUSecurityMitigations(flags: POSIXSpawnCPUSecurityMitigations) throws {
             try BSDCore.BSD.call(posix_spawnattr_set_csm_np(self.rawValue, flags.rawValue))
         }
@@ -418,7 +418,7 @@ extension BSD {
         }
 
         /// Adds an action to close a file descriptor.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public func addClose(fd: FileDescriptor) throws {
             try BSDCore.BSD.call(posix_spawn_file_actions_addclose(self.rawValue, fd.rawValue))
         }
@@ -442,7 +442,7 @@ extension BSD {
         }
 
         /// Adds an action to open a file.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public func addOpen(
             path: String,
             usingFD fd: FileDescriptor.RawValue,
@@ -462,13 +462,14 @@ extension BSD {
         }
 
         /// Adds an action to inherit a file descriptor.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
         public func addInherit(fd: FileDescriptor) throws {
             try BSDCore.BSD.call(posix_spawn_file_actions_addinherit_np(self.rawValue, fd.rawValue))
         }
 
         /// Adds an action to change the working directory.
         @available(macOS 10.15, *)
+        @available(iOS, unavailable)
         public func addChangeDirectory(toPath path: String) throws {
             try BSDCore.BSD.call(
                 posix_spawn_file_actions_addchdir_np(self.rawValue, path)
@@ -477,6 +478,7 @@ extension BSD {
 
         /// Adds an action to change the working directory.
         @available(macOS 10.15, *)
+        @available(iOS, unavailable)
         public func addChangeDirectory(toFD fd: Int32) throws {
             try BSDCore.BSD.call(
                 posix_spawn_file_actions_addfchdir_np(self.rawValue, fd)
@@ -484,7 +486,8 @@ extension BSD {
         }
 
         /// Adds an action to change the working directory.
-        @available(macOS 11.0, *)
+        @available(macOS 11.0, iOS 14.0, *)
+        @available(iOS, unavailable)
         public func addChangeDirectory(toFD fd: FileDescriptor) throws {
             try BSDCore.BSD.call(
                 posix_spawn_file_actions_addfchdir_np(self.rawValue, fd.rawValue)

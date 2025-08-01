@@ -170,7 +170,7 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the jetsam TTRs for the spawned process.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func setJetsamTTRs(_ ttrs: consuming [UInt32]) throws {
         try BSDCore.BSD.call(
             posix_spawnattr_set_jetsam_ttr_np(
@@ -186,7 +186,7 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the kqueue workloop limits for the spawned process.
-    @available(macOS 14.3, *)
+    @available(macOS 14.3, iOS 17.4, *)
     public func setKQueueWorkloopLimits(soft: UInt32, hard: UInt32) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_kqworklooplimit_ext(self.rawValue, soft, hard))
     }
@@ -204,7 +204,7 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the registered ports for the spawned process.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func setRegisteredPorts(_ ports: [MachCore.Mach.Port]) throws {
         let portNameArrayPointer = mach_port_name_array_t.allocate(capacity: ports.count)
         defer { portNameArrayPointer.deallocate() }
@@ -217,14 +217,14 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the port limits for the spawned process.
-    @available(macOS 12.0, *)
+    @available(macOS 12.0, iOS 15.0, *)
     public func setPortLimits(softLimit: UInt32, hardLimit: UInt32) throws {
         try BSDCore.BSD.call(
             posix_spawnattr_set_portlimits_ext(self.rawValue, softLimit, hardLimit))
     }
 
     /// Sets the file descriptor limits for the spawned process.
-    @available(macOS 12.0, *)
+    @available(macOS 12.0, iOS 15.0, *)
     public func setFileDescriptorLimits(softLimit: UInt32, hardLimit: UInt32) throws {
         try BSDCore.BSD.call(
             posix_spawnattr_set_filedesclimit_ext(self.rawValue, softLimit, hardLimit))
@@ -337,19 +337,19 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the UID for the spawned process.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func setUID(_ uid: uid_t) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_uid_np(self.rawValue, uid))
     }
 
     /// Sets the GID for the spawned process.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func setGID(_ gid: gid_t) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_gid_np(self.rawValue, gid))
     }
 
     /// Sets the groups for the spawned process.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func setGroups(_ groups: [gid_t], uid: uid_t) throws {
         let gidArrayPointer = UnsafeMutablePointer<gid_t>.allocate(capacity: groups.count)
         defer { gidArrayPointer.deallocate() }
@@ -360,13 +360,13 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the login name for the spawned process.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func setLogin(_ login: String) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_login_np(self.rawValue, login))
     }
 
     /// Sets the subsystem root path for the spawned process.
-    @available(macOS 11.0, *)
+    @available(macOS 11.0, iOS 14.0, *)
     public func setSubsystemRootPath(_ path: String) throws {
         try path.withCString { pathCString in
             let _ = try BSDCore.BSD.call(
@@ -377,19 +377,19 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the platform for the spawned process.
-    @available(macOS 11.0, *)
+    @available(macOS 11.0, iOS 14.0, *)
     public func setPlatform(_ platform: Int32, flags: UInt32) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_platform_np(self.rawValue, platform, flags))
     }
 
     /// Disables the use of pointer authentication A keys for the spawned process.
-    @available(macOS 11.0, *)
+    @available(macOS 11.0, iOS 14.0, *)
     public func disablePointerAuthenticationAKeys(flags: UInt32) throws {
         try BSDCore.BSD.call(posix_spawnattr_disable_ptr_auth_a_keys_np(self.rawValue, flags))
     }
 
     /// Sets the use of the alternative Rosetta runtime for the spawned process.
-    @available(macOS 12.0, *)
+    @available(macOS 12.0, iOS 15.0, *)
     public func useAlternativeRosettaRuntime(flags: UInt32) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_alt_rosetta_np(self.rawValue, flags))
     }
@@ -401,13 +401,13 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Sets the crash behavior for the spawned process.
-    @available(macOS 13.0, *)
+    @available(macOS 13.0, iOS 16.0, *)
     public func setCrashBehavior(_ behavior: UInt32) throws {
         try BSDCore.BSD.call(posix_spawnattr_set_crash_behavior_np(self.rawValue, behavior))
     }
 
     /// Sets the crash behavior deadline for the spawned process.
-    @available(macOS 13.0, *)
+    @available(macOS 13.0, iOS 16.0, *)
     public func setCrashBehaviorDeadline(_ deadline: UInt64, flags: UInt32) throws {
         try BSDCore.BSD.call(
             posix_spawnattr_set_crash_behavior_deadline_np(self.rawValue, deadline, flags))
@@ -444,7 +444,7 @@ extension BSD.POSIXSpawnAttributes {
 
 extension BSD.POSIXSpawnAttributes {
     /// Adds an action to duplicate a fileport to a file descriptor.
-    @available(macOS 10.15, *)
+    @available(macOS 10.15, iOS 13.0, *)
     public func addFilePortDup2(_ fileport: BSD.Fileport, toFD fd: Int32) throws {
         try BSDCore.BSD.call(
             posix_spawn_file_actions_add_fileportdup2_np(self.rawValue, fileport.name, fd)
@@ -452,7 +452,7 @@ extension BSD.POSIXSpawnAttributes {
     }
 
     /// Adds an action to duplicate a fileport to a file descriptor.
-    @available(macOS 11.0, *)
+    @available(macOS 11.0, iOS 14.0, *)
     public func addFilePortDup2(_ fileport: BSD.Fileport, toFD fd: FileDescriptor) throws {
         try BSDCore.BSD.call(
             posix_spawn_file_actions_add_fileportdup2_np(self.rawValue, fileport.name, fd.rawValue)

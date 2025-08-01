@@ -70,9 +70,9 @@ extension Int32: BSD.BSDSyscallArgument {}
 extension UInt32: BSD.BSDSyscallArgument {}
 extension Int64: BSD.BSDSyscallArgument {}
 extension UInt64: BSD.BSDSyscallArgument {}
-@available(macOS 15.0, *)
+@available(macOS 15.0, iOS 18.0, *)
 extension Int128: BSD.BSDSyscallArgument {}
-@available(macOS 15.0, *)
+@available(macOS 15.0, iOS 18.0, *)
 extension UInt128: BSD.BSDSyscallArgument {}
 
 // MARK: - Pointer Extensions
