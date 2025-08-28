@@ -316,7 +316,7 @@
         }
 
         /// An iterator of IOKit objects.
-        public class IOIterator<ObjectType: IOObject>: IOObject, IteratorProtocol {
+        public class IOIterator<ObjectType: IOObject>: IOObject, IteratorProtocol, Sequence {
             /// Resets the iterator.
             public func reset() {
                 IOIteratorReset(self.name)
