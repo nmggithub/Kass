@@ -5,7 +5,7 @@
 
     extension OS {
         /// A plug-in interface (really a pointer to a pointer to an interface structure).
-        typealias IOCFPlugInInterface =
+        public typealias IOCFPlugInInterface =
             UnsafeMutablePointer<UnsafeMutablePointer<IOCFPlugInInterfaceStruct>?>
     }
 
@@ -14,19 +14,19 @@
         /// - Note: This is mainly to avoid having to use `pointee.pointee` everywhere.
         /// - Warning: Only use this function to get methods, not properties.
         /// - Warning: Immediately call the returned function. Do not store it for later.
-        func call<Path>(_ keyPath: KeyPath<IOCFPlugInInterfaceStruct, Path>) -> Path {
+        public func call<Path>(_ keyPath: KeyPath<IOCFPlugInInterfaceStruct, Path>) -> Path {
             self.pointee!.pointee[keyPath: keyPath]
         }
 
         /// Destroys the plug-in interface.
-        func destroy() throws {
+        public func destroy() throws {
             try Mach.call(IODestroyPlugInInterface(self))
         }
     }
 
     extension OS.IOService {
         /// Creates a plug-in interface for the specified service, returning the interface and a score.
-        func createPlugInInterface(
+        public func createPlugInInterface(
             pluginType: CFUUID,
             interfaceType: CFUUID
         ) throws -> (interface: OS.IOCFPlugInInterface, score: Int32) {
