@@ -144,10 +144,10 @@ extension OS.COM.COMInterface {
             throw error
         }
     }
-    /// Queries for an interface with the given UUID and returns a pointer to it.
+    /// Queries for an interface and returns a pointer to it.
     public func QueryInterface<QueriedInterface: OS.COM.COMInterface>(
-        _ uuid: CFUUID,
-        as: QueriedInterface.Type = QueriedInterface.self
+        uuid: CFUUID = QueriedInterface.interfaceID,
+        interfaceType: QueriedInterface.Type = QueriedInterface.self
     ) throws -> QueriedInterface {
         var result: LPVOID?
         try self.call(
