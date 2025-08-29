@@ -76,9 +76,9 @@ extension OS {
             var Release: (@convention(c) (UnsafeMutableRawPointer?) -> ULONG)! { get }
         }
 
-        /// A pointer for a COM interface (really a pointer to a pointer to an interface structure).
-        public typealias COMInterfacePointer<ActualInterface: IUnknownVTblProtocol> =
-            UnsafeMutablePointer<UnsafeMutablePointer<ActualInterface>?>
+        /// A pointer for a COM interface (really a pointer to a pointer to an vtable structure).
+        public typealias COMInterfacePointer<VTable: IUnknownVTblProtocol> =
+            UnsafeMutablePointer<UnsafeMutablePointer<VTable>?>
 
         /// A COM interface.
         public protocol COMInterface {
