@@ -9,7 +9,7 @@
     extension OS {
         /// A plug-in interface (really a pointer to a pointer to an interface structure).
         public struct IOCFPlugInCOMInterface: OS.COM.COMInterface {
-            public var pointer: OS.COM.COMInterfacePointer<IOCFPlugInInterfaceStruct>
+            public let pointer: OS.COM.COMInterfacePointer<IOCFPlugInInterfaceStruct>
             public static var interfaceID: CFUUID {
                 // This is defined as macro in the original SDK. That macro
                 //  can't be used in Swift, so we redefine the value here.
