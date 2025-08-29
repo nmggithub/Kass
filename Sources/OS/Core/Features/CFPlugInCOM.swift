@@ -95,7 +95,10 @@ extension OS {
             var vtable: VTable { get }
 
             /// Represents the interface pointed to by the pointer.
-            init(pointer: LPVOID)
+            init(voidPointer: LPVOID)
+
+            /// Represents the interface pointed to by the pointer.
+            init(pointer: COMInterfacePointer<VTable>)
         }
     }
 }
@@ -105,9 +108,9 @@ extension OS.COM.COMInterface {
         self.pointer.pointee!.pointee
     }
 
-    public init(pointer: LPVOID) {
+    public init(voidPointer: LPVOID) {
         self.init(
-            pointer: pointer.assumingMemoryBound(
+            pointer: voidPointer.assumingMemoryBound(
                 to: OS.COM.COMInterfacePointer<VTable>.Pointee.self
             )
         )
@@ -129,7 +132,12 @@ extension OS.COM {
                 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46
             )!
         }
+
         public let pointer: OS.COM.COMInterfacePointer<IUnknownVTbl>
+
+        public init(pointer: OS.COM.COMInterfacePointer<IUnknownVTbl>) {
+            self.pointer = pointer
+        }
     }
 }
 
@@ -157,7 +165,7 @@ extension OS.COM.COMInterface {
                 &result
             )
         )
-        return QueriedInterface(pointer: result!)
+        return QueriedInterface(voidPointer: result!)
     }
 
     /// Increments the reference count for the object and returns the new count.
