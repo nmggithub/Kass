@@ -129,7 +129,7 @@ extension OS.COM {
                 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x46
             )!
         }
-        public var pointer: OS.COM.COMInterfacePointer<IUnknownVTbl>
+        public let pointer: OS.COM.COMInterfacePointer<IUnknownVTbl>
     }
 }
 
