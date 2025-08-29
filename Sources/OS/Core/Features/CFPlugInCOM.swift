@@ -136,7 +136,7 @@ extension OS.COM {
 /// Wraps the members of the COM interface's vtable.
 extension OS.COM.COMInterface {
     /// Executes a function that returns a HRESULT and throws an error if it fails.
-    public func call(
+    public static func call(
         _ call: @autoclosure () throws -> HRESULT
     ) throws {
         let hr = try call()
@@ -150,7 +150,7 @@ extension OS.COM.COMInterface {
         interfaceType: QueriedInterface.Type = QueriedInterface.self
     ) throws -> QueriedInterface {
         var result: LPVOID?
-        try self.call(
+        try Self.call(
             self.vtable.QueryInterface(
                 self.pointer,
                 CFUUIDGetUUIDBytes(uuid),
