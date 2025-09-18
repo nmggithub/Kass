@@ -65,7 +65,7 @@ module KassC {
     }
 
     explicit module LibProc {
-        header "libproc.c"
+        header "libproc.h"
         export *
     }
 

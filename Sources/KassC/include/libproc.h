@@ -1,8 +1,10 @@
 /*
  * Copyright (c) 2006-2018 Apple Inc. All rights reserved.
  *
- * Original: https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.41.3/libsyscall/wrappers/libproc/libproc.c
- * Only the syscall wrapper definitons have been included in this file.
+ * Original:
+ * https://github.com/apple-oss-distributions/xnu/blob/xnu-11215.41.3/libsyscall/wrappers/libproc/libproc.c
+ * Only the syscall wrapper definitions have been included in this file.
+ * It has also been renamed to a .h file.
  *
  * @APPLE_LICENSE_HEADER_START@
  *
@@ -26,5 +28,8 @@
 
 #include <unistd.h>
 
-int __proc_info(int callnum, int pid, int flavor, uint64_t arg, void * buffer, int buffersize);
-int __proc_info_extended_id(int32_t callnum, int32_t pid, uint32_t flavor, uint32_t flags, uint64_t ext_id, uint64_t arg, user_addr_t buffer, int32_t buffersize);
+int __proc_info(int callnum, int pid, int flavor, uint64_t arg, void *buffer,
+                int buffersize);
+int __proc_info_extended_id(int32_t callnum, int32_t pid, uint32_t flavor,
+                            uint32_t flags, uint64_t ext_id, uint64_t arg,
+                            user_addr_t buffer, int32_t buffersize);
