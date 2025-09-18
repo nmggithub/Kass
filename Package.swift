@@ -56,7 +56,7 @@ let modules: [Module] = [
     ),
     BasicModule.init(
         targetName: "BSDCore", path: "Sources/BSD/Core",
-        dependencies: ["KassHelpers", "MachCore", "KassC", "Linking"]
+        dependencies: ["KassHelpers", "KassC", "Linking", "MachCore"]
     ),
     BasicModule.init(
         targetName: "OSCore", path: "Sources/OS/Core",
