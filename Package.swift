@@ -48,7 +48,6 @@ struct BSDSubModule: Module {
 /// The modules that are part of the package, in build order.
 let modules: [Module] = [
     BasicModule.init(targetName: "KassHelpers", dependencies: []),
-    BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
@@ -76,13 +75,21 @@ let modules: [Module] = [
 let name = "Kass"
 
 /// The targets for the modules.
-let moduleTargets = modules.map {
-    Target.target(
-        name: $0.targetName,
-        dependencies: $0.dependencies.map { Target.Dependency.target(name: $0) },
-        path: $0.path
-    )
-}
+let moduleTargets =
+    [
+        .target(
+            name: "KassC",
+            path: "Sources/KassC",
+            publicHeadersPath: "include"
+        )
+    ]
+    + modules.map {
+        Target.target(
+            name: $0.targetName,
+            dependencies: $0.dependencies.map { Target.Dependency.target(name: $0) },
+            path: $0.path
+        )
+    }
 
 /// The products for the modules.
 let moduleProducts = modules.map {
