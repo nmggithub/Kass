@@ -1,160 +1,160 @@
 module KassC {
-    module DyldExtra {
+    explicit module DyldExtra {
         header "dyld_extra.h"
         export *
     }
 
-    module MKTimer {
+    explicit module MKTimer {
         header "mk_timer.h"
         export *
     }
 
-    module TaskPolicyPrivate {
+    explicit module TaskPolicyPrivate {
         header "task_policy_private.h"
         export *
     }
 
-    module ThreadPolicyPrivate {
+    explicit module ThreadPolicyPrivate {
         header "thread_policy_private.h"
         export *
     }
 
-    module VMPrivate {
+    explicit module VMPrivate {
         header "vm_private.h"
         export *
     }
 
-    module VoucherExtra {
+    explicit module VoucherExtra {
         header "voucher_extra.h"
         export *
     }
 
-    module ExceptionPrivate {
+    explicit module ExceptionPrivate {
         header "exception_private.h"
         export *
     }
 
-    module IPCKobject {
+    explicit module IPCKobject {
         header "ipc_kobject.h"
         export *
     }
 
-    module CSR {
+    explicit module CSR {
         header "csr.h"
         export *
     }
 
-    module AttrPrivate {
+    explicit module AttrPrivate {
         header "attr_private.h"
         export *
     }
 
-    module OSKextLibPrivate {
+    explicit module OSKextLibPrivate {
         header "OSKextLibPrivate.h"
         export *
     }
 
-    module CodeSign {
+    explicit module CodeSign {
         header "codesign.h"
         export *
     }
 
-    module CSBlobs {
+    explicit module CSBlobs {
         header "cs_blobs.h"
         export *
     }
 
-    module LibProc {
+    explicit module LibProc {
         header "libproc.c"
         export *
     }
 
-    module ProcInfoPrivate {
+    explicit module ProcInfoPrivate {
         header "proc_info_private.h"
         export *
     }
 
-    module Fileport {
+    explicit module Fileport {
         header "fileport.h"
         export *
     }
 
-    module ProcInternal {
+    explicit module ProcInternal {
         header "proc_internal.h"
         export *
     }
 
-    module KDebugPrivate {
+    explicit module KDebugPrivate {
         header "kdebug_private.h"
         export *
     }
 
-    module MachEventlink {
+    explicit module MachEventlink {
         header "mach_eventlink.h"
         export *
     }
 
-    module KextRequestKeys {
+    explicit module KextRequestKeys {
         header "kext_request_keys.h"
         export *
     }
 
-    module VariantPrivate {
+    explicit module VariantPrivate {
         header "variant_private.h"
         export *
     }
 
-    module SpawnPrivate {
+    explicit module SpawnPrivate {
         header "spawn_private.h"
         export *
     }
 
-    module SpawnInternal {
+    explicit module SpawnInternal {
         header "spawn_internal.h"
         export *
     }
 
-    module Coalition {
+    explicit module Coalition {
         header "coalition.h"
         export *
     }
 
-    module ResourcePrivate {
+    explicit module ResourcePrivate {
         header "resource_private.h"
         export *
     }
 
-    module SyscallBridge {
+    explicit module SyscallBridge {
         header "syscall_bridge.h"
         export *
     }
 
-    module EventPrivate {
+    explicit module EventPrivate {
         header "event_private.h"
         export *
     }
 
-    module i386ThreadStatus {
+    explicit module i386ThreadStatus {
         header "i386_thread_status.h"
         export *
     }
 
-    module Compat {
+    explicit module Compat {
         header "compat.h"
         export *
     }
 
-    module OncePrivate {
+    explicit module OncePrivate {
         header "once_private.h"
         export *
     }
     
-    module AllocOnceImpl {
+    explicit module AllocOnceImpl {
         header "alloc_once_impl.h"
         export *
     }
 
-    module AllocOncePrivate {
+    explicit module AllocOncePrivate {
         header "alloc_once_private.h"
         export *
     }
