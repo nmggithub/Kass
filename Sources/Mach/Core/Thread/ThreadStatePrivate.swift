@@ -1,7 +1,7 @@
-import Darwin.Mach
-import KassC.i386ThreadStatus
-
 #if arch(i386) || arch(x86_64)
+    import Darwin.Mach
+    import KassC.i386ThreadStatus
+
     extension Mach.ThreadState {
         /// x86 saved state (32-bit).
         public static func x86SavedState32(_ state: x86_saved_state32_t?)
