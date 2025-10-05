@@ -92,12 +92,23 @@ let moduleTargets =
     }
 
 /// The products for the modules.
-let moduleProducts = modules.map {
-    Product.library(
-        name: $0.targetName,
-        targets: [$0.targetName] + $0.dependencies
-    )
-}
+let moduleProducts =
+    // The main "Kass" product vends the core modules as well, for convenience.
+    [
+        Product.library(
+            name: "Kass",
+            targets: [
+                "Kass", "KassHelpers", "BSDCore", "MachCore",
+            ]
+        )
+    ]
+    // Every other module just vends itself as a product.
+    + modules.filter({ $0.targetName != "Kass" }).map {
+        Product.library(
+            name: $0.targetName,
+            targets: [$0.targetName]
+        )
+    }
 
 let package = Package(
     name: name,
