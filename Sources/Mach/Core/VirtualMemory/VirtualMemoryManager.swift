@@ -1041,19 +1041,21 @@
 
     // MARK: - Deferred Reclamation
 
-    typealias mach_vm_deferred_reclamation_buffer_init_f = @convention(c) (
-        _ target_task: task_t,
-        _ address: UnsafeMutablePointer<mach_vm_address_t>, _ size: mach_vm_size_t
-    ) -> kern_return_t
+    typealias mach_vm_deferred_reclamation_buffer_init_f =
+        @convention(c) (
+            _ target_task: task_t,
+            _ address: UnsafeMutablePointer<mach_vm_address_t>, _ size: mach_vm_size_t
+        ) -> kern_return_t
 
     let mach_vm_deferred_reclamation_buffer_init: mach_vm_deferred_reclamation_buffer_init_f =
         libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
         .cast()
 
-    typealias mach_vm_deferred_reclamation_buffer_synchronize_f = @convention(c) (
-        _ target_task: task_t,
-        _ num_entries_to_reclaim: mach_vm_size_t
-    ) -> kern_return_t
+    typealias mach_vm_deferred_reclamation_buffer_synchronize_f =
+        @convention(c) (
+            _ target_task: task_t,
+            _ num_entries_to_reclaim: mach_vm_size_t
+        ) -> kern_return_t
 
     let mach_vm_deferred_reclamation_buffer_synchronize:
         mach_vm_deferred_reclamation_buffer_synchronize_f =
@@ -1065,10 +1067,11 @@
             libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes")!
             .cast()
 
-    typealias mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_f = @convention(c) (
-        _ target_task: task_t,
-        _ reclaimable_bytes: mach_vm_size_t
-    ) -> kern_return_t
+    typealias mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_f =
+        @convention(c) (
+            _ target_task: task_t,
+            _ reclaimable_bytes: mach_vm_size_t
+        ) -> kern_return_t
 
     extension Mach.VirtualMemoryManager {
         /// Initializes a deferred reclamation buffer in the task's address space.
