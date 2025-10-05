@@ -80,7 +80,6 @@ let moduleTargets =
         .target(
             name: "KassC",
             path: "Sources/KassC",
-            publicHeadersPath: "include"
         )
     ]
     + modules.map {
