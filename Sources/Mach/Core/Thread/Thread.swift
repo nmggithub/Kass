@@ -1,4 +1,5 @@
 import Darwin.Mach
+import KassC.SyscallBridge
 import KassHelpers
 
 extension Mach {
@@ -78,5 +79,19 @@ extension Mach.Thread {
     /// - Note: A thread may be in a depressed state due to a thread switching call.
     public func abortDepression() throws {
         try Mach.call(thread_depress_abort(self.name))
+    }
+}
+
+extension Mach.Thread {
+    /// The address of the thread-specific data (TSD) for the given thread.
+    public var tsdAddress: UnsafeMutableRawPointer? {
+        get {
+            let address = platform_get_cthread_self()
+            return UnsafeMutableRawPointer(bitPattern: UInt(address))
+        }
+        set {
+            let address = vm_address_t(UInt(bitPattern: newValue))
+            platform_set_cthread_self(address)
+        }
     }
 }
