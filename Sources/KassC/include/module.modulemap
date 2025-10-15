@@ -129,6 +129,11 @@ module KassC {
         export *
     }
 
+    explicit module PlatformSyscall {
+        header "platform_syscall.h"
+        export *
+    }
+
     explicit module EventPrivate {
         header "event_private.h"
         export *

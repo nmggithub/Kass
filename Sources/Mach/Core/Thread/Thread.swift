@@ -1,5 +1,5 @@
 import Darwin.Mach
-import KassC.SyscallBridge
+import KassC.PlatformSyscall
 import KassHelpers
 
 extension Mach {
