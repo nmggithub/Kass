@@ -63,10 +63,6 @@ extension Mach {
 
 // MARK: - Message Peeking
 
-// These were "functional" C macros in the original code, but Swift doesn't support those.
-private func MACH_RCV_TRAILER_ELEMENTS(_ x: Int32) -> Int32 { ((x) & 0xf) << 24 }
-private func MACH_RCV_TRAILER_TYPE(_ x: Int32) -> Int32 { ((x) & 0xf) << 28 }
-
 extension Mach {
     /// A peeked preview of a message.
     public struct PeekedMessage {
@@ -92,10 +88,7 @@ extension Mach.MessageServer {
                 self.owningTask.name,
                 self.name,
                 // We peek as much of the trailer as the kernel will let us (which is everything up to, and including, to the audit token).
-                mach_msg_trailer_type_t(
-                    MACH_RCV_TRAILER_TYPE(MACH_MSG_TRAILER_FORMAT_0)  // This results in 0, so it's not strictly necessary, but this is the documented way to do it.
-                        | MACH_RCV_TRAILER_ELEMENTS(MACH_RCV_TRAILER_AUDIT)
-                ),
+                Mach.TrailerType(.format0, withElements: .audit).rawValue,
                 &sequenceNumber,
                 &messageSize,
                 &messageID,

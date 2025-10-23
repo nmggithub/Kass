@@ -1,4 +1,5 @@
 import Darwin.Mach
+import KassHelpers
 
 extension Mach {
     /// Options for sending and receiving messages.
@@ -32,5 +33,119 @@ extension Mach {
         public static let receiveSyncWait = Self(rawValue: MACH_RCV_SYNC_WAIT)
         public static let receiveSyncPeek = Self(rawValue: MACH_RCV_SYNC_PEEK)
         public static let strictReply = Self(rawValue: MACH_MSG_STRICT_REPLY)
+    }
+}
+
+extension Mach {
+    /// A type of trailer to receive with a message.
+    public struct TrailerType: KassHelpers.NamedOptionEnum {
+        /// The name of the type, if it can be determined.
+        public var name: String?
+
+        /// Represents a trailer type with an optional name.
+        public init(name: String?, rawValue: UInt32) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The unshifted raw value of the trailer type.
+        private var unshiftedRawValue: UInt32 = 0
+
+        /// The raw value of the trailer type.
+        public var rawValue: mach_msg_trailer_type_t {
+            get { mach_msg_trailer_type_t((unshiftedRawValue & 0xf) << 28) }
+            set { unshiftedRawValue = UInt32(newValue) }
+        }
+
+        /// All known trailer types.
+        public static let allCases: [Self] = [.format0]
+
+        public static let format0 =
+            Self(rawValue: mach_msg_trailer_type_t(MACH_MSG_TRAILER_FORMAT_0))
+    }
+}
+extension Mach.MessageOptions {
+    public static func receiveTrailerType(_ type: Mach.TrailerType) -> Self {
+        Self(rawValue: mach_msg_option_t(type.rawValue))
+    }
+}
+
+extension Mach {
+    /// A set of trailer elements to receive with a message.
+    public struct TrailerElements: OptionSet, KassHelpers.NamedOptionEnum {
+        /// The name of the elements, if it can be determined.
+        public var name: String?
+
+        /// Represents a trailer elements with an optional name.
+        public init(name: String?, rawValue: UInt32) {
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// The unshifted raw value of the trailer elements.
+        private var unshiftedRawValue: UInt32 = 0
+
+        /// The raw value of the trailer elements.
+        /// - Note: This is defined as a `mach_msg_trailer_type_t` for better compatibility with `mach_port_peek` API.
+        public var rawValue: mach_msg_trailer_type_t {
+            get { mach_msg_trailer_type_t((unshiftedRawValue & 0xf) << 24) }
+            set { unshiftedRawValue = UInt32(newValue) }
+        }
+
+        /// All known trailer elements.
+        public static let allCases: [Self] = [
+            .null, .sequenceNumber, .sender, .audit, .context, .mac, .labels,
+        ]
+
+        public static let null = Self(
+            name: "null",
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_NULL)
+        )
+
+        public static let sequenceNumber = Self(
+            name: "sequenceNumber",
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_SEQNO)
+        )
+
+        public static let sender = Self(
+            name: "sender",
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_SENDER)
+        )
+
+        public static let audit = Self(
+            name: "audit",
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_AUDIT)
+        )
+
+        public static let context = Self(
+            name: "context",
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_CTX)
+        )
+
+        public static let mac = Self(
+            name: "mac",
+            // Despite the difference in naming, this *is* the correct constant.
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_AV)
+        )
+
+        public static let labels: Self = Self(
+            name: "labels",
+            rawValue: mach_msg_trailer_type_t(MACH_RCV_TRAILER_LABELS)
+        )
+    }
+}
+
+extension Mach.MessageOptions {
+    public static func receiveTrailerElements(_ elements: Mach.TrailerElements) -> Self {
+        Self(rawValue: mach_msg_option_t(elements.rawValue))
+    }
+}
+
+extension Mach.TrailerType {
+    init(_ type: Self, withElements elements: Mach.TrailerElements) {
+        self.init(
+            name: type.name,
+            rawValue: type.rawValue | elements.rawValue
+        )
     }
 }
