@@ -61,7 +61,7 @@ extension Mach {
         public static let allCases: [Self] = [.format0]
 
         public static let format0 =
-            Self(rawValue: mach_msg_trailer_type_t(MACH_MSG_TRAILER_FORMAT_0))
+            Self(name: "format0", rawValue: mach_msg_trailer_type_t(MACH_MSG_TRAILER_FORMAT_0))
     }
 }
 extension Mach.MessageOptions {
