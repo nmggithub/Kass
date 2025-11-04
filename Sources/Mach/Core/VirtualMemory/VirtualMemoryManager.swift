@@ -1039,70 +1039,318 @@
         }
     }
 
-    // MARK: - Deferred Reclamation
-
-    typealias mach_vm_deferred_reclamation_buffer_init_f =
-        @convention(c) (
-            _ target_task: task_t,
-            _ address: UnsafeMutablePointer<mach_vm_address_t>, _ size: mach_vm_size_t
-        ) -> kern_return_t
-
-    let mach_vm_deferred_reclamation_buffer_init: mach_vm_deferred_reclamation_buffer_init_f =
-        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
-        .cast()
-
-    typealias mach_vm_deferred_reclamation_buffer_synchronize_f =
-        @convention(c) (
-            _ target_task: task_t,
-            _ num_entries_to_reclaim: mach_vm_size_t
-        ) -> kern_return_t
-
-    let mach_vm_deferred_reclamation_buffer_synchronize:
-        mach_vm_deferred_reclamation_buffer_synchronize_f =
-            libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_synchronize")!
-            .cast()
-
-    let mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes:
-        mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_f =
-            libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes")!
-            .cast()
-
-    typealias mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_f =
-        @convention(c) (
-            _ target_task: task_t,
-            _ reclaimable_bytes: mach_vm_size_t
-        ) -> kern_return_t
+    // MARK: - Deferred Reclamation Buffer
 
     extension Mach.VirtualMemoryManager {
-        /// Initializes a deferred reclamation buffer in the task's address space.
-        public func deferredReclamationBufferInit(
-            _ pointer: inout UnsafeRawPointer?, size: mach_vm_size_t
-        ) throws {
-            var address = try Self.unsafeRawPointerToMachVMAddress(pointer)
-            try Mach.call(mach_vm_deferred_reclamation_buffer_init(self.task.name, &address, size))
-            pointer = try Self.machVMAddressToUnsafeRawPointer(address)
-        }
+        @available(macOS, introduced: 13.0)
+        public struct DeferredReclamationBuffer {
+            /// The C-level API for deferred reclamation buffers.
+            private struct C: KassHelpers.Namespace {
+                @available(macOS, introduced: 13.0, obsoleted: 14.4)
+                static let mach_vm_deferred_reclamation_buffer_init_13_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ address: mach_vm_offset_t,
+                        _ size: mach_vm_size_t,
+                        _ indicies: mach_vm_address_t,
+                    ) -> kern_return_t =
+                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
+                        .cast()
 
-        /// Synchronizes the deferred reclamation buffer in the task's address space.
-        public func deferredReclamationBufferSynchronize(numberOfEntriesToReclaim: mach_vm_size_t)
-            throws
-        {
-            try Mach.call(
-                mach_vm_deferred_reclamation_buffer_synchronize(
-                    self.task.name, numberOfEntriesToReclaim
-                )
-            )
-        }
+                @available(macOS, introduced: 14.4, obsoleted: 15.0)
+                static let mach_vm_deferred_reclamation_buffer_init_14_4:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ address: mach_vm_offset_t,
+                        _ size: mach_vm_size_t
+                    ) -> kern_return_t =
+                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
+                        .cast()
 
-        /// Updates the reclaimable bytes in the deferred reclamation buffer in the task's address space.
-        public func deferredReclamationBufferUpdate(
-            reclaimableBytes: mach_vm_size_t
-        ) throws {
-            try Mach.call(
-                mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes(
-                    self.task.name, reclaimableBytes
-                )
+                @available(macOS, introduced: 15.0, obsoleted: 15.4)
+                static let mach_vm_deferred_reclamation_buffer_init_15_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ address: UnsafePointer<mach_vm_address_t>,
+                        _ size: mach_vm_size_t
+                    ) -> kern_return_t =
+                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
+                        .cast()
+
+                @available(macOS, introduced: 15.4, obsoleted: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_allocate_15_4:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ address: UnsafePointer<mach_vm_address_t>,
+                        _ len: UInt32,
+                        _ max_len: UInt32
+                    ) -> kern_return_t =
+                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_allocate")!
+                        .cast()
+
+                @available(macOS, introduced: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_allocate_26_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ address: UnsafePointer<mach_vm_address_t>,
+                        _ sampling_period: UnsafePointer<UInt64>,
+                        _ len: UInt32,
+                        _ max_len: UInt32
+                    ) -> kern_return_t =
+                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_allocate")!
+                        .cast()
+
+                @available(macOS, introduced: 13.0, obsoleted: 15.4)
+                static let mach_vm_deferred_reclamation_buffer_synchronize_13_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ num_entries_to_reclaim: mach_vm_size_t
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(symbol: "mach_vm_deferred_reclamation_buffer_synchronize")!
+                        .cast()
+
+                @available(macOS, introduced: 15.4, obsoleted: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_flush_15_4:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ num_entries_to_reclaim: UInt32
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(symbol: "mach_vm_deferred_reclamation_buffer_flush")!
+                        .cast()
+
+                @available(macOS, introduced: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_flush_26_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ num_entries_to_reclaim: UInt32,
+                        _ bytes_reclaimed: UnsafeMutablePointer<mach_vm_size_t>
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(symbol: "mach_vm_deferred_reclamation_buffer_flush")!
+                        .cast()
+
+                @available(macOS, introduced: 13.0, obsoleted: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_13_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ reclaimable_bytes: mach_vm_size_t
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(
+                            symbol: "mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes"
+                        )!
+                        .cast()
+
+                @available(macOS, introduced: 15.4, obsoleted: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_resize_15_4:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ size: UInt32
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(symbol: "mach_vm_deferred_reclamation_buffer_resize")!
+                        .cast()
+
+                @available(macOS, introduced: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_resize_26_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ new_len: UInt32,
+                        _ bytes_reclaimed: UnsafeMutablePointer<mach_vm_size_t>
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(symbol: "mach_vm_deferred_reclamation_buffer_resize")!
+                        .cast()
+
+                @available(macOS, introduced: 26.0)
+                static let mach_vm_deferred_reclamation_buffer_query_26_0:
+                    @convention(c) (
+                        _ target_task: task_t,
+                        _ addr: UnsafeMutablePointer<mach_vm_address_t>,
+                        _ size: UnsafeMutablePointer<mach_vm_size_t>,
+                    ) -> kern_return_t =
+                        libSystem()
+                        .get(symbol: "mach_vm_deferred_reclamation_buffer_query")!
+                        .cast()
+            }
+
+            /// The pointer to the deferred reclamation buffer.
+            public private(set) var pointer: UnsafeRawBufferPointer
+
+            /// The task where the deferred reclamation buffer is located.
+            private let task: Mach.Task
+
+            /// The sampling period of the deferred reclamation buffer.
+            public let samplingPeriod: UInt64?
+
+            /// Defines a deferred reclamation buffer with the given task and pointer.
+            /// - Note: This is a private initializer to support the `allocate` method.
+            private init(
+                task: Mach.Task, pointer: UnsafeRawBufferPointer, samplingPeriod: UInt64? = nil
+            ) {
+                self.task = task
+                self.pointer = pointer
+                self.samplingPeriod = samplingPeriod
+            }
+
+            /// Initializes a deferred reclamation buffer in the task's address space.
+            @available(
+                macOS, introduced: 13.0, obsoleted: 15.4,
+                message: "Use allocate(task:size:maxSize:) instead.",
+                renamed: "allocate(task:size:maxSize:)"
             )
+            public init(task: Mach.Task, pointer: UnsafeRawBufferPointer) throws {
+                self.task = task
+                var address = try Mach.VirtualMemoryManager
+                    .unsafeRawPointerToMachVMAddress(pointer.baseAddress)
+                if #available(macOS 15.0, *) {
+                    try Mach.call(
+                        Self.C.mach_vm_deferred_reclamation_buffer_init_15_0(
+                            task.name, &address, mach_vm_size_t(pointer.count)
+                        )
+                    )
+                } else if #available(macOS 14.4, *) {
+                    try Mach.call(
+                        Self.C.mach_vm_deferred_reclamation_buffer_init_14_4(
+                            task.name, address, mach_vm_size_t(pointer.count)
+                        )
+                    )
+                } else {
+                    try Mach.call(
+                        Self.C.mach_vm_deferred_reclamation_buffer_init_13_0(
+                            task.name, address, mach_vm_size_t(pointer.count), 0
+                        )
+                    )
+                }
+                self.pointer = UnsafeRawBufferPointer(
+                    start: try Mach.VirtualMemoryManager.machVMAddressToUnsafeRawPointer(address),
+                    count: pointer.count
+                )
+                self.samplingPeriod = nil
+            }
+
+            /// Allocates a deferred reclamation buffer.
+            @available(macOS, introduced: 15.4, obsoleted: 26.0)
+            public static func allocate(
+                task: Mach.Task, size: UInt32, maxSize: UInt32
+            ) throws -> Self {
+                var address: mach_vm_address_t = 0
+                var samplingPeriod: UInt64? = nil
+                if #available(macOS 26.0, *) {
+                    var transientSamplingPeriod: UInt64 = 0
+                    try Mach.call(
+                        Self.C.mach_vm_deferred_reclamation_buffer_allocate_26_0(
+                            task.name, &address, &transientSamplingPeriod, size, maxSize
+                        )
+                    )
+                    samplingPeriod = transientSamplingPeriod
+                } else {
+                    try Mach.call(
+                        Self.C.mach_vm_deferred_reclamation_buffer_allocate_15_4(
+                            task.name, &address, size, maxSize
+                        )
+                    )
+                }
+                return .init(
+                    task: task,
+                    pointer: UnsafeRawBufferPointer(
+                        start: try Mach.VirtualMemoryManager.machVMAddressToUnsafeRawPointer(
+                            address),
+                        count: Int(size)
+                    ),
+                    samplingPeriod: samplingPeriod
+                )
+            }
+
+            /// Synchronizes the deferred reclamation buffer.
+            @available(
+                macOS, introduced: 13.0, obsoleted: 15.4,
+                message: "Use flush(numberOfEntriesToReclaim:) instead.",
+                renamed: "flush(numberOfEntriesToReclaim:)"
+            )
+            public func synchronize(numberOfEntriesToReclaim: mach_vm_size_t) throws {
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_synchronize_13_0(
+                        self.task.name, numberOfEntriesToReclaim
+                    )
+                )
+            }
+
+            /// Flushes the deferred reclamation buffer.
+            @available(macOS, introduced: 15.4, obsoleted: 26.0)
+            public func flush(numberOfEntriesToReclaim: UInt32) throws {
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_flush_15_4(
+                        self.task.name, numberOfEntriesToReclaim
+                    )
+                )
+            }
+
+            /// Flushes the deferred reclamation buffer, returning the number of bytes reclaimed.
+            @available(macOS, introduced: 26.0)
+            public func flush(
+                numberOfEntriesToReclaim: UInt32
+            ) throws -> mach_vm_size_t {
+                var bytesReclaimed: mach_vm_size_t = 0
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_flush_26_0(
+                        self.task.name, numberOfEntriesToReclaim, &bytesReclaimed
+                    )
+                )
+                return bytesReclaimed
+            }
+
+            /// Updates the reclaimable bytes in the deferred reclamation buffer.
+            @available(macOS, introduced: 13.0, obsoleted: 26.0)
+            public func update(reclaimableBytes: mach_vm_size_t) throws {
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes_13_0(
+                        self.task.name, reclaimableBytes
+                    )
+                )
+            }
+
+            /// Resizes the deferred reclamation buffer.
+            @available(macOS, introduced: 15.4, obsoleted: 26.0)
+            public func resize(size: UInt32) throws {
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_resize_15_4(
+                        self.task.name, size
+                    )
+                )
+            }
+
+            /// Resizes the deferred reclamation buffer, returning the number of bytes reclaimed.
+            @available(macOS, introduced: 26.0)
+            public func resize(size: UInt32) throws -> mach_vm_size_t {
+                var bytesReclaimed: mach_vm_size_t = 0
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_resize_26_0(
+                        self.task.name, size, &bytesReclaimed
+                    )
+                )
+                return bytesReclaimed
+            }
+
+            /// Queries the deferred reclamation buffer, updating the internal pointer if needed.
+            @available(macOS, introduced: 26.0)
+            public mutating func query() throws -> UnsafeRawBufferPointer {
+                var address: mach_vm_address_t = 0
+                var size: mach_vm_size_t = 0
+                try Mach.call(
+                    Self.C.mach_vm_deferred_reclamation_buffer_query_26_0(
+                        self.task.name, &address, &size
+                    )
+                )
+                let queriedBufferPointer = UnsafeRawBufferPointer(
+                    start: try Mach.VirtualMemoryManager.machVMAddressToUnsafeRawPointer(address),
+                    count: Int(size)
+                )
+                self.pointer = queriedBufferPointer  // Update the internal pointer as well.
+                return self.pointer
+            }
         }
     }
 
