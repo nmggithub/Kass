@@ -29,11 +29,8 @@ extension Mach {
                     .replyPort, .enforceReplyPortSemantics,
                     .provisionalReplyPort,
                 ]
-            if #available(macOS 15, *) {
-                allFlags.append(.exceptionPort)
-            } else if #available(macOS 26, *) {
-                allFlags.append(.portWithPortArray)
-            }
+            if #available(macOS 15, *) { allFlags.append(.exceptionPort) }
+            if #available(macOS 26, *) { allFlags.append(.portWithPortArray) }
             return allFlags
         }
 
