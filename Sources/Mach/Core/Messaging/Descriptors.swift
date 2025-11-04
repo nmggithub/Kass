@@ -403,3 +403,14 @@ extension Mach {
         }
     }
 }
+
+extension Mach.MessageBody {
+    /// Serializes the body and provides a pointer to it in a handler.
+    public func withUnsafeSerializedBody<T>(
+        _ bodyHandler: (UnsafePointer<mach_msg_body_t>) throws -> T
+    ) rethrows -> T {
+        let bodyPointer = self.serialize()
+        defer { bodyPointer.deallocate() }
+        return try bodyHandler(bodyPointer)
+    }
+}

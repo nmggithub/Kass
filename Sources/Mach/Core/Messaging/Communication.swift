@@ -72,11 +72,13 @@ extension Mach.Message {
         if let remoteDispositionOverride = remoteDisposition {
             message.header.bits.remotePortDisposition = remoteDispositionOverride
         }
-        try Self.message(
-            message.serialize(), options: options, sendSize: message.sendSize,
-            receiveSize: 0, receivePort: Mach.Port.Nil, timeout: timeout,
-            notifyPort: Mach.Port.Nil
-        )
+        try message.withUnsafeSerializedMessage {
+            try Self.message(
+                $0, options: options, sendSize: message.sendSize,
+                receiveSize: 0, receivePort: Mach.Port.Nil, timeout: timeout,
+                notifyPort: Mach.Port.Nil
+            )
+        }
     }
 
     /// Sends a message and receive a message.
@@ -110,21 +112,23 @@ extension Mach.Message {
         if let localDispositionOverride = localDisposition {
             message.header.bits.localPortDisposition = localDispositionOverride
         }
-        let originalMessageBuffer = UnsafeRawBufferPointer(
-            start: message.serialize(), count: Int(message.sendSize)
-        )
-        let rawMessageBuffer = Mach.Message.transientBuffer(maxSize)
-        defer { rawMessageBuffer.deallocate() }
-        rawMessageBuffer.copyMemory(from: originalMessageBuffer)
-        let messageBuffer = rawMessageBuffer.baseAddress!  // We control `rawMessageBuffer`, so this is safe.
-            .bindMemory(to: mach_msg_header_t.self, capacity: 1)
-        try Self.message(
-            messageBuffer, options: options, sendSize: message.sendSize,
-            receiveSize: mach_msg_size_t(rawMessageBuffer.count),
-            receivePort: message.header.localPort, timeout: timeout,
-            notifyPort: Mach.Port.Nil
-        )
-        return ReceiveMessage.init(headerPointer: messageBuffer)
+        return try message.withUnsafeSerializedMessage {
+            let originalMessageBuffer = UnsafeRawBufferPointer(
+                start: $0, count: Int(message.sendSize)
+            )
+            let rawMessageBuffer = Mach.Message.transientBuffer(maxSize)
+            defer { rawMessageBuffer.deallocate() }
+            rawMessageBuffer.copyMemory(from: originalMessageBuffer)
+            let messageBuffer = rawMessageBuffer.baseAddress!  // We control `rawMessageBuffer`, so this is safe.
+                .bindMemory(to: mach_msg_header_t.self, capacity: 1)
+            try Self.message(
+                messageBuffer, options: options, sendSize: message.sendSize,
+                receiveSize: mach_msg_size_t(rawMessageBuffer.count),
+                receivePort: message.header.localPort, timeout: timeout,
+                notifyPort: Mach.Port.Nil
+            )
+            return ReceiveMessage.init(headerPointer: messageBuffer)
+        }
     }
 
     /// Receives a message.

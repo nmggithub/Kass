@@ -85,29 +85,31 @@ extension Mach {
             if !reply.header.bits.isMessageComplex
                 && reply.header.msgh_size == MemoryLayout<mig_reply_error_t>.size
             {
-                try reply.serialize().withMemoryRebound(to: mig_reply_error_t.self, capacity: 1) {
-                    let replyError = $0.pointee
-                    // The name "reply error" is actually a bit of a misnomer. If the return code
-                    // is `KERN_SUCCESS`, there was no error. We return early in this case.
-                    if replyError.RetCode == KERN_SUCCESS { return }
+                try reply.withUnsafeSerializedMessage {
+                    try $0.withMemoryRebound(to: mig_reply_error_t.self, capacity: 1) {
+                        let replyError = $0.pointee
+                        // The name "reply error" is actually a bit of a misnomer. If the return code
+                        // is `KERN_SUCCESS`, there was no error. We return early in this case.
+                        if replyError.RetCode == KERN_SUCCESS { return }
 
-                    // If the return code is a MIG error code, we throw a MIG error.
-                    if let matchingMIGErrorCode = Mach.MIGErrorCode.allCases
-                        .first(where: { $0.rawValue == replyError.RetCode })
-                    {
-                        // The `noReply` case is not actually an error, just the absence of
-                        // a defined reply. We return early as if there was no error.
-                        if matchingMIGErrorCode == .noReply { return }
+                        // If the return code is a MIG error code, we throw a MIG error.
+                        if let matchingMIGErrorCode = Mach.MIGErrorCode.allCases
+                            .first(where: { $0.rawValue == replyError.RetCode })
+                        {
+                            // The `noReply` case is not actually an error, just the absence of
+                            // a defined reply. We return early as if there was no error.
+                            if matchingMIGErrorCode == .noReply { return }
 
-                        // Otherwise, we throw a MIG error.
-                        throw Mach.MIGError(matchingMIGErrorCode)
+                            // Otherwise, we throw a MIG error.
+                            throw Mach.MIGError(matchingMIGErrorCode)
+                        }
+
+                        // If it's not a MIG error code, we throw a generic error with (if available)
+                        // the user-provided error domain.
+                        throw NSError(
+                            domain: serverErrorDomain ?? "", code: Int(replyError.RetCode)
+                        )
                     }
-
-                    // If it's not a MIG error code, we throw a generic error with (if available)
-                    // the user-provided error domain.
-                    throw NSError(
-                        domain: serverErrorDomain ?? "", code: Int(replyError.RetCode)
-                    )
                 }
             }
             return reply

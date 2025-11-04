@@ -22,9 +22,9 @@ extension Mach {
                 @escaping (Mach.MIGRequest<RequestPayload>) throws -> Mach.MIGReply<ReplyPayload>
         ) {
             self.untypedHandler = { incomingMessage in
-                let typedMessage = Mach.MIGRequest<RequestPayload>.init(
-                    headerPointer: incomingMessage.serialize()
-                )
+                let typedMessage = incomingMessage.withUnsafeSerializedMessage {
+                    Mach.MIGRequest<RequestPayload>.init(headerPointer: $0)
+                }
                 guard
                     // If the payload type is not Never, it should have been recovered
                     //  from the above initializer. If it is Never, it should be nil.

@@ -39,6 +39,7 @@ extension Mach {
         }
 
         /// Allocates a message buffer, serializes it with the message contents, and returns a header pointer.
+        /// - Warning: Deallocation is the responsibility of the caller.
         public func serialize() -> UnsafeMutablePointer<mach_msg_header_t> {
             // Allocate the buffer.
             let startPointer = UnsafeMutableRawPointer.allocate(
@@ -66,10 +67,12 @@ extension Mach {
                 let bodyPointer = serializingPointer.bindMemory(
                     to: mach_msg_body_t.self, capacity: 1
                 )
-                UnsafeMutableRawPointer(bodyPointer).copyMemory(
-                    from: ownBody.serialize(),
-                    byteCount: ownBody.totalSize
-                )
+                ownBody.withUnsafeSerializedBody {
+                    UnsafeMutableRawPointer(bodyPointer).copyMemory(
+                        from: $0,
+                        byteCount: ownBody.totalSize
+                    )
+                }
                 serializingPointer += ownBody.totalSize
             }
 
@@ -156,5 +159,16 @@ extension Mach {
             }
             self.payload = payloadBytes
         }
+    }
+}
+
+extension Mach.Message {
+    /// Serializes the message and provides a pointer to it in a handler.
+    public func withUnsafeSerializedMessage<T>(
+        _ body: (UnsafeMutablePointer<mach_msg_header_t>) throws -> T
+    ) rethrows -> T {
+        let headerPointer = self.serialize()
+        defer { headerPointer.deallocate() }
+        return try body(headerPointer)
     }
 }
