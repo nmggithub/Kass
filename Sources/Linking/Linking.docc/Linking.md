@@ -4,9 +4,9 @@ A module for dynamically linking libraries and frameworks.
 
 ## Topics
 
-### Helper functions for built-in libraries
+### Built-in libraries
 
-- ``libSystem()``
+- ``libSystem``
 
 ### Linking Libraries
 

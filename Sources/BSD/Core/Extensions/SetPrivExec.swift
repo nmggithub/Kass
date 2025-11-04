@@ -1,7 +1,7 @@
 import Linking
 
 typealias setprivexec_f = @convention(c) (Int32) -> Int32
-let setprivexec: setprivexec_f = libSystem().get(symbol: "setprivexec")!.cast()
+let setprivexec: setprivexec_f = libSystem.get(symbol: "setprivexec")!.cast()
 
 extension BSD {
     /// Allows or disallows the current process the be a debugger.

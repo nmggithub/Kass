@@ -6,12 +6,12 @@ import MachCore
 
 private let task_read_for_pid:
     @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_read_t>) -> kern_return_t =
-        libSystem()
+        libSystem
         .get(symbol: "task_read_for_pid")!.cast()
 
 private let task_inspect_for_pid:
     @convention(c) (task_t, pid_t, UnsafeMutablePointer<task_inspect_t>) -> kern_return_t =
-        libSystem()
+        libSystem
         .get(symbol: "task_inspect_for_pid")!.cast()
 
 // Getting the task read and inspect ports for a PID requires BSD syscalls, so we use them

@@ -1,4 +1,5 @@
 import Darwin.Mach
+import Foundation
 
 extension Mach {
     /// A segment of a message payload.
@@ -143,3 +144,18 @@ extension Mach.TrivialMessagePayloadSegment {
 
 /// A C character as a trivial message payload element.
 extension CChar: Mach.TrivialMessagePayloadSegment {}
+
+/// Data as a message payload segment.
+extension Data: Mach.MessagePayloadSegment {
+    /// Converts the data to a raw buffer.
+    public func toRawBuffer() -> UnsafeRawBufferPointer {
+        return withUnsafeBytes { bytes in
+            let newBuffer = UnsafeMutableRawBufferPointer.allocate(
+                byteCount: count,
+                alignment: MemoryLayout<CChar>.alignment
+            )
+            newBuffer.copyMemory(from: bytes)
+            return UnsafeRawBufferPointer(newBuffer)
+        }
+    }
+}

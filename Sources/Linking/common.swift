@@ -1,2 +1,2 @@
-/// Gets the system library.
-public func libSystem() -> Library { Library(path: "/usr/lib/libSystem.B.dylib")! }
+/// The system library.
+public var libSystem: Library { Library(path: "/usr/lib/libSystem.B.dylib")! }

@@ -982,7 +982,7 @@
     // The function is in the headers, but attempting to use it that way results in a linker
     // error. We need to dynamically load it instead.
     typealias task_wire_f = @convention(c) (vm_map_t, boolean_t) -> kern_return_t
-    private let task_wire: task_wire_f = libSystem().get(symbol: "task_wire")!.cast()
+    private let task_wire: task_wire_f = libSystem.get(symbol: "task_wire")!.cast()
 
     extension Mach.VirtualMemoryManager {
         /// Requires (or does not require) future allocations in the task's address space to be wired.
@@ -1029,7 +1029,8 @@
     // The function is in the headers, but attempting to use it that way results in a linker
     // error. We need to dynamically load it instead.
     typealias vm_map_exec_lockdown_f = @convention(c) (vm_map_t) -> kern_return_t
-    private let vm_map_exec_lockdown: vm_map_exec_lockdown_f = libSystem()
+    private let vm_map_exec_lockdown: vm_map_exec_lockdown_f =
+        libSystem
         .get(symbol: "vm_map_exec_lockdown")!.cast()
 
     extension Mach.VirtualMemoryManager {
@@ -1054,7 +1055,7 @@
                         _ size: mach_vm_size_t,
                         _ indicies: mach_vm_address_t,
                     ) -> kern_return_t =
-                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
+                        libSystem.get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
                         .cast()
 
                 @available(macOS, introduced: 14.4, obsoleted: 15.0)
@@ -1064,7 +1065,7 @@
                         _ address: mach_vm_offset_t,
                         _ size: mach_vm_size_t
                     ) -> kern_return_t =
-                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
+                        libSystem.get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
                         .cast()
 
                 @available(macOS, introduced: 15.0, obsoleted: 15.4)
@@ -1074,7 +1075,7 @@
                         _ address: UnsafePointer<mach_vm_address_t>,
                         _ size: mach_vm_size_t
                     ) -> kern_return_t =
-                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
+                        libSystem.get(symbol: "mach_vm_deferred_reclamation_buffer_init")!
                         .cast()
 
                 @available(macOS, introduced: 15.4, obsoleted: 26.0)
@@ -1085,7 +1086,7 @@
                         _ len: UInt32,
                         _ max_len: UInt32
                     ) -> kern_return_t =
-                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_allocate")!
+                        libSystem.get(symbol: "mach_vm_deferred_reclamation_buffer_allocate")!
                         .cast()
 
                 @available(macOS, introduced: 26.0)
@@ -1097,7 +1098,7 @@
                         _ len: UInt32,
                         _ max_len: UInt32
                     ) -> kern_return_t =
-                        libSystem().get(symbol: "mach_vm_deferred_reclamation_buffer_allocate")!
+                        libSystem.get(symbol: "mach_vm_deferred_reclamation_buffer_allocate")!
                         .cast()
 
                 @available(macOS, introduced: 13.0, obsoleted: 15.4)
@@ -1106,7 +1107,7 @@
                         _ target_task: task_t,
                         _ num_entries_to_reclaim: mach_vm_size_t
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(symbol: "mach_vm_deferred_reclamation_buffer_synchronize")!
                         .cast()
 
@@ -1116,7 +1117,7 @@
                         _ target_task: task_t,
                         _ num_entries_to_reclaim: UInt32
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(symbol: "mach_vm_deferred_reclamation_buffer_flush")!
                         .cast()
 
@@ -1127,7 +1128,7 @@
                         _ num_entries_to_reclaim: UInt32,
                         _ bytes_reclaimed: UnsafeMutablePointer<mach_vm_size_t>
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(symbol: "mach_vm_deferred_reclamation_buffer_flush")!
                         .cast()
 
@@ -1137,7 +1138,7 @@
                         _ target_task: task_t,
                         _ reclaimable_bytes: mach_vm_size_t
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(
                             symbol: "mach_vm_deferred_reclamation_buffer_update_reclaimable_bytes"
                         )!
@@ -1149,7 +1150,7 @@
                         _ target_task: task_t,
                         _ size: UInt32
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(symbol: "mach_vm_deferred_reclamation_buffer_resize")!
                         .cast()
 
@@ -1160,7 +1161,7 @@
                         _ new_len: UInt32,
                         _ bytes_reclaimed: UnsafeMutablePointer<mach_vm_size_t>
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(symbol: "mach_vm_deferred_reclamation_buffer_resize")!
                         .cast()
 
@@ -1171,7 +1172,7 @@
                         _ addr: UnsafeMutablePointer<mach_vm_address_t>,
                         _ size: UnsafeMutablePointer<mach_vm_size_t>,
                     ) -> kern_return_t =
-                        libSystem()
+                        libSystem
                         .get(symbol: "mach_vm_deferred_reclamation_buffer_query")!
                         .cast()
             }
