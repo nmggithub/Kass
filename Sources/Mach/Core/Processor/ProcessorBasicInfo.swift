@@ -58,6 +58,7 @@ import Darwin.Mach
 extension Mach {
     /// Basic information about a processor.
     /// - Warning: This work is covered under license. Please view the source code and <doc:MachCore#Licenses> for more information.
+    /// - Note: This struct is taken from the XNU source code as the bridged version is not `BitwiseCopyable`.
     public struct ProcessorBasicInfo: BitwiseCopyable {
         public let cpu_type: cpu_type_t
         public let cpu_subtype: cpu_subtype_t
