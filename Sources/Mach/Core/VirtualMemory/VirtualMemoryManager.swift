@@ -1020,6 +1020,38 @@
         }
     }
 
+    extension Mach.MemoryEntry {
+        /// Controls a purgeable object represented by the memory entry.
+        public func purgeableControl(
+            control: Mach.VMPurgeable,
+            state: inout Mach.VMPurgeableState
+        ) throws {
+            try Mach.call(
+                mach_memory_entry_purgable_control(
+                    self.name, control.rawValue, &state.rawValue
+                )
+            )
+        }
+
+        /// Gets the purgeable state of a purgeable object represented by the memory entry.
+        public func getPurgeableState() throws -> Mach.VMPurgeableState {
+            var state = Mach.VMPurgeableState(rawValue: 0)
+            try self.purgeableControl(control: .getState, state: &state)
+            return state
+        }
+
+        /// Sets the purgeable state of a purgeable object represented by the memory entry.
+        public func setPurgeableState(to state: consuming Mach.VMPurgeableState) throws {
+            try self.purgeableControl(control: .setState, state: &state)
+        }
+
+        /// Purges all purgeable objects represented by the memory entry.
+        public func purgeAllPurgeableObjects() throws {
+            var state = Mach.VMPurgeableState(rawValue: 0)  // We are purposely ignoring this.
+            try self.purgeableControl(control: .purgeAll, state: &state)
+        }
+    }
+
     // MARK: - Page Info
 
     extension Mach.VirtualMemoryManager {
@@ -1486,6 +1518,123 @@
         public var vmTag: Mach.VMTag {
             get { return Mach.VMTag(rawValue: Int32(self.vm_tag)) }
             set { self.vm_tag = UInt8(newValue.rawValue) }
+        }
+    }
+
+    /// MARK: - Access Tracking
+
+    extension Mach.MemoryEntry {
+        /// Enables or disables access tracking for the memory entry, returning the previous state.
+        public func accessTracking(enabled: Bool) throws -> (
+            enabled: Bool, reads: UInt32, writes: UInt32
+        ) {
+            var reads: UInt32 = 0
+            var writes: UInt32 = 0
+            var isEnabled: Int32 = enabled ? 1 : 0
+            try Mach.call(
+                mach_memory_entry_access_tracking(
+                    self.name, &isEnabled,
+                    &reads, &writes
+                )
+            )
+            return (enabled: isEnabled == 1, reads: reads, writes: writes)
+        }
+    }
+
+    // MARK: - Virtual Memory Ledger
+
+    extension Mach {
+        /// A virtual memory ledger tag.
+        public struct VMLedgerTag: KassHelpers.NamedOptionEnum {
+            /// The name of the tag, if it can be determined.
+            public var name: String?
+
+            /// Represents a virtual memory ledger tag with an optional name.
+            public init(name: String?, rawValue: Int32) {
+                self.name = name
+                self.rawValue = rawValue
+            }
+
+            /// The raw value of the tag.
+            public let rawValue: Int32
+
+            /// All known virtual memory ledger tags.
+            public static let allCases: [Self] = [
+                .none, .default, .network, .media, .graphics, .neural, .unchanged,
+            ]
+
+            public static let none = Self(name: "none", rawValue: VM_LEDGER_TAG_NONE)
+
+            public static let `default` = Self(name: "default", rawValue: VM_LEDGER_TAG_DEFAULT)
+
+            public static let network = Self(name: "network", rawValue: VM_LEDGER_TAG_NETWORK)
+
+            public static let media = Self(name: "media", rawValue: VM_LEDGER_TAG_MEDIA)
+
+            public static let graphics = Self(name: "graphics", rawValue: VM_LEDGER_TAG_GRAPHICS)
+
+            public static let neural = Self(name: "neural", rawValue: VM_LEDGER_TAG_NEURAL)
+
+            public static let unchanged = Self(name: "unchanged", rawValue: VM_LEDGER_TAG_UNCHANGED)
+        }
+
+        public struct VMLedgerFlags: OptionSet, KassHelpers.NamedOptionEnum {
+            /// The name of the flag, if it can be determined.
+            public var name: String?
+
+            /// Represents a virtual memory ledger flag with an optional name.
+            public init(name: String?, rawValue: Int32) {
+                self.name = name
+                self.rawValue = rawValue
+            }
+
+            /// The raw value of the flag.
+            public let rawValue: Int32
+
+            /// All known virtual memory ledger flags.
+            public static let allCases: [Self] = [.noFootprint, .noFootprintForDebug]
+
+            public static let noFootprint =
+                Self(name: "noFootprint", rawValue: VM_LEDGER_FLAG_NO_FOOTPRINT)
+
+            public static let noFootprintForDebug =
+                Self(name: "noFootprintForDebug", rawValue: VM_LEDGER_FLAG_NO_FOOTPRINT_FOR_DEBUG)
+        }
+    }
+
+    extension Mach.MemoryEntry {
+        /// Transfers ownership of the memory entry to the given task's virtual memory ledger.
+        @available(macOS, introduced: 10.15)
+        public func ownership(
+            _ task: Mach.Task,
+            ledgerTag: Mach.VMLedgerTag,
+            ledgerFlags: Mach.VMLedgerFlags
+        ) throws {
+            try Mach.call(
+                mach_memory_entry_ownership(
+                    self.name, task.name, ledgerTag.rawValue, ledgerFlags.rawValue
+                )
+            )
+        }
+    }
+
+    /// MARK: - Page Counts
+
+    extension Mach.MemoryEntry {
+        /// The page counts for the memory entry.
+        @available(macOS, introduced: 26.0)
+        public var pageCounts: (resident: UInt64, dirty: UInt64, swapped: UInt64) {
+            get throws {
+                var resident: UInt64 = 0
+                var dirty: UInt64 = 0
+                var swapped: UInt64 = 0
+                try Mach.call(
+                    mach_memory_entry_get_page_counts(
+                        self.name, &resident, &dirty, &swapped
+                    )
+                )
+                return (resident: resident, dirty: dirty, swapped: swapped)
+            }
         }
     }
 #endif  // os(macOS)
