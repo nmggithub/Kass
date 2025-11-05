@@ -82,12 +82,6 @@
 
 - ``execLockdown()``
 
-### Deferred Reclamation
-
-- ``deferredReclamationBufferInit(_:size:)``
-- ``deferredReclamationBufferSynchronize(numberOfEntriesToReclaim:)``
-- ``deferredReclamationBufferUpdate(reclaimableBytes:)``
-
 ### Creating Ranges
 
 - ``createRange(recipes:)``
