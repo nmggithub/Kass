@@ -412,6 +412,22 @@ extension BSD {
             self.init(rawValue: fileActionsPointer)
         }
 
+        /// Adds an action to change the working directory.
+        @available(macOS 26.0, *)
+        public func addChangeDirectory(toPath path: FilePath) throws {
+            try BSDCore.BSD.call(
+                posix_spawn_file_actions_addchdir(self.rawValue, path.string)
+            )
+        }
+
+        /// Adds an action to change the working directory.
+        @available(macOS 26.0, *)
+        public func addChangeDirectory(toFileDescriptor fileDescriptor: FileDescriptor) throws {
+            try BSDCore.BSD.call(
+                posix_spawn_file_actions_addfchdir(self.rawValue, fileDescriptor.rawValue)
+            )
+        }
+
         /// Adds an action to close a file descriptor.
         public func addClose(fd: Int32) throws {
             try BSDCore.BSD.call(posix_spawn_file_actions_addclose(self.rawValue, fd))
@@ -468,8 +484,11 @@ extension BSD {
         }
 
         /// Adds an action to change the working directory.
-        @available(macOS 10.15, *)
-        @available(iOS, unavailable)
+        @available(
+            macOS, introduced: 10.15, deprecated: 26.0,
+            message: "Use addChangeDirectory(toPath:) instead.",
+            renamed: "addChangeDirectory(toPath:)"
+        )
         public func addChangeDirectory(toPath path: String) throws {
             try BSDCore.BSD.call(
                 posix_spawn_file_actions_addchdir_np(self.rawValue, path)
@@ -477,8 +496,11 @@ extension BSD {
         }
 
         /// Adds an action to change the working directory.
-        @available(macOS 10.15, *)
-        @available(iOS, unavailable)
+        @available(
+            macOS, introduced: 10.15, deprecated: 26.0,
+            message: "Use addChangeDirectory(toFileDescriptor:) instead.",
+            renamed: "addChangeDirectory(toFileDescriptor:)"
+        )
         public func addChangeDirectory(toFD fd: Int32) throws {
             try BSDCore.BSD.call(
                 posix_spawn_file_actions_addfchdir_np(self.rawValue, fd)
@@ -486,8 +508,11 @@ extension BSD {
         }
 
         /// Adds an action to change the working directory.
-        @available(macOS 11.0, iOS 14.0, *)
-        @available(iOS, unavailable)
+        @available(
+            macOS, introduced: 11.0, deprecated: 26.0,
+            message: "Use addChangeDirectory(toFileDescriptor:) instead.",
+            renamed: "addChangeDirectory(toFileDescriptor:)"
+        )
         public func addChangeDirectory(toFD fd: FileDescriptor) throws {
             try BSDCore.BSD.call(
                 posix_spawn_file_actions_addfchdir_np(self.rawValue, fd.rawValue)

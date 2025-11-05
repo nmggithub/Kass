@@ -191,6 +191,12 @@ extension BSD.POSIXSpawnAttributes {
         try BSDCore.BSD.call(posix_spawnattr_set_kqworklooplimit_ext(self.rawValue, soft, hard))
     }
 
+    /// Sets the conclave memory limit for the spawned process.
+    @available(macOS 26.0, *)
+    public func setConclaveMemoryLimit(_ limit: UInt32) throws {
+        try BSDCore.BSD.call(posix_spawnattr_set_conclavememlimit_ext(self.rawValue, limit))
+    }
+
     /// Sets the importance watch ports for the spawned process.
     public func setImportanceWatchPorts(_ ports: [MachCore.Mach.Port]) throws {
         let portNameArrayPointer = mach_port_name_array_t.allocate(capacity: ports.count)
