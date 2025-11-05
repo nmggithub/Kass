@@ -1293,7 +1293,7 @@
                 message: "Use allocate(task:size:maxSize:) instead.",
                 renamed: "allocate(task:size:maxSize:)"
             )
-            public init(task: Mach.Task, pointer: UnsafeRawBufferPointer) throws {
+            public init(task: Mach.Task = .current, pointer: UnsafeRawBufferPointer) throws {
                 self.task = task
                 var address = try Mach.VirtualMemoryManager
                     .unsafeRawPointerToMachVMAddress(pointer.baseAddress)
@@ -1326,7 +1326,7 @@
             /// Allocates a deferred reclamation buffer.
             @available(macOS, introduced: 15.4, obsoleted: 26.0)
             public static func allocate(
-                task: Mach.Task, size: UInt32, maxSize: UInt32
+                task: Mach.Task = .current, size: UInt32, maxSize: UInt32
             ) throws -> Self {
                 var address: mach_vm_address_t = 0
                 var samplingPeriod: UInt64? = nil
