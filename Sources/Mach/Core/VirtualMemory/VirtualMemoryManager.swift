@@ -499,6 +499,37 @@
             pointer = try Self.machVMAddressToUnsafeRawPointer(address)
         }
 
+        /// Common implementation for re-mapping a virtual memory region in the task's address space.
+        private func remapCommon(
+            new: Bool,
+            into pointerInTargetTask: inout UnsafeRawPointer?,
+            size: mach_vm_size_t,
+            mask: mach_vm_offset_t = 0,
+            flags: Mach.VMFlags = [],
+            fromTask sourceTask: Mach.Task = Mach.Task.current,
+            fromPointer pointerInSourceTask: UnsafeRawPointer?,
+            copy: Bool = false,
+            currentProtection: inout Mach.VMProtectionOptions,
+            maxProtection: inout Mach.VMProtectionOptions,
+            inheritance: Mach.VMInherit
+        ) throws {
+            var targetAddress = try Self.unsafeRawPointerToMachVMAddress(pointerInTargetTask)
+            let sourceAddress = try Self.unsafeRawPointerToMachVMAddress(pointerInSourceTask)
+            let targetTask = self.task
+            var rawCurrentProtection: vm_prot_t = currentProtection.rawValue
+            var rawMaxProtection: vm_prot_t = maxProtection.rawValue
+            try Mach.call(
+                (new ? mach_vm_remap_new : mach_vm_remap)(
+                    targetTask.name, &targetAddress, size, mask, flags.rawValue,
+                    sourceTask.name, sourceAddress, copy ? 1 : 0,
+                    &rawCurrentProtection, &rawMaxProtection, inheritance.rawValue
+                )
+            )
+            pointerInTargetTask = try Self.machVMAddressToUnsafeRawPointer(targetAddress)
+            currentProtection = Mach.VMProtectionOptions(rawValue: rawCurrentProtection)
+            maxProtection = Mach.VMProtectionOptions(rawValue: rawMaxProtection)
+        }
+
         /// Re-maps a virtual memory region in the task's address space.
         public func remap(
             into pointerInTargetTask: inout UnsafeRawPointer?,
@@ -515,22 +546,50 @@
                 maxProtection: Mach.VMProtectionOptions
             )
         {
-            var targetAddress = try Self.unsafeRawPointerToMachVMAddress(pointerInTargetTask)
-            let sourceAddress = try Self.unsafeRawPointerToMachVMAddress(pointerInSourceTask)
-            let targetTask = self.task
-            var rawCurrentProtection: vm_prot_t = 0
-            var rawMaxProtection: vm_prot_t = 0
-            try Mach.call(
-                mach_vm_remap(
-                    targetTask.name, &targetAddress, size, mask, flags.rawValue,
-                    sourceTask.name, sourceAddress, copy ? 1 : 0,
-                    &rawCurrentProtection, &rawMaxProtection, inheritance.rawValue
-                )
+            var currentProtection = Mach.VMProtectionOptions.none
+            var maxProtection = Mach.VMProtectionOptions.none
+            try self.remapCommon(
+                new: false,
+                into: &pointerInTargetTask,
+                size: size,
+                mask: mask,
+                flags: flags,
+                fromTask: sourceTask,
+                fromPointer: pointerInSourceTask,
+                copy: copy,
+                currentProtection: &currentProtection,
+                maxProtection: &maxProtection,
+                inheritance: inheritance
             )
-            pointerInTargetTask = try Self.machVMAddressToUnsafeRawPointer(targetAddress)
-            return (
-                currentProtection: Mach.VMProtectionOptions(rawValue: rawCurrentProtection),
-                maxProtection: Mach.VMProtectionOptions(rawValue: rawMaxProtection)
+            return (currentProtection: currentProtection, maxProtection: maxProtection)
+        }
+
+        /// Re-maps a virtual memory region in the task's address space.
+        @available(macOS, introduced: 12.0.1)
+        public func remapNew(
+            into pointerInTargetTask: inout UnsafeRawPointer?,
+            size: mach_vm_size_t,
+            mask: mach_vm_offset_t = 0,
+            flags: Mach.VMFlags = [],
+            fromTask sourceTask: Mach.Task = Mach.Task.current,
+            fromPointer pointerInSourceTask: UnsafeRawPointer?,
+            copy: Bool = false,
+            currentProtection: inout Mach.VMProtectionOptions,
+            maxProtection: inout Mach.VMProtectionOptions,
+            inheritance: Mach.VMInherit
+        ) throws {
+            try self.remapCommon(
+                new: true,
+                into: &pointerInTargetTask,
+                size: size,
+                mask: mask,
+                flags: flags,
+                fromTask: sourceTask,
+                fromPointer: pointerInSourceTask,
+                copy: copy,
+                currentProtection: &currentProtection,
+                maxProtection: &maxProtection,
+                inheritance: inheritance
             )
         }
     }
