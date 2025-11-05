@@ -27,8 +27,8 @@ extension Mach.ThreadState {
         try Mach.callWithCountInOut(type: DataType.self) {
             (array: thread_state_t, count) in
             do {
-                // Nesting "calls" like this isn't pretty, but this **one** kernel call uses both the count-in and
-                // count-in-out patterns. That's not enough to justify a new function, so we'll just do this.
+                // Nesting "calls" like this isn't pretty, but this is one of the only kernel call that uses both the count-in
+                // and count-in-out patterns. That's not enough to justify a new function, so we'll just do this.
                 try Mach.callWithCountIn(value: self.data) {
                     arrayInner, countInner in
                     thread_convert_thread_state(

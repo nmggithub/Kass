@@ -1637,4 +1637,44 @@
             }
         }
     }
+
+    /// MARK: - Tagged Pointers
+    extension Mach.VirtualMemoryManager {
+        @available(macOS, introduced: 26.0)
+        public func updatePointersWithRemoteTags(_ pointers: inout [UnsafeRawPointer?]) throws {
+            var pointerCount = mach_msg_type_number_t(pointers.count)
+            let outPointers = try Mach.callWithCountInOut(count: &pointerCount) {
+                (array: mach_vm_offset_list_t, count) in
+                do {
+                    try Mach.callWithCountIn(
+                        array: pointers.map {
+                            try Mach.VirtualMemoryManager
+                                .unsafeRawPointerToMachVMAddress($0)
+                        }
+                    ) {
+                        arrayInner, countInner in
+                        mach_vm_update_pointers_with_remote_tags(
+                            self.task.name,
+                            arrayInner,
+                            countInner,
+                            array,
+                            &count
+                        )
+                    }
+                } catch {  // Catch and return the codes from the actual kernel call.
+                    return switch error {
+                    case is MachError: (error as! MachError).code.rawValue
+                    default: kern_return_t((error as NSError).code)
+                    }
+                }
+                // We didn't catch anything, so we assume success and return the success code.
+                return MachErrorCode.success.rawValue
+            }
+            pointers = (0..<Int(pointerCount)).map {
+                try? Mach.VirtualMemoryManager.machVMAddressToUnsafeRawPointer(
+                    outPointers[$0]
+                )
+            }
+        }
+    }
 #endif  // os(macOS)
