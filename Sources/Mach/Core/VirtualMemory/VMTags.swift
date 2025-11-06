@@ -42,7 +42,6 @@
 
             /// All known tags.
             public static let allCases: [Self] = [
-
                 untagged, malloc, mallocSmall, mallocLarge, mallocHuge, sbrk, realloc,
                 mallocTiny, mallocLargeReusable, mallocLargeReused, analysisTool, mallocNano,
                 mallocMedium, mallocProbGuard, machMessage, ioKit, stack, `guard`, sharedPMap,
