@@ -32,6 +32,9 @@ extension Mach {
                 byteCount: buffers.reduce(0) { $0 + ($1.count + 3) & ~3 },
                 alignment: 4
             )
+            resultBuffer.baseAddress!.initializeMemory(
+                as: UInt8.self, repeating: 0, count: resultBuffer.count
+            )
             var offset = 0
             for buffer in buffers {
                 resultBuffer.baseAddress!.advanced(by: offset).copyMemory(
@@ -39,6 +42,7 @@ extension Mach {
                     byteCount: buffer.count
                 )
                 offset += (buffer.count + 3) & ~3
+                buffer.deallocate()
             }
             return UnsafeRawBufferPointer(resultBuffer)
         }
