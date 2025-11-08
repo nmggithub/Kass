@@ -1,4 +1,5 @@
 import Darwin.Mach
+import Foundation
 
 /// Message extensions.
 extension Mach {
@@ -14,7 +15,7 @@ extension Mach {
         public var body: Mach.MessageBody?
 
         /// The message payload buffer.
-        public var payload: UnsafeRawBufferPointer?
+        public var payload: Data?
 
         /// The message trailer.
         public var trailer: mach_msg_max_trailer_t?
@@ -77,13 +78,14 @@ extension Mach {
             }
 
             // Write the payload, if it exists.
-            if let ownPayloadBuffer = self.payload {
-                ownPayloadBuffer.copyBytes(
+            if let ownPayload = self.payload {
+                ownPayload.copyBytes(
                     to: UnsafeMutableRawBufferPointer(
-                        start: serializingPointer, count: ownPayloadBuffer.count
+                        start: serializingPointer,
+                        count: ownPayload.count
                     )
                 )
-                serializingPointer += ownPayloadBuffer.count
+                serializingPointer += ownPayload.count
             }
 
             // While convention might dictate that we keep this field set to zero for sent messages (as it is a kernel-set
@@ -135,10 +137,7 @@ extension Mach {
             self.payload =
                 switch self.advertisedPayloadSize {
                 case 0: nil
-                case let size:
-                    UnsafeRawBufferPointer(
-                        start: deserializingPointer, count: size
-                    )
+                case let size: Data(bytes: deserializingPointer, count: size)
                 }
             deserializingPointer += self.payloadSize
 
@@ -149,12 +148,12 @@ extension Mach {
 
         /// Creates a message with a set of descriptors and a payload.
         public required init(
-            descriptors: [any Mach.MessageDescriptor]? = nil,
-            payloadBytes: UnsafeRawBufferPointer? = nil
+            descriptors: [any MessageDescriptor]? = nil,
+            payloadBytes: Data? = nil  // CHANGED: Now Data
         ) {
             self.header = mach_msg_header_t()
             if let descriptors = descriptors {
-                self.body = Mach.MessageBody(descriptors: descriptors)
+                self.body = MessageBody(descriptors: descriptors)
                 self.header.bits.isMessageComplex = true
             }
             self.payload = payloadBytes

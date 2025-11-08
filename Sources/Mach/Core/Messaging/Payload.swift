@@ -4,11 +4,11 @@ import Foundation
 extension Mach {
     /// A message payload.
     public protocol MessagePayload {
-        /// Loads a payload from a raw buffer.
-        static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self?
+        /// Converts the payload to Data for embedding in a message
+        var payloadData: Data { get }
 
-        /// Converts the payload to a raw buffer.
-        func toRawPayloadBuffer() -> UnsafeRawBufferPointer
+        /// Loads a payload from Data received from a message
+        static func fromPayloadData(_ data: Data) -> Self?
     }
 
     /// A message with a typed payload.
@@ -23,17 +23,21 @@ extension Mach.MessageWithTypedPayload {
     /// The typed message payload.
     public var typedPayload: PayloadType? {
         get {
-            guard let payloadBuffer = payload else { return nil }
-            return PayloadType.fromRawPayloadBuffer(payloadBuffer)
+            guard let payloadData = self.payload else { return nil }
+            return PayloadType.fromPayloadData(payloadData)
         }
-        set { payload = newValue?.toRawPayloadBuffer() }
+        set {
+            self.payload = newValue?.payloadData
+        }
     }
 
     /// Creates a message with a set of descriptors and a payload.
     public init(
         descriptors: [any Mach.MessageDescriptor]? = nil,
         payload: PayloadType
-    ) { self.init(descriptors: descriptors, payloadBytes: payload.toRawPayloadBuffer()) }
+    ) {
+        self.init(descriptors: descriptors, payloadBytes: payload.payloadData)
+    }
 }
 
 // MARK: - Trivial Payload
@@ -43,54 +47,32 @@ extension Mach {
 }
 
 extension Mach.TrivialMessagePayload {
-    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? {
-        guard buffer.count == MemoryLayout<Self>.size else { return nil }
-        return buffer.load(as: Self.self)
+    public static func fromPayloadData(_ data: Data) -> Self? {
+        guard data.count == MemoryLayout<Self>.size else { return nil }
+        return data.withUnsafeBytes { $0.load(as: Self.self) }
     }
 
-    public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
-        return withUnsafeBytes(of: self) { bytes in
-            let newBuffer = UnsafeMutableRawBufferPointer.allocate(
-                byteCount: MemoryLayout<Self>.size,
-                alignment: MemoryLayout<Self>.alignment
-            )
-            newBuffer.copyMemory(from: bytes)
-            return UnsafeRawBufferPointer(newBuffer)
-        }
+    public var payloadData: Data {
+        withUnsafeBytes(of: self) { Data($0) }
     }
 }
 
 // MARK: - Data Payload
 /// Data as a message payload.
 extension Data: Mach.MessagePayload {
-    /// Loads a `Data` payload from a raw buffer.
-    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? {
-        Self(buffer)
-    }
+    /// Loads a `Data` as payload data.
+    public static func fromPayloadData(_ data: Data) -> Data? { data }
 
-    /// Converts the `Data` payload to a raw buffer.
-    public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
-        self.withUnsafeBytes {
-            dataBuffer in
-            let buffer = UnsafeMutableRawBufferPointer.allocate(
-                byteCount: dataBuffer.count,
-                // This is going into a message, so it should be aligned to the message alignment.
-                alignment: Mach.Message.alignment
-            )
-            buffer.copyMemory(from: dataBuffer)
-            return UnsafeRawBufferPointer(buffer)
-        }
-    }
+    /// Itself as payload data.
+    public var payloadData: Data { self }
 }
 
 // MARK: - Non-Existent Payload
 /// A non-existent payload.
 extension Never: Mach.MessagePayload {
     /// Returns `nil`.
-    public static func fromRawPayloadBuffer(_ buffer: UnsafeRawBufferPointer) -> Self? { nil }
+    public static func fromPayloadData(_ data: Data) -> Self? { nil }
 
-    /// Returns a zero-length empty buffer.
-    public func toRawPayloadBuffer() -> UnsafeRawBufferPointer {
-        UnsafeRawBufferPointer(start: nil, count: 0)
-    }
+    /// Zero-length empty data.
+    public var payloadData: Data { Data() }
 }
