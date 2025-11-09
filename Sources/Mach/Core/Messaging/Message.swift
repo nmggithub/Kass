@@ -112,7 +112,7 @@ extension Mach {
         }
 
         /// Deserializes an existing message from a header pointer.
-        public required init(headerPointer: UnsafeMutablePointer<mach_msg_header_t>) {
+        public nonisolated required init(headerPointer: UnsafeMutablePointer<mach_msg_header_t>) {
             // Create a mutable pointer to advance through the buffer.
             var deserializingPointer = UnsafeMutableRawPointer(headerPointer)
 
@@ -147,7 +147,7 @@ extension Mach {
         }
 
         /// Creates a message with a set of descriptors and a payload.
-        public required init(
+        public nonisolated required init(
             descriptors: [any MessageDescriptor]? = nil,
             payloadBytes: Data? = nil  // CHANGED: Now Data
         ) {
