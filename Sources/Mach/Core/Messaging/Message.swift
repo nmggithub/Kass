@@ -149,14 +149,14 @@ extension Mach {
         /// Creates a message with a set of descriptors and a payload.
         public nonisolated required init(
             descriptors: [any MessageDescriptor]? = nil,
-            payloadBytes: Data? = nil  // CHANGED: Now Data
+            payload: Data? = nil  // CHANGED: Now Data
         ) {
             self.header = mach_msg_header_t()
             if let descriptors = descriptors {
                 self.body = MessageBody(descriptors: descriptors)
                 self.header.bits.isMessageComplex = true
             }
-            self.payload = payloadBytes
+            self.payload = payload
         }
     }
 }

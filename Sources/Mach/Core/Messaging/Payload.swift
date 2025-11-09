@@ -34,9 +34,9 @@ extension Mach.MessageWithTypedPayload {
     /// Creates a message with a set of descriptors and a payload.
     public init(
         descriptors: [any Mach.MessageDescriptor]? = nil,
-        payload: PayloadType
+        typedPayload: PayloadType
     ) {
-        self.init(descriptors: descriptors, payloadBytes: payload.payloadData)
+        self.init(descriptors: descriptors, payload: typedPayload.payloadData)
     }
 }
 

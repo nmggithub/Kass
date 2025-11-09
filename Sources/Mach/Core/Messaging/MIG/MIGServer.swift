@@ -45,7 +45,7 @@ extension Mach {
                     // If any of the above checks fail, we tell the
                     //  client that their arguments were invalid.
                     return Mach.MIGReply(
-                        payload: Mach.MIGErrorReplyPayload(returnCode: MIG_BAD_ARGUMENTS)
+                        typedPayload: Mach.MIGErrorReplyPayload(returnCode: MIG_BAD_ARGUMENTS)
                     )
 
                 }
@@ -90,11 +90,15 @@ extension Mach {
             else {
                 // If we don't have a handler for the routine, we tell
                 //  the client that their routine ID was invalid.
-                return Mach.MIGReply(payload: MIGErrorReplyPayload(returnCode: MIG_BAD_ID))
+                return Mach.MIGReply(
+                    typedPayload: Mach.MIGErrorReplyPayload(returnCode: MIG_BAD_ID)
+                )
             }
             do { return try routineHandler.untypedHandler(incomingMessage) } catch {
                 let errorCode = (error as NSError).code
-                return Mach.MIGReply(payload: MIGErrorReplyPayload(returnCode: Int32(errorCode)))
+                return Mach.MIGReply(
+                    typedPayload: Mach.MIGErrorReplyPayload(returnCode: Int32(errorCode))
+                )
             }
         }
 
