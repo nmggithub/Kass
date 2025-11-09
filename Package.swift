@@ -48,6 +48,7 @@ struct BSDSubModule: Module {
 /// The modules that are part of the package, in build order.
 let modules: [Module] = [
     BasicModule.init(targetName: "KassHelpers", dependencies: []),
+    BasicModule.init(targetName: "KassC", path: "Sources/KassC", dependencies: []),
     BasicModule.init(targetName: "Linking", dependencies: []),
     BasicModule.init(
         targetName: "MachCore", path: "Sources/Mach/Core",
@@ -75,43 +76,21 @@ let modules: [Module] = [
 let name = "Kass"
 
 /// The targets for the modules.
-let moduleTargets =
-    [
-        .target(
-            name: "KassC",
-            path: "Sources/KassC",
-        )
-    ]
-    + modules.map {
-        Target.target(
-            name: $0.targetName,
-            dependencies: $0.dependencies.map { Target.Dependency.target(name: $0) },
-            path: $0.path
-        )
-    }
+let moduleTargets = modules.map {
+    Target.target(
+        name: $0.targetName,
+        dependencies: $0.dependencies.map { Target.Dependency.target(name: $0) },
+        path: $0.path
+    )
+}
 
 /// The products for the modules.
-let moduleProducts =
-    [
-        Product.library(
-            name: "Kass",
-            targets: [
-                "Kass",
-                "Linking",
-                "BSDCore",
-                "MachCore",
-                "OSCore",
-                "LibNotify",
-                "Shellcode",
-            ]
-        )
-    ]
-    + modules.filter({ $0.targetName != "Kass" }).map { module in
-        return Product.library(
-            name: module.targetName,
-            targets: [module.targetName] + module.dependencies
-        )
-    }
+let moduleProducts = modules.map {
+    Product.library(
+        name: $0.targetName,
+        targets: [$0.targetName] + $0.dependencies
+    )
+}
 
 let package = Package(
     name: name,
