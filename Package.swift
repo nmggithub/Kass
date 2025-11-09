@@ -92,24 +92,24 @@ let moduleTargets =
 
 /// The products for the modules.
 let moduleProducts =
-    // The main "Kass" product vends the core modules as well, for convenience.
     [
         Product.library(
             name: "Kass",
             targets: [
-                "Kass", "KassHelpers", "BSDCore", "MachCore",
+                "Kass",
+                "Linking",
+                "BSDCore",
+                "MachCore",
+                "OSCore",
+                "LibNotify",
+                "Shellcode",
             ]
-        ),
-        Product.library(
-            name: "KassC",
-            targets: ["KassC"]
-        ),
+        )
     ]
-    // Every other module just vends itself as a product.
-    + modules.filter({ $0.targetName != "Kass" }).map {
-        Product.library(
-            name: $0.targetName,
-            targets: [$0.targetName]
+    + modules.filter({ $0.targetName != "Kass" }).map { module in
+        return Product.library(
+            name: module.targetName,
+            targets: [module.targetName] + module.dependencies
         )
     }
 
