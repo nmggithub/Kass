@@ -77,9 +77,9 @@ let name = "Kass"
 /// The targets for the modules.
 let moduleTargets =
     [
-        .systemLibrary(
+        .target(
             name: "KassC",
-            path: "Sources/KassC/include",
+            path: "Sources/KassC",
         )
     ]
     + modules.map {
