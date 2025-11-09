@@ -99,7 +99,11 @@ let moduleProducts =
             targets: [
                 "Kass", "KassHelpers", "BSDCore", "MachCore",
             ]
-        )
+        ),
+        Product.library(
+            name: "KassC",
+            targets: ["KassC"]
+        ),
     ]
     // Every other module just vends itself as a product.
     + modules.filter({ $0.targetName != "Kass" }).map {
