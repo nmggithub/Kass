@@ -116,7 +116,7 @@ extension Mach.Message {
             let originalMessageBuffer = UnsafeRawBufferPointer(
                 start: $0, count: Int(message.sendSize)
             )
-            let rawMessageBuffer = Mach.Message.transientBuffer(maxSize)
+            let rawMessageBuffer = Mach.Message.transientBuffer(max(maxSize, Int(message.sendSize)))
             defer { rawMessageBuffer.deallocate() }
             rawMessageBuffer.copyMemory(from: originalMessageBuffer)
             let messageBuffer = rawMessageBuffer.baseAddress!  // We control `rawMessageBuffer`, so this is safe.
