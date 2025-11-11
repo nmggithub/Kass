@@ -1,4 +1,4 @@
-import Darwin.Mach
+@preconcurrency import Darwin.Mach
 
 // MARK: - Helper Extensions
 extension Mach.Message {
@@ -12,14 +12,15 @@ extension Mach.Message {
         return mach_msg_size_t((unalignedSize + (Self.alignment - 1)) & ~(Self.alignment - 1))
     }
 
-    /// The default maximum size for receiving messages.
-    @usableFromInline
-    internal static let defaultMaxReceiveSize: Int = 1024
+    /// The maximum size for receiving messages.
+    public class var maxReceiveSize: Int {
+        Int(vm_page_size) * 2  // This is somewhat arbitrary, but should be enough for most messages.
+    }
 
     /// Allocates a transient buffer for receiving messages, set to a given size.
-    fileprivate static func transientBuffer(_ size: consuming Int) -> UnsafeMutableRawBufferPointer
-    {
-        let actualSize = max(size, MemoryLayout<mach_msg_header_t>.size)  // We just go ahead and round up if needed and don't tell the user.
+    fileprivate static func transientBuffer(_ size: Int?) -> UnsafeMutableRawBufferPointer {
+        let requestedSize = size ?? Self.maxReceiveSize
+        let actualSize = max(requestedSize, MemoryLayout<mach_msg_header_t>.size)  // We just go ahead and round up if needed and don't tell the user.
         let bufferPointer = UnsafeMutableRawPointer.allocate(
             byteCount: actualSize,
             alignment: MemoryLayout<mach_msg_header_t>.alignment
@@ -92,7 +93,7 @@ extension Mach.Message {
         to remotePort: Mach.Port? = nil,
         withDisposition remoteDisposition: Mach.PortDisposition? = nil,
         receiving receiveType: ReceiveMessage.Type = ReceiveMessage.self,
-        ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
+        ofMaxSize maxSize: Int = ReceiveMessage.maxReceiveSize,
         from receivePort: Mach.Port? = nil,
         withDisposition localDisposition: Mach.PortDisposition? = nil,
         options: consuming Mach.MessageOptions = [],
@@ -135,7 +136,7 @@ extension Mach.Message {
     /// - Warning: This function will block until a message is received.
     public static func receive<ReceiveMessage: Mach.Message>(
         _ messageType: ReceiveMessage.Type = ReceiveMessage.self,
-        ofMaxSize maxSize: Int = Mach.Message.defaultMaxReceiveSize,
+        ofMaxSize maxSize: Int = ReceiveMessage.maxReceiveSize,
         from localPort: Mach.Port,
         options: consuming Mach.MessageOptions = [],
         timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
