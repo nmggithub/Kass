@@ -58,29 +58,29 @@ extension Mach {
         }
 
         /// The parent bootstrap port.
-        public var parentPort: BootstrapPort? {
+        public var parentPort: Self? {
             get throws {
                 var parentPortName = mach_port_name_t()
                 try Self.call(bootstrap_parent(self.name, &parentPortName))
-                return BootstrapPort(named: parentPortName)
+                return Self(named: parentPortName)
             }
         }
 
         /// The unprivileged bootstrap port.
-        public var unprivilegedPort: Mach.Port {
+        public var unprivilegedPort: Self {
             get throws {
                 var unprivilegedPortName = mach_port_name_t()
                 try Self.call(bootstrap_unprivileged_(self.name, &unprivilegedPortName))
-                return Mach.Port(named: unprivilegedPortName)
+                return Self(named: unprivilegedPortName)
             }
         }
 
         /// The root bootstrap port.
-        public var rootPort: Mach.Port {
+        public var rootPort: Self {
             get throws {
                 var rootPortName = mach_port_name_t()
                 try Self.call(bootstrap_get_root_(self.name, &rootPortName))
-                return Mach.Port(named: rootPortName)
+                return Self(named: rootPortName)
             }
         }
 
