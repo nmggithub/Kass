@@ -47,7 +47,7 @@ extension Mach {
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
             replyPayloadType: ReplyPayload.Type = ReplyPayload.self,
-            maxReplySize: Int = Mach.Message.defaultMaxReceiveSize,
+            maxReplySize: Int = Mach.Message.maxReceiveSize,
             replyPort: Mach.Port? = nil,
             serverErrorDomain: String? = nil,
             additionalOptions: Mach.MessageOptions = [],
