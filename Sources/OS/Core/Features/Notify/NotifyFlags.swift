@@ -1,9 +1,9 @@
 import KassHelpers
 import notify
 
-extension LibNotify {
+extension OS.Notify {
     /// Flags for Libnotify.
-    public struct LibNotifyFlags: OptionSet, KassHelpers.NamedOptionEnum {
+    public struct NotifyFlags: OptionSet, KassHelpers.NamedOptionEnum {
         /// The name of the flag, if it can be determined.
         public var name: String?
 

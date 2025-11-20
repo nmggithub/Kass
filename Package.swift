@@ -62,9 +62,6 @@ let modules: [Module] = [
         dependencies: ["KassHelpers", "KassC", "BSDCore", "MachCore"]
     ),
     BasicModule.init(
-        targetName: "LibNotify", dependencies: ["KassHelpers", "BSDCore", "MachCore"]
-    ),
-    BasicModule.init(
         targetName: "Shellcode", dependencies: ["KassHelpers", "MachCore"]
     ),
     BasicModule.init(targetName: "Kass", dependencies: ["KassHelpers", "BSDCore", "MachCore"]),
@@ -101,7 +98,6 @@ let moduleProducts =
                 "BSDCore",
                 "MachCore",
                 "OSCore",
-                "LibNotify",
                 "Shellcode",
             ]
         )

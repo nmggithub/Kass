@@ -55,7 +55,7 @@ private func notify_strerror(_ code: UInt32) -> String {
     }
 }
 
-extension LibNotify {
+extension OS.Notify {
     /// An error for Libnotify.
     struct LibNotifyError: Error, CustomStringConvertible {
         var description: String {
