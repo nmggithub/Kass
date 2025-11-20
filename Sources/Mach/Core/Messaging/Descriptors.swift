@@ -344,7 +344,7 @@ extension Mach {
     /// A body of message descriptors.
     public struct MessageBody {
         /// The descriptors in the body.
-        public var descriptors: [any Mach.MessageDescriptor]
+        public let descriptors: [any Mach.MessageDescriptor]
 
         /// The total size of the body in bytes.
         internal var totalSize: Int {
