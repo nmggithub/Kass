@@ -43,23 +43,25 @@ extension Mach {
 
         /// Performs a MIG routine.
         @discardableResult
-        public func doRoutine<ReplyPayload: Mach.MIGPayload>(
+        public func doRoutine<
+            ReplyPayload: Mach.MIGPayload, ReplyMessage: Mach.MIGReply<ReplyPayload>
+        >(
             _ routineIndex: mach_msg_id_t,
             request: MIGRequest<some Mach.MIGPayload>,
             replyPayloadType: ReplyPayload.Type = ReplyPayload.self,
-            maxReplySize: Int = Mach.Message.maxReceiveSize,
+            maxReplySize: Int = ReplyMessage.maxReceiveSize,
             replyPort: Mach.Port? = nil,
             serverErrorDomain: String? = nil,
             additionalOptions: Mach.MessageOptions = [],
             timeout: mach_msg_timeout_t = MACH_MSG_TIMEOUT_NONE
-        ) throws -> Mach.MIGReply<ReplyPayload> {
+        ) throws -> ReplyMessage {
             let routineID = self.baseRoutineID + routineIndex
             request.header.msgh_id = routineID
             let reply = try Mach.Message.send(
                 request,
                 // We make a copy of the send right so we can reuse the port.
                 to: self, withDisposition: .copySend,
-                receiving: Mach.MIGReply<ReplyPayload>.self, ofMaxSize: maxReplySize,
+                receiving: ReplyMessage.self, ofMaxSize: maxReplySize,
                 // We make a send-once right so we can receive the reply.
                 from: replyPort ?? Mach.MIGReplyPort(), withDisposition: .makeSendOnce,
                 options: additionalOptions, timeout: timeout
