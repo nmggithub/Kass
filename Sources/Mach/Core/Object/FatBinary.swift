@@ -39,19 +39,18 @@ extension Mach.FatBinary {
 
         /// The architecture structure is a 32-bit structure with native endianess.
         public static let native32Bit =
-            HeaderMagic(rawValue: FAT_MAGIC)!
+            HeaderMagic(magicValue: FAT_MAGIC)
 
         /// The architecture structure is a 32-bit structure with swapped endianess.
         public static let swapped32Bit =
-            HeaderMagic(rawValue: FAT_CIGAM)!
-
+            HeaderMagic(magicValue: FAT_CIGAM)
         /// The architecture structure is a 64-bit structure with native endianess.
         public static let native64Bit =
-            HeaderMagic(rawValue: FAT_MAGIC_64)!
+            HeaderMagic(magicValue: FAT_MAGIC_64)
 
         /// The architecture structure is a 64-bit structure with swapped endianess.
         public static let swapped64Bit =
-            HeaderMagic(rawValue: FAT_CIGAM_64)!
+            HeaderMagic(magicValue: FAT_CIGAM_64)
 
         /// All possible header magic values.
         public static let allCases: [HeaderMagic] = [
@@ -60,6 +59,12 @@ extension Mach.FatBinary {
             .native64Bit,
             .swapped64Bit,
         ]
+
+        /// Initializes header magic with a magic value.
+        /// - Note: This is only to be used for defining static constants.
+        private init(magicValue: UInt32) {
+            self.rawValue = magicValue
+        }
 
         /// Initializes header magic from its raw value.
         public init?(rawValue: UInt32) {

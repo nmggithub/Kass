@@ -34,19 +34,19 @@ extension Mach {
 
         /// The object is a 32-bit Mach object with native endianess.
         public static let native32Bit =
-            HeaderMagic(rawValue: MH_MAGIC)!
+            HeaderMagic(magicValue: MH_MAGIC)
 
         /// The object is a 32-bit Mach object with swapped endianess.
         public static let swapped32Bit =
-            HeaderMagic(rawValue: MH_CIGAM)!
+            HeaderMagic(magicValue: MH_CIGAM)
 
         /// The object is a 64-bit Mach object with native endianess.
         public static let native64Bit =
-            HeaderMagic(rawValue: MH_MAGIC_64)!
+            HeaderMagic(magicValue: MH_MAGIC_64)
 
         /// The object is a 64-bit Mach object with swapped endianess.
         public static let swapped64Bit =
-            HeaderMagic(rawValue: MH_CIGAM_64)!
+            HeaderMagic(magicValue: MH_CIGAM_64)
 
         /// All possible header magic values.
         public static let allCases: [HeaderMagic] = [
@@ -55,6 +55,12 @@ extension Mach {
             .native64Bit,
             .swapped64Bit,
         ]
+
+        /// Initializes header magic with a magic value.
+        /// - Note: This is only to be used for defining static constants.
+        private init(magicValue: UInt32) {
+            self.rawValue = magicValue
+        }
 
         /// Initializes header magic from its raw value.
         public init?(rawValue: UInt32) {
