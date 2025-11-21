@@ -79,8 +79,8 @@ extension Mach.FatBinary {
 
 extension Mach.FatBinary {
     /// The header magic of the fat binary.
-    public var headerMagic: Mach.HeaderMagic? {
-        Mach.HeaderMagic(rawValue: header.magic)
+    public var headerMagic: Mach.FatBinary.HeaderMagic? {
+        Mach.FatBinary.HeaderMagic(rawValue: self.header.magic)
     }
 
     /// Whether the fat binary has swapped endianess.

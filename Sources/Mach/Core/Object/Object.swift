@@ -76,7 +76,7 @@ extension Mach {
 extension Mach.Object {
     /// The header magic of the Mach object.
     public var headerMagic: Mach.HeaderMagic? {
-        Mach.HeaderMagic(rawValue: header.magic)
+        Mach.HeaderMagic(rawValue: self.header.magic)
     }
 
     /// Whether the Mach object has swapped endianess.
