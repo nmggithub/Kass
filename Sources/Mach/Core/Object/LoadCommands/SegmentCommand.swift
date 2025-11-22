@@ -5,7 +5,7 @@ import MachO
 
 extension Mach {
     public protocol CSegmentCommand<PointerType>: Mach.CLoadCommand {
-        associatedtype PointerType: UnsignedInteger
+        associatedtype PointerType: FixedWidthInteger
         var segname: Mach.CNameString { get }
         var vmaddr: PointerType { get }
         var vmsize: PointerType { get }
@@ -26,6 +26,9 @@ extension segment_command_64: Mach.CSegmentCommand {}
 extension Mach {
     /// A segment load command.
     public protocol SegmentCommand: Mach.LoadCommand where CLoadCommandType: CSegmentCommand {
+        /// The C representation of the sections for this segment command.
+        associatedtype CSectionType: Mach.Section
+
         /// The name of the segment.
         var name: String { get }
 
@@ -120,6 +123,7 @@ extension Mach {
     /// A 32-bit segment load command.
     public struct Segment32Command: SegmentCommand {
         public typealias CLoadCommandType = segment_command
+        public typealias CSectionType = section
         public let data: Data
         public init(data: Data) { self.data = data }
     }
@@ -127,6 +131,7 @@ extension Mach {
     /// A 64-bit segment load command.
     public struct Segment64Command: SegmentCommand {
         public typealias CLoadCommandType = segment_command_64
+        public typealias CSectionType = section_64
         public let data: Data
         public init(data: Data) { self.data = data }
     }
@@ -176,24 +181,17 @@ extension Mach.Section {
 
 extension Mach.SegmentCommand {
     /// The sections in the segment.
-    public var sections: [any Mach.Section] {
-        let sectionType: any Mach.Section.Type =
-            self is Mach.Segment32Command
-            ? section.self
-            : section_64.self
-        var sections: [any Mach.Section] = []
-        var currentOffset = MemoryLayout<CLoadCommandType>.size
-        for _ in 0..<numberOfSections {
-            let sectionData = data.subdata(
-                in: currentOffset..<(currentOffset + MemoryLayout<section>.size)
+    public var sections: [CSectionType] {
+        data.withUnsafeBytes { pointer in
+            Array(
+                UnsafeBufferPointer(
+                    start: pointer.baseAddress!
+                        .advanced(by: MemoryLayout<CLoadCommandType>.size)
+                        .assumingMemoryBound(to: CSectionType.self),
+                    count: Int(self.numberOfSections)
+                )
             )
-            let section = sectionData.withUnsafeBytes {
-                $0.load(as: sectionType)
-            }
-            sections.append(section)
-            currentOffset += MemoryLayout<section>.size
         }
-        return sections
     }
 }
 

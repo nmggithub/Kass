@@ -70,6 +70,13 @@ extension Mach {
                 return nil
             }
         }
+
+        /// Raises a fatal error for unsupported Mach object magic values.
+        public static func unsupported(machMagic: UInt32) -> Never {
+            fatalError(
+                "Unsupported Mach object magic: " + String(format: "0x%X", machMagic)
+            )
+        }
     }
 }
 
@@ -136,3 +143,22 @@ extension Mach.Object {
 
 extension mach_header: Mach.CHeader {}
 extension mach_header_64: Mach.CHeader {}
+
+extension Mach {
+    public static func object(fromData data: Data) -> any Mach.Object {
+        let machMagic = data.withUnsafeBytes {
+            $0.load(as: UInt32.self)
+        }
+        guard let headerMagic = Mach.HeaderMagic(rawValue: machMagic) else {
+            Mach.HeaderMagic.unsupported(machMagic: machMagic)
+        }
+        switch headerMagic {
+        case .native32Bit, .swapped32Bit:
+            return Mach.Object32(data: data)
+        case .native64Bit, .swapped64Bit:
+            return Mach.Object64(data: data)
+        default:
+            Mach.HeaderMagic.unsupported(machMagic: machMagic)
+        }
+    }
+}
