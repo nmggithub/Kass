@@ -1,4 +1,5 @@
 import Foundation
+import KassHelpers
 import MachO
 
 extension Mach {
@@ -29,24 +30,43 @@ extension Mach {
 
 extension Mach {
     /// The magic field of a Mach object header.
-    public struct HeaderMagic: RawRepresentable, CaseIterable, Equatable, Sendable {
+    public struct HeaderMagic: KassHelpers.NamedOptionEnum, Hashable, Sendable {
+        /// The name of the magic, if it can be determined.
+        public var name: String?
+
+        /// Represents Mach header magic with an optional name.
+        public init(name: String?, rawValue: UInt32) {
+            guard Self.allCases.contains(where: { $0.rawValue == rawValue }) else {
+                Mach.HeaderMagic.unsupported(machMagic: rawValue)
+            }
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// Initializes Mach header magic with a magic value.
+        /// - Note: This is only to be used for defining static constants.
+        private init(name: String, magicValue: UInt32) {
+            self.name = name
+            self.rawValue = magicValue
+        }
+
+        /// The raw magic value.
         public let rawValue: UInt32
 
         /// The object is a 32-bit Mach object with native endianess.
         public static let native32Bit =
-            HeaderMagic(magicValue: MH_MAGIC)
+            HeaderMagic(name: "native32Bit", magicValue: MH_MAGIC)
 
         /// The object is a 32-bit Mach object with swapped endianess.
         public static let swapped32Bit =
-            HeaderMagic(magicValue: MH_CIGAM)
-
+            HeaderMagic(name: "swapped32Bit", magicValue: MH_CIGAM)
         /// The object is a 64-bit Mach object with native endianess.
         public static let native64Bit =
-            HeaderMagic(magicValue: MH_MAGIC_64)
+            HeaderMagic(name: "native64Bit", magicValue: MH_MAGIC_64)
 
         /// The object is a 64-bit Mach object with swapped endianess.
         public static let swapped64Bit =
-            HeaderMagic(magicValue: MH_CIGAM_64)
+            HeaderMagic(name: "swapped64Bit", magicValue: MH_CIGAM_64)
 
         /// All possible header magic values.
         public static let allCases: [HeaderMagic] = [
@@ -55,21 +75,6 @@ extension Mach {
             .native64Bit,
             .swapped64Bit,
         ]
-
-        /// Initializes header magic with a magic value.
-        /// - Note: This is only to be used for defining static constants.
-        private init(magicValue: UInt32) {
-            self.rawValue = magicValue
-        }
-
-        /// Initializes header magic from its raw value.
-        public init?(rawValue: UInt32) {
-            if Self.allCases.contains(where: { $0.rawValue == rawValue }) {
-                self.rawValue = rawValue
-            } else {
-                return nil
-            }
-        }
 
         /// Raises a fatal error for unsupported Mach object magic values.
         public static func unsupported(machMagic: UInt32) -> Never {
@@ -149,9 +154,7 @@ extension Mach {
         let machMagic = data.withUnsafeBytes {
             $0.load(as: UInt32.self)
         }
-        guard let headerMagic = Mach.HeaderMagic(rawValue: machMagic) else {
-            Mach.HeaderMagic.unsupported(machMagic: machMagic)
-        }
+        let headerMagic = Mach.HeaderMagic(rawValue: machMagic)
         switch headerMagic {
         case .native32Bit, .swapped32Bit:
             return Mach.Object32(data: data)

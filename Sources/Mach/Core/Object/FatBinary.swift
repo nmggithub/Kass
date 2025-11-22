@@ -1,4 +1,5 @@
 import Foundation
+import KassHelpers
 
 extension Mach {
     /// A fat Mach binary.
@@ -56,23 +57,43 @@ extension Mach {
 
 extension Mach {
     /// The magic field of the fat binary.
-    public struct FatMagic: RawRepresentable, CaseIterable, Equatable, Sendable {
+    public struct FatMagic: KassHelpers.NamedOptionEnum, Hashable, Sendable {
+        /// The name of the magic, if it can be determined.
+        public var name: String?
+
+        /// Represents fat magic with an optional name.
+        public init(name: String?, rawValue: UInt32) {
+            guard Self.allCases.contains(where: { $0.rawValue == rawValue }) else {
+                Mach.FatMagic.unsupported(fatMagic: rawValue)
+            }
+            self.name = name
+            self.rawValue = rawValue
+        }
+
+        /// Initializes fat magic with a magic value.
+        /// - Note: This is only to be used for defining static constants.
+        private init(name: String, magicValue: UInt32) {
+            self.name = name
+            self.rawValue = magicValue
+        }
+
+        /// The raw magic value.
         public let rawValue: UInt32
 
         /// The architecture structure is a 32-bit structure with native endianess.
         public static let native32Bit =
-            FatMagic(magicValue: FAT_MAGIC)
+            FatMagic(name: "native32Bit", magicValue: FAT_MAGIC)
 
         /// The architecture structure is a 32-bit structure with swapped endianess.
         public static let swapped32Bit =
-            FatMagic(magicValue: FAT_CIGAM)
+            FatMagic(name: "swapped32Bit", magicValue: FAT_CIGAM)
         /// The architecture structure is a 64-bit structure with native endianess.
         public static let native64Bit =
-            FatMagic(magicValue: FAT_MAGIC_64)
+            FatMagic(name: "native64Bit", magicValue: FAT_MAGIC_64)
 
         /// The architecture structure is a 64-bit structure with swapped endianess.
         public static let swapped64Bit =
-            FatMagic(magicValue: FAT_CIGAM_64)
+            FatMagic(name: "swapped64Bit", magicValue: FAT_CIGAM_64)
         /// All possible header magic values.
         public static let allCases: [FatMagic] = [
             .native32Bit,
@@ -85,15 +106,6 @@ extension Mach {
         /// - Note: This is only to be used for defining static constants.
         private init(magicValue: UInt32) {
             self.rawValue = magicValue
-        }
-
-        /// Initializes header magic from its raw value.
-        public init?(rawValue: UInt32) {
-            if Self.allCases.contains(where: { $0.rawValue == rawValue }) {
-                self.rawValue = rawValue
-            } else {
-                return nil
-            }
         }
 
         /// Raises a fatal error for unsupported fat binary magic values.
@@ -239,9 +251,7 @@ extension Mach {
         let fatMagic = data.withUnsafeBytes {
             $0.load(as: UInt32.self)
         }
-        guard let headerMagic = Mach.FatMagic(rawValue: fatMagic) else {
-            Mach.FatMagic.unsupported(fatMagic: fatMagic)
-        }
+        let headerMagic = Mach.FatMagic(rawValue: fatMagic)
         switch headerMagic {
         case .native32Bit, .swapped32Bit:
             return Mach.FatBinary32(data: data)
