@@ -4,7 +4,7 @@ import KassHelpers
 extension Mach {
     /// A fat Mach binary.
     public protocol FatBinary {
-        /// The C representation of the fat binary architectures.
+        /// A C representation of the fat binary architectures.
         associatedtype CFatArchitectureType: Mach.CFatArchitecture
 
         /// The fat binary header.

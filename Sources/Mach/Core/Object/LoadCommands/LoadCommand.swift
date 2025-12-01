@@ -13,7 +13,7 @@ extension Mach {
 
     /// A load command in a Mach object.
     public protocol LoadCommand: Sendable {
-        /// The C representation of the load command.
+        /// A C representation of the load command.
         associatedtype CLoadCommandType: CLoadCommand
 
         /// The type of the load command.

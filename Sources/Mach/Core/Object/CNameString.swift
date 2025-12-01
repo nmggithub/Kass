@@ -1,7 +1,7 @@
 import Foundation
 
 extension Mach {
-    /// The C representation of a name string.
+    /// A C representation of a name string.
     public typealias CNameString = (
         CChar, CChar, CChar, CChar, CChar, CChar, CChar, CChar,
         CChar, CChar, CChar, CChar, CChar, CChar, CChar, CChar
