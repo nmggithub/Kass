@@ -1,5 +1,6 @@
 import Foundation
 import KassHelpers
+import MachCore
 
 extension Mach {
     /// A fat Mach binary.

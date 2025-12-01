@@ -1,4 +1,5 @@
 import Foundation
+import MachCore
 import MachO
 
 extension Mach {

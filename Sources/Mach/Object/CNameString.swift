@@ -1,4 +1,5 @@
 import Foundation
+import MachCore
 
 extension Mach {
     /// A C representation of a name string.

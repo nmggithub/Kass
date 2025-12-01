@@ -1,5 +1,6 @@
 import Foundation
 import KassHelpers
+import MachCore
 import MachO
 
 extension Mach {

@@ -1,4 +1,5 @@
 import Foundation
+import MachCore
 import MachO
 
 // MARK: - C Segment Command
