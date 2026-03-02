@@ -43,6 +43,8 @@
             public func conforms(to className: String) -> Bool {
                 let classNamePointer =
                     UnsafeMutablePointer<CChar>.allocate(capacity: MemoryLayout<io_name_t>.size)
+                defer { classNamePointer.deallocate() }
+                classNamePointer.initialize(from: className, count: className.count)
                 return IOObjectConformsTo(self.name, classNamePointer) != 0
             }
 
