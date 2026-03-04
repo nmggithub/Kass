@@ -426,6 +426,7 @@
             }
 
             /// Calls a method on the connection with the given selector and operands.
+            @discardableResult
             public func callMethod(
                 selector: UInt32,
                 operands: IOConnectMethodOperands = .init(),
