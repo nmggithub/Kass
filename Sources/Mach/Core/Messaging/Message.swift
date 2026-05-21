@@ -12,7 +12,11 @@ extension Mach {
         public var header: mach_msg_header_t
 
         /// The message body.
-        public var body: Mach.MessageBody?
+        public var body: Mach.MessageBody? {
+            didSet {
+                self.header.bits.isMessageComplex = self.body != nil
+            }
+        }
 
         /// The message payload buffer.
         public var payload: Data?
